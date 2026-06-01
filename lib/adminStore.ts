@@ -1,4 +1,4 @@
-// Simple in-memory store for admin data (in production use a real DB)
+// Admin store - persists in memory (use DB for production)
 export interface Signal {
   id: string;
   saham: string;
@@ -20,6 +20,7 @@ export interface UserToken {
   token: string;
   expiredAt: string;
   isActive: boolean;
+  createdAt: string;
 }
 
 export interface Testimonial {
@@ -32,8 +33,38 @@ export interface Testimonial {
   isApproved: boolean;
 }
 
-// Default admin credentials
+export interface LiveInfo {
+  id: string;
+  message: string;
+  isActive: boolean;
+  updatedAt: string;
+}
+
 export const ADMIN_CREDS = {
   username: "admin",
   password: "ritel2025",
+};
+
+// Global in-memory stores
+export const store = {
+  signals: [] as Signal[],
+  tokens: [
+    {
+      id: "demo1",
+      email: "demo@ritelcommunity.id",
+      name: "Demo User",
+      package: "gold",
+      token: "RC-GOLD-DEMO1234",
+      expiredAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    },
+  ] as UserToken[],
+  testimonials: [] as Testimonial[],
+  liveInfo: {
+    id: "1",
+    message: "",
+    isActive: false,
+    updatedAt: new Date().toISOString(),
+  } as LiveInfo,
 };
