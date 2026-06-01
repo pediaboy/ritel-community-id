@@ -21,13 +21,13 @@ function LiveInfoBox() {
   const [info, setInfo] = useState<{message:string;isActive:boolean}|null>(null);
   useEffect(() => {
     const load = () => {
-      try {
-        const msg = localStorage.getItem("rc_admin_liveinfo_msg")||"";
-        const active = localStorage.getItem("rc_admin_liveinfo_active")==="true";
-        if (active&&msg.trim()) setInfo({message:msg,isActive:true}); else setInfo(null);
-      } catch {}
+      fetch("/api/admin/liveinfo").then(r=>r.json()).then(d=>{
+        const li = d.liveInfo;
+        if(li && li.isActive && li.message?.trim()) setInfo({message:li.message,isActive:true});
+        else setInfo(null);
+      }).catch(()=>{});
     };
-    load(); const iv=setInterval(load,10000); return ()=>clearInterval(iv);
+    load(); const iv=setInterval(load,30000); return ()=>clearInterval(iv);
   },[]);
   if(!info) return null;
   return (
@@ -163,12 +163,10 @@ export default function VipPage() {
         if(!d.success){localStorage.removeItem("vip_token");localStorage.removeItem("vip_user");router.push("/login");}
         else{setUser(d.user);localStorage.setItem("vip_user",JSON.stringify(d.user));}
       }).catch(()=>{});
-    try {
-      const sigs = localStorage.getItem("rc_admin_signals");
-      if (sigs) setSignals(JSON.parse(sigs));
-      const psigs = localStorage.getItem("rc_admin_premium_signals");
-      if (psigs) setPremiumSignals(JSON.parse(psigs).filter((s:any)=>s.isActive));
-    } catch {}
+    // Fetch sinyal dari Supabase via API
+    fetch("/api/admin/signals").then(r=>r.json()).then(d=>{
+      if(d.signals) setSignals(d.signals);
+    }).catch(()=>{});
     // Load IHSG news
     fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
   }, []);
@@ -217,7 +215,7 @@ export default function VipPage() {
 
           <div className="flex gap-0 border-b border-white/5 mb-6 overflow-x-auto">
             {tabs.map(([t,l])=>(
-              <button key={t} onClick={()=>setTab(t)} className={`px-5 py-3 text-xs font-semibold whitespace-nowrap border-b-2 transition-all ${tab===t?"border-cyan-400 text-cyan-400":"border-transparent text-slate-500 hover:text-white"}`}>{l}</button>
+              <button key={t} onClick={()=>setTab(t)} className={`px-5 py-3 text-xs font-semibold whitespace-nowrap border-b-2 transition-all relative ${tab===t?"tab-neon-active":"border-transparent text-slate-500 hover:text-white hover:border-white/20"}`}>{l}</button>
             ))}
           </div>
 
