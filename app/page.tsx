@@ -41,29 +41,44 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
   );
 }
 
-// ===== RC LOGO (chart icon) =====
+// ===== RC LOGO - Premium Neon Dark Blue =====
 function RCLogo({ size = 36 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="36" height="36" rx="10" fill="url(#rcGrad)"/>
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="rcGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#06b6d4"/>
-          <stop offset="1" stopColor="#2563eb"/>
+        <linearGradient id="rcBg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#030712"/>
+          <stop offset="100%" stopColor="#0c1a35"/>
         </linearGradient>
+        <linearGradient id="rcNeon" x1="0" y1="0" x2="40" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#0ea5e9"/>
+          <stop offset="50%" stopColor="#06b6d4"/>
+          <stop offset="100%" stopColor="#3b82f6"/>
+        </linearGradient>
+        <filter id="neonGlow">
+          <feGaussianBlur stdDeviation="1.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
-      {/* Candlestick chart */}
-      <rect x="8" y="20" width="4" height="9" rx="1" fill="white" fillOpacity="0.9"/>
-      <rect x="9.5" y="16" width="1" height="4" fill="white" fillOpacity="0.7"/>
-      <rect x="9.5" y="29" width="1" height="2" fill="white" fillOpacity="0.7"/>
-      <rect x="16" y="13" width="4" height="10" rx="1" fill="#34d399"/>
-      <rect x="17.5" y="9" width="1" height="4" fill="#34d399" fillOpacity="0.8"/>
-      <rect x="17.5" y="23" width="1" height="3" fill="#34d399" fillOpacity="0.8"/>
-      <rect x="24" y="17" width="4" height="7" rx="1" fill="#f87171"/>
-      <rect x="25.5" y="13" width="1" height="4" fill="#f87171" fillOpacity="0.8"/>
-      <rect x="25.5" y="24" width="1" height="3" fill="#f87171" fillOpacity="0.8"/>
-      {/* Trend line */}
-      <polyline points="10,26 18,15 26,20" stroke="#facc15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray="2,1"/>
+      {/* Background */}
+      <rect width="40" height="40" rx="11" fill="url(#rcBg)"/>
+      {/* Outer neon border */}
+      <rect x="1" y="1" width="38" height="38" rx="10.5" fill="none" stroke="url(#rcNeon)" strokeWidth="1" strokeOpacity="0.7"/>
+      {/* Candlestick bars */}
+      <rect x="8" y="22" width="4.5" height="10" rx="1.2" fill="#0ea5e9" fillOpacity="0.15" stroke="#0ea5e9" strokeWidth="0.8" filter="url(#neonGlow)"/>
+      <line x1="10.25" y1="17" x2="10.25" y2="22" stroke="#0ea5e9" strokeWidth="1" strokeOpacity="0.8"/>
+      <line x1="10.25" y1="32" x2="10.25" y2="35" stroke="#0ea5e9" strokeWidth="1" strokeOpacity="0.5"/>
+      <rect x="17" y="13" width="4.5" height="12" rx="1.2" fill="#06b6d4" fillOpacity="0.25" stroke="#06b6d4" strokeWidth="1" filter="url(#neonGlow)"/>
+      <line x1="19.25" y1="8" x2="19.25" y2="13" stroke="#06b6d4" strokeWidth="1" strokeOpacity="0.9"/>
+      <line x1="19.25" y1="25" x2="19.25" y2="28" stroke="#06b6d4" strokeWidth="1" strokeOpacity="0.6"/>
+      <rect x="26" y="17" width="4.5" height="9" rx="1.2" fill="#3b82f6" fillOpacity="0.2" stroke="#3b82f6" strokeWidth="0.8" filter="url(#neonGlow)"/>
+      <line x1="28.25" y1="12" x2="28.25" y2="17" stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.7"/>
+      <line x1="28.25" y1="26" x2="28.25" y2="30" stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.5"/>
+      {/* Neon trend line */}
+      <polyline points="10,25 19,15 28,20" stroke="url(#rcNeon)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" filter="url(#neonGlow)" strokeOpacity="0.9"/>
+      {/* Inner glow corner accent */}
+      <circle cx="35" cy="5" r="3" fill="#06b6d4" fillOpacity="0.15"/>
+      <circle cx="5" cy="35" r="2" fill="#3b82f6" fillOpacity="0.1"/>
     </svg>
   );
 }
@@ -301,34 +316,34 @@ function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "44px" }}>
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-        <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 mb-8 text-xs text-cyan-300">
+        <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 mb-5 text-xs text-cyan-300">
           Platform Analisa Saham Indonesia
         </div>
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-4 leading-tight tracking-tight">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-3 leading-tight tracking-tight">
           Investasi Cerdas,<br/>
           <span className="gradient-text">Profit Konsisten</span>
         </h1>
-        <p className="text-slate-400 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-slate-400 text-base sm:text-lg mb-7 max-w-2xl mx-auto leading-relaxed">
           Bandarmologi, Fundamental, Arahan Entry, Tape Reading, Bagger Pick, dan AI Agent analisa saham eksklusif untuk member VIP.
         </p>
-        <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto mb-10">
+        <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto mb-7">
           {[
             { val:"12.400+", label:"Member Aktif", icon:<Icons.Users />, cls:"text-white" },
-            { val:"78%", label:"Win Rate Signal", icon:<Icons.WinRate />, cls:"text-cyan-400" },
+            { val:"78%", label:"Win Rate", icon:<Icons.WinRate />, cls:"text-cyan-400" },
             { val:"34 Stock", label:"Bagger Picks", icon:<Icons.Gem />, cls:"text-green-400" },
           ].map((item, i) => (
             <TiltCard key={i}>
-              <div className="card-glass rounded-2xl p-4 text-center">
+              <div className="card-glass rounded-xl p-3 text-center">
                 <div className={`flex justify-center mb-1 ${item.cls}`}>{item.icon}</div>
-                <div className={`text-xl font-black text-white ${item.cls}`}>{item.val}</div>
-                <div className="text-xs text-slate-500 mt-0.5">{item.label}</div>
+                <div className={`text-lg font-black ${item.cls}`}>{item.val}</div>
+                <div className="text-xs text-slate-500 mt-0.5 leading-tight">{item.label}</div>
               </div>
             </TiltCard>
           ))}
         </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          <a href="#pricing" className="btn-primary text-sm px-8 py-3 rounded-xl">Mulai Sekarang</a>
-          <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" className="btn-green text-sm px-8 py-3 rounded-xl">WA Admin</a>
+        <div className="flex justify-center gap-3">
+          <a href="#pricing" className="btn-primary text-sm px-7 py-3 rounded-xl font-bold">Mulai Sekarang</a>
+          <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" className="btn-green text-sm px-7 py-3 rounded-xl font-bold">WA Admin</a>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-slate-600">
