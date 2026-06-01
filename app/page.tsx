@@ -41,6 +41,148 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
   );
 }
 
+// ===== RC LOGO (chart icon) =====
+function RCLogo({ size = 36 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="36" height="36" rx="10" fill="url(#rcGrad)"/>
+      <defs>
+        <linearGradient id="rcGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#06b6d4"/>
+          <stop offset="1" stopColor="#2563eb"/>
+        </linearGradient>
+      </defs>
+      {/* Candlestick chart */}
+      <rect x="8" y="20" width="4" height="9" rx="1" fill="white" fillOpacity="0.9"/>
+      <rect x="9.5" y="16" width="1" height="4" fill="white" fillOpacity="0.7"/>
+      <rect x="9.5" y="29" width="1" height="2" fill="white" fillOpacity="0.7"/>
+      <rect x="16" y="13" width="4" height="10" rx="1" fill="#34d399"/>
+      <rect x="17.5" y="9" width="1" height="4" fill="#34d399" fillOpacity="0.8"/>
+      <rect x="17.5" y="23" width="1" height="3" fill="#34d399" fillOpacity="0.8"/>
+      <rect x="24" y="17" width="4" height="7" rx="1" fill="#f87171"/>
+      <rect x="25.5" y="13" width="1" height="4" fill="#f87171" fillOpacity="0.8"/>
+      <rect x="25.5" y="24" width="1" height="3" fill="#f87171" fillOpacity="0.8"/>
+      {/* Trend line */}
+      <polyline points="10,26 18,15 26,20" stroke="#facc15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray="2,1"/>
+    </svg>
+  );
+}
+
+// ===== SVG ICONS =====
+const Icons = {
+  Brain: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+    </svg>
+  ),
+  ChartBar: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+    </svg>
+  ),
+  Target: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    </svg>
+  ),
+  Zap: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+  ),
+  Newspaper: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+      <path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/>
+    </svg>
+  ),
+  MessageCircle: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  ),
+  TrendingUp: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+      <polyline points="17 6 23 6 23 12"/>
+    </svg>
+  ),
+  Rocket: () => (
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+    </svg>
+  ),
+  Shield: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+  ),
+  Award: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+    </svg>
+  ),
+  Megaphone: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+    </svg>
+  ),
+  Users: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  ),
+  WinRate: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+    </svg>
+  ),
+  Gem: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="6 3 18 3 22 9 12 22 2 9"/><polyline points="2 9 12 9 18 3"/>
+      <line x1="12" y1="9" x2="12" y2="22"/>
+    </svg>
+  ),
+  Check: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  Star: ({ filled = true }: { filled?: boolean }) => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+  ),
+  Candlestick: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <rect x="5" y="10" width="4" height="8" rx="1"/><line x1="7" y1="7" x2="7" y2="10"/><line x1="7" y1="18" x2="7" y2="21"/>
+      <rect x="10" y="6" width="4" height="6" rx="1" fill="currentColor" fillOpacity="0.3"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="12" x2="12" y2="15"/>
+      <rect x="15" y="9" width="4" height="7" rx="1"/><line x1="17" y1="6" x2="17" y2="9"/><line x1="17" y1="16" x2="17" y2="19"/>
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
+    </svg>
+  ),
+  Menu: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+    </svg>
+  ),
+  X: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  ),
+};
+
 // ===== TICKER =====
 function StockTicker() {
   const [stocks, setStocks] = useState([
@@ -57,7 +199,6 @@ function StockTicker() {
 
   useEffect(() => {
     const load = async () => {
-      // Try to load ticker from server (admin-configured)
       try {
         const syncData = await fetch("/api/admin/sync").then(r => r.json());
         if (syncData.ticker && syncData.ticker.length > 0) {
@@ -65,7 +206,6 @@ function StockTicker() {
           return;
         }
       } catch {}
-      // Fallback: live API
       fetch("/api/stocks").then(r => r.json()).then(d => {
         const list: any[] = [];
         if (d.stocks) {
@@ -106,7 +246,7 @@ function StockTicker() {
   );
 }
 
-// ===== NAVBAR (no WA button) =====
+// ===== NAVBAR =====
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -120,7 +260,7 @@ function Navbar() {
       <div><StockTicker /></div>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-white text-sm">RC</div>
+          <RCLogo size={36} />
           <div>
             <span className="text-white font-black text-sm">RITEL</span>
             <span className="text-cyan-400 font-black text-sm"> COMMUNITY</span>
@@ -140,9 +280,7 @@ function Navbar() {
             Login VIP
           </Link>
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white rounded-lg hover:bg-white/5">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              {menuOpen ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></> : <><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></>}
-            </svg>
+            {menuOpen ? <Icons.X /> : <Icons.Menu />}
           </button>
         </div>
       </div>
@@ -174,11 +312,16 @@ function Hero() {
           Bandarmologi, Fundamental, Arahan Entry, Tape Reading, Bagger Pick, dan AI Agent analisa saham eksklusif untuk member VIP.
         </p>
         <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto mb-10">
-          {[["12.400+","Member Aktif",""],["78%","Win Rate Signal","text-cyan-400"],["34 Stock","Bagger Picks","text-green-400"]].map(([val, label, cls], i) => (
+          {[
+            { val:"12.400+", label:"Member Aktif", icon:<Icons.Users />, cls:"text-white" },
+            { val:"78%", label:"Win Rate Signal", icon:<Icons.WinRate />, cls:"text-cyan-400" },
+            { val:"34 Stock", label:"Bagger Picks", icon:<Icons.Gem />, cls:"text-green-400" },
+          ].map((item, i) => (
             <TiltCard key={i}>
               <div className="card-glass rounded-2xl p-4 text-center">
-                <div className={`text-xl font-black text-white ${cls}`}>{val}</div>
-                <div className="text-xs text-slate-500 mt-0.5">{label}</div>
+                <div className={`flex justify-center mb-1 ${item.cls}`}>{item.icon}</div>
+                <div className={`text-xl font-black text-white ${item.cls}`}>{item.val}</div>
+                <div className="text-xs text-slate-500 mt-0.5">{item.label}</div>
               </div>
             </TiltCard>
           ))}
@@ -189,17 +332,14 @@ function Hero() {
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-slate-600">
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-        </svg>
+        <Icons.ChevronDown />
       </div>
     </section>
   );
 }
 
-// ===== IHSG MARKET =====
+// ===== IHSG MARKET — hanya chart TradingView, tanpa kotak angka =====
 function MarketSection() {
-  const [ihsg, setIhsg] = useState({ value: 7333.73, change: 48.31, changePercent: 0.66 });
   const [stocks, setStocks] = useState<any[]>([
     { symbol:"BBCA", name:"Bank Central Asia", price:9875, change:125, changePercent:1.28 },
     { symbol:"BBRI", name:"Bank Rakyat Indonesia", price:4680, change:-30, changePercent:-0.64 },
@@ -210,7 +350,6 @@ function MarketSection() {
   ]);
   useEffect(() => {
     const load = async () => {
-      // Try admin custom stocks first
       try {
         const syncData = await fetch("/api/admin/stocks").then(r => r.json());
         if (syncData.custom && syncData.custom.length > 0) {
@@ -224,9 +363,7 @@ function MarketSection() {
           return;
         }
       } catch {}
-      // Fallback: live API
       fetch("/api/stocks").then(r => r.json()).then(d => {
-        if (d.ihsg) setIhsg(d.ihsg);
         if (d.stocks) setStocks(d.stocks.slice(0, 6));
       }).catch(() => {});
     };
@@ -234,6 +371,7 @@ function MarketSection() {
     const iv = setInterval(load, 60000);
     return () => clearInterval(iv);
   }, []);
+
   return (
     <section id="market" className="py-16 px-4 relative z-10">
       <div className="max-w-7xl mx-auto">
@@ -241,26 +379,12 @@ function MarketSection() {
           <h2 className="text-2xl font-black text-white mb-1">Pasar <span className="gradient-text">Saham</span></h2>
           <p className="text-slate-500 text-sm">Data diperbarui setiap 30 detik</p>
         </div>
-        <TiltCard>
-          <div className="card-glass rounded-2xl p-6 mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="text-slate-500 text-xs mb-1">IDX Composite · Realtime (TradingView)</div>
-              <div className="text-4xl font-black text-white">{ihsg.value?.toLocaleString("id-ID", { minimumFractionDigits: 2 })}</div>
-              <div className={`text-sm font-bold mt-1 ${ihsg.change >= 0 ? "text-green-400" : "text-red-400"}`}>
-                {ihsg.change >= 0 ? "▲" : "▼"} {Math.abs(ihsg.change).toFixed(2)} ({ihsg.changePercent >= 0 ? "+" : ""}{ihsg.changePercent?.toFixed(2)}%)
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"/>
-              <span className="text-green-400 text-xs font-bold">LIVE</span>
-            </div>
-          </div>
-        </TiltCard>
-        {/* TradingView IHSG Widget - accurate price */}
+        {/* TradingView IHSG Chart — tanpa kotak angka di atasnya */}
         <div className="card-glass rounded-2xl p-4 mb-6 overflow-hidden">
+          <div className="text-slate-500 text-xs mb-2 px-1">IDX Composite · Realtime (TradingView)</div>
           <iframe
             src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_ihsg&symbol=IDX%3ACOMPOSITE&interval=D&hidesidetoolbar=1&hidetoptoolbar=0&symboledit=1&saveimage=0&toolbarbg=04060f&theme=dark&style=1&timezone=Asia%2FJakarta&withdateranges=1"
-            style={{ width:"100%", height:"320px", border:"none" }}
+            style={{ width:"100%", height:"340px", border:"none" }}
             title="IHSG TradingView"
           />
         </div>
@@ -288,7 +412,7 @@ function MarketSection() {
   );
 }
 
-// ===== NEWS =====
+// ===== NEWS — hanya saham Indonesia =====
 function NewsSection() {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -299,17 +423,28 @@ function NewsSection() {
     { title:"IHSG Menguat 0.66% Ditopang Sektor Perbankan", source:"CNBC Indonesia", time:"1 jam lalu", category:"IHSG", url:"#" },
     { title:"BBCA Cetak Laba Rp 14 Triliun Q1 2025", source:"Bisnis.com", time:"2 jam lalu", category:"Saham", url:"#" },
     { title:"Asing Net Buy Rp 1.2 Triliun, IHSG Bullish", source:"Kontan", time:"3 jam lalu", category:"Asing", url:"#" },
-    { title:"GOTO Profitabel Pertama Kali, Saham Melonjak 5%", source:"Tempo", time:"4 jam lalu", category:"Teknologi", url:"#" },
-    { title:"BI Pertahankan Suku Bunga, Pasar Positif", source:"Detik Finance", time:"5 jam lalu", category:"Makro", url:"#" },
-    { title:"Saham Tambang Menguat Ikuti Harga Nikel Global", source:"IDX Channel", time:"6 jam lalu", category:"Sektoral", url:"#" },
+    { title:"GOTO Profitabel Pertama Kali, Saham Melonjak 5%", source:"CNBC Indonesia", time:"4 jam lalu", category:"Saham", url:"#" },
+    { title:"BI Pertahankan Suku Bunga, Pasar Saham Positif", source:"Detik Finance", time:"5 jam lalu", category:"Makro", url:"#" },
+    { title:"Saham Tambang BEI Menguat Ikuti Harga Nikel Global", source:"IDX Channel", time:"6 jam lalu", category:"Tambang", url:"#" },
   ];
   const displayNews = news.length > 0 ? news : mock;
+
+  const catColor: any = {
+    IHSG:"bg-blue-500/10 text-blue-400", Saham:"bg-cyan-500/10 text-cyan-400",
+    Tambang:"bg-yellow-500/10 text-yellow-400", Perbankan:"bg-green-500/10 text-green-400",
+    Forex:"bg-purple-500/10 text-purple-400", Korporasi:"bg-orange-500/10 text-orange-400",
+    Dividen:"bg-pink-500/10 text-pink-400", Makro:"bg-slate-500/10 text-slate-300",
+    Komoditas:"bg-amber-500/10 text-amber-400", Investasi:"bg-teal-500/10 text-teal-400",
+    Pasar:"bg-cyan-500/10 text-cyan-400", Asing:"bg-indigo-500/10 text-indigo-400",
+    Sektoral:"bg-violet-500/10 text-violet-400",
+  };
+
   return (
     <section id="news" className="py-16 px-4 border-t border-white/5 relative z-10">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h2 className="text-2xl font-black text-white mb-1">Berita Pasar <span className="gradient-text">IDX</span></h2>
-          <p className="text-slate-500 text-sm">Berita saham Indonesia terkini</p>
+          <h2 className="text-2xl font-black text-white mb-1">Berita Pasar <span className="gradient-text">Saham Indo</span></h2>
+          <p className="text-slate-500 text-sm">Berita saham Indonesia terkini dari BEI & IHSG</p>
         </div>
         {loading ? <div className="text-slate-500 text-center py-12">Memuat berita...</div> : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -317,7 +452,7 @@ function NewsSection() {
               <TiltCard key={i}>
                 <a href={n.url || "#"} target="_blank" rel="noopener noreferrer" className="card rounded-xl p-5 block group">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-medium">{n.category || "Pasar"}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${catColor[n.category] || "bg-cyan-500/10 text-cyan-400"}`}>{n.category || "Pasar"}</span>
                     <span className="text-xs text-slate-600">{n.time || n.source}</span>
                   </div>
                   <h3 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors leading-snug mb-2">{n.title}</h3>
@@ -332,50 +467,96 @@ function NewsSection() {
   );
 }
 
-// ===== SIGNALS =====
+// ===== SIGNALS — real-time dari Supabase, langsung tampil sesuai role =====
 function SignalsSection() {
   const [signals, setSignals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    fetch("/api/admin/signals").then(r => r.json()).then(d => setSignals(d.signals || [])).catch(() => {});
+    const load = async () => {
+      try {
+        const r = await fetch("/api/admin/signals");
+        const d = await r.json();
+        setSignals(d.signals || []);
+      } catch {}
+      setLoading(false);
+    };
+    load();
+    // Polling setiap 15 detik biar langsung muncul saat admin tambah
+    const iv = setInterval(load, 15000);
+    return () => clearInterval(iv);
   }, []);
-  const mock = [
-    { kode:"BBCA", saham:"Bank Central Asia", action:"BUY", entry:"9.750–9.800", tp:"10.200 | 10.500", sl:"9.500", notes:"Breakout resistance, volume tinggi.", package:["gold","pro","platinum","elite"] },
-    { kode:"ANTM", saham:"Aneka Tambang", action:"ANTRI", entry:"1.580–1.620", tp:"1.750 | 1.850", sl:"1.520", notes:"Support emas global solid.", package:["silver","gold","pro"] },
-    { kode:"GOTO", saham:"GoTo Group", action:"BUY", entry:"80–85", tp:"100 | 115", sl:"72", notes:"First profitable quarter.", package:["pro","platinum","elite"] },
-  ];
-  const display = signals.length > 0 ? signals : mock;
-  const actionColor: any = { BUY:"text-green-400 bg-green-400/10", SELL:"text-red-400 bg-red-400/10", HOLD:"text-yellow-400 bg-yellow-400/10", ANTRI:"text-cyan-400 bg-cyan-400/10" };
+
+  const actionColor: any = {
+    BUY:"text-green-400 bg-green-400/10 border-green-400/20",
+    SELL:"text-red-400 bg-red-400/10 border-red-400/20",
+    HOLD:"text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
+    ANTRI:"text-cyan-400 bg-cyan-400/10 border-cyan-400/20",
+  };
+
+  const pkgLevelColor: any = {
+    basic:"bg-slate-400/10 text-slate-400", silver:"bg-cyan-400/10 text-cyan-300",
+    gold:"bg-yellow-400/10 text-yellow-400", pro:"bg-purple-400/10 text-purple-400",
+    platinum:"bg-slate-300/10 text-slate-300", elite:"bg-yellow-300/10 text-yellow-300",
+  };
+
+  const display = signals.length > 0 ? signals : [];
+
   return (
     <section id="signals" className="py-16 px-4 border-t border-white/5 relative z-10">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl font-black text-white mb-1">Sinyal <span className="gradient-text">Premium</span></h2>
-          <p className="text-slate-500 text-sm">Entry, TP, SL dari analis berpengalaman</p>
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-black text-white mb-1">Sinyal <span className="gradient-text">Premium</span></h2>
+            <p className="text-slate-500 text-sm">Entry, TP, SL dari analis berpengalaman · Update realtime</p>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"/>
+            <span className="text-green-400 text-xs font-bold">LIVE</span>
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          {display.map((s, i) => (
-            <TiltCard key={i}>
-              <div className="card rounded-xl p-5">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <div className="font-black text-white text-lg">{s.kode}</div>
-                    <div className="text-xs text-slate-500">{s.saham}</div>
+
+        {loading ? (
+          <div className="text-slate-500 text-center py-12">Memuat sinyal...</div>
+        ) : display.length === 0 ? (
+          <div className="card-glass rounded-xl p-10 text-center">
+            <div className="flex justify-center mb-3 text-slate-600"><Icons.Candlestick /></div>
+            <p className="text-slate-500 text-sm">Belum ada sinyal aktif saat ini.</p>
+            <p className="text-slate-600 text-xs mt-1">Sinyal baru akan muncul otomatis di sini.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {display.map((s, i) => (
+              <TiltCard key={s.id || i}>
+                <div className="card rounded-xl p-5">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="font-black text-white text-lg">{s.kode}</div>
+                      <div className="text-xs text-slate-500">{s.saham}</div>
+                    </div>
+                    <span className={`text-xs font-black px-2.5 py-1 rounded-lg border ${actionColor[s.action] || "text-white bg-white/10 border-white/10"}`}>
+                      {s.action}
+                    </span>
                   </div>
-                  <span className={`text-xs font-black px-2.5 py-1 rounded-lg ${actionColor[s.action] || "text-white bg-white/10"}`}>{s.action}</span>
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">{s.entry}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-500">Target</span><span className="text-green-400 font-medium">{s.tp}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">{s.sl}</span></div>
+                  </div>
+                  {s.notes && <p className="mt-3 text-xs text-slate-400 border-t border-white/5 pt-3">{s.notes}</p>}
+                  {s.package && s.package.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {s.package.map((p: string) => (
+                        <span key={p} className={`text-xs px-2 py-0.5 rounded-full capitalize ${pkgLevelColor[p] || "bg-white/5 text-slate-500"}`}>{p}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">{s.entry}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Target</span><span className="text-green-400 font-medium">{s.tp}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">{s.sl}</span></div>
-                </div>
-                {s.notes && <p className="mt-3 text-xs text-slate-400 border-t border-white/5 pt-3">{s.notes}</p>}
-                <div className="mt-3 flex flex-wrap gap-1">
-                  {(s.package||[]).map((p:string)=><span key={p} className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-slate-500 capitalize">{p}</span>)}
-                </div>
-              </div>
-            </TiltCard>
-          ))}
-        </div>
+              </TiltCard>
+            ))}
+          </div>
+        )}
+
         <div className="card-glass rounded-xl p-5 text-center">
           <p className="text-slate-400 text-sm mb-3">Sinyal lengkap dengan analisis mendalam tersedia untuk member VIP.</p>
           <a href="https://wa.me/6282218723401?text=Halo%20mau%20daftar%20VIP!" target="_blank" className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">Daftar VIP</a>
@@ -387,36 +568,37 @@ function SignalsSection() {
 
 // ===== AI AGENT SECTION =====
 function AIAgentSection() {
+  const aiFeatures = [
+    { Icon: Icons.Brain, title:"Analisis Fundamental", desc:"AI Agent menganalisis laporan keuangan, valuasi, dan prospek bisnis secara mendalam untuk setiap saham pilihanmu." },
+    { Icon: Icons.ChartBar, title:"Analisis Teknikal", desc:"Chart pattern recognition, support-resistance, indikator RSI, MACD, dan Bollinger Bands secara otomatis." },
+    { Icon: Icons.Zap, title:"Real-time Watchlist", desc:"Monitor portofolio dan wishlist saham kamu secara real-time. Dapatkan notifikasi saat harga mencapai level target." },
+    { Icon: Icons.Target, title:"Signal Entry Cerdas", desc:"AI menghitung timing entry terbaik berdasarkan pola volume, bandarmologi, dan sentimen pasar terkini." },
+    { Icon: Icons.Newspaper, title:"Ringkasan Berita", desc:"AI Agent memfilter dan merangkum berita saham yang relevan, memisahkan noise dari informasi penting." },
+    { Icon: Icons.MessageCircle, title:"Tanya Jawab 24/7", desc:"Tanya apa saja tentang saham, pasar, atau strategi investasi. AI siap menjawab kapan pun kamu butuh." },
+  ];
   return (
     <section id="ai-agent" className="py-16 px-4 border-t border-white/5 relative z-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 mb-4 text-xs text-purple-300">
-            🤖 Eksklusif Member VIP
+            <Icons.Brain /> Eksklusif Member VIP
           </div>
           <h2 className="text-3xl font-black text-white mb-2">AI <span className="gradient-text">Agent</span> Analisa Saham</h2>
           <p className="text-slate-500 text-sm max-w-xl mx-auto">Asisten kecerdasan buatan eksklusif yang siap membantu analisis saham, watchlist, dan signal kapan saja 24 jam penuh.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {[
-            { icon:"🧠", title:"Analisis Fundamental", desc:"AI Agent menganalisis laporan keuangan, valuasi, dan prospek bisnis secara mendalam untuk setiap saham pilihanmu." },
-            { icon:"📊", title:"Analisis Teknikal", desc:"Chart pattern recognition, support-resistance, indikator RSI, MACD, dan Bollinger Bands secara otomatis." },
-            { icon:"⚡", title:"Real-time Watchlist", desc:"Monitor portofolio dan wishlist saham kamu secara real-time. Dapatkan notifikasi saat harga mencapai level target." },
-            { icon:"🎯", title:"Signal Entry Cerdas", desc:"AI menghitung timing entry terbaik berdasarkan pola volume, bandarmologi, dan sentimen pasar terkini." },
-            { icon:"📰", title:"Ringkasan Berita", desc:"AI Agent memfilter dan merangkum berita saham yang relevan, memisahkan noise dari informasi penting." },
-            { icon:"💬", title:"Tanya Jawab 24/7", desc:"Tanya apa saja tentang saham, pasar, atau strategi investasi. AI siap menjawab kapan pun kamu butuh." },
-          ].map((item, i) => (
+          {aiFeatures.map(({ Icon, title, desc }, i) => (
             <TiltCard key={i}>
               <div className="card-glass rounded-2xl p-6">
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="font-black text-white text-sm mb-2">{item.title}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
+                <div className="text-cyan-400 mb-3"><Icon /></div>
+                <h3 className="font-black text-white text-sm mb-2">{title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{desc}</p>
               </div>
             </TiltCard>
           ))}
         </div>
         <div className="card-glass rounded-2xl p-6 border border-purple-500/20 max-w-2xl mx-auto text-center">
-          <div className="text-4xl mb-3">🚀</div>
+          <div className="flex justify-center mb-3 text-purple-400"><Icons.Rocket /></div>
           <h3 className="font-black text-white text-lg mb-2">Tersedia untuk Paket Pro, Platinum & Elite</h3>
           <p className="text-slate-400 text-sm mb-5">AI Agent kami terus belajar dan berkembang mengikuti dinamika pasar saham Indonesia. Dapatkan keunggulan kompetitif dengan teknologi AI terdepan.</p>
           <a href="#pricing" className="btn-primary text-sm px-8 py-3 rounded-xl inline-block">Upgrade ke Pro</a>
@@ -426,10 +608,9 @@ function AIAgentSection() {
   );
 }
 
-// ===== PRICING (only show 100k, link to /paket for others) =====
+// ===== PRICING =====
 function PricingSection() {
   const [pricingData, setPricingData] = useState<any>(null);
-
   useEffect(() => {
     fetch("/api/admin/sync").then(r => r.json()).then(d => {
       if (d.pricing && d.pricing.length > 0) {
@@ -446,7 +627,6 @@ function PricingSection() {
     description: "Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.",
     features: ["Sinyal saham harian","Berita pasar realtime","Chart IHSG live","Modul dasar investasi","Grup WA Basic"],
   };
-
   const flashSale = pricingData?.flashSale;
 
   return (
@@ -486,7 +666,7 @@ function PricingSection() {
               <ul className="space-y-2 mb-6">
                 {(pkg.features || []).map((f: string, i: number) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
-                    <span className="text-cyan-400 flex-shrink-0">✓</span>
+                    <span className="text-cyan-400 flex-shrink-0"><Icons.Check /></span>
                     <span>{f}</span>
                   </li>
                 ))}
@@ -509,7 +689,7 @@ function PricingSection() {
   );
 }
 
-// ===== TESTIMONIALS (horizontal slider + touch drag) =====
+// ===== TESTIMONIALS =====
 function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -518,19 +698,10 @@ function TestimonialsSection() {
   const scrollLeft = useRef(0);
   const animPaused = useRef(false);
 
-  const pauseAnim = () => {
-    if (trackRef.current) { trackRef.current.style.animationPlayState = paused; animPaused.current = true; }
-  };
-  const resumeAnim = () => {
-    if (trackRef.current) { trackRef.current.style.animationPlayState = running; animPaused.current = false; }
-  };
+  const pauseAnim = () => { if (trackRef.current) { trackRef.current.style.animationPlayState = "paused"; animPaused.current = true; } };
+  const resumeAnim = () => { if (trackRef.current) { trackRef.current.style.animationPlayState = "running"; animPaused.current = false; } };
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    pauseAnim();
-    isDragging.current = true;
-    startX.current = e.touches[0].clientX;
-    scrollLeft.current = trackRef.current?.getBoundingClientRect().x || 0;
-  };
+  const onTouchStart = (e: React.TouchEvent) => { pauseAnim(); isDragging.current = true; startX.current = e.touches[0].clientX; };
   const onTouchMove = (e: React.TouchEvent) => {
     if (!isDragging.current || !trackRef.current) return;
     const dx = e.touches[0].clientX - startX.current;
@@ -539,28 +710,9 @@ function TestimonialsSection() {
     startX.current = e.touches[0].clientX;
   };
   const onTouchEnd = () => { isDragging.current = false; setTimeout(resumeAnim, 2000); };
-
-  const onMouseDown = (e: React.MouseEvent) => {
-    pauseAnim();
-    isDragging.current = true;
-    startX.current = e.clientX;
-    const wrapper = trackRef.current?.parentElement;
-    scrollLeft.current = wrapper?.scrollLeft || 0;
-  };
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const wrapper = trackRef.current?.parentElement;
-    if (wrapper) { wrapper.scrollLeft = scrollLeft.current - (e.clientX - startX.current); }
-  };
+  const onMouseDown = (e: React.MouseEvent) => { pauseAnim(); isDragging.current = true; startX.current = e.clientX; const w = trackRef.current?.parentElement; scrollLeft.current = w?.scrollLeft || 0; };
+  const onMouseMove = (e: React.MouseEvent) => { if (!isDragging.current) return; const w = trackRef.current?.parentElement; if (w) w.scrollLeft = scrollLeft.current - (e.clientX - startX.current); };
   const onMouseUp = () => { isDragging.current = false; setTimeout(resumeAnim, 2000); };
-
-  useEffect(() => {
-    fetch("/api/testimonials").then(r => r.json()).then(d => {
-      const approved = (d.testimonials || []).filter((t:any) => t.isApproved !== false);
-      if (approved.length > 0) setTestimonials(approved);
-      else setTestimonials(defaultTestis);
-    }).catch(() => setTestimonials(defaultTestis));
-  }, []);
 
   const defaultTestis = [
     { id:"t1", name:"Budi Santoso", package:"Gold", rating:5, text:"Sinyalnya akurat banget! Dalam 2 bulan porto gua naik 35%. Komunitas juga aktif dan supportif banget.", date:"Mei 2025" },
@@ -575,9 +727,16 @@ function TestimonialsSection() {
     { id:"t10", name:"Nani Kurniawati", package:"Pro", rating:5, text:"Grup WA-nya aktif banget. Diskusi sama sesama member juga nambah banyak insight baru.", date:"Agu 2024" },
   ];
 
+  useEffect(() => {
+    fetch("/api/testimonials").then(r => r.json()).then(d => {
+      const approved = (d.testimonials || []).filter((t:any) => t.isApproved !== false);
+      if (approved.length > 0) setTestimonials(approved);
+      else setTestimonials(defaultTestis);
+    }).catch(() => setTestimonials(defaultTestis));
+  }, []);
+
   const display = testimonials.length > 0 ? testimonials : defaultTestis;
   const doubled = [...display, ...display];
-
   const pkgColor: any = {
     basic:"text-slate-400 bg-slate-400/10", silver:"text-cyan-300 bg-cyan-500/10",
     gold:"text-yellow-400 bg-yellow-500/10", pro:"text-purple-400 bg-purple-500/10",
@@ -608,7 +767,7 @@ function TestimonialsSection() {
                 </div>
               </div>
               <div className="flex gap-0.5 mb-2">
-                {Array(t.rating || 5).fill(0).map((_,j)=><span key={j} className="text-yellow-400 text-xs">★</span>)}
+                {Array(t.rating || 5).fill(0).map((_,j) => <span key={j} className="text-yellow-400 text-xs"><Icons.Star /></span>)}
               </div>
               <p className="text-slate-300 text-sm leading-relaxed line-clamp-4">{t.text}</p>
               <div className="text-xs text-slate-600 mt-3">{t.date}</div>
@@ -629,32 +788,24 @@ function FAQSection() {
     { q:"Apakah sinyal selalu profit?", a:"Tidak ada sinyal yang bisa menjamin 100% profit. Namun win rate sinyal kami mencapai 78% berdasarkan track record historis. Selalu gunakan manajemen risiko dengan stop loss yang ketat." },
     { q:"Apakah ada jaminan uang kembali?", a:"Kami menyediakan garansi kepuasan 7 hari untuk paket Basic. Jika dalam 7 hari tidak puas, kami akan refund penuh. Paket lain dapat dikonsultasikan langsung dengan admin." },
     { q:"Bisa akses dari perangkat apa?", a:"Platform kami dapat diakses dari semua perangkat: smartphone, tablet, dan komputer melalui browser. Tidak perlu install aplikasi tambahan." },
-    { q:"Berapa lama token VIP aktif?", a:"Sesuai paket yang dipilih, umumnya 1 bulan. Bisa diperpanjang kapan saja sebelum masa expired habis. Admin juga akan mengingatkan 3 hari sebelum expired." },
-    { q:"Apakah ada grup WhatsApp?", a:"Ya! Setiap paket mendapatkan akses ke grup WhatsApp eksklusif sesuai level. Grup aktif dengan diskusi saham, analisis harian, dan update sinyal dari tim analis." },
-    { q:"Apa perbedaan setiap paket?", a:"Perbedaan utama ada di fitur dan kedalaman akses. Basic untuk pemula, Silver tambah fundamental, Gold tambah sinyal premium, Pro tambah AI Agent, Platinum tambah konsultasi 1-on-1, Elite tambah mentoring langsung." },
+    { q:"Apa bedanya setiap paket?", a:"Setiap paket memiliki akses sinyal, modul edukasi, dan fitur yang berbeda. Paket yang lebih tinggi mendapatkan lebih banyak sinyal, akses AI Agent, konsultasi personal, dan laporan analisis mendalam. Lihat detail di halaman Paket." },
   ];
   return (
     <section id="faq" className="py-16 px-4 border-t border-white/5 relative z-10">
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl font-black text-white mb-2">Pertanyaan <span className="gradient-text">Umum</span></h2>
-          <p className="text-slate-500 text-sm">Jawaban untuk pertanyaan yang sering ditanyakan</p>
+        <div className="mb-8">
+          <h2 className="text-2xl font-black text-white mb-1">Pertanyaan <span className="gradient-text">Umum</span></h2>
+          <p className="text-slate-500 text-sm">Hal-hal yang sering ditanyakan</p>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {faqs.map((f, i) => (
-            <TiltCard key={i}>
-              <div className="card rounded-xl overflow-hidden">
-                <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left">
-                  <span className="font-bold text-white text-sm pr-4">{f.q}</span>
-                  <span className={`text-cyan-400 flex-shrink-0 transition-transform duration-200 ${open === i ? "rotate-180" : ""}`}>▼</span>
-                </button>
-                {open === i && (
-                  <div className="px-5 pb-5 border-t border-white/5">
-                    <p className="text-slate-400 text-sm leading-relaxed pt-4">{f.a}</p>
-                  </div>
-                )}
-              </div>
-            </TiltCard>
+            <div key={i} className="card rounded-xl overflow-hidden">
+              <button onClick={() => setOpen(open === i ? null : i)} className="w-full px-5 py-4 flex justify-between items-center text-left">
+                <span className="font-bold text-white text-sm">{f.q}</span>
+                <span className={`text-slate-400 transition-transform duration-200 ${open === i ? "rotate-180" : ""}`}><Icons.ChevronDown /></span>
+              </button>
+              {open === i && <div className="px-5 pb-4 text-slate-400 text-sm leading-relaxed">{f.a}</div>}
+            </div>
           ))}
         </div>
       </div>
@@ -662,98 +813,63 @@ function FAQSection() {
   );
 }
 
-// ===== SNK + BENEFIT =====
-function SNKSection() {
-  return (
-    <section className="py-16 px-4 border-t border-white/5 relative z-10">
-      <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Benefits */}
-          <div>
-            <h3 className="text-xl font-black text-white mb-6">Keunggulan <span className="gradient-text">Kami</span></h3>
-            <div className="space-y-4">
-              {[
-                ["Sinyal Akurat & Terpercaya","Track record 78% win rate dengan analisis mendalam dari tim berpengalaman."],
-                ["Komunitas Aktif","Ribuan member aktif siap berdiskusi dan berbagi insight setiap hari."],
-                ["Edukasi Komprehensif","Modul dari pemula sampai expert tersedia untuk semua level investor."],
-                ["Support Responsif","Tim admin dan analis siap membantu 7 hari seminggu via WhatsApp."],
-                ["Update Real-time","Sinyal dan analisis diupdate setiap hari mengikuti pergerakan pasar."],
-                ["Harga Terjangkau","Mulai dari Rp 100.000/bulan, terjangkau untuk semua kalangan."],
-              ].map(([title, desc], i) => (
-                <div key={i} className="flex gap-3">
-                  <span className="text-cyan-400 mt-1 flex-shrink-0">✓</span>
-                  <div>
-                    <div className="font-bold text-white text-sm">{title}</div>
-                    <div className="text-slate-500 text-xs mt-0.5">{desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* SNK */}
-          <div>
-            <h3 className="text-xl font-black text-white mb-6">Syarat &amp; <span className="gradient-text">Ketentuan</span></h3>
-            <div className="space-y-3 text-sm text-slate-400">
-              <p>1. Layanan ini hanya untuk tujuan edukasi dan informasi investasi, bukan merupakan rekomendasi investasi resmi.</p>
-              <p>2. Semua sinyal dan analisis yang diberikan bukan jaminan keuntungan. Investasi saham memiliki risiko.</p>
-              <p>3. Member bertanggung jawab penuh atas setiap keputusan investasi yang dibuat berdasarkan informasi dari platform ini.</p>
-              <p>4. Token VIP bersifat personal dan tidak boleh dibagikan atau dipindahtangankan kepada pihak lain.</p>
-              <p>5. Penyalahgunaan akun atau token dapat mengakibatkan penonaktifan tanpa pengembalian dana.</p>
-              <p>6. Konten platform dilindungi hak cipta. Dilarang menyebarkan konten tanpa izin tertulis.</p>
-              <p>7. Harga paket dapat berubah sewaktu-waktu. Harga berlaku saat pembayaran dikonfirmasi.</p>
-              <p>8. Refund hanya berlaku untuk kondisi tertentu sesuai kebijakan yang berlaku.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ===== WA LINKS SECTION =====
+// ===== WA LINKS =====
 function WALinksSection() {
   return (
     <section className="py-16 px-4 border-t border-white/5 relative z-10">
-      <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-2xl font-black text-white mb-2">Bergabung <span className="gradient-text">Komunitas</span></h2>
-        <p className="text-slate-500 text-sm mb-8">Ikuti komunitas WhatsApp kami dan dapatkan update pasar, diskusi saham, dan informasi terbaru setiap hari.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h2 className="text-2xl font-black text-white mb-1">Komunitas <span className="gradient-text">Resmi</span></h2>
+          <p className="text-slate-500 text-sm">Gabung grup & channel resmi Ritel Community</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
           <TiltCard>
-            <a href="https://chat.whatsapp.com/JzF3gCFvZsbJrx3KuVtQeS?s=cl&p=i&mlu=3&amv=1"
-              target="_blank" rel="noopener noreferrer"
-              className="card-glass rounded-2xl p-6 flex flex-col items-center gap-3 border border-green-500/20 hover:border-green-500/50 transition-all block group">
-              <div className="w-14 h-14 bg-green-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="#22c55e">
+            <a href="https://wa.me/6282218723401" target="_blank" className="card rounded-xl p-5 flex items-start gap-4 group block">
+              <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
                 </svg>
               </div>
               <div>
-                <div className="font-black text-white text-base mb-1">Grup Publik</div>
-                <div className="text-slate-400 text-xs">Diskusi bebas seputar saham & investasi bersama ribuan member aktif</div>
+                <div className="font-black text-white text-base mb-1">Grup WA Member</div>
+                <div className="text-slate-400 text-xs">Diskusi, tanya jawab, dan update sinyal bersama member aktif lainnya</div>
               </div>
-              <span className="mt-1 inline-flex items-center gap-1 bg-green-500/10 text-green-400 text-xs font-bold px-4 py-2 rounded-xl border border-green-500/20 group-hover:bg-green-500/20 transition-colors">
-                Bergabung Sekarang →
-              </span>
             </a>
           </TiltCard>
           <TiltCard>
-            <a href="https://whatsapp.com/channel/0029VbCVhf91noz95vIGwo23"
-              target="_blank" rel="noopener noreferrer"
-              className="card-glass rounded-2xl p-6 flex flex-col items-center gap-3 border border-cyan-500/20 hover:border-cyan-500/50 transition-all block group">
-              <div className="w-14 h-14 bg-cyan-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="#06b6d4">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            <a href="https://t.me/ritelcommunity" target="_blank" className="card rounded-xl p-5 flex items-start gap-4 group block">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#06b6d4">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                 </svg>
               </div>
               <div>
                 <div className="font-black text-white text-base mb-1">Channel Resmi</div>
                 <div className="text-slate-400 text-xs">Update sinyal, berita pasar, dan info promo eksklusif langsung dari tim kami</div>
               </div>
-              <span className="mt-1 inline-flex items-center gap-1 bg-cyan-500/10 text-cyan-400 text-xs font-bold px-4 py-2 rounded-xl border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
-                Follow Channel →
-              </span>
             </a>
           </TiltCard>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ===== SNK =====
+function SNKSection() {
+  return (
+    <section className="py-8 px-4 border-t border-white/5 relative z-10">
+      <div className="max-w-7xl mx-auto">
+        <div className="card-glass rounded-xl p-5">
+          <div className="flex items-start gap-3">
+            <div className="text-yellow-400 flex-shrink-0 mt-0.5"><Icons.Shield /></div>
+            <div>
+              <div className="text-yellow-400 text-xs font-black mb-1.5 tracking-wide">DISCLAIMER</div>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Seluruh konten, sinyal, dan analisis yang tersedia di platform ini bersifat edukatif dan bukan merupakan saran investasi. Keputusan investasi sepenuhnya menjadi tanggung jawab masing-masing investor. Investasi saham mengandung risiko kehilangan modal. Pastikan Anda memahami risiko sebelum berinvestasi.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -767,7 +883,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-white text-xs">RC</div>
+            <RCLogo size={32} />
             <span className="text-white font-black text-sm">RITEL COMMUNITY<span className="text-slate-500">.ID</span></span>
           </div>
           <div className="flex gap-6 text-xs text-slate-500">
@@ -803,7 +919,7 @@ export default function HomePage() {
           <Footer />
         </div>
       </div>
-      {/* WA Float button - only here in body, removed from navbar */}
+      {/* WA Float button */}
       <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank"
         className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-400 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
