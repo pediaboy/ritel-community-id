@@ -204,44 +204,61 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const actionColor: any = { BUY:"text-green-400", SELL:"text-red-400", HOLD:"text-yellow-400", ANTRI:"text-cyan-400" };
 
   // ===== SIGNALS =====
-  const saveSig = () => {
+  const saveSig = async () => {
     if (!sigForm.kode.trim() || !sigForm.saham.trim()) { alert("Isi kode dan nama saham!"); return; }
-    let updated;
     if (editSigId) {
-      updated = signals.map(s => s.id === editSigId ? { ...sigForm, id: editSigId } : s);
+      await fetch(`/api/admin/signals?id=${editSigId}`, {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigForm, id:editSigId})}).catch(()=>{});
+      setSignals(signals.map(s => s.id === editSigId ? { ...sigForm, id: editSigId } : s));
     } else {
-      updated = [{ ...sigForm, id: Date.now().toString(), createdAt: new Date().toISOString() }, ...signals];
+      const newId = Date.now().toString();
+      await fetch("/api/admin/signals", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigForm, id:newId})}).catch(()=>{});
+      setSignals([{ ...sigForm, id: newId, createdAt: new Date().toISOString() }, ...signals]);
     }
-    setSignals(updated); syncToAPI("signals", updated);
     setSigForm({ saham:"", kode:"", action:"BUY", entry:"", tp:"", sl:"", notes:"", package:["gold","pro","platinum","elite"] });
     setEditSigId(null); setShowSigForm(false);
   };
   const editSig = (s: any) => { setSigForm({...s}); setEditSigId(s.id); setShowSigForm(true); window.scrollTo(0,0); };
-  const delSig = (id: string) => { if (!confirm("Hapus sinyal?")) return; const updated = signals.filter(s=>s.id!==id); setSignals(updated); syncToAPI("signals", updated); };
+  const delSig = async (id: string) => {
+    if (!confirm("Hapus sinyal?")) return;
+    await fetch(`/api/admin/signals?id=${id}`, {method:"DELETE"}).catch(()=>{});
+    setSignals(signals.filter(s=>s.id!==id));
+  };
 
   // ===== TOKENS =====
   const genToken = (pkg: string) => "RC-" + pkg.toUpperCase() + "-" + Math.random().toString(36).slice(2,8).toUpperCase();
-  const saveTok = () => {
+  const saveTok = async () => {
     if (!tokForm.email.trim() || !tokForm.expiredAt) { alert("Isi email dan tanggal expired!"); return; }
-    let updated;
     if (editTokId) {
-      updated = tokens.map(t => t.id === editTokId ? { ...t, ...tokForm } : t);
+      await fetch("/api/admin/tokens", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:editTokId, ...tokForm})}).catch(()=>{});
+      setTokens(tokens.map(t => t.id === editTokId ? { ...t, ...tokForm } : t));
     } else {
-      const newTok = { ...tokForm, id: Date.now().toString(), token: genToken(tokForm.package), isActive:true, createdAt:new Date().toISOString() };
-      updated = [newTok, ...tokens];
+      const res = await fetch("/api/admin/tokens", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(tokForm)}).then(r=>r.json()).catch(()=>({}));
+      const newTok = res.token || { ...tokForm, id: Date.now().toString(), token: genToken(tokForm.package), isActive:true };
+      // Normalize field names from DB
+      const normalized = { ...newTok, isActive: newTok.is_active ?? newTok.isActive ?? true, expiredAt: newTok.expired_at || newTok.expiredAt };
+      setTokens([normalized, ...tokens]);
     }
-    setTokens(updated); syncToAPI("tokens", updated);
     setTokForm({ email:"", name:"", package:"gold", expiredAt:"" });
     setEditTokId(null); setShowTokForm(false);
   };
-  const editTok = (t: any) => { setTokForm({ email:t.email, name:t.name, package:t.package, expiredAt:t.expiredAt?.slice(0,16) }); setEditTokId(t.id); setShowTokForm(true); window.scrollTo(0,0); };
-  const delTok = (id: string) => { if (!confirm("Hapus token?")) return; const updated = tokens.filter(t=>t.id!==id); setTokens(updated); syncToAPI("tokens", updated); };
-  const toggleTok = (t: any) => { const updated = tokens.map(x=>x.id===t.id?{...x,isActive:!x.isActive}:x); setTokens(updated); syncToAPI("tokens", updated); };
-  const extendTok = (t: any) => {
+  const editTok = (t: any) => { setTokForm({ email:t.email, name:t.name, package:t.package, expiredAt:(t.expiredAt||t.expired_at||"")?.slice(0,16) }); setEditTokId(t.id); setShowTokForm(true); window.scrollTo(0,0); };
+  const delTok = async (id: string) => {
+    if (!confirm("Hapus token?")) return;
+    await fetch(`/api/admin/tokens?id=${id}`, {method:"DELETE"}).catch(()=>{});
+    setTokens(tokens.filter(t=>t.id!==id));
+  };
+  const toggleTok = async (t: any) => {
+    const newActive = !(t.isActive !== undefined ? t.isActive : t.is_active);
+    await fetch("/api/admin/tokens", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:t.id, isActive:newActive})}).catch(()=>{});
+    setTokens(tokens.map(x=>x.id===t.id?{...x,isActive:newActive,is_active:newActive}:x));
+  };
+  const extendTok = async (t: any) => {
     const days = prompt("Tambah berapa hari?"); if (!days || isNaN(parseInt(days))) return;
-    const newExp = new Date(t.expiredAt); newExp.setDate(newExp.getDate()+parseInt(days));
-    const updated = tokens.map(x=>x.id===t.id?{...x,expiredAt:newExp.toISOString()}:x);
-    setTokens(updated); syncToAPI("tokens", updated);
+    const baseDate = new Date(t.expiredAt || t.expired_at || Date.now());
+    baseDate.setDate(baseDate.getDate()+parseInt(days));
+    const newExp = baseDate.toISOString();
+    await fetch("/api/admin/tokens", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:t.id, expiredAt:newExp})}).catch(()=>{});
+    setTokens(tokens.map(x=>x.id===t.id?{...x,expiredAt:newExp,expired_at:newExp}:x));
   };
 
   // ===== TOP STOCKS =====
