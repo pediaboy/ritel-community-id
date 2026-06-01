@@ -1,34 +1,47 @@
 import { NextResponse } from "next/server";
+import { sb } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-let testimonials: any[] = [
-  { id:"t1", name:"Budi Santoso", package:"gold", rating:5, text:"Sinyalnya akurat banget! Dalam 2 bulan porto gua naik 35%. Komunitas juga aktif dan supportif.", date:"Mei 2025", isApproved:true },
-  { id:"t2", name:"Sari Dewi", package:"platinum", rating:5, text:"AI Agent-nya luar biasa, bisa analisis saham kapan aja. Mentor juga responsif dan helpful banget.", date:"April 2025", isApproved:true },
-  { id:"t3", name:"Rizky Pratama", package:"silver", rating:5, text:"Modul fundamental-nya komprehensif. Sekarang udah bisa analisis sendiri tanpa bingung.", date:"Maret 2025", isApproved:true },
-  { id:"t4", name:"Diana Putri", package:"elite", rating:5, text:"Worth every penny! Sinyal elite + mentor langsung bikin return gua konsisten tiap bulan.", date:"Februari 2025", isApproved:true },
-];
-
 export async function GET() {
+  const testimonials = await sb("GET", "/testimonials?order=created_at.desc");
   return NextResponse.json({ testimonials });
 }
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const newTesti = { ...body, id: "t" + Date.now(), isApproved: body.isApproved ?? false };
-  testimonials.unshift(newTesti);
-  return NextResponse.json({ success: true, testimonial: newTesti });
+  const row = {
+    id: body.id || Date.now().toString(),
+    name: body.name || "",
+    package: body.package || "gold",
+    rating: body.rating || 5,
+    text: body.text || "",
+    date: body.date || new Date().toLocaleDateString("id-ID", { month: "long", year: "numeric" }),
+    is_approved: body.isApproved !== undefined ? body.isApproved : (body.is_approved !== undefined ? body.is_approved : false),
+  };
+  const result = await sb("POST", "/testimonials", row);
+  return NextResponse.json({ success: true, testimonial: result[0] || row });
 }
 
 export async function PUT(req: Request) {
   const body = await req.json();
-  testimonials = testimonials.map(t => t.id === body.id ? { ...t, ...body } : t);
+  const { id, ...data } = body;
+  const updateData: any = {};
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.package !== undefined) updateData.package = data.package;
+  if (data.rating !== undefined) updateData.rating = data.rating;
+  if (data.text !== undefined) updateData.text = data.text;
+  if (data.date !== undefined) updateData.date = data.date;
+  if (data.isApproved !== undefined) updateData.is_approved = data.isApproved;
+  if (data.is_approved !== undefined) updateData.is_approved = data.is_approved;
+  await sb("PATCH", `/testimonials?id=eq.${id}`, updateData);
   return NextResponse.json({ success: true });
 }
 
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  testimonials = testimonials.filter(t => t.id !== id);
+  if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+  await sb("DELETE", `/testimonials?id=eq.${id}`);
   return NextResponse.json({ success: true });
 }
