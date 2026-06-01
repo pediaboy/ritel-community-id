@@ -163,25 +163,47 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     const loadAll = async () => {
       setLoading(true);
       try {
-        // Signals
+        // Signals - normalize from DB
         const sigRes = await fetch("/api/admin/signals").then(r => r.json()).catch(() => ({}));
-        if (sigRes.signals) setSignals(sigRes.signals);
+        if (sigRes.signals) setSignals(sigRes.signals.map((s: any) => ({
+          ...s,
+          saham: s.saham || "", kode: s.kode || "",
+          action: s.action || "BUY", entry: s.entry || "",
+          tp: s.tp || "", sl: s.sl || "", notes: s.notes || "",
+          package: s.package || ["gold"],
+        })));
 
-        // Tokens
+        // Tokens - normalize snake_case from DB to camelCase
         const tokRes = await fetch("/api/admin/tokens").then(r => r.json()).catch(() => ({}));
-        if (tokRes.tokens) setTokens(tokRes.tokens);
+        if (tokRes.tokens) setTokens(tokRes.tokens.map((t: any) => ({
+          ...t,
+          isActive: t.is_active !== undefined ? t.is_active : t.isActive,
+          expiredAt: t.expired_at || t.expiredAt,
+        })));
 
-        // Testimonials
+        // Testimonials - normalize
         const testiRes = await fetch("/api/testimonials").then(r => r.json()).catch(() => ({}));
-        if (testiRes.testimonials) setTestimonials(testiRes.testimonials);
+        if (testiRes.testimonials) setTestimonials(testiRes.testimonials.map((t: any) => ({
+          ...t,
+          isApproved: t.is_approved !== undefined ? t.is_approved : t.isApproved,
+        })));
 
         // Live info
         const liveRes = await fetch("/api/admin/liveinfo").then(r => r.json()).catch(() => ({}));
-        if (liveRes.liveInfo) { setLiveMsgState(liveRes.liveInfo.message || ""); setLiveActiveState(liveRes.liveInfo.isActive || false); }
+        if (liveRes.liveInfo) {
+          setLiveMsgState(liveRes.liveInfo.message || "");
+          setLiveActiveState(liveRes.liveInfo.isActive !== undefined ? liveRes.liveInfo.isActive : (liveRes.liveInfo.is_active || false));
+        }
 
-        // Custom stocks
+        // Custom stocks - normalize
         const stocksRes = await fetch("/api/admin/stocks").then(r => r.json()).catch(() => ({}));
-        if (stocksRes.custom && stocksRes.custom.length > 0) { setCustomStocks(stocksRes.custom); setStockMode("custom"); }
+        if (stocksRes.custom && stocksRes.custom.length > 0) {
+          setCustomStocks(stocksRes.custom.map((s: any) => ({
+            ...s,
+            changePercent: s.change_percent || s.changePercent || "",
+          })));
+          setStockMode("custom");
+        }
 
         // Ticker, pricing, premiumSignals
         const syncRes = await fetch("/api/admin/sync").then(r => r.json()).catch(() => ({}));
@@ -687,7 +709,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <div key={s.id} className="card rounded-xl p-4">
                       <div className="flex justify-between items-start mb-1">
                         <span className="font-bold text-white text-sm">{s.title}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${s.isActive?"bg-green-400/10 text-green-400":"bg-slate-400/10 text-slate-400"}`}>{s.isActive?"Aktif":"Nonaktif"}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${s.isActive?"bg-green-400/10 text-green-400":"bg-slate-400/10 text-slate-400"}`}>{(s.isActive ?? s.is_active)?"Aktif":"Nonaktif"}</span>
                       </div>
                       <p className="text-slate-400 text-xs mb-3 line-clamp-2">{s.content}</p>
                       <div className="flex gap-2 pt-2 border-t border-white/5">
