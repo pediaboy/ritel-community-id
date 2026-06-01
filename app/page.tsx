@@ -56,12 +56,16 @@ function StockTicker() {
   ]);
 
   useEffect(() => {
-    const load = () => {
-      // Also load ticker customizations from localStorage (admin)
+    const load = async () => {
+      // Try to load ticker from server (admin-configured)
       try {
-        const custom = localStorage.getItem("rc_admin_ticker_stocks");
-        if (custom) { const parsed = JSON.parse(custom); if (parsed.length > 0) { setStocks(parsed); return; } }
+        const syncData = await fetch("/api/admin/sync").then(r => r.json());
+        if (syncData.ticker && syncData.ticker.length > 0) {
+          setStocks(syncData.ticker.map((s: any) => ({ kode: s.kode, price: s.price, change: s.change })));
+          return;
+        }
       } catch {}
+      // Fallback: live API
       fetch("/api/stocks").then(r => r.json()).then(d => {
         const list: any[] = [];
         if (d.stocks) {
@@ -75,7 +79,7 @@ function StockTicker() {
       }).catch(() => {});
     };
     load();
-    const iv = setInterval(load, 30000);
+    const iv = setInterval(load, 60000);
     return () => clearInterval(iv);
   }, []);
 
@@ -205,32 +209,29 @@ function MarketSection() {
     { symbol:"ANTM", name:"Aneka Tambang", price:1640, change:35, changePercent:2.18 },
   ]);
   useEffect(() => {
-    const load = () => {
-      // Load custom stocks from admin if set
+    const load = async () => {
+      // Try admin custom stocks first
       try {
-        const customStocks = localStorage.getItem("rc_admin_custom_stocks");
-        const stockMode = localStorage.getItem("rc_admin_stock_mode");
-        if (stockMode === '"custom"' && customStocks) {
-          const parsed = JSON.parse(customStocks);
-          if (parsed.length > 0) {
-            setStocks(parsed.map((s: any) => ({
-              symbol: s.kode || s.symbol,
-              name: s.name || s.kode || s.symbol,
-              price: s.price,
-              change: s.change || 0,
-              changePercent: s.changePercent || 0,
-            })));
-            return;
-          }
+        const syncData = await fetch("/api/admin/stocks").then(r => r.json());
+        if (syncData.custom && syncData.custom.length > 0) {
+          setStocks(syncData.custom.map((s: any) => ({
+            symbol: s.kode || s.symbol,
+            name: s.name || s.kode || s.symbol,
+            price: parseFloat(s.price) || 0,
+            change: parseFloat(s.change) || 0,
+            changePercent: parseFloat(s.changePercent) || 0,
+          })));
+          return;
         }
       } catch {}
+      // Fallback: live API
       fetch("/api/stocks").then(r => r.json()).then(d => {
         if (d.ihsg) setIhsg(d.ihsg);
         if (d.stocks) setStocks(d.stocks.slice(0, 6));
       }).catch(() => {});
     };
     load();
-    const iv = setInterval(load, 30000);
+    const iv = setInterval(load, 60000);
     return () => clearInterval(iv);
   }, []);
   return (
@@ -430,14 +431,12 @@ function PricingSection() {
   const [pricingData, setPricingData] = useState<any>(null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("rc_admin_pricing");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const basic = parsed.find((p:any) => p.id === "basic" || p.name?.toLowerCase() === "basic");
+    fetch("/api/admin/sync").then(r => r.json()).then(d => {
+      if (d.pricing && d.pricing.length > 0) {
+        const basic = d.pricing.find((p:any) => p.id === "basic" || p.name?.toLowerCase() === "basic");
         if (basic) setPricingData(basic);
       }
-    } catch {}
+    }).catch(() => {});
   }, []);
 
   const pkg = pricingData || {
@@ -556,15 +555,11 @@ function TestimonialsSection() {
   const onMouseUp = () => { isDragging.current = false; setTimeout(resumeAnim, 2000); };
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("rc_admin_testimonials");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const approved = parsed.filter((t:any) => t.isApproved !== false);
-        if (approved.length > 0) { setTestimonials(approved); return; }
-      }
-    } catch {}
-    setTestimonials(defaultTestis);
+    fetch("/api/testimonials").then(r => r.json()).then(d => {
+      const approved = (d.testimonials || []).filter((t:any) => t.isApproved !== false);
+      if (approved.length > 0) setTestimonials(approved);
+      else setTestimonials(defaultTestis);
+    }).catch(() => setTestimonials(defaultTestis));
   }, []);
 
   const defaultTestis = [
