@@ -5,6 +5,7 @@ import Link from "next/link";
 // ===== TICKER =====
 function StockTicker() {
   const [stocks, setStocks] = useState([
+    { kode: "IHSG", price: "7.333", change: "+0.66%" },
     { kode: "BBCA", price: "9.875", change: "+1.28%" },
     { kode: "BBRI", price: "4.680", change: "-0.64%" },
     { kode: "TLKM", price: "3.290", change: "+1.54%" },
@@ -13,40 +14,42 @@ function StockTicker() {
     { kode: "ANTM", price: "1.640", change: "+2.18%" },
     { kode: "BMRI", price: "6.175", change: "+0.90%" },
     { kode: "ADRO", price: "3.580", change: "-0.55%" },
+    { kode: "ICBP", price: "10.250", change: "-1.44%" },
   ]);
-  const [ihsg, setIhsg] = useState({ value: 7333.73, change: "+48.31", pct: "+0.66%" });
 
   useEffect(() => {
     fetch("/api/stocks").then(r => r.json()).then(d => {
-      if (d.stocks) {
-        setStocks(d.stocks.slice(0, 8).map((s: any) => ({
-          kode: s.symbol?.replace(".JK", "") || s.kode,
-          price: s.price?.toLocaleString("id-ID") || s.price,
-          change: (s.changePercent >= 0 ? "+" : "") + s.changePercent?.toFixed(2) + "%",
-        })));
-      }
-      if (d.ihsg) setIhsg({
-        value: d.ihsg.value,
-        change: (d.ihsg.change >= 0 ? "+" : "") + d.ihsg.change?.toFixed(2),
-        pct: (d.ihsg.changePercent >= 0 ? "+" : "") + d.ihsg.changePercent?.toFixed(2) + "%",
+      const list: any[] = [];
+      if (d.ihsg) list.push({
+        kode: "IHSG",
+        price: d.ihsg.value?.toLocaleString("id-ID", { minimumFractionDigits: 0 }),
+        change: (d.ihsg.changePercent >= 0 ? "+" : "") + d.ihsg.changePercent?.toFixed(2) + "%",
       });
+      if (d.stocks) {
+        d.stocks.slice(0, 9).forEach((s: any) => list.push({
+          kode: s.symbol?.replace(".JK", "") || s.kode,
+          price: s.price?.toLocaleString("id-ID"),
+          change: (s.changePercent >= 0 ? "+" : "") + s.changePercent?.toFixed(2) + "%",
+        }));
+      }
+      if (list.length > 0) setStocks(list);
     }).catch(() => {});
   }, []);
 
   const doubled = [...stocks, ...stocks];
 
   return (
-    <div className="bg-black border-b border-white/5 py-2 overflow-hidden">
-      <div style={{ display: "flex", gap: "0" }}>
-        <div style={{ display: "flex", animation: "tickerMove 28s linear infinite", whiteSpace: "nowrap" }}>
+    <div className="bg-black border-b border-white/10 overflow-hidden" style={{ height: "44px" }}>
+      <div style={{ display: "flex", height: "100%" }}>
+        <div style={{ display: "flex", animation: "tickerMove 32s linear infinite", whiteSpace: "nowrap", alignItems: "center" }}>
           {doubled.map((s, i) => {
             const pos = s.change.startsWith("+");
             return (
-              <span key={i} className="inline-flex items-center gap-1.5 px-5 text-xs">
-                <span className="font-bold text-white">{s.kode}</span>
-                <span className="text-slate-400">{s.price}</span>
-                <span className={pos ? "text-green-400" : "text-red-400"}>{s.change}</span>
-                <span className="text-white/10 ml-3">|</span>
+              <span key={i} className="inline-flex items-center gap-2 px-5" style={{ height: "44px" }}>
+                <span className={`text-xs font-black tracking-wide ${s.kode === "IHSG" ? "text-blue-400" : "text-white"}`}>{s.kode}</span>
+                <span className="text-sm font-bold text-slate-300">{s.price}</span>
+                <span className={`text-sm font-bold ${pos ? "text-green-400" : "text-red-400"}`}>{s.change}</span>
+                <span className="text-white/10 ml-2 text-lg">|</span>
               </span>
             );
           })}
@@ -69,9 +72,9 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/90 backdrop-blur-md border-b border-white/5" : "bg-transparent"}`}>
-      {/* Ticker */}
-      <div className="hidden md:block">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/95 backdrop-blur-md border-b border-white/5" : "bg-black/70 backdrop-blur-sm"}`}>
+      {/* Ticker - show on all screens */}
+      <div>
         <StockTicker />
       </div>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -129,11 +132,6 @@ function Hero() {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"/>
         <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"/>
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"/>
-      </div>
-
-      {/* Mobile ticker */}
-      <div className="absolute top-0 left-0 right-0 md:hidden z-10">
-        <StockTicker />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
@@ -598,3 +596,4 @@ export default function Home() {
     </main>
   );
 }
+
