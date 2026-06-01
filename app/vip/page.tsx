@@ -1,25 +1,35 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-// ===== LIVE INFO BOX (reads from localStorage set by admin) =====
+// ===== TILT =====
+function TiltCard({ children, className="" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current; if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX-r.left)/r.width-0.5; const y = (e.clientY-r.top)/r.height-0.5;
+    el.style.transform = `perspective(600px) rotateY(${x*6}deg) rotateX(${-y*6}deg)`;
+  };
+  const onLeave = () => { if (ref.current) ref.current.style.transform=""; };
+  return <div ref={ref} className={`tilt-card ${className}`} onMouseMove={onMove} onMouseLeave={onLeave}>{children}</div>;
+}
+
+// ===== LIVE INFO BOX =====
 function LiveInfoBox() {
   const [info, setInfo] = useState<{message:string;isActive:boolean}|null>(null);
   useEffect(() => {
     const load = () => {
       try {
-        const msg = localStorage.getItem("rc_admin_liveinfo_msg") || "";
-        const active = localStorage.getItem("rc_admin_liveinfo_active") === "true";
-        if (active && msg.trim()) setInfo({ message: msg, isActive: true });
-        else setInfo(null);
+        const msg = localStorage.getItem("rc_admin_liveinfo_msg")||"";
+        const active = localStorage.getItem("rc_admin_liveinfo_active")==="true";
+        if (active&&msg.trim()) setInfo({message:msg,isActive:true}); else setInfo(null);
       } catch {}
     };
-    load();
-    const iv = setInterval(load, 10000);
-    return () => clearInterval(iv);
-  }, []);
-  if (!info) return null;
+    load(); const iv=setInterval(load,10000); return ()=>clearInterval(iv);
+  },[]);
+  if(!info) return null;
   return (
     <div className="live-info-box mb-6">
       <div className="flex items-start gap-3">
@@ -33,206 +43,106 @@ function LiveInfoBox() {
   );
 }
 
-// ===== ALL MODULES DATA =====
-const ALL_MODULES = [
-  // ===== BASIC (pkg level 0) =====
-  {
-    id:"b1", level:0, pkgLabel:"Basic", icon:"📘", tag:"Pemula",
-    title:"Apa Itu Saham & Pasar Modal?",
-    desc:"Pelajari dasar-dasar investasi saham dari nol. Kamu akan memahami apa itu saham, bagaimana mekanisme Bursa Efek Indonesia (BEI) bekerja, siapa saja pemain di pasar modal, dan bagaimana proses jual beli saham berlangsung setiap harinya. Cocok untuk kamu yang baru pertama kali mengenal dunia investasi.",
-    topics:["Definisi saham & instrumen pasar modal","Mekanisme kerja BEI & JATS","Mengenal broker & rekening saham","Lot, fraksi harga, auto rejection","Jam perdagangan & sesi bursa","Cara beli saham pertamamu"]
-  },
-  {
-    id:"b2", level:0, pkgLabel:"Basic", icon:"📊", tag:"Pemula",
-    title:"Membaca Chart Saham untuk Pemula",
-    desc:"Belajar cara membaca grafik harga saham secara sederhana. Modul ini mengajarkan perbedaan jenis chart (line, bar, candlestick), cara membaca pergerakan harga, dan memahami arti warna merah-hijau pada candlestick. Kamu akan bisa melihat chart dengan lebih percaya diri setelah menyelesaikan modul ini.",
-    topics:["Jenis-jenis chart: line, bar, candlestick","Anatomy candle: open, high, low, close","Bullish vs bearish candle","Timeframe: daily, weekly, monthly","Cara baca volume pada chart","Tools gratis: TradingView, RTI Business"]
-  },
-  {
-    id:"b3", level:0, pkgLabel:"Basic", icon:"💰", tag:"Pemula",
-    title:"Manajemen Modal & Risiko Dasar",
-    desc:"Salah satu skill terpenting sebelum mulai trading: tahu cara mengatur modal. Modul ini membahas berapa modal ideal untuk mulai, cara membagi portofolio agar tidak all-in satu saham, pentingnya tidak pakai uang panas, dan memahami toleransi risiko diri sendiri sebagai investor pemula.",
-    topics:["Berapa modal ideal untuk mulai?","Aturan 1% dan 2% risk per trade","Diversifikasi portofolio sederhana","Jangan pakai uang darurat/panas","Menghitung potensi keuntungan & kerugian","Mindset jangka panjang vs short term"]
-  },
-  {
-    id:"b4", level:0, pkgLabel:"Basic", icon:"📰", tag:"Pemula",
-    title:"Membaca Berita Pasar & Sentimen",
-    desc:"Pasar saham sangat dipengaruhi berita dan sentimen. Modul ini mengajarkan cara membaca berita ekonomi, memfilter mana berita yang relevan, dan bagaimana berita makro (inflasi, suku bunga, kebijakan pemerintah) berdampak pada pergerakan IHSG dan saham-saham tertentu.",
-    topics:["Sumber berita terpercaya untuk investor","Pengaruh BI Rate terhadap saham","Dampak data inflasi & GDP","Membaca pengumuman emiten (keterbukaan)","Pengaruh sentimen global (Fed, DXY)","Cara tidak ikut panik saat market turun"]
-  },
-
-  // ===== SILVER (pkg level 1) =====
-  {
-    id:"s1", level:1, pkgLabel:"Silver", icon:"🔍", tag:"Fundamental",
-    title:"Analisis Fundamental: Membaca Laporan Keuangan",
-    desc:"Fundamental analysis adalah kunci untuk menemukan saham bagus dengan harga murah. Kamu akan belajar membaca laporan keuangan emiten: neraca, laba rugi, arus kas — dan memahami apa arti angka-angka tersebut bagi kesehatan bisnis perusahaan. Ini adalah skill yang dipakai semua investor sukses jangka panjang.",
-    topics:["Laporan laba rugi: revenue, EBITDA, net profit","Neraca keuangan: aset, liabilitas, ekuitas","Laporan arus kas: operating, investing, financing","Tanda-tanda perusahaan sehat vs merugi","Cara download laporan keuangan di IDX.co.id","Membandingkan laporan antar kuartal (QoQ, YoY)"]
-  },
-  {
-    id:"s2", level:1, pkgLabel:"Silver", icon:"📐", tag:"Fundamental",
-    title:"Rasio Keuangan & Valuasi Saham",
-    desc:"Setelah bisa membaca laporan keuangan, langkah selanjutnya adalah menilai apakah harga saham sudah murah atau mahal. Modul ini membahas rasio-rasio penting seperti PER, PBV, ROE, DER, dan cara menggunakannya untuk membandingkan saham sejenis. Kamu akan punya tools untuk screening saham undervalued.",
-    topics:["Price to Earnings Ratio (PER)","Price to Book Value (PBV)","Return on Equity (ROE) & ROA","Debt to Equity Ratio (DER)","Dividend Yield & Payout Ratio","Cara hitung intrinsic value sederhana"]
-  },
-  {
-    id:"s3", level:1, pkgLabel:"Silver", icon:"🔭", tag:"Fundamental",
-    title:"Screening Saham Berpotensi Bagger",
-    desc:"Bagger saham adalah saham yang harganya naik berkali-kali lipat. Modul ini mengajarkan metode screening untuk menemukan saham-saham dengan potensi pertumbuhan tinggi sebelum harganya meledak. Kamu akan belajar menggunakan kriteria fundamental untuk menyaring ratusan emiten menjadi shortlist terbaik.",
-    topics:["Kriteria saham multi-bagger: growth + value","Screening dengan RTI, Stockbit, TradingView","Revenue growth & margin expansion","Emiten dengan competitive moat","Low float, high insider ownership","Sektor yang sedang growth cycle"]
-  },
-  {
-    id:"s4", level:1, pkgLabel:"Silver", icon:"⚖️", tag:"Fundamental",
-    title:"Risk & Money Management Lanjutan",
-    desc:"Investor yang survive jangka panjang bukan yang paling pintar analisis, tapi yang paling disiplin menjaga modal. Modul ini membahas position sizing, cara menentukan maksimal kerugian per trade, strategi cut loss yang tepat, dan bagaimana membangun portofolio yang terdiversifikasi dengan benar.",
-    topics:["Position sizing: Kelly Criterion & fixed %","Cut loss: aturan dan psikologi di baliknya","Averaging down: kapan boleh, kapan bahaya","Portofolio 3 layer: core, growth, speculative","Rekap kinerja bulanan & evaluasi","Target return realistis per tahun"]
-  },
-
-  // ===== GOLD (pkg level 2) =====
-  {
-    id:"g1", level:2, pkgLabel:"Gold", icon:"📈", tag:"Teknikal",
-    title:"Analisis Teknikal: Chart Pattern Lengkap",
-    desc:"Technical analysis adalah seni membaca pergerakan harga untuk memprediksi arah ke depan. Modul Gold ini membahas semua chart pattern penting yang digunakan trader profesional: dari pattern reversal, continuation, hingga pattern khusus IDX. Dilengkapi contoh real dari saham-saham IDX.",
-    topics:["Support & resistance: cara menentukan level kuat","Trend: uptrend, downtrend, sideways","Pattern reversal: head & shoulders, double top/bottom","Pattern continuation: flag, pennant, triangle","Wedge, cup & handle, rounding bottom","Cara trade setiap pattern dengan entry & SL"]
-  },
-  {
-    id:"g2", level:2, pkgLabel:"Gold", icon:"📡", tag:"Teknikal",
-    title:"Indikator Teknikal & Oscillator",
-    desc:"Indikator membantu konfirmasi sinyal dari price action. Modul ini membahas indikator-indikator yang paling efektif digunakan di pasar saham Indonesia, cara mengkombinasikannya, dan menghindari kesalahan umum overanalyzing. Less is more — kamu hanya perlu 2-3 indikator yang benar-benar dikuasai.",
-    topics:["Moving Average: SMA, EMA, golden/death cross","MACD: histogram, sinyal divergence","RSI: overbought, oversold, hidden divergence","Bollinger Bands: squeeze & breakout","Stochastic & Volume Oscillator","Kombinasi indikator terbaik untuk IDX"]
-  },
-  {
-    id:"g3", level:2, pkgLabel:"Gold", icon:"🎯", tag:"Strategi",
-    title:"Strategi Entry, TP & Stop Loss",
-    desc:"Punya sinyal bagus saja tidak cukup. Yang membedakan trader profit dan rugi adalah eksekusi entry yang tepat, target profit yang realistis, dan stop loss yang disiplin. Modul ini mengajarkan cara menentukan entry ideal, menghitung risk-reward ratio, dan strategi trailing stop untuk memaksimalkan profit.",
-    topics:["Teknik entry: breakout, pullback, reversal","Risk-reward ratio: minimal 1:2, idealnya 1:3","Cara hitung TP berdasarkan chart target","Stop loss: hard stop vs mental stop","Trailing stop: teknik dan tools","Averaging up (bukan averaging down)"]
-  },
-  {
-    id:"g4", level:2, pkgLabel:"Gold", icon:"🧠", tag:"Psikologi",
-    title:"Psikologi Trading & Emosi Pasar",
-    desc:"80% keberhasilan trading ditentukan oleh psikologi, bukan teknik. Modul ini membahas bias-bias kognitif yang merusak keputusan trader, siklus emosi pasar (fear & greed), cara membangun trading plan yang kuat, dan disiplin mengikuti sistem tanpa terpengaruh noise. Ini adalah modul yang paling diabaikan tapi paling krusial.",
-    topics:["Fear & Greed Index: cara bacanya","Bias FOMO, confirmation bias, loss aversion","Siklus psikologi pasar: euforia → panik","Cara membuat trading journal yang efektif","Ritual sebelum & sesudah market hours","Tanda-tanda kamu terlalu emosional saat trading"]
-  },
-  {
-    id:"g5", level:2, pkgLabel:"Gold", icon:"💎", tag:"Strategi",
-    title:"Strategi Saham Multi-Bagger IDX",
-    desc:"Menemukan saham yang naik 200-1000% dalam 1-3 tahun adalah impian setiap investor. Modul ini mengungkap framework yang digunakan untuk mengidentifikasi calon saham multi-bagger di IDX sebelum institusi besar masuk. Dilengkapi case study saham-saham IDX yang sudah terbukti multi-bagger.",
-    topics:["Karakteristik saham pra-bagger: volume, chart, fundamental","Siklus industri & thematic investing","Emerging sector di Indonesia (EV, digital, nikel)","Insider buying & block transaction","Kapan akumulasi, kapan distribusi","Case study: GOTO, BREN, AMRT, dan lainnya"]
-  },
-
-  // ===== PRO (pkg level 3) =====
-  {
-    id:"p1", level:3, pkgLabel:"Pro", icon:"🕵️", tag:"Bandarmologi",
-    title:"Bandarmologi: Membaca Jejak Bandar",
-    desc:"Bandarmologi adalah teknik membaca pergerakan bandar (market maker & institusi besar) yang mengendalikan arah saham. Dengan memahami bagaimana bandar bekerja — fasa akumulasi, mark-up, distribusi, dan markdown — kamu bisa ikut bandar dan bukan menjadi korbannya. Ini ilmu eksklusif yang membedakan trader ritel yang profit dari yang selalu nyangkut.",
-    topics:["Siapa itu bandar? Institusi, foreign, sekuritas besar","4 fase Wyckoff: accumulation, markup, distribution, markdown","Cara baca broker summary & net buy/sell","Identifikasi akumulasi dari volume & price action","Pola distribusi: bandar jualan saat publik beli","Saham 'milik bandar' vs saham retail"]
-  },
-  {
-    id:"p2", level:3, pkgLabel:"Pro", icon:"📟", tag:"Tape Reading",
-    title:"Tape Reading & Order Flow",
-    desc:"Tape reading adalah skill membaca aliran order secara real-time untuk mengetahui siapa yang mendominasi pasar saat itu — pembeli atau penjual. Modul ini mengajarkan cara membaca bid-ask, antrian order (orderbook), dan interpretasi setiap transaksi besar yang masuk ke pasar. Skill ini sangat berguna untuk timing entry yang presisi.",
-    topics:["Cara baca orderbook: bid, ask, volume","Interpretasi big lot & block trade","Pola accumulate di bid vs offer","Fake breakout vs breakout asli dari order flow","Tools tape reading di KSEI & sekuritas","Teknik mendeteksi smart money entry"]
-  },
-  {
-    id:"p3", level:3, pkgLabel:"Pro", icon:"🤖", tag:"AI & Tools",
-    title:"Menggunakan AI untuk Analisis Saham",
-    desc:"AI Agent eksklusif Ritel Community bisa membantu kamu menganalisis saham secara mendalam dalam hitungan detik. Modul ini mengajarkan cara optimal menggunakan AI Agent untuk analisis fundamental & teknikal, membuat watchlist otomatis, set alert harga, dan mendapatkan rekomendasi yang personalized sesuai risk profile kamu.",
-    topics:["Cara menggunakan RC AI Agent secara efektif","Prompt terbaik untuk analisis fundamental","AI untuk screening saham multi-bagger","Setup alert & monitoring portofolio dengan AI","Integrasi AI dengan TradingView & RTI","Limitasi AI: kenapa human judgment tetap penting"]
-  },
-  {
-    id:"p4", level:3, pkgLabel:"Pro", icon:"⚡", tag:"Strategi",
-    title:"Scalping & Short-Term Trading IDX",
-    desc:"Scalping dan trading jangka pendek membutuhkan kecepatan, disiplin, dan sistem yang terstruktur. Modul ini membahas strategi khusus untuk trading intraday dan swing trade 1-5 hari di pasar IDX, termasuk saham-saham yang cocok untuk scalping, timing terbaik dalam sesi bursa, dan cara mengelola multiple posisi secara bersamaan.",
-    topics:["Karakter saham scalp-able di IDX","Sesi terbaik untuk scalping: pagi vs siang","Strategi opening range breakout (ORB)","Teknik gap fill & gap and go","Manajemen multiple posisi bersamaan","Ketentuan T+2 & short selling di IDX"]
-  },
-  {
-    id:"p5", level:3, pkgLabel:"Pro", icon:"📊", tag:"Portofolio",
-    title:"Membangun & Memonitor Portofolio Pro",
-    desc:"Investor profesional tidak hanya tahu cara membeli saham — mereka tahu cara membangun portofolio yang optimal, merebalance secara berkala, dan mengukur performa dengan metrik yang tepat. Modul ini membahas framework portofolio dari level Pro: dari alokasi aset, hedging sederhana, hingga evaluasi performa bulanan.",
-    topics:["Framework 3-bucket: value, growth, speculative","Rebalancing portofolio: kapan dan bagaimana","Mengukur alpha vs benchmark IHSG","Hedging sederhana dengan ETF & reksa dana","Tracking portofolio dengan Stockbit/Ajaib","Laporan kinerja bulanan untuk diri sendiri"]
-  },
-
-  // ===== PLATINUM (pkg level 4) =====
-  {
-    id:"pl1", level:4, pkgLabel:"Platinum", icon:"🔬", tag:"Advanced",
-    title:"Bandarmologi Lanjutan: Siklus Distribusi",
-    desc:"Level lanjutan dari Bandarmologi: memahami siklus distribusi bandar secara mendalam. Kamu akan belajar mendeteksi tanda-tanda ketika bandar mulai keluar dari posisi, pola distribusi yang tersembunyi dalam chart, dan cara memproteksi diri dari jebakan 'pump and dump'. Ini adalah skill yang memisahkan trader amatir dari yang benar-benar profesional.",
-    topics:["Distribusi tersembunyi: upthrust & UTAD","Cara baca composite man Wyckoff lanjutan","Cross-referencing: bandarmologi + tape reading","Pola shakeout: bandar membersihkan weak hands","Identifikasi secondary test & spring","Studi kasus distribusi saham-saham IDX terkini"]
-  },
-  {
-    id:"pl2", level:4, pkgLabel:"Platinum", icon:"🌍", tag:"Makro",
-    title:"Analisis Makroekonomi & Global Market",
-    desc:"Pasar saham Indonesia tidak berdiri sendiri — ia sangat dipengaruhi oleh kondisi ekonomi global. Modul Platinum ini mengajarkan cara membaca indikator makroekonomi global (Fed policy, DXY, yield obligasi AS), hubungannya dengan IHSG, dan bagaimana positioning portofolio menghadapi siklus ekonomi yang berbeda.",
-    topics:["Fed Rate & dampaknya ke emerging market","DXY Index: kenapa dollar kuat = IHSG tertekan","Yield curve & resesi: signal apa?","Commodity cycle: nikel, CPO, batubara vs IDX","Foreign flow: korelasi asing dengan IHSG","Posisi Indonesia dalam siklus ekonomi global"]
-  },
-  {
-    id:"pl3", level:4, pkgLabel:"Platinum", icon:"📋", tag:"Korporasi",
-    title:"Analisis Korporasi & Aksi Korporat",
-    desc:"Aksi korporat seperti rights issue, stock split, merger, akuisisi, dan IPO bisa menjadi katalis besar bagi pergerakan saham. Modul ini mengajarkan cara membaca dan menginterpretasikan setiap jenis aksi korporat, menilai dampaknya terhadap valuasi, dan menentukan apakah aksi tersebut menguntungkan atau merugikan pemegang saham.",
-    topics:["Rights issue: dilutif atau akumulasi?","Stock split & reverse split: implikasinya","Merger & akuisisi: siapa yang diuntungkan?","IPO analysis: cara screening saham baru","Buyback saham: sinyal bullish dari manajemen","Dividen spesial vs dividen reguler"]
-  },
-  {
-    id:"pl4", level:4, pkgLabel:"Platinum", icon:"🏆", tag:"Advanced",
-    title:"Live Trading Session & Review",
-    desc:"Teori tanpa praktek tidak akan membuat kamu menjadi trader yang baik. Modul Platinum ini memberikan akses ke sesi live trading bersama mentor senior, di mana kamu bisa melihat langsung bagaimana analisis diterapkan di pasar real-time, mengajukan pertanyaan, dan mendapatkan feedback langsung atas trade yang sedang kamu pertimbangkan.",
-    topics:["Sesi live market setiap hari Selasa & Kamis","Watchlist saham mingguan dari mentor","Review trade: yang profit & yang loss","Q&A langsung dengan analis senior","Rekaman sesi (dapat diakses ulang)","Diskusi tesis investasi bersama komunitas"]
-  },
-
-  // ===== ELITE (pkg level 5) =====
-  {
-    id:"e1", level:5, pkgLabel:"Elite", icon:"👑", tag:"Elite",
-    title:"Sistem Trading Profesional End-to-End",
-    desc:"Modul Elite tertinggi yang membahas bagaimana membangun sistem trading lengkap yang bisa kamu jalankan secara konsisten selama bertahun-tahun. Dari riset awal hingga eksekusi dan evaluasi — kamu akan memiliki framework trading sendiri yang teruji, bukan sekadar ikut-ikutan sinyal. Ini adalah fondasi menjadi trader full-time yang profesional.",
-    topics:["Building a trading system: dari nol sampai teruji","Backtesting strategi dengan data historis IDX","Forward testing & paper trading","Sistem screening harian yang efisien","Automasi watchlist & alert (tools)","Ketika sistem fail: bagaimana beradaptasi"]
-  },
-  {
-    id:"e2", level:5, pkgLabel:"Elite", icon:"🏦", tag:"Elite",
-    title:"Institusional Thinking: Cara Berpikir seperti Big Player",
-    desc:"Untuk konsisten menang di pasar, kamu harus tahu cara berpikir seperti institusi — fund manager, hedge fund, dan bank investasi. Modul ini membuka cara pandang institusional dalam memilih saham, membangun posisi besar, dan exit strategy yang tidak merusak harga. Ini adalah perspektif yang hampir tidak pernah diajarkan di tempat lain.",
-    topics:["Bagaimana fund manager memilih saham","Quarterly rebalancing institusi & dampaknya","Window dressing: manfaatkan untuk profit","Cara institusi membangun posisi besar (akumulasi diam)","Perbedaan retail flow vs institutional flow","Membaca 13F filing & broker research"]
-  },
-  {
-    id:"e3", level:5, pkgLabel:"Elite", icon:"🔐", tag:"Elite",
-    title:"Konsultasi Portofolio Personal 1-on-1",
-    desc:"Sebagai member Elite, kamu mendapatkan akses konsultasi langsung dengan analis senior untuk review portofolio personal kamu. Sesi 1-on-1 ini membahas komposisi portofolio, saham yang perlu di-cut, saham yang layak diakumulasi, dan strategi jangka panjang yang disesuaikan dengan profil risiko dan tujuan finansial kamu.",
-    topics:["Review portofolio personal bulanan","Rekomendasi cut/hold/add per saham","Strategi menghadapi kondisi market saat ini","Target portfolio allocation yang optimal","Perencanaan finansial & target return tahunan","Priority WhatsApp line ke analis senior"]
-  },
-  {
-    id:"e4", level:5, pkgLabel:"Elite", icon:"🌟", tag:"Elite",
-    title:"Akses Seumur Hidup & Private Community",
-    desc:"Member Elite mendapatkan akses seumur hidup ke semua konten Ritel Community yang terus diperbarui, termasuk modul-modul baru yang akan dirilis ke depan. Selain itu, kamu masuk ke grup private Elite yang sangat eksklusif — tempat di mana ide-ide investasi paling alpha dibagikan, diskusi paling serius terjadi, dan jejaring sesama investor profesional terbentuk.",
-    topics:["Akses lifetime ke semua modul (update included)","Grup WhatsApp Elite eksklusif","Monthly market outlook dari kepala analis","Akses rekaman semua live session","Undangan event offline & networking","Early access sinyal & riset terbaru"]
-  },
-];
-
 const PKG_LEVELS = ["basic","silver","gold","pro","platinum","elite"];
 const PKG_COLORS: any = {
-  basic:"text-slate-400 border-slate-400/20 bg-slate-400/5",
-  silver:"text-slate-200 border-slate-300/30 bg-slate-300/5",
-  gold:"text-yellow-400 border-yellow-400/20 bg-yellow-400/5",
-  pro:"text-blue-400 border-blue-400/20 bg-blue-400/5",
-  platinum:"text-purple-400 border-purple-400/20 bg-purple-400/5",
-  elite:"text-orange-400 border-orange-400/20 bg-orange-400/5",
+  basic:"border-blue-500/40 text-blue-400",
+  silver:"border-cyan-500/40 text-cyan-400",
+  gold:"border-yellow-500/40 text-yellow-400",
+  pro:"border-purple-500/40 text-purple-400",
+  platinum:"border-slate-400/40 text-slate-300",
+  elite:"border-yellow-400/60 text-yellow-300",
 };
+
+// ===== ALL MODULES (comprehensive, by level) =====
+const ALL_MODULES = [
+  // BASIC
+  {id:"b1",level:0,pkgLabel:"Basic",icon:"📘",tag:"Pemula",title:"Dasar Investasi Saham",
+   desc:"Modul pengantar lengkap untuk investor pemula. Kamu akan belajar dari nol: apa itu saham, bagaimana Bursa Efek Indonesia bekerja, cara membuka rekening saham, memahami lot, fraksi harga, auto rejection, jam perdagangan, dan cara melakukan transaksi pertamamu. Dirancang agar siapapun — tanpa latar belakang keuangan — bisa langsung paham dan siap mulai berinvestasi dengan percaya diri.",
+   topics:["Definisi saham & instrumen pasar modal","Mekanisme kerja BEI & JATS","Cara buka rekening & pilih broker","Lot, fraksi harga, auto rejection","Jam perdagangan & sesi bursa","Cara beli saham pertamamu"]},
+  {id:"b2",level:0,pkgLabel:"Basic",icon:"📊",tag:"Pemula",title:"Membaca Chart Saham",
+   desc:"Belajar membaca grafik harga saham dari dasar. Modul ini mengajarkan perbedaan jenis chart (line, bar, candlestick), cara membaca pergerakan harga harian, dan memahami arti warna merah-hijau pada candlestick. Setelah menyelesaikan modul ini, kamu bisa melihat chart saham dengan lebih percaya diri dan mulai mengidentifikasi tren sederhana tanpa perlu software mahal.",
+   topics:["Jenis chart: line, bar, candlestick","Anatomy candle: OHLC","Bullish vs bearish candle","Timeframe: daily, weekly, monthly","Cara baca volume pada chart","Tools gratis: TradingView, RTI Business"]},
+  {id:"b3",level:0,pkgLabel:"Basic",icon:"💰",tag:"Pemula",title:"Manajemen Modal Pemula",
+   desc:"Salah satu skill terpenting sebelum mulai trading adalah tahu cara mengatur modal. Modul ini membahas berapa modal ideal untuk mulai berinvestasi, cara membagi portofolio agar tidak all-in di satu saham, pentingnya tidak menggunakan uang yang dibutuhkan sehari-hari, dan cara memahami toleransi risiko diri sendiri. Investor yang bertahan adalah investor yang bisa mengelola modalnya dengan baik.",
+   topics:["Modal ideal untuk pemula","Aturan 1%-2% risk per trade","Diversifikasi portofolio sederhana","Jangan pakai uang darurat","Menghitung potensi profit & loss","Mindset jangka panjang vs short term"]},
+  {id:"b4",level:0,pkgLabel:"Basic",icon:"📰",tag:"Pemula",title:"Membaca Berita & Sentimen Pasar",
+   desc:"Pasar saham sangat dipengaruhi berita dan sentimen. Modul ini mengajarkan cara membaca berita ekonomi secara efektif, memfilter mana yang relevan dan mana yang hanya rumor, serta bagaimana berita makro seperti inflasi, suku bunga BI, kebijakan pemerintah, dan sentimen global (The Fed, DXY, harga komoditas) berdampak langsung pada IHSG dan saham-saham di BEI.",
+   topics:["Sumber berita terpercaya untuk investor","Pengaruh BI Rate terhadap saham","Dampak data inflasi & GDP","Membaca keterbukaan informasi emiten","Pengaruh sentimen global (Fed, DXY)","Cara tidak panik saat market turun"]},
+  // SILVER
+  {id:"s1",level:1,pkgLabel:"Silver",icon:"🔍",tag:"Fundamental",title:"Analisis Fundamental: Laporan Keuangan",
+   desc:"Fundamental analysis adalah kunci menemukan saham bagus dengan harga wajar. Kamu akan belajar membaca tiga laporan keuangan utama: neraca keuangan, laporan laba rugi, dan laporan arus kas. Kamu akan memahami apa arti setiap angka, bagaimana mengidentifikasi perusahaan yang sehat secara keuangan, dan mana yang harus dihindari. Skill ini digunakan semua investor sukses jangka panjang.",
+   topics:["Laporan laba rugi: revenue, EBITDA, net profit","Neraca: aset, liabilitas, ekuitas","Laporan arus kas: operating, investing, financing","Tanda perusahaan sehat vs bermasalah","Download laporan keuangan di IDX.co.id","Perbandingan antar kuartal (QoQ, YoY)"]},
+  {id:"s2",level:1,pkgLabel:"Silver",icon:"📐",tag:"Fundamental",title:"Rasio Keuangan & Valuasi Saham",
+   desc:"Setelah bisa membaca laporan keuangan, langkah selanjutnya adalah menilai apakah harga saham sudah murah atau mahal dibanding nilainya yang sebenarnya. Modul ini membahas rasio keuangan penting: PER, PBV, ROE, DER, dividend yield, dan cara menggunakannya untuk membandingkan saham sejenis dalam satu industri. Kamu akan punya alat yang tepat untuk menyaring saham undervalued.",
+   topics:["Price to Earnings Ratio (PER)","Price to Book Value (PBV)","Return on Equity (ROE) & ROA","Debt to Equity Ratio (DER)","Dividend Yield & Payout Ratio","Cara hitung intrinsic value sederhana"]},
+  {id:"s3",level:1,pkgLabel:"Silver",icon:"🔭",tag:"Fundamental",title:"Screening Saham Berpotensi Bagger",
+   desc:"Bagger saham adalah saham yang harganya naik berkali-kali lipat dalam jangka menengah hingga panjang. Modul ini mengajarkan metode screening sistematis untuk menemukan saham dengan potensi pertumbuhan tinggi sebelum harganya meledak — menggunakan kriteria fundamental yang terbukti: revenue growth, margin expansion, competitive moat, dan positioning industri.",
+   topics:["Kriteria saham multi-bagger: growth + value","Screening dengan RTI, Stockbit, TradingView","Revenue growth & margin expansion","Emiten dengan competitive moat","Low float, high insider ownership","Sektor yang sedang dalam growth cycle"]},
+  {id:"s4",level:1,pkgLabel:"Silver",icon:"⚖️",tag:"Manajemen Risiko",title:"Risk & Money Management Lanjutan",
+   desc:"Investor yang survive jangka panjang bukan yang paling pintar analisis, tapi yang paling disiplin menjaga modal. Modul ini membahas position sizing, cara menentukan maksimal kerugian per trade, strategi cut loss yang tepat, averaging down yang benar, dan bagaimana membangun portofolio yang terdiversifikasi secara optimal.",
+   topics:["Position sizing: Kelly Criterion & fixed %","Cut loss: aturan dan psikologi di baliknya","Averaging down: kapan boleh, kapan bahaya","Portofolio 3 layer: core, growth, speculative","Rekap kinerja bulanan & evaluasi","Target return realistis per tahun"]},
+  // GOLD
+  {id:"g1",level:2,pkgLabel:"Gold",icon:"📈",tag:"Teknikal",title:"Analisis Teknikal Mendalam",
+   desc:"Technical analysis adalah seni membaca pergerakan harga untuk memprediksi arah ke depan. Modul Gold ini membahas semua chart pattern penting yang digunakan trader profesional: dari pattern reversal, continuation, hingga pattern khusus yang sering muncul di saham-saham IDX. Dilengkapi contoh nyata dan cara entry-exit setiap pattern.",
+   topics:["Support & resistance: cara menentukan level kuat","Trend: uptrend, downtrend, sideways","Pattern reversal: head & shoulders, double top","Pattern continuation: flag, pennant, triangle","Moving Average: SMA, EMA, WMA","Cara trade setiap pattern dengan entry & SL"]},
+  {id:"g2",level:2,pkgLabel:"Gold",icon:"📡",tag:"Teknikal",title:"Indikator Teknikal & Oscillator",
+   desc:"Indikator membantu konfirmasi sinyal dari price action. Modul ini membahas indikator yang paling efektif di pasar saham Indonesia, cara mengkombinasikannya tanpa overanalyzing, dan menghindari kesalahan umum yang dilakukan pemula. Prinsipnya: less is more — 2-3 indikator yang dikuasai lebih baik dari 10 indikator yang tidak dipahami.",
+   topics:["RSI: overbought, oversold, divergence","MACD: signal line & histogram","Bollinger Bands: squeeze & expansion","Stochastic & CCI untuk timing entry","Volume: OBV, volume spread analysis","Cara kombinasi indikator tanpa konflik"]},
+  {id:"g3",level:2,pkgLabel:"Gold",icon:"🎯",tag:"Bandarmologi",title:"Bandarmologi & Tape Reading",
+   desc:"Bandarmologi adalah ilmu membaca jejak big player (bandar) di pasar saham Indonesia — bagaimana mereka mengakumulasi, mendistribusikan, dan menggerakkan harga. Modul ini mengajarkan cara mendeteksi aksi bandar melalui analisis volume, bid-offer, dan pergerakan harga abnormal. Tape reading akan mengajarkan kamu membaca order flow secara real-time untuk ikut arus smart money.",
+   topics:["Definisi & cara kerja bandar di BEI","Deteksi akumulasi & distribusi via volume","Analisis bid-offer & market depth","Tape reading: baca order flow real-time","Pola pump before dump & accumulation phase","Saham gorengan vs saham fundamentis"]},
+  {id:"g4",level:2,pkgLabel:"Gold",icon:"🧠",tag:"Psikologi",title:"Psikologi & Emosi Trading",
+   desc:"Psikologi adalah faktor terbesar yang membedakan trader sukses dan yang gagal — bahkan lebih penting dari kemampuan analisis. Modul ini membahas secara mendalam bagaimana mengelola fear dan greed, menghindari FOMO dan panic selling, membangun kebiasaan journaling untuk evaluasi berkelanjutan, dan mengembangkan mindset investor jangka panjang yang tidak terguncang oleh volatilitas pasar sehari-hari.",
+   topics:["Fear & greed: kenali dan kelola","FOMO & panic selling: cara menghindari","Trading journal: catat, evaluasi, improve","Bias kognitif yang sering merugikan investor","Membangun sistem trading yang disiplin","Mindset jangka panjang: Buffett vs trader harian"]},
+  // PRO
+  {id:"p1",level:3,pkgLabel:"Pro",icon:"🤖",tag:"AI Agent",title:"AI Agent Trading Assistant 24/7",
+   desc:"AI Agent eksklusif Ritel Community yang bisa kamu ajak bicara kapan saja, 24 jam sehari, 7 hari seminggu. Tanyakan apapun tentang saham: analisis fundamental emiten, baca laporan keuangan terbaru, cek sentimen berita, identifikasi potensi entry berdasarkan data teknikal, hingga review portofoliomu. AI Agent dilatih dengan data pasar Indonesia sehingga memahami konteks BEI dan dinamika saham lokal.",
+   topics:["Tanya analisis saham kapan saja 24/7","Review fundamental emiten real-time","Interpretasi laporan keuangan otomatis","Rekomendasi entry berdasarkan teknikal","Sentiment analysis berita saham","Bantu susun watchlist personal"]},
+  {id:"p2",level:3,pkgLabel:"Pro",icon:"👁️",tag:"Watchlist",title:"Watchlist & Screening Personal Pro",
+   desc:"Sistem watchlist personal yang dikurasi khusus sesuai profil risiko dan strategi investasimu. Setiap minggu analis kami memperbarui daftar saham yang sedang dalam radar dengan penjelasan mengapa layak dipantau — mulai dari alasan teknikal, fundamental, hingga sentimen sektoral. Tidak perlu lagi bingung memilih dari ratusan emiten.",
+   topics:["Watchlist mingguan dikurasi analis senior","Kriteria masuk & keluar watchlist","Saham di fase akumulasi yang perlu dipantau","Screening berdasarkan sector rotation","Update trigger: kapan waktu beli","Notifikasi perubahan signifikan saham pilihan"]},
+  {id:"p3",level:3,pkgLabel:"Pro",icon:"📋",tag:"Laporan",title:"Laporan Mingguan Eksklusif Pro",
+   desc:"Laporan mingguan eksklusif khusus member Pro yang membahas secara mendalam kondisi pasar, analisis IHSG jangka pendek dan menengah, sektor yang sedang outperform, saham pilihan minggu ini dengan analisis lengkap, dan rangkuman sentimen global yang mempengaruhi BEI. Disusun oleh tim analis berpengalaman dan dikirim setiap awal pekan.",
+   topics:["Analisis IHSG mingguan mendalam","Sektor yang sedang outperform","Top picks minggu ini & alasannya","Rangkuman sentimen global","Kalender ekonomi & event penting","Strategi portofolio jangka menengah"]},
+  // PLATINUM
+  {id:"pl1",level:4,pkgLabel:"Platinum",icon:"💬",tag:"Konsultasi",title:"Konsultasi 1-on-1 dengan Analis Senior",
+   desc:"Akses konsultasi langsung dengan analis senior Ritel Community secara personal. Kamu bisa mendiskusikan portofoliomu, meminta second opinion atas keputusan investasi, atau bertanya tentang saham spesifik yang sedang dipertimbangkan. Konsultasi dilakukan via chat WhatsApp atau voice call sesuai jadwal. Ini layanan yang biasanya hanya tersedia bagi nasabah high-net-worth di private banking.",
+   topics:["Review portofolio personal bersama analis","Second opinion keputusan investasi besar","Tanya saham spesifik: layak atau tidak?","Strategi rebalancing portofolio","Diskusi sektor & timing masuk optimal","Rencana investasi jangka panjang personal"]},
+  {id:"pl2",level:4,pkgLabel:"Platinum",icon:"🧬",tag:"AI Advanced",title:"AI Agent Advanced + Analisis Portofolio",
+   desc:"Versi lanjutan AI Agent khusus Platinum yang dilengkapi kemampuan analisis portofolio komprehensif. Masukkan daftar saham yang kamu pegang, dan AI akan menganalisis diversifikasi, korelasi antar aset, exposure sektoral, estimasi risiko, dan memberikan saran rebalancing yang konkret. AI Platinum memiliki akses ke lebih banyak data historis dan menghasilkan analisis lebih mendalam.",
+   topics:["Analisis portofolio komprehensif oleh AI","Cek diversifikasi & korelasi aset","Exposure sektoral & risiko konsentrasi","Saran rebalancing berbasis data historis","Estimasi return berdasarkan historis 10 tahun","Simulasi skenario market crash & bull run"]},
+  {id:"pl3",level:4,pkgLabel:"Platinum",icon:"⚡",tag:"Sinyal",title:"Sinyal Real-time 24/7 Tanpa Delay",
+   desc:"Sinyal trading tanpa delay, langsung dari meja analis ke grup WA Platinum Elite dalam hitungan detik. Berbeda dengan paket lain yang memiliki delay beberapa jam, member Platinum mendapatkan sinyal entry, antri, TP, dan SL secara real-time. Ini krusial untuk saham dengan volatilitas tinggi di mana keterlambatan beberapa menit saja bisa membuat entry jauh dari harga ideal.",
+   topics:["Sinyal masuk tanpa delay ke WhatsApp","Update TP & SL secara real-time","Alert pergerakan abnormal saham pilihan","Intraday signal untuk trader aktif","Pre-market & post-market update harian","Weekend watchlist & strategi mingguan"]},
+  // ELITE
+  {id:"e1",level:5,pkgLabel:"Elite",icon:"👨‍🏫",tag:"Mentoring",title:"Mentoring Langsung (1-on-1 Intensif)",
+   desc:"Program mentoring one-on-one paling intensif yang kami tawarkan. Kamu akan dipasangkan dengan mentor senior yang berpengalaman lebih dari 10 tahun di pasar modal Indonesia. Sesi mentoring dilakukan secara reguler via video call, mencakup review portofolio mendalam, coaching strategi personal, simulasi pengambilan keputusan, hingga pengembangan sistem trading yang benar-benar sesuai dengan gaya dan tujuan finansialmu.",
+   topics:["Sesi video call regular dengan mentor senior","Review & coaching portofolio intensif","Pengembangan sistem trading personal","Simulasi pengambilan keputusan nyata","Koreksi kesalahan pola investasi","Roadmap menuju financial freedom"]},
+  {id:"e2",level:5,pkgLabel:"Elite",icon:"💼",tag:"Portfolio",title:"Portfolio Management Personal Elite",
+   desc:"Layanan manajemen portofolio personal eksklusif Elite — analis kami membantu merencanakan, memonitor, dan mengoptimalkan portofoliomu secara aktif. Setiap bulan kamu mendapatkan laporan portofolio personal yang mencakup performance review, analisis alokasi, identifikasi peluang optimasi, dan rencana aksi konkret untuk bulan berikutnya. Setara layanan wealth management di bank private.",
+   topics:["Perencanaan alokasi portofolio awal","Monitoring & rebalancing aktif bulanan","Laporan performance personal bulanan","Identifikasi drag performance & solusinya","Strategi exit & profit taking terencana","Target return & timeline finansial personal"]},
+  {id:"e3",level:5,pkgLabel:"Elite",icon:"🎓",tag:"Event",title:"Webinar & Event Eksklusif Elite",
+   desc:"Akses eksklusif ke semua event, webinar, dan workshop yang diselenggarakan Ritel Community — termasuk sesi tertutup yang tidak tersedia untuk paket lain. Event rutin mencakup: market outlook bulanan dengan tamu ahli, workshop teknikal intensif, sesi tanya jawab langsung dengan analis top, hingga gathering offline tahunan member Elite.",
+   topics:["Webinar market outlook bulanan","Workshop teknikal intensif live","Sesi Q&A langsung dengan analis top","Akses rekaman semua event sebelumnya","Gathering offline tahunan member Elite","Networking eksklusif sesama investor Elite"]},
+];
+
 const TAG_COLORS: any = {
-  Pemula:"bg-slate-500/20 text-slate-400",
-  Fundamental:"bg-green-500/15 text-green-400",
-  Teknikal:"bg-blue-500/15 text-blue-400",
-  Strategi:"bg-indigo-500/15 text-indigo-400",
-  Psikologi:"bg-pink-500/15 text-pink-400",
-  Bandarmologi:"bg-red-500/15 text-red-400",
-  "Tape Reading":"bg-orange-500/15 text-orange-400",
-  "AI & Tools":"bg-cyan-500/15 text-cyan-400",
-  Portofolio:"bg-teal-500/15 text-teal-400",
-  Advanced:"bg-purple-500/15 text-purple-400",
-  Makro:"bg-yellow-500/15 text-yellow-400",
-  Korporasi:"bg-emerald-500/15 text-emerald-400",
-  Elite:"bg-orange-500/20 text-orange-400",
+  "Pemula":"bg-blue-500/10 text-blue-400","Fundamental":"bg-green-500/10 text-green-400",
+  "Teknikal":"bg-purple-500/10 text-purple-400","Bandarmologi":"bg-orange-500/10 text-orange-400",
+  "Psikologi":"bg-pink-500/10 text-pink-400","Manajemen Risiko":"bg-red-500/10 text-red-400",
+  "AI Agent":"bg-cyan-500/10 text-cyan-400","Watchlist":"bg-indigo-500/10 text-indigo-400",
+  "Laporan":"bg-yellow-500/10 text-yellow-400","Konsultasi":"bg-teal-500/10 text-teal-400",
+  "AI Advanced":"bg-cyan-500/10 text-cyan-400","Sinyal":"bg-green-500/10 text-green-400",
+  "Mentoring":"bg-rose-500/10 text-rose-400","Portfolio":"bg-amber-500/10 text-amber-400",
+  "Event":"bg-violet-500/10 text-violet-400",
 };
 
 export default function VipPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [signals, setSignals] = useState<any[]>([]);
+  const [premiumSignals, setPremiumSignals] = useState<any[]>([]);
+  const [ihsgNews, setIhsgNews] = useState<any[]>([]);
   const [tab, setTab] = useState("signals");
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
 
@@ -240,239 +150,264 @@ export default function VipPage() {
     const token = localStorage.getItem("vip_token");
     const userStr = localStorage.getItem("vip_user");
     if (!token) { router.push("/login"); return; }
-
     if (userStr) {
       const u = JSON.parse(userStr);
       if (new Date(u.expiredAt) < new Date()) {
-        localStorage.removeItem("vip_token");
-        localStorage.removeItem("vip_user");
-        router.push("/login");
-        return;
+        localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user");
+        router.push("/login"); return;
       }
       setUser(u);
     }
-
-    // Re-verify token
-    fetch("/api/auth", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ token }) })
+    fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})})
       .then(r=>r.json()).then(d=>{
-        if (!d.success) { localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); router.push("/login"); }
-        else { setUser(d.user); localStorage.setItem("vip_user", JSON.stringify(d.user)); }
+        if(!d.success){localStorage.removeItem("vip_token");localStorage.removeItem("vip_user");router.push("/login");}
+        else{setUser(d.user);localStorage.setItem("vip_user",JSON.stringify(d.user));}
       }).catch(()=>{});
-
-    // Load signals from localStorage (set by admin)
     try {
       const sigs = localStorage.getItem("rc_admin_signals");
       if (sigs) setSignals(JSON.parse(sigs));
+      const psigs = localStorage.getItem("rc_admin_premium_signals");
+      if (psigs) setPremiumSignals(JSON.parse(psigs).filter((s:any)=>s.isActive));
     } catch {}
+    // Load IHSG news
+    fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
   }, []);
 
   const logout = () => { localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); router.push("/login"); };
-
-  const pkgLevel = PKG_LEVELS.indexOf(user?.package || "basic");
+  const pkgLevel = PKG_LEVELS.indexOf(user?.package||"basic");
   const mySignals = signals.filter(s=>(s.package||[]).includes(user?.package));
-  const myModules = ALL_MODULES.filter(m => m.level <= pkgLevel);
-  const lockedModules = ALL_MODULES.filter(m => m.level > pkgLevel);
+  const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel);
+  const lockedModules = ALL_MODULES.filter(m=>m.level>pkgLevel);
+  const actionColor: any = { BUY:"bg-green-400/10 text-green-400", SELL:"bg-red-400/10 text-red-400", HOLD:"bg-yellow-400/10 text-yellow-400", ANTRI:"bg-cyan-400/10 text-cyan-400" };
 
-  const actionColor: any = { BUY:"bg-green-400/10 text-green-400", SELL:"bg-red-400/10 text-red-400", HOLD:"bg-yellow-400/10 text-yellow-400", ANTRI:"bg-blue-400/10 text-blue-400" };
+  if (!user) return <div className="min-h-screen bg-[#04060f] flex items-center justify-center"><div className="galaxy-stars"/><div className="relative z-10 text-slate-500 text-sm">Memverifikasi akses...</div></div>;
 
-  if (!user) return <div className="min-h-screen bg-black flex items-center justify-center"><div className="text-slate-500 text-sm">Memverifikasi akses...</div></div>;
-
-  const tabs = [["signals","⚡ Sinyal"],["market","📈 Market"],["modul","📚 Modul"],["ai","🤖 AI Agent"]];
+  const tabs = [["signals","Sinyal"],["market","Market & Berita"],["premium","Sinyal Premium"],["modul","Modul"]];
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Header */}
-      <header className="bg-black border-b border-white/10 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-xs">RC</div>
-          <span className="text-white font-black text-sm hidden sm:block">RITEL COMMUNITY.ID</span>
-        </Link>
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:block text-right">
-            <div className="text-white text-xs font-bold">{user.name}</div>
-            <div className={`text-xs font-bold capitalize ${PKG_COLORS[user.package]?.split(" ")[0]||"text-white"}`}>Paket {user.package}</div>
-          </div>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border ${PKG_COLORS[user.package]||""}`}>
-            {user.name?.charAt(0)||"V"}
-          </div>
-          <button onClick={logout} className="text-xs text-slate-500 hover:text-red-400 transition-colors px-2 py-1.5 rounded hover:bg-white/5">Logout</button>
-        </div>
-      </header>
-
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        <LiveInfoBox />
-
-        {/* Welcome */}
-        <div className="mb-6">
-          <h1 className="text-xl font-black text-white mb-2">Selamat datang, {user.name}! 👋</h1>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className={`text-xs font-bold capitalize px-2.5 py-1 rounded-full border ${PKG_COLORS[user.package]||""}`}>
-              Paket {user.package}
-            </span>
-            <span className="text-xs text-slate-500">
-              Aktif hingga {new Date(user.expiredAt).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})}
-            </span>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-0 border-b border-white/5 mb-6 overflow-x-auto">
-          {tabs.map(([t,l])=>(
-            <button key={t} onClick={()=>setTab(t)} className={`px-5 py-3 text-xs font-semibold whitespace-nowrap border-b-2 transition-all ${tab===t?"border-blue-500 text-blue-400":"border-transparent text-slate-500 hover:text-white"}`}>{l}</button>
-          ))}
-        </div>
-
-        {/* ===== SIGNALS ===== */}
-        {tab==="signals" && (
-          <div>
-            <div className="mb-4">
-              <h2 className="text-white font-bold text-sm">⚡ Sinyal untuk Paket <span className="capitalize text-blue-400">{user.package}</span></h2>
-              <p className="text-slate-500 text-xs mt-0.5">{mySignals.length} sinyal aktif</p>
+    <div className="min-h-screen bg-[#04060f]">
+      <div className="galaxy-stars"/>
+      <div className="relative z-10">
+        <header className="bg-black/80 backdrop-blur-md border-b border-white/5 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-white text-xs">RC</div>
+            <span className="text-white font-black text-sm hidden sm:block">RITEL COMMUNITY.ID</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:block text-right">
+              <div className="text-white text-xs font-bold">{user.name}</div>
+              <div className={`text-xs font-bold capitalize ${PKG_COLORS[user.package]?.split(" ")[0]||"text-white"}`}>Paket {user.package}</div>
             </div>
-            {mySignals.length===0 ? (
-              <div className="card rounded-2xl p-12 text-center">
-                <p className="text-4xl mb-3">⏳</p>
-                <p className="text-slate-400 text-sm mb-1">Belum ada sinyal untuk paket {user.package}</p>
-                <p className="text-slate-600 text-xs">Sinyal baru akan muncul saat analis merilis. Stay tuned!</p>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border ${PKG_COLORS[user.package]||""}`}>
+              {user.name?.charAt(0)||"V"}
+            </div>
+            <button onClick={logout} className="text-xs text-slate-500 hover:text-red-400 transition-colors px-2 py-1.5 rounded hover:bg-white/5">Logout</button>
+          </div>
+        </header>
+
+        <div className="max-w-5xl mx-auto px-4 py-6">
+          <LiveInfoBox/>
+          <div className="mb-6">
+            <h1 className="text-xl font-black text-white mb-2">Selamat datang, {user.name}!</h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`text-xs font-bold capitalize px-2.5 py-1 rounded-full border ${PKG_COLORS[user.package]||""}`}>Paket {user.package}</span>
+              <span className="text-xs text-slate-500">Aktif hingga {new Date(user.expiredAt).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})}</span>
+            </div>
+          </div>
+
+          <div className="flex gap-0 border-b border-white/5 mb-6 overflow-x-auto">
+            {tabs.map(([t,l])=>(
+              <button key={t} onClick={()=>setTab(t)} className={`px-5 py-3 text-xs font-semibold whitespace-nowrap border-b-2 transition-all ${tab===t?"border-cyan-400 text-cyan-400":"border-transparent text-slate-500 hover:text-white"}`}>{l}</button>
+            ))}
+          </div>
+
+          {/* SIGNALS */}
+          {tab==="signals" && (
+            <div>
+              <div className="mb-4">
+                <h2 className="text-white font-bold text-sm">Sinyal untuk Paket <span className="capitalize text-cyan-400">{user.package}</span></h2>
+                <p className="text-slate-500 text-xs mt-0.5">{mySignals.length} sinyal aktif</p>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {mySignals.map((s,i)=>(
-                  <div key={i} className="card rounded-xl p-5">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <div className="font-black text-white text-lg">{s.kode}</div>
-                        <div className="text-xs text-slate-500">{s.saham}</div>
-                      </div>
-                      <span className={`text-xs font-black px-2.5 py-1 rounded-lg ${actionColor[s.action]||"bg-white/10 text-white"}`}>{s.action}</span>
-                    </div>
-                    <div className="space-y-1.5 text-xs mb-3">
-                      <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">{s.entry}</span></div>
-                      <div className="flex justify-between"><span className="text-slate-500">Target Profit</span><span className="text-green-400 font-medium">{s.tp}</span></div>
-                      <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">{s.sl}</span></div>
-                    </div>
-                    {s.notes && <p className="text-xs text-slate-400 border-t border-white/5 pt-3 leading-relaxed">{s.notes}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ===== MARKET ===== */}
-        {tab==="market" && (
-          <div>
-            <h2 className="text-white font-bold text-sm mb-4">📈 IHSG Live Chart</h2>
-            <div className="card rounded-2xl overflow-hidden">
-              <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tv_vip&symbol=IDX%3ACOMPOSITE&interval=D&hidesidetoolbar=0&theme=dark&style=1&timezone=Asia%2FJakarta&withdateranges=1" style={{width:"100%",height:"420px",border:"none"}} title="IHSG VIP"/>
-            </div>
-          </div>
-        )}
-
-        {/* ===== MODUL ===== */}
-        {tab==="modul" && (
-          <div>
-            <div className="mb-6">
-              <h2 className="text-white font-bold text-sm mb-1">📚 Modul Edukasi Trading Saham</h2>
-              <p className="text-slate-500 text-xs">Kamu punya akses ke <span className="text-white font-bold">{myModules.length} modul</span> dari total {ALL_MODULES.length} modul. {lockedModules.length > 0 && `Upgrade untuk unlock ${lockedModules.length} modul lagi.`}</p>
-            </div>
-
-            {/* Unlocked modules */}
-            <div className="space-y-3 mb-8">
-              {myModules.map(m=>(
-                <div key={m.id} className="card rounded-xl overflow-hidden hover:border-white/15 transition-all">
-                  <button onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} className="w-full p-4 flex items-start gap-3 text-left">
-                    <span className="text-2xl flex-shrink-0 mt-0.5">{m.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${PKG_COLORS[m.pkgLabel.toLowerCase()]||""}`}>{m.pkgLabel}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${TAG_COLORS[m.tag]||"bg-white/10 text-slate-400"}`}>{m.tag}</span>
-                      </div>
-                      <h3 className="text-white text-sm font-bold leading-snug">{m.title}</h3>
-                      {expandedModul!==m.id && <p className="text-slate-500 text-xs mt-1 line-clamp-2">{m.desc}</p>}
-                    </div>
-                    <svg className={`w-4 h-4 text-slate-500 flex-shrink-0 mt-1 transition-transform ${expandedModul===m.id?"rotate-180":""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
-                  </button>
-
-                  {expandedModul===m.id && (
-                    <div className="px-4 pb-5 border-t border-white/5">
-                      <p className="text-slate-300 text-sm leading-relaxed mt-4 mb-4">{m.desc}</p>
-                      <div className="mb-4">
-                        <p className="text-xs text-slate-500 font-semibold mb-2 uppercase tracking-wide">Yang akan kamu pelajari:</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                          {m.topics.map((t,i)=>(
-                            <div key={i} className="flex items-start gap-2 text-xs text-slate-400">
-                              <span className="text-blue-400 mt-0.5 flex-shrink-0">✓</span>{t}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <a href={`https://wa.me/6282218723401?text=Halo%20min%20mau%20akses%20modul%20${encodeURIComponent(m.title)}!`} target="_blank" className="btn-primary text-xs px-5 py-2 rounded-lg inline-block">
-                        📩 Minta Akses Modul
-                      </a>
-                    </div>
-                  )}
+              {mySignals.length===0 ? (
+                <div className="card rounded-2xl p-12 text-center">
+                  <p className="text-4xl mb-3">⏳</p>
+                  <p className="text-slate-400 text-sm mb-1">Belum ada sinyal untuk paket {user.package}</p>
+                  <p className="text-slate-600 text-xs">Sinyal baru akan muncul saat analis merilis. Stay tuned!</p>
                 </div>
-              ))}
-            </div>
-
-            {/* Locked modules */}
-            {lockedModules.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-px flex-1 bg-white/5"/>
-                  <span className="text-xs text-slate-600 font-medium">🔒 {lockedModules.length} MODUL TERKUNCI</span>
-                  <div className="h-px flex-1 bg-white/5"/>
-                </div>
-                <div className="space-y-2">
-                  {lockedModules.map(m=>(
-                    <div key={m.id} className="rounded-xl p-4 flex items-center gap-3 opacity-40" style={{background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)"}}>
-                      <span className="text-xl flex-shrink-0">{m.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${PKG_COLORS[m.pkgLabel.toLowerCase()]||""}`}>{m.pkgLabel}</span>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {mySignals.map((s,i)=>(
+                    <TiltCard key={i}>
+                      <div className="card rounded-xl p-5">
+                        <div className="flex justify-between items-start mb-3">
+                          <div><div className="font-black text-white text-lg">{s.kode}</div><div className="text-xs text-slate-500">{s.saham}</div></div>
+                          <span className={`text-xs font-black px-2.5 py-1 rounded-lg ${actionColor[s.action]||"bg-white/10 text-white"}`}>{s.action}</span>
                         </div>
-                        <p className="text-white text-xs font-bold">{m.title}</p>
+                        <div className="space-y-1.5 text-xs mb-3">
+                          <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">{s.entry}</span></div>
+                          <div className="flex justify-between"><span className="text-slate-500">Target</span><span className="text-green-400 font-medium">{s.tp}</span></div>
+                          <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">{s.sl}</span></div>
+                        </div>
+                        {s.notes&&<p className="text-xs text-slate-400 border-t border-white/5 pt-3 leading-relaxed">{s.notes}</p>}
                       </div>
-                      <span className="text-slate-600 text-xs">🔒</span>
-                    </div>
+                    </TiltCard>
                   ))}
                 </div>
-                <div className="mt-5 text-center">
-                  <a href="https://wa.me/6282218723401?text=Halo%20min%20mau%20upgrade%20paket!" target="_blank" className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">
-                    🚀 Upgrade Paket untuk Unlock Semua
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
 
-        {/* ===== AI AGENT ===== */}
-        {tab==="ai" && (
-          <div>
-            {pkgLevel>=3 ? (
-              <div className="card rounded-2xl p-6 max-w-lg">
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
-                  <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-xs font-bold text-white">AI</div>
-                  <span className="font-bold text-white text-sm">AI Agent RC</span>
-                  <span className="ml-auto w-2 h-2 bg-green-400 rounded-full animate-pulse"/>
-                  <span className="text-xs text-green-400">Online</span>
+          {/* MARKET + BERITA IHSG REALTIME */}
+          {tab==="market" && (
+            <div>
+              <h2 className="text-white font-bold text-sm mb-4">IHSG Live Chart (TradingView)</h2>
+              <TiltCard className="mb-6">
+                <div className="card-glass rounded-2xl overflow-hidden">
+                  <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tv_vip&symbol=IDX%3ACOMPOSITE&interval=D&hidesidetoolbar=0&theme=dark&style=1&timezone=Asia%2FJakarta&withdateranges=1" style={{width:"100%",height:"400px",border:"none"}} title="IHSG VIP"/>
                 </div>
-                <p className="text-slate-400 text-sm mb-4">AI Agent aktif untuk paket <span className="text-blue-400 font-bold capitalize">{user.package}</span> kamu.</p>
-                <a href="https://wa.me/6282218723401?text=Halo%20min%20mau%20akses%20AI%20Agent!" target="_blank" className="btn-primary text-sm px-5 py-2.5 rounded-xl inline-block">💬 Minta Link Akses AI Agent</a>
+              </TiltCard>
+              <div>
+                <h3 className="text-white font-bold text-sm mb-4">Berita Pasar Saham IHSG Realtime</h3>
+                {ihsgNews.length===0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      {title:"IHSG Menguat Ditopang Sektor Perbankan",source:"CNBC Indonesia",time:"1 jam lalu",url:"#"},
+                      {title:"Asing Net Buy Rp 1.2 T, Sentimen Positif",source:"Kontan",time:"2 jam lalu",url:"#"},
+                      {title:"BBCA Cetak Rekor Laba Baru Q1 2025",source:"Bisnis.com",time:"3 jam lalu",url:"#"},
+                      {title:"BI Pertahankan Suku Bunga 5.75%",source:"Detik Finance",time:"4 jam lalu",url:"#"},
+                      {title:"Saham Nikel Menguat, ANTM Naik 3%",source:"IDX Channel",time:"5 jam lalu",url:"#"},
+                      {title:"GOTO Profitabel Pertama Kali, Saham Melesat",source:"Tempo",time:"6 jam lalu",url:"#"},
+                    ].map((n,i)=>(
+                      <TiltCard key={i}>
+                        <a href={n.url} target="_blank" className="card rounded-xl p-4 block group">
+                          <div className="text-xs text-cyan-400 mb-2 font-medium">{n.source} · {n.time}</div>
+                          <h4 className="text-white text-sm font-bold group-hover:text-cyan-400 transition-colors leading-snug">{n.title}</h4>
+                        </a>
+                      </TiltCard>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {ihsgNews.map((n,i)=>(
+                      <TiltCard key={i}>
+                        <a href={n.url||"#"} target="_blank" className="card rounded-xl p-4 block group">
+                          <div className="text-xs text-cyan-400 mb-2 font-medium">{n.source} · {n.time}</div>
+                          <h4 className="text-white text-sm font-bold group-hover:text-cyan-400 transition-colors leading-snug">{n.title}</h4>
+                          {n.summary&&<p className="text-xs text-slate-500 mt-1 line-clamp-2">{n.summary}</p>}
+                        </a>
+                      </TiltCard>
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="card rounded-2xl p-10 text-center max-w-sm mx-auto">
-                <p className="text-4xl mb-3">🤖</p>
-                <p className="text-white font-bold mb-1">AI Agent tersedia mulai Paket Pro</p>
-                <p className="text-slate-500 text-xs mb-5">Upgrade ke Pro untuk akses AI Agent analisis saham realtime, portfolio tracker, dan alert otomatis.</p>
-                <a href="https://wa.me/6282218723401?text=Halo%20min%20mau%20upgrade%20ke%20Pro!" target="_blank" className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">Upgrade ke Pro</a>
+            </div>
+          )}
+
+          {/* SINYAL PREMIUM */}
+          {tab==="premium" && (
+            <div>
+              <div className="mb-4">
+                <h2 className="text-white font-bold text-sm">Sinyal & Konten Premium</h2>
+                <p className="text-slate-500 text-xs mt-0.5">Konten eksklusif dari analis — diupdate berkala oleh admin</p>
               </div>
-            )}
-          </div>
-        )}
+              {premiumSignals.length===0 ? (
+                <div className="space-y-3">
+                  {[
+                    {title:"Bandarmologi Report Mingguan",content:"Analisis bandarmologi mendalam setiap minggu. Deteksi pola akumulasi dan distribusi big player di 10 saham paling aktif di IDX. Pantau pergerakan smart money sebelum harga bergerak signifikan."},
+                    {title:"Tape Reading Live Update",content:"Laporan tape reading intraday dari meja trading analis kami. Baca pergerakan order flow dan deteksi anomali volume yang mengindikasikan aksi bandar secara real-time di jam perdagangan."},
+                    {title:"Bagger Pick Bulanan",content:"1-3 saham kandidat bagger pilihan analis setiap bulan. Setiap pick disertai analisis fundamental lengkap, valuasi, target harga, dan estimasi timeline untuk mencapai target tersebut."},
+                    {title:"Watchlist Premium Minggu Ini",content:"Daftar 5-10 saham yang sedang dalam radar analis minggu ini. Dilengkapi alasan teknikal dan fundamental, serta level entry yang direkomendasikan untuk setiap saham dalam daftar."},
+                  ].map((s,i)=>(
+                    <TiltCard key={i}>
+                      <div className="card rounded-xl p-5">
+                        <h3 className="font-bold text-white mb-3">{s.title}</h3>
+                        <p className="text-slate-300 text-sm leading-relaxed">{s.content}</p>
+                      </div>
+                    </TiltCard>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {premiumSignals.map((s,i)=>(
+                    <TiltCard key={i}>
+                      <div className="card rounded-xl p-5">
+                        <h3 className="font-bold text-white mb-3">{s.title}</h3>
+                        <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{s.content}</p>
+                      </div>
+                    </TiltCard>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* MODUL */}
+          {tab==="modul" && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-white font-bold text-sm mb-1">Modul Edukasi Trading Saham</h2>
+                <p className="text-slate-500 text-xs">Kamu punya akses ke <span className="text-white font-bold">{myModules.length} modul</span> dari total {ALL_MODULES.length} modul. {lockedModules.length>0&&`Upgrade untuk unlock ${lockedModules.length} modul lagi.`}</p>
+              </div>
+              <div className="space-y-3 mb-8">
+                {myModules.map(m=>(
+                  <TiltCard key={m.id}>
+                    <div className="card rounded-xl overflow-hidden">
+                      <button onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} className="w-full p-4 flex items-start gap-3 text-left">
+                        <span className="text-2xl flex-shrink-0 mt-0.5">{m.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${PKG_COLORS[m.pkgLabel.toLowerCase()]||""}`}>{m.pkgLabel}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${TAG_COLORS[m.tag]||"bg-white/10 text-slate-400"}`}>{m.tag}</span>
+                          </div>
+                          <h3 className="text-white text-sm font-bold leading-snug">{m.title}</h3>
+                          {expandedModul!==m.id&&<p className="text-slate-500 text-xs mt-1 line-clamp-2">{m.desc}</p>}
+                        </div>
+                        <svg className={`w-4 h-4 text-slate-500 flex-shrink-0 mt-1 transition-transform ${expandedModul===m.id?"rotate-180":""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
+                      </button>
+                      {expandedModul===m.id&&(
+                        <div className="px-4 pb-5 border-t border-white/5">
+                          <p className="text-slate-300 text-sm leading-relaxed mt-4 mb-4">{m.desc}</p>
+                          <div className="mb-4">
+                            <p className="text-xs text-slate-500 font-semibold mb-2 uppercase tracking-wide">Yang akan kamu pelajari:</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                              {m.topics.map((t,i)=>(
+                                <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
+                                  <span className="text-cyan-400 flex-shrink-0">✓</span>{t}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </TiltCard>
+                ))}
+              </div>
+              {lockedModules.length>0&&(
+                <div>
+                  <h3 className="text-slate-500 text-xs font-bold uppercase tracking-wide mb-3">Modul Terkunci (Upgrade untuk Akses)</h3>
+                  <div className="space-y-2">
+                    {lockedModules.map(m=>(
+                      <div key={m.id} className="card rounded-xl p-4 opacity-40 flex items-center gap-3">
+                        <span className="text-xl">{m.icon}</span>
+                        <div>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${PKG_COLORS[m.pkgLabel.toLowerCase()]||""}`}>{m.pkgLabel}</span>
+                          <h3 className="text-white text-sm font-bold mt-1">{m.title}</h3>
+                        </div>
+                        <span className="ml-auto text-slate-500 text-lg">🔒</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 text-center">
+                    <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">Upgrade Paket</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
+
