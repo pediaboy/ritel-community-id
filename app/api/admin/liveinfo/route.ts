@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
-import { serverStore } from "@/app/api/admin/sync/route";
+import { sb } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  return NextResponse.json({ liveInfo: { ...serverStore.liveinfo, id:"1", updatedAt:new Date().toISOString() } });
+  const rows = await sb("GET", "/liveinfo?id=eq.1");
+  const liveInfo = rows[0] || { id: "1", message: "", is_active: false };
+  return NextResponse.json({ liveInfo: { ...liveInfo, isActive: liveInfo.is_active } });
 }
 
 export async function PUT(req: Request) {
   const body = await req.json();
-  serverStore.liveinfo = { message: body.message || "", isActive: body.isActive || false };
-  return NextResponse.json({ success: true, liveInfo: serverStore.liveinfo });
+  const data = {
+    id: "1",
+    message: body.message || "",
+    is_active: body.isActive !== undefined ? body.isActive : (body.is_active || false),
+    updated_at: new Date().toISOString(),
+  };
+  // Upsert
+  await sb("POST", "/liveinfo", data, { "Prefer": "resolution=merge-duplicates,return=representation" });
+  return NextResponse.json({ success: true, liveInfo: data });
 }
