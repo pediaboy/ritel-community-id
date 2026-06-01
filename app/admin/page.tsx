@@ -584,7 +584,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                       <div className="flex flex-wrap gap-2 border-t border-white/5 pt-3">
                         <Btn onClick={()=>editTok(t)} color="blue">Edit</Btn>
-                        <Btn onClick={()=>toggleTok(t)} color={t.isActive?"yellow":"green"}>{t.isActive?"Nonaktif":"Aktifkan"}</Btn>
+                        <Btn onClick={()=>toggleTok(t)} color={(t.isActive??t.is_active)?"yellow":"green"}>{(t.isActive??t.is_active)?"Nonaktif":"Aktifkan"}</Btn>
                         <Btn onClick={()=>extendTok(t)} color="purple">+Hari</Btn>
                         <Btn onClick={()=>delTok(t.id)} color="red">Hapus</Btn>
                       </div>
