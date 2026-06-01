@@ -44,7 +44,6 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 // ===== TICKER =====
 function StockTicker() {
   const [stocks, setStocks] = useState([
-    { kode:"IHSG", price:"7.333", change:"+0.66%" },
     { kode:"BBCA", price:"9.875", change:"+1.28%" },
     { kode:"BBRI", price:"4.680", change:"-0.64%" },
     { kode:"TLKM", price:"3.290", change:"+1.54%" },
@@ -65,11 +64,6 @@ function StockTicker() {
       } catch {}
       fetch("/api/stocks").then(r => r.json()).then(d => {
         const list: any[] = [];
-        if (d.ihsg) list.push({
-          kode: "IHSG",
-          price: d.ihsg.value?.toLocaleString("id-ID", { minimumFractionDigits: 0 }),
-          change: (d.ihsg.changePercent >= 0 ? "+" : "") + d.ihsg.changePercent?.toFixed(2) + "%",
-        });
         if (d.stocks) {
           d.stocks.slice(0, 9).forEach((s: any) => list.push({
             kode: s.symbol?.replace(".JK", "") || s.kode,
@@ -94,7 +88,7 @@ function StockTicker() {
             const pos = s.change.startsWith("+");
             return (
               <span key={i} className="inline-flex items-center gap-2 px-5" style={{ height: "44px" }}>
-                <span className={`text-xs font-black tracking-wide ${s.kode === "IHSG" ? "text-cyan-400" : "text-white"}`}>{s.kode}</span>
+                <span className="text-xs font-black tracking-wide text-white">{s.kode}</span>
                 <span className="text-sm font-bold text-slate-300">{s.price}</span>
                 <span className={`text-sm font-bold ${pos ? "text-green-400" : "text-red-400"}`}>{s.change}</span>
                 <span className="text-white/10 ml-2 text-lg">|</span>
@@ -163,7 +157,7 @@ function Navbar() {
 // ===== HERO =====
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "80px" }}>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "44px" }}>
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 mb-8 text-xs text-cyan-300">
           Platform Analisa Saham Indonesia
@@ -212,6 +206,24 @@ function MarketSection() {
   ]);
   useEffect(() => {
     const load = () => {
+      // Load custom stocks from admin if set
+      try {
+        const customStocks = localStorage.getItem("rc_admin_custom_stocks");
+        const stockMode = localStorage.getItem("rc_admin_stock_mode");
+        if (stockMode === '"custom"' && customStocks) {
+          const parsed = JSON.parse(customStocks);
+          if (parsed.length > 0) {
+            setStocks(parsed.map((s: any) => ({
+              symbol: s.kode || s.symbol,
+              name: s.name || s.kode || s.symbol,
+              price: s.price,
+              change: s.change || 0,
+              changePercent: s.changePercent || 0,
+            })));
+            return;
+          }
+        }
+      } catch {}
       fetch("/api/stocks").then(r => r.json()).then(d => {
         if (d.ihsg) setIhsg(d.ihsg);
         if (d.stocks) setStocks(d.stocks.slice(0, 6));
@@ -372,6 +384,47 @@ function SignalsSection() {
   );
 }
 
+// ===== AI AGENT SECTION =====
+function AIAgentSection() {
+  return (
+    <section id="ai-agent" className="py-16 px-4 border-t border-white/5 relative z-10">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 mb-4 text-xs text-purple-300">
+            🤖 Eksklusif Member VIP
+          </div>
+          <h2 className="text-3xl font-black text-white mb-2">AI <span className="gradient-text">Agent</span> Analisa Saham</h2>
+          <p className="text-slate-500 text-sm max-w-xl mx-auto">Asisten kecerdasan buatan eksklusif yang siap membantu analisis saham, watchlist, dan signal kapan saja 24 jam penuh.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {[
+            { icon:"🧠", title:"Analisis Fundamental", desc:"AI Agent menganalisis laporan keuangan, valuasi, dan prospek bisnis secara mendalam untuk setiap saham pilihanmu." },
+            { icon:"📊", title:"Analisis Teknikal", desc:"Chart pattern recognition, support-resistance, indikator RSI, MACD, dan Bollinger Bands secara otomatis." },
+            { icon:"⚡", title:"Real-time Watchlist", desc:"Monitor portofolio dan wishlist saham kamu secara real-time. Dapatkan notifikasi saat harga mencapai level target." },
+            { icon:"🎯", title:"Signal Entry Cerdas", desc:"AI menghitung timing entry terbaik berdasarkan pola volume, bandarmologi, dan sentimen pasar terkini." },
+            { icon:"📰", title:"Ringkasan Berita", desc:"AI Agent memfilter dan merangkum berita saham yang relevan, memisahkan noise dari informasi penting." },
+            { icon:"💬", title:"Tanya Jawab 24/7", desc:"Tanya apa saja tentang saham, pasar, atau strategi investasi. AI siap menjawab kapan pun kamu butuh." },
+          ].map((item, i) => (
+            <TiltCard key={i}>
+              <div className="card-glass rounded-2xl p-6">
+                <div className="text-3xl mb-3">{item.icon}</div>
+                <h3 className="font-black text-white text-sm mb-2">{item.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
+              </div>
+            </TiltCard>
+          ))}
+        </div>
+        <div className="card-glass rounded-2xl p-6 border border-purple-500/20 max-w-2xl mx-auto text-center">
+          <div className="text-4xl mb-3">🚀</div>
+          <h3 className="font-black text-white text-lg mb-2">Tersedia untuk Paket Pro, Platinum & Elite</h3>
+          <p className="text-slate-400 text-sm mb-5">AI Agent kami terus belajar dan berkembang mengikuti dinamika pasar saham Indonesia. Dapatkan keunggulan kompetitif dengan teknologi AI terdepan.</p>
+          <a href="#pricing" className="btn-primary text-sm px-8 py-3 rounded-xl inline-block">Upgrade ke Pro</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ===== PRICING (only show 100k, link to /paket for others) =====
 function PricingSection() {
   const [pricingData, setPricingData] = useState<any>(null);
@@ -457,9 +510,50 @@ function PricingSection() {
   );
 }
 
-// ===== TESTIMONIALS (horizontal slider) =====
+// ===== TESTIMONIALS (horizontal slider + touch drag) =====
 function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const animPaused = useRef(false);
+
+  const pauseAnim = () => {
+    if (trackRef.current) { trackRef.current.style.animationPlayState = paused; animPaused.current = true; }
+  };
+  const resumeAnim = () => {
+    if (trackRef.current) { trackRef.current.style.animationPlayState = running; animPaused.current = false; }
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    pauseAnim();
+    isDragging.current = true;
+    startX.current = e.touches[0].clientX;
+    scrollLeft.current = trackRef.current?.getBoundingClientRect().x || 0;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current || !trackRef.current) return;
+    const dx = e.touches[0].clientX - startX.current;
+    const wrapper = trackRef.current.parentElement;
+    if (wrapper) wrapper.scrollLeft -= dx;
+    startX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = () => { isDragging.current = false; setTimeout(resumeAnim, 2000); };
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    pauseAnim();
+    isDragging.current = true;
+    startX.current = e.clientX;
+    const wrapper = trackRef.current?.parentElement;
+    scrollLeft.current = wrapper?.scrollLeft || 0;
+  };
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+    const wrapper = trackRef.current?.parentElement;
+    if (wrapper) { wrapper.scrollLeft = scrollLeft.current - (e.clientX - startX.current); }
+  };
+  const onMouseUp = () => { isDragging.current = false; setTimeout(resumeAnim, 2000); };
 
   useEffect(() => {
     try {
@@ -501,8 +595,10 @@ function TestimonialsSection() {
         <h2 className="text-2xl font-black text-white mb-1">Apa Kata <span className="gradient-text">Member</span></h2>
         <p className="text-slate-500 text-sm">Bergabung dengan ribuan investor yang sudah merasakan manfaatnya</p>
       </div>
-      <div className="testi-wrapper">
-        <div className="testi-track">
+      <div className="testi-wrapper" style={{overflowX:"auto",scrollbarWidth:"none"}}
+        onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
+        onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+        <div ref={trackRef} className="testi-track">
           {doubled.map((t, i) => (
             <div key={i} className="flex-shrink-0 w-72 card rounded-xl p-5">
               <div className="flex items-start justify-between mb-3">
@@ -619,6 +715,56 @@ function SNKSection() {
   );
 }
 
+// ===== WA LINKS SECTION =====
+function WALinksSection() {
+  return (
+    <section className="py-16 px-4 border-t border-white/5 relative z-10">
+      <div className="max-w-3xl mx-auto text-center">
+        <h2 className="text-2xl font-black text-white mb-2">Bergabung <span className="gradient-text">Komunitas</span></h2>
+        <p className="text-slate-500 text-sm mb-8">Ikuti komunitas WhatsApp kami dan dapatkan update pasar, diskusi saham, dan informasi terbaru setiap hari.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TiltCard>
+            <a href="https://chat.whatsapp.com/JzF3gCFvZsbJrx3KuVtQeS?s=cl&p=i&mlu=3&amv=1"
+              target="_blank" rel="noopener noreferrer"
+              className="card-glass rounded-2xl p-6 flex flex-col items-center gap-3 border border-green-500/20 hover:border-green-500/50 transition-all block group">
+              <div className="w-14 h-14 bg-green-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#22c55e">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </div>
+              <div>
+                <div className="font-black text-white text-base mb-1">Grup Publik</div>
+                <div className="text-slate-400 text-xs">Diskusi bebas seputar saham & investasi bersama ribuan member aktif</div>
+              </div>
+              <span className="mt-1 inline-flex items-center gap-1 bg-green-500/10 text-green-400 text-xs font-bold px-4 py-2 rounded-xl border border-green-500/20 group-hover:bg-green-500/20 transition-colors">
+                Bergabung Sekarang →
+              </span>
+            </a>
+          </TiltCard>
+          <TiltCard>
+            <a href="https://whatsapp.com/channel/0029VbCVhf91noz95vIGwo23"
+              target="_blank" rel="noopener noreferrer"
+              className="card-glass rounded-2xl p-6 flex flex-col items-center gap-3 border border-cyan-500/20 hover:border-cyan-500/50 transition-all block group">
+              <div className="w-14 h-14 bg-cyan-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#06b6d4">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </div>
+              <div>
+                <div className="font-black text-white text-base mb-1">Channel Resmi</div>
+                <div className="text-slate-400 text-xs">Update sinyal, berita pasar, dan info promo eksklusif langsung dari tim kami</div>
+              </div>
+              <span className="mt-1 inline-flex items-center gap-1 bg-cyan-500/10 text-cyan-400 text-xs font-bold px-4 py-2 rounded-xl border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
+                Follow Channel →
+              </span>
+            </a>
+          </TiltCard>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ===== FOOTER =====
 function Footer() {
   return (
@@ -648,14 +794,16 @@ export default function HomePage() {
       <GalaxyBackground />
       <div className="relative z-10">
         <Navbar />
-        <div style={{ paddingTop: "104px" }}>
+        <div style={{ paddingTop: "88px" }}>
           <Hero />
           <MarketSection />
           <NewsSection />
           <SignalsSection />
+          <AIAgentSection />
           <PricingSection />
           <TestimonialsSection />
           <FAQSection />
+          <WALinksSection />
           <SNKSection />
           <Footer />
         </div>
