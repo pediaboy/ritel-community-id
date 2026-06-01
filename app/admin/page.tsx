@@ -5,23 +5,15 @@ import Link from "next/link";
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "ritel2025";
 
+// API-backed store: fetch on mount, setState locally for immediate UI update
 function useLocalStore<T>(key: string, initial: T): [T, (val: T | ((prev: T) => T)) => void] {
   const [state, setState] = useState<T>(initial);
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("rc_admin_" + key);
-      if (raw) setState(JSON.parse(raw));
-    } catch {}
-    setLoaded(true);
-  }, [key]);
   const set = useCallback((val: T | ((prev: T) => T)) => {
     setState(prev => {
       const next = typeof val === "function" ? (val as (p: T) => T)(prev) : val;
-      try { localStorage.setItem("rc_admin_" + key, JSON.stringify(next)); } catch {}
       return next;
     });
-  }, [key]);
+  }, []);
   return [state, set];
 }
 
@@ -88,23 +80,11 @@ function isNearExpiry(dt: string) { if (!dt) return false; const d = new Date(dt
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>("signals");
+  const [loading, setLoading] = useState(true);
 
   const [signals, setSignals] = useLocalStore<any[]>("signals", []);
-  const [tokens, setTokens] = useLocalStore<any[]>("tokens", [
-    { id:"demo1", email:"demo@ritelcommunity.id", name:"Demo User", package:"gold", token:"RC-GOLD-DEMO1234", expiredAt: new Date(Date.now()+30*24*60*60*1000).toISOString(), isActive:true, createdAt:new Date().toISOString() }
-  ]);
-  const [testimonials, setTestimonials] = useLocalStore<any[]>("testimonials", [
-    { id:"t1", name:"Budi Santoso", package:"gold", rating:5, text:"Sinyalnya akurat banget! Dalam 2 bulan porto gua naik 35%.", date:"Mei 2025", isApproved:true },
-    { id:"t2", name:"Sari Dewi", package:"platinum", rating:5, text:"AI Agent-nya luar biasa, bisa analisis saham kapan aja.", date:"April 2025", isApproved:true },
-    { id:"t3", name:"Rizky Pratama", package:"silver", rating:5, text:"Modul fundamental-nya komprehensif banget.", date:"Maret 2025", isApproved:true },
-    { id:"t4", name:"Diana Putri", package:"elite", rating:5, text:"Worth every penny! Return gua konsisten tiap bulan.", date:"Februari 2025", isApproved:true },
-    { id:"t5", name:"Ahmad Fauzi", package:"pro", rating:5, text:"AI Agent Pro bantu watchlist dan ingatkan sinyal. Mantap!", date:"Januari 2025", isApproved:true },
-    { id:"t6", name:"Mira Susanti", package:"gold", rating:5, text:"Tadinya nyoba Basic dulu, langsung upgrade ke Gold setelah lihat kualitasnya!", date:"Des 2024", isApproved:true },
-    { id:"t7", name:"Hendra Gunawan", package:"platinum", rating:5, text:"Konsultasi 1-on-1 bantu porto gua naik 60% dalam 3 bulan.", date:"Nov 2024", isApproved:true },
-    { id:"t8", name:"Lia Rahayu", package:"silver", rating:5, text:"Buat pemula kayak gue modul-modulnya gampang dipahami.", date:"Okt 2024", isApproved:true },
-    { id:"t9", name:"Doni Wibowo", package:"elite", rating:5, text:"Fitur elite paling lengkap. Laporan harian bikin keputusan lebih tepat.", date:"Sep 2024", isApproved:true },
-    { id:"t10", name:"Nani Kurniawati", package:"pro", rating:5, text:"Grup WA-nya aktif banget, diskusi sama member nambah banyak insight.", date:"Agu 2024", isApproved:true },
-  ]);
+  const [tokens, setTokens] = useLocalStore<any[]>("tokens", []);
+  const [testimonials, setTestimonials] = useLocalStore<any[]>("testimonials", []);
   const [liveMsg, setLiveMsgState] = useLocalStore<string>("liveinfo_msg", "");
   const [liveActive, setLiveActiveState] = useLocalStore<boolean>("liveinfo_active", false);
   const [customStocks, setCustomStocks] = useLocalStore<any[]>("custom_stocks", []);
@@ -178,6 +158,42 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     fetch("/api/stocks").then(r=>r.json()).then(d=>setTopStocksLive(d.stocks||[])).catch(()=>{});
   }, []);
 
+  // Load all data from API on mount
+  useEffect(() => {
+    const loadAll = async () => {
+      setLoading(true);
+      try {
+        // Signals
+        const sigRes = await fetch("/api/admin/signals").then(r => r.json()).catch(() => ({}));
+        if (sigRes.signals) setSignals(sigRes.signals);
+
+        // Tokens
+        const tokRes = await fetch("/api/admin/tokens").then(r => r.json()).catch(() => ({}));
+        if (tokRes.tokens) setTokens(tokRes.tokens);
+
+        // Testimonials
+        const testiRes = await fetch("/api/testimonials").then(r => r.json()).catch(() => ({}));
+        if (testiRes.testimonials) setTestimonials(testiRes.testimonials);
+
+        // Live info
+        const liveRes = await fetch("/api/admin/liveinfo").then(r => r.json()).catch(() => ({}));
+        if (liveRes.liveInfo) { setLiveMsgState(liveRes.liveInfo.message || ""); setLiveActiveState(liveRes.liveInfo.isActive || false); }
+
+        // Custom stocks
+        const stocksRes = await fetch("/api/admin/stocks").then(r => r.json()).catch(() => ({}));
+        if (stocksRes.custom && stocksRes.custom.length > 0) { setCustomStocks(stocksRes.custom); setStockMode("custom"); }
+
+        // Ticker, pricing, premiumSignals
+        const syncRes = await fetch("/api/admin/sync").then(r => r.json()).catch(() => ({}));
+        if (syncRes.ticker && syncRes.ticker.length > 0) setTickerStocks(syncRes.ticker);
+        if (syncRes.pricing && syncRes.pricing.length > 0) setPricing(syncRes.pricing);
+        if (syncRes.premiumSignals && syncRes.premiumSignals.length > 0) setPremiumSignals(syncRes.premiumSignals);
+      } catch (e) {}
+      setLoading(false);
+    };
+    loadAll();
+  }, []);
+
   const syncToAPI = async (type: string, data: any) => {
     try {
       await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ type, data }) });
@@ -229,15 +245,19 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   // ===== TOP STOCKS =====
-  const importLive = () => {
+  const importLive = async () => {
     const imported = topStocksLive.map(s => ({
       id: s.symbol || Date.now().toString(), kode: s.symbol?.replace(".JK",""), name: s.name,
       price: s.price?.toString(), changePercent: s.changePercent?.toFixed(2)
     }));
     setCustomStocks(imported); setStockMode("custom");
+    await fetch("/api/admin/stocks", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({custom:imported})}).catch(()=>{});
   };
-  const resetLive = () => { setCustomStocks([]); setStockMode("live"); };
-  const saveStock = () => {
+  const resetLive = async () => {
+    setCustomStocks([]); setStockMode("live");
+    await fetch("/api/admin/stocks", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({custom:[]})}).catch(()=>{});
+  };
+  const saveStock = async () => {
     if (!stockForm.kode.trim()) { alert("Isi kode saham!"); return; }
     let updated;
     if (editStockId) {
@@ -246,29 +266,44 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       updated = [...customStocks, { ...stockForm, id: Date.now().toString() }];
     }
     setCustomStocks(updated); setStockMode("custom");
-    syncToAPI("stocks", updated);
+    await fetch("/api/admin/stocks", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({custom:updated})}).catch(()=>{});
+    syncToAPI("stocks_mode", "custom");
     setStockForm({ kode:"", name:"", price:"", changePercent:"" });
     setEditStockId(null); setShowStockForm(false);
   };
   const editStock = (s: any) => { setStockForm({...s}); setEditStockId(s.id); setShowStockForm(true); };
-  const delStock = (id: string) => { if (!confirm("Hapus saham?")) return; const updated = customStocks.filter(s=>s.id!==id); setCustomStocks(updated); syncToAPI("stocks", updated); };
+  const delStock = async (id: string) => {
+    if (!confirm("Hapus saham?")) return;
+    const updated = customStocks.filter(s=>s.id!==id);
+    setCustomStocks(updated);
+    await fetch("/api/admin/stocks", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({custom:updated})}).catch(()=>{});
+  };
 
   // ===== TESTIMONIALS =====
-  const saveTesti = () => {
+  const saveTesti = async () => {
     if (!testiForm.name.trim() || !testiForm.text.trim()) { alert("Isi nama dan testimoni!"); return; }
-    let updated;
     if (editTestiId) {
-      updated = testimonials.map(t => t.id === editTestiId ? { ...testiForm, id: editTestiId } : t);
+      await fetch("/api/testimonials", { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ ...testiForm, id: editTestiId }) }).catch(()=>{});
+      setTestimonials(testimonials.map(t => t.id === editTestiId ? { ...testiForm, id: editTestiId } : t));
     } else {
-      updated = [{ ...testiForm, id: Date.now().toString() }, ...testimonials];
+      const res = await fetch("/api/testimonials", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(testiForm) }).then(r=>r.json()).catch(()=>({}));
+      const newT = res.testimonial || { ...testiForm, id: Date.now().toString() };
+      setTestimonials([newT, ...testimonials]);
     }
-    setTestimonials(updated);
     setTestiForm({ name:"", package:"gold", rating:5, text:"", date:"", isApproved:true });
     setEditTestiId(null); setShowTestiForm(false);
   };
   const editTesti = (t: any) => { setTestiForm({...t}); setEditTestiId(t.id); setShowTestiForm(true); window.scrollTo(0,0); };
-  const delTesti = (id: string) => { if (!confirm("Hapus testimoni?")) return; setTestimonials(testimonials.filter(t=>t.id!==id)); };
-  const toggleTesti = (t: any) => { setTestimonials(testimonials.map(x=>x.id===t.id?{...x,isApproved:!x.isApproved}:x)); };
+  const delTesti = async (id: string) => {
+    if (!confirm("Hapus testimoni?")) return;
+    await fetch(`/api/testimonials?id=${id}`, { method:"DELETE" }).catch(()=>{});
+    setTestimonials(testimonials.filter(t=>t.id!==id));
+  };
+  const toggleTesti = async (t: any) => {
+    const updated = { ...t, isApproved: !t.isApproved };
+    await fetch("/api/testimonials", { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(updated) }).catch(()=>{});
+    setTestimonials(testimonials.map(x=>x.id===t.id ? updated : x));
+  };
 
   // ===== PRICING =====
   const openPricingEdit = (p: any) => {
@@ -286,6 +321,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     const flashSale = pricingForm.hasFlashSale && pricingForm.flashSale.price ? pricingForm.flashSale : null;
     const updated = pricing.map(p => p.id === editPricingId ? { ...p, priceLabel: pricingForm.priceLabel, period: pricingForm.period, description: pricingForm.description, features, flashSale } : p);
     setPricing(updated);
+    syncToAPI("pricing", updated);
     setEditPricingId(null); setShowPricingForm(false);
   };
 
@@ -299,11 +335,17 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       updated = [...tickerStocks, { ...tickerForm, id: Date.now().toString() }];
     }
     setTickerStocks(updated);
+    syncToAPI("ticker", updated);
     setTickerForm({ kode:"", price:"", change:"" });
     setEditTickerId(null); setShowTickerForm(false);
   };
   const editTicker = (t: any) => { setTickerForm({...t}); setEditTickerId(t.id); setShowTickerForm(true); };
-  const delTicker = (id: string) => { if (!confirm("Hapus dari ticker?")) return; setTickerStocks(tickerStocks.filter(t=>t.id!==id)); };
+  const delTicker = (id: string) => {
+    const updated = tickerStocks.filter(t=>t.id!==id);
+    if (!confirm("Hapus dari ticker?")) return;
+    setTickerStocks(updated);
+    syncToAPI("ticker", updated);
+  };
 
   // ===== PREMIUM SIGNALS PAGE =====
   const savePremSig = () => {
@@ -315,11 +357,17 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       updated = [{ ...premSigForm, id: Date.now().toString() }, ...premiumSignals];
     }
     setPremiumSignals(updated);
+    syncToAPI("premiumSignals", updated);
     setPremSigForm({ title:"", content:"", isActive:true });
     setEditPremSigId(null); setShowPremSigForm(false);
   };
   const editPremSig = (s: any) => { setPremSigForm({...s}); setEditPremSigId(s.id); setShowPremSigForm(true); window.scrollTo(0,0); };
-  const delPremSig = (id: string) => { if (!confirm("Hapus?")) return; setPremiumSignals(premiumSignals.filter(s=>s.id!==id)); };
+  const delPremSig = (id: string) => {
+    if (!confirm("Hapus?")) return;
+    const updated = premiumSignals.filter(s=>s.id!==id);
+    setPremiumSignals(updated);
+    syncToAPI("premiumSignals", updated);
+  };
 
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
@@ -334,6 +382,14 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="min-h-screen bg-[#04060f] text-white">
       <div className="galaxy-stars" />
+      {loading && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80">
+          <div className="text-center">
+            <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"/>
+            <p className="text-cyan-400 text-sm font-bold">Memuat data...</p>
+          </div>
+        </div>
+      )}
       <div className="relative z-10">
         {/* Header */}
         <div className="border-b border-white/5 bg-black/80 backdrop-blur-md sticky top-0 z-40">
@@ -573,7 +629,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <label className="text-xs text-slate-500 mb-1 block">Pesan Info</label>
                   <textarea value={liveInput} onChange={e=>setLiveInput(e.target.value)} rows={4} placeholder="Contoh: Market hari ini volatile, harap perhatikan manajemen risiko..." className="input-dark resize-none"/>
                 </div>
-                <button onClick={()=>{setLiveMsgState(liveInput);setLiveSaved(true);setTimeout(()=>setLiveSaved(false),2000);}} className="btn-primary w-full py-2.5 rounded-xl text-sm font-bold">
+                <button onClick={async()=>{
+  setLiveMsgState(liveInput);
+  setLiveActiveState(liveActive);
+  await fetch("/api/admin/liveinfo", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:liveInput,isActive:liveActive})}).catch(()=>{});
+  setLiveSaved(true);setTimeout(()=>setLiveSaved(false),2000);
+}} className="btn-primary w-full py-2.5 rounded-xl text-sm font-bold">
                   {liveSaved?"Tersimpan!":"Simpan Info"}
                 </button>
               </div>
