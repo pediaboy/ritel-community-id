@@ -1,35 +1,77 @@
 import { NextResponse } from "next/server";
+import { sb } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-// Single source of truth - server-side store updated by admin via sync
-// NOTE: This is in-memory. For production, use a database/Redis.
-export const serverStore: any = {
-  signals: [],
-  tokens: [
-    { id:"demo1", email:"demo@ritelcommunity.id", name:"Demo User", package:"gold", token:"RC-GOLD-DEMO1234", expiredAt: new Date(Date.now()+30*24*60*60*1000).toISOString(), isActive:true },
-  ],
-  liveinfo: { message:"", isActive:false },
-  ticker: [],
-  pricing: [],
-  premiumSignals: [],
-  stocks: [],
-  stocks_mode: "live",
-};
-
+// sync route: admin panel calls POST to sync bulk data, GET to fetch all
 export async function POST(req: Request) {
   const body = await req.json();
-  if (body.type === "signals") serverStore.signals = body.data || [];
-  if (body.type === "tokens") serverStore.tokens = body.data || [];
-  if (body.type === "liveinfo") serverStore.liveinfo = body.data || { message:"", isActive:false };
-  if (body.type === "ticker") serverStore.ticker = body.data || [];
-  if (body.type === "pricing") serverStore.pricing = body.data || [];
-  if (body.type === "premiumSignals") serverStore.premiumSignals = body.data || [];
-  if (body.type === "stocks") serverStore.stocks = body.data || [];
-  if (body.type === "stocks_mode") serverStore.stocks_mode = body.data || "live";
-  return NextResponse.json({ success: true });
+  const { type, data } = body;
+
+  if (type === "signals") {
+    // Bulk replace signals
+    await sb("DELETE", "/signals?id=neq.NONE");
+    if (data && data.length > 0) {
+      const rows = data.map((s: any) => ({
+        id: s.id || Date.now().toString(),
+        saham: s.saham || "", kode: s.kode || "", action: s.action || "BUY",
+        entry: s.entry || "", tp: s.tp || "", sl: s.sl || "",
+        notes: s.notes || "", package: s.package || ["gold"],
+      }));
+      await sb("POST", "/signals", rows);
+    }
+    return NextResponse.json({ success: true });
+  }
+
+  if (type === "tokens") {
+    await sb("DELETE", "/tokens?id=neq.NONE");
+    if (data && data.length > 0) {
+      const rows = data.map((t: any) => ({
+        id: t.id || Date.now().toString(),
+        email: t.email || "", name: t.name || "", package: t.package || "gold",
+        token: t.token || "RC-TOKEN", expired_at: t.expiredAt || t.expired_at || null,
+        is_active: t.isActive !== undefined ? t.isActive : true,
+      }));
+      await sb("POST", "/tokens", rows);
+    }
+    return NextResponse.json({ success: true });
+  }
+
+  // For ticker, pricing, premiumSignals, stocks_mode - save to settings table
+  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode"];
+  if (settingsKeys.includes(type)) {
+    await sb("POST", "/settings", 
+      { key: type, value: data, updated_at: new Date().toISOString() },
+      { "Prefer": "resolution=merge-duplicates,return=representation" }
+    );
+    return NextResponse.json({ success: true });
+  }
+
+  return NextResponse.json({ success: false, error: "Unknown type" });
 }
 
 export async function GET() {
-  return NextResponse.json(serverStore);
+  const [signals, tokens, settingsRows, liveRows, customStocks] = await Promise.all([
+    sb("GET", "/signals?order=created_at.desc"),
+    sb("GET", "/tokens?order=created_at.desc"),
+    sb("GET", "/settings"),
+    sb("GET", "/liveinfo?id=eq.1"),
+    sb("GET", "/custom_stocks?order=kode.asc"),
+  ]);
+
+  const settings: any = {};
+  for (const row of settingsRows) {
+    settings[row.key] = row.value;
+  }
+
+  return NextResponse.json({
+    signals,
+    tokens,
+    ticker: settings.ticker || [],
+    pricing: settings.pricing || [],
+    premiumSignals: settings.premiumSignals || [],
+    stocks_mode: settings.stocks_mode || "live",
+    liveinfo: liveRows[0] || { message: "", is_active: false },
+    customStocks,
+  });
 }
