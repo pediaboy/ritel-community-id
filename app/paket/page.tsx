@@ -14,6 +14,21 @@ function TiltCard({ children, className="" }: { children: React.ReactNode; class
   return <div ref={ref} className={`tilt-card ${className}`} onMouseMove={onMove} onMouseLeave={onLeave}>{children}</div>;
 }
 
+function useFlashTimer(endTime: string | null) {
+  const [timeLeft, setTimeLeft] = useState<{ h:number;m:number;s:number }|null>(null);
+  const [expired, setExpired] = useState(false);
+  useEffect(() => {
+    if (!endTime) { setTimeLeft(null); setExpired(false); return; }
+    const calc = () => {
+      const diff = new Date(endTime).getTime() - Date.now();
+      if (diff <= 0) { setExpired(true); setTimeLeft(null); return; }
+      setTimeLeft({ h:Math.floor(diff/3600000), m:Math.floor((diff%3600000)/60000), s:Math.floor((diff%60000)/1000) });
+    };
+    calc(); const iv = setInterval(calc, 1000); return () => clearInterval(iv);
+  }, [endTime]);
+  return { timeLeft, expired };
+}
+
 const defaultPackages = [
   { id:"basic", name:"Basic", price:100000, priceLabel:"Rp 100.000", period:"/bulan", color:"blue", popular:false, isElite:false, hasAI:false, flashSale:null,
     description:"Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.",
@@ -36,34 +51,119 @@ const defaultPackages = [
 ];
 
 const colorMap: any = {
-  blue:   { border:"border-blue-500/40", glow:"shadow-blue-500/20", badge:"bg-blue-500", accent:"text-blue-400", bg:"from-blue-600 to-blue-800" },
-  cyan:   { border:"border-cyan-500/40", glow:"shadow-cyan-500/20", badge:"bg-cyan-500", accent:"text-cyan-400", bg:"from-cyan-600 to-blue-700" },
-  gold:   { border:"border-yellow-500/40", glow:"shadow-yellow-500/20", badge:"bg-yellow-500", accent:"text-yellow-400", bg:"from-yellow-500 to-orange-600" },
-  purple: { border:"border-purple-500/40", glow:"shadow-purple-500/20", badge:"bg-purple-500", accent:"text-purple-400", bg:"from-purple-600 to-indigo-700" },
+  blue:    { border:"border-blue-500/40", glow:"shadow-blue-500/20", badge:"bg-blue-500", accent:"text-blue-400", bg:"from-blue-600 to-blue-800" },
+  cyan:    { border:"border-cyan-500/40", glow:"shadow-cyan-500/20", badge:"bg-cyan-500", accent:"text-cyan-400", bg:"from-cyan-600 to-blue-700" },
+  gold:    { border:"border-yellow-500/40", glow:"shadow-yellow-500/20", badge:"bg-yellow-500", accent:"text-yellow-400", bg:"from-yellow-500 to-orange-600" },
+  purple:  { border:"border-purple-500/40", glow:"shadow-purple-500/20", badge:"bg-purple-500", accent:"text-purple-400", bg:"from-purple-600 to-indigo-700" },
   platinum:{ border:"border-slate-400/40", glow:"shadow-slate-400/20", badge:"bg-slate-400", accent:"text-slate-300", bg:"from-slate-400 to-slate-600" },
-  elite:  { border:"border-yellow-400/60", glow:"shadow-yellow-400/30", badge:"bg-yellow-400", accent:"text-yellow-400", bg:"from-yellow-400 via-yellow-500 to-orange-500" },
+  elite:   { border:"border-yellow-400/60", glow:"shadow-yellow-400/30", badge:"bg-yellow-400", accent:"text-yellow-400", bg:"from-yellow-400 via-yellow-500 to-orange-500" },
 };
+
+function PaketCard({ pkg }: { pkg: any }) {
+  const c = colorMap[pkg.color] || colorMap.blue;
+  const fs = pkg.flashSale;
+  const { timeLeft, expired } = useFlashTimer(fs?.endTime || null);
+  const activeFlash = fs && !expired;
+
+  return (
+    <TiltCard>
+      <div className={`relative card-glass rounded-2xl p-6 border-2 ${c.border} hover:shadow-xl ${c.glow} transition-all duration-300 ${pkg.popular ? "ring-2 ring-yellow-500/50" : ""} ${pkg.isElite ? "ring-2 ring-yellow-400/70" : ""} h-full flex flex-col`}>
+        {pkg.popular && !pkg.isElite && (
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span className="bg-yellow-500 text-[#04060f] text-xs font-black px-4 py-1 rounded-full">TERLARIS</span>
+          </div>
+        )}
+        {pkg.isElite && (
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span className="bg-yellow-400 text-[#04060f] text-xs font-black px-4 py-1 rounded-full">ELITE</span>
+          </div>
+        )}
+        {pkg.hasAI && (
+          <div className="absolute top-4 right-4">
+            <span className="text-xs bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 px-2 py-1 rounded-full">AI</span>
+          </div>
+        )}
+
+        <div className="flex-1">
+          <div className={`text-2xl font-black ${c.accent} mb-2`}>{pkg.name}</div>
+
+          {/* Flash sale */}
+          {activeFlash ? (
+            <div className="mb-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="flash-badge">FLASH SALE {fs.discount}</span>
+                {timeLeft && (
+                  <div className="flex items-center gap-0.5 text-xs">
+                    {[{v:timeLeft.h,l:"J"},{v:timeLeft.m,l:"M"},{v:timeLeft.s,l:"D"}].map(({v,l}) => (
+                      <div key={l} className="bg-red-500/20 border border-red-500/30 rounded px-1 py-0.5 text-center min-w-[22px]">
+                        <div className="text-red-300 font-black font-mono text-xs leading-none">{String(v).padStart(2,"0")}</div>
+                        <div className="text-red-400/60 text-[8px] leading-none">{l}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="text-slate-500 line-through text-sm">{pkg.priceLabel}</div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-black text-white">{fs.price}</span>
+                <span className="text-slate-400 text-sm">{pkg.period}</span>
+              </div>
+              <div className="text-xs text-green-400 font-bold">Hemat {fs.discount}!</div>
+            </div>
+          ) : (
+            <div className="flex items-end gap-1 mb-3">
+              <span className="text-3xl font-black text-white">{pkg.priceLabel}</span>
+              <span className="text-slate-400 text-sm pb-1">{pkg.period}</span>
+            </div>
+          )}
+
+          <p className="text-slate-400 text-sm mb-4 leading-relaxed">{pkg.description}</p>
+
+          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-2 mb-4 text-xs text-green-300 flex items-center gap-2">
+            <span>Grup WA <strong>{pkg.name}</strong> — komunitas eksklusif</span>
+          </div>
+
+          <ul className="space-y-2 mb-6">
+            {pkg.features.map((f: string, i: number) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                <span className={`${c.accent} mt-0.5 flex-shrink-0`}>✓</span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <Link href={`/order?paket=${pkg.id}${activeFlash ? `&flash=${encodeURIComponent(fs.price)}&disc=${fs.discount}` : ""}`}
+          className={`w-full block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 bg-gradient-to-r ${c.bg} text-white`}>
+          Order Paket {pkg.name} →
+        </Link>
+      </div>
+    </TiltCard>
+  );
+}
 
 export default function PaketPage() {
   const [packages, setPackages] = useState(defaultPackages);
 
   useEffect(() => {
-    // Load admin-edited pricing from localStorage
-    try {
-      const stored = localStorage.getItem("rc_admin_pricing");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed && parsed.length > 0) {
-          // Merge with defaults to keep color/popular/isElite/hasAI
-          const merged = defaultPackages.map(def => {
-            const admin = parsed.find((p: any) => p.id === def.id);
-            if (admin) return { ...def, priceLabel: admin.priceLabel, period: admin.period, description: admin.description, features: admin.features || def.features, flashSale: admin.flashSale || null };
-            return def;
-          });
-          setPackages(merged);
-        }
+    // Load from API (Supabase) — same source as homepage
+    fetch("/api/admin/sync").then(r => r.json()).then(d => {
+      if (d.pricing && d.pricing.length > 0) {
+        const merged = defaultPackages.map(def => {
+          const admin = d.pricing.find((p: any) => p.id === def.id);
+          if (admin) return {
+            ...def,
+            priceLabel: admin.priceLabel || def.priceLabel,
+            period: admin.period || def.period,
+            description: admin.description || def.description,
+            features: admin.features?.length ? admin.features : def.features,
+            flashSale: admin.flashSale || null,
+          };
+          return def;
+        });
+        setPackages(merged);
       }
-    } catch {}
+    }).catch(() => {});
   }, []);
 
   return (
@@ -88,54 +188,7 @@ export default function PaketPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {packages.map((pkg) => {
-              const c = colorMap[pkg.color] || colorMap.blue;
-              return (
-                <TiltCard key={pkg.id}>
-                  <div className={`relative card-glass rounded-2xl p-6 border-2 ${c.border} hover:shadow-xl ${c.glow} transition-all duration-300 ${pkg.popular ? "ring-2 ring-yellow-500/50" : ""} ${pkg.isElite ? "ring-2 ring-yellow-400/70" : ""} h-full flex flex-col`}>
-                    {pkg.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2"><span className="bg-yellow-500 text-[#04060f] text-xs font-black px-4 py-1 rounded-full">TERLARIS</span></div>}
-                    {pkg.isElite && <div className="absolute -top-3 left-1/2 -translate-x-1/2"><span className="bg-yellow-400 text-[#04060f] text-xs font-black px-4 py-1 rounded-full">ELITE</span></div>}
-                    {pkg.hasAI && <div className="absolute top-4 right-4"><span className="text-xs bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 px-2 py-1 rounded-full">AI</span></div>}
-
-                    <div className="flex-1">
-                      <div className={`text-2xl font-black ${c.accent} mb-1`}>{pkg.name}</div>
-                      {pkg.flashSale ? (
-                        <div className="mb-1">
-                          <span className="text-slate-500 line-through text-sm mr-2">{pkg.priceLabel}</span>
-                          <span className="text-2xl font-black text-white">{pkg.flashSale.price}</span>
-                          <span className="text-slate-400 text-sm">{pkg.period}</span>
-                          <span className="ml-2 flash-badge">{pkg.flashSale.discount} OFF</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-end gap-1 mb-1">
-                          <span className="text-3xl font-black text-white">{pkg.priceLabel}</span>
-                          <span className="text-slate-400 text-sm pb-1">{pkg.period}</span>
-                        </div>
-                      )}
-                      <p className="text-slate-400 text-sm mb-5 leading-relaxed">{pkg.description}</p>
-
-                      <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-2 mb-4 text-xs text-green-300 flex items-center gap-2">
-                        <span>Grup WA <strong>{pkg.name}</strong> — komunitas eksklusif</span>
-                      </div>
-
-                      <ul className="space-y-2 mb-6">
-                        {pkg.features.map((f, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                            <span className={`${c.accent} mt-0.5 flex-shrink-0`}>✓</span>
-                            <span>{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <a href={`/order?paket=${pkg.id}`}
-                      className={`w-full block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 bg-gradient-to-r ${c.bg} text-white`}>
-                      Order Paket {pkg.name}
-                    </a>
-                  </div>
-                </TiltCard>
-              );
-            })}
+            {packages.map((pkg) => <PaketCard key={pkg.id} pkg={pkg} />)}
           </div>
 
           {/* Comparison table */}
@@ -168,10 +221,10 @@ export default function PaketPage() {
                     ["Portfolio Management","–","–","–","–","–","✓"],
                     ["Grup WA","✓","✓","✓","✓","✓","✓"],
                   ].map(([feature,...vals]) => (
-                    <tr key={feature as string} className="border-b border-cyan-500/5 hover:bg-cyan-500/3">
+                    <tr key={feature as string} className="border-b border-cyan-500/5 hover:bg-cyan-500/3 transition-colors">
                       <td className="px-6 py-3 text-slate-300">{feature}</td>
                       {vals.map((v,i) => (
-                        <td key={i} className={`px-4 py-3 text-center font-bold ${v==="✓" ? "text-green-400" : "text-slate-600"}`}>{v}</td>
+                        <td key={i} className={`px-4 py-3 text-center font-bold text-base ${v==="✓" ? "text-green-400" : "text-slate-700"}`}>{v}</td>
                       ))}
                     </tr>
                   ))}
@@ -181,7 +234,7 @@ export default function PaketPage() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-slate-400 text-sm mb-4">Ada pertanyaan tentang paket? Hubungi kami langsung!</p>
+            <p className="text-slate-400 text-sm mb-4">Ada pertanyaan? Hubungi kami langsung!</p>
             <a href="https://wa.me/6282218723401" target="_blank" className="btn-gold inline-block px-10 py-4 rounded-xl font-black text-base">
               Chat dengan Admin
             </a>
