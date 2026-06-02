@@ -204,7 +204,7 @@ export default function VipPage() {
         // Network error - use cached data
         setLoading(false);
       });
-  }, []);, []);
+  }, []);
 
   const logout = () => {
     const tokenId = localStorage.getItem("vip_tokenid");
