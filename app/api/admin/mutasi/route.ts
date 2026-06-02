@@ -1,90 +1,65 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sb } from "@/lib/supabase";
 
-interface MutasiPayload {
-  date: string;
-  description: string;
-  amount: number;
-  type: "income" | "expense";
-  order_id?: string;
+// Simpan mutasi di settings table (key: mutasi_YYYY-MM)
+async function getMutasiKey() {
+  const d = new Date();
+  return `mutasi_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
 }
 
-// Reset bulanan otomatis
-async function getMutasiWithReset() {
-  try {
-    const today = new Date();
-    const currentMonth = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
-    const lastResetKey = "mutasi_last_reset";
-
-    // Cek reset state di settings table
-    const lastReset = await sb("GET", `/settings?key=eq.${lastResetKey}`);
-    const storedMonth = lastReset?.[0]?.value || "";
-
-    // Jika bulan beda, reset
-    if (storedMonth !== currentMonth) {
-      // Delete semua mutasi dari bulan lalu
-      await sb("DELETE", "/mutasi?date=lt." + today.toISOString().substring(0, 7));
-
-      // Update reset marker
-      if (lastReset?.length > 0) {
-        await sb(
-          "PATCH",
-          `/settings?key=eq.${lastResetKey}`,
-          { value: currentMonth }
-        );
-      } else {
-        await sb("POST", "/settings", { key: lastResetKey, value: currentMonth });
-      }
-    }
-
-    // Ambil mutasi bulan ini
-    const startOfMonth = `${currentMonth}-01`;
-    const mutations = await sb("GET", `/mutasi?date=gte.${startOfMonth}&order=date.desc`);
-
-    // Hitung total
-    let totalIncome = 0;
-    let totalExpense = 0;
-    mutations.forEach((m: any) => {
-      if (m.type === "income") totalIncome += m.amount;
-      else totalExpense += m.amount;
-    });
-
-    return { mutations, totalIncome, totalExpense };
-  } catch (error) {
-    console.error("getMutasiWithReset error:", error);
-    return { mutations: [], totalIncome: 0, totalExpense: 0 };
-  }
+async function getMutasiAll(): Promise<any[]> {
+  const key = await getMutasiKey();
+  const rows = await sb("GET", `/settings?key=eq.${key}&limit=1`);
+  return rows[0]?.value || [];
 }
 
-export async function GET(req: NextRequest) {
-  const data = await getMutasiWithReset();
-  return NextResponse.json(data);
+async function saveMutasi(list: any[]) {
+  const key = await getMutasiKey();
+  await sb("POST", "/settings",
+    { key, value: list, updated_at: new Date().toISOString() },
+    { Prefer: "resolution=merge-duplicates,return=representation" }
+  );
+}
+
+function calcTotals(list: any[]) {
+  let totalIncome = 0, totalExpense = 0;
+  list.forEach((m: any) => {
+    if (m.type === "income") totalIncome += (m.amount || 0);
+    else totalExpense += (m.amount || 0);
+  });
+  return { totalIncome, totalExpense };
+}
+
+export async function GET() {
+  const mutations = await getMutasiAll();
+  const { totalIncome, totalExpense } = calcTotals(mutations);
+  return NextResponse.json({ mutations, totalIncome, totalExpense });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body: MutasiPayload = await req.json();
-
+    const body = await req.json();
     if (!body.date || !body.description || body.amount === undefined) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const mutasiData = {
+    const mutations = await getMutasiAll();
+    const newItem = {
+      id: Date.now().toString(),
       date: body.date,
       description: body.description,
-      amount: body.amount,
-      type: body.type,
+      amount: Number(body.amount),
+      type: body.type || "income",
       order_id: body.order_id || null,
       created_at: new Date().toISOString(),
     };
+    mutations.unshift(newItem);
+    await saveMutasi(mutations);
 
-    const result = await sb("POST", "/mutasi", mutasiData);
-    const data = await getMutasiWithReset();
-
-    return NextResponse.json({ success: true, mutasi: result, ...data }, { status: 201 });
-  } catch (error) {
-    console.error("POST mutasi error:", error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const { totalIncome, totalExpense } = calcTotals(mutations);
+    return NextResponse.json({ success: true, mutations, totalIncome, totalExpense }, { status: 201 });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
 
@@ -92,35 +67,34 @@ export async function PUT(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
     const body = await req.json();
+    if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-    if (!id) {
-      return NextResponse.json({ error: "Missing id" }, { status: 400 });
-    }
+    const mutations = await getMutasiAll();
+    const idx = mutations.findIndex((m: any) => m.id === id);
+    if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    const result = await sb("PATCH", `/mutasi?id=eq.${id}`, body);
-    const data = await getMutasiWithReset();
+    mutations[idx] = { ...mutations[idx], ...body };
+    await saveMutasi(mutations);
 
-    return NextResponse.json({ success: true, ...data }, { status: 200 });
-  } catch (error) {
-    console.error("PUT mutasi error:", error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const { totalIncome, totalExpense } = calcTotals(mutations);
+    return NextResponse.json({ success: true, mutations, totalIncome, totalExpense });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-    if (!id) {
-      return NextResponse.json({ error: "Missing id" }, { status: 400 });
-    }
+    const mutations = await getMutasiAll();
+    const filtered = mutations.filter((m: any) => m.id !== id);
+    await saveMutasi(filtered);
 
-    await sb("DELETE", `/mutasi?id=eq.${id}`);
-    const data = await getMutasiWithReset();
-
-    return NextResponse.json({ success: true, ...data }, { status: 200 });
-  } catch (error) {
-    console.error("DELETE mutasi error:", error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const { totalIncome, totalExpense } = calcTotals(filtered);
+    return NextResponse.json({ success: true, mutations: filtered, totalIncome, totalExpense });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }

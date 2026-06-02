@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import MutasiTab from "@/app/components/MutasiTab";
+import OrdersTab from "@/app/components/OrdersTab";
 import Link from "next/link";
 
 const ADMIN_USER = "admin";
@@ -58,7 +59,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "loginlogs" | "mutasi";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "loginlogs" | "mutasi" | "orders";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -422,6 +423,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"pricing", label:"Harga/Paket" },
     { id:"ticker", label:"Ticker" },
     { id:"mutasi", label:"💰 Mutasi" },
+    { id:"orders", label:"🧾 Orders" },
     { id:"loginlogs", label:"🔐 Login Log" },
   ];
 
@@ -907,6 +909,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         </div>
 
           {tab==="mutasi" && <MutasiTab />}
+          {tab==="orders" && <OrdersTab />}
 
           {tab==="loginlogs" && (
             <div>

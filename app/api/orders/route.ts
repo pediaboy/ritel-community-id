@@ -1,69 +1,128 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { sb } from "@/lib/supabase";
 
-interface OrderPayload {
-  name: string;
-  phone: string;
-  packageId: string;
-  packageName: string;
-  packagePrice: string;
-  paymentMethod: string;
-  invoiceId: string;
-  status: "pending" | "confirmed" | "completed";
+export const dynamic = "force-dynamic";
+
+async function getOrders(): Promise<any[]> {
+  const rows = await sb("GET", "/settings?key=eq.orders_data&limit=1");
+  return rows[0]?.value || [];
 }
 
-export async function POST(req: NextRequest) {
+async function saveOrders(orders: any[]) {
+  await sb("POST", "/settings",
+    { key: "orders_data", value: orders, updated_at: new Date().toISOString() },
+    { Prefer: "resolution=merge-duplicates,return=representation" }
+  );
+}
+
+async function addMutasi(order: any) {
   try {
-    const body: OrderPayload = await req.json();
-
-    if (!body.name || !body.phone || !body.packageId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    // 1. Simpan order ke table "orders"
-    const orderData = {
-      name: body.name,
-      phone: body.phone,
-      package_id: body.packageId,
-      package_name: body.packageName,
-      package_price: parseInt(body.packagePrice.replace(/[^\d]/g, "")),
-      payment_method: body.paymentMethod,
-      invoice_id: body.invoiceId,
-      status: body.status,
+    const d = new Date();
+    const key = `mutasi_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+    const rows = await sb("GET", `/settings?key=eq.${key}&limit=1`);
+    const existing = rows[0]?.value || [];
+    const newItem = {
+      id: `mut-${order.id}`,
+      date: new Date().toISOString().split("T")[0],
+      description: `Order ${order.paket} - ${order.nama} (${order.metode || "-"})`,
+      amount: order.harga,
+      type: "income",
+      order_id: order.id,
       created_at: new Date().toISOString(),
     };
-
-    const result = await sb("POST", "/orders", orderData);
-
-    // 2. Auto-add income ke mutasi jika status bukan pending
-    if (body.status === "confirmed" || body.status === "completed") {
-      const today = new Date().toISOString().split("T")[0];
-      const price = parseInt(body.packagePrice.replace(/[^\d]/g, ""));
-
-      const mutasiData = {
-        date: today,
-        description: `Pembelian paket ${body.packageName} - ${body.name}`,
-        amount: price,
-        type: "income",
-        order_id: body.invoiceId,
-      };
-
-      await sb("POST", "/mutasi", mutasiData);
-    }
-
-    return NextResponse.json({ success: true, order: result }, { status: 201 });
-  } catch (error) {
-    console.error("Order error:", error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
-  }
+    // Jangan duplikat
+    const filtered = existing.filter((m: any) => m.order_id !== order.id);
+    filtered.unshift(newItem);
+    await sb("POST", "/settings",
+      { key, value: filtered, updated_at: new Date().toISOString() },
+      { Prefer: "resolution=merge-duplicates,return=representation" }
+    );
+  } catch {}
 }
 
-export async function GET(req: NextRequest) {
+async function removeMutasi(orderId: string) {
   try {
-    const orders = await sb("GET", "/orders?order=created_at.desc");
-    return NextResponse.json({ orders });
-  } catch (error) {
-    console.error("GET orders error:", error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const d = new Date();
+    const key = `mutasi_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+    const rows = await sb("GET", `/settings?key=eq.${key}&limit=1`);
+    const existing = rows[0]?.value || [];
+    const filtered = existing.filter((m: any) => m.order_id !== orderId);
+    await sb("POST", "/settings",
+      { key, value: filtered, updated_at: new Date().toISOString() },
+      { Prefer: "resolution=merge-duplicates,return=representation" }
+    );
+  } catch {}
+}
+
+export async function GET() {
+  const orders = await getOrders();
+  return NextResponse.json({ orders });
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const { action } = body;
+
+  if (action === "create") {
+    const { nama, hp, paket, harga, metode } = body;
+    if (!nama || !hp || !paket || !harga) {
+      return NextResponse.json({ success: false, message: "Data tidak lengkap" });
+    }
+
+    const orders = await getOrders();
+    const invoiceNum = `INV-${Date.now().toString().slice(-8)}`;
+    const newOrder = {
+      id: invoiceNum,
+      nama,
+      hp,
+      paket,
+      harga: Number(harga),
+      metode: metode || "-",
+      status: "pending",
+      created_at: new Date().toISOString(),
+      paid_at: null,
+      note: "",
+    };
+    orders.unshift(newOrder);
+    await saveOrders(orders);
+
+    return NextResponse.json({ success: true, order: newOrder });
   }
+
+  if (action === "update_status") {
+    const { id, status, note, metode } = body;
+    const orders = await getOrders();
+    const idx = orders.findIndex((o: any) => o.id === id);
+    if (idx === -1) return NextResponse.json({ success: false, message: "Order tidak ditemukan" });
+
+    const prev = orders[idx].status;
+    orders[idx].status = status || orders[idx].status;
+    if (note !== undefined) orders[idx].note = note;
+    if (metode !== undefined) orders[idx].metode = metode;
+    if (status === "paid") {
+      orders[idx].paid_at = new Date().toISOString();
+      // Auto tambah mutasi ketika paid
+      await addMutasi(orders[idx]);
+    }
+    // Kalau di-cancel setelah paid, hapus mutasi
+    if (status === "cancelled" && prev === "paid") {
+      await removeMutasi(id);
+    }
+
+    await saveOrders(orders);
+    return NextResponse.json({ success: true, order: orders[idx] });
+  }
+
+  if (action === "delete") {
+    const { id } = body;
+    const orders = await getOrders();
+    const found = orders.find((o: any) => o.id === id);
+    const filtered = orders.filter((o: any) => o.id !== id);
+    await saveOrders(filtered);
+    // Hapus mutasi terkait juga
+    if (found) await removeMutasi(id);
+    return NextResponse.json({ success: true });
+  }
+
+  return NextResponse.json({ success: false, message: "Action tidak dikenal" });
 }
