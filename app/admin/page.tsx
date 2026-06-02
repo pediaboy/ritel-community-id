@@ -57,7 +57,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "loginlogs";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -152,6 +152,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [liveInput, setLiveInput] = useState("");
   const [liveSaved, setLiveSaved] = useState(false);
   const [topStocksLive, setTopStocksLive] = useState<any[]>([]);
+  const [loginLogs, setLoginLogs] = useState<any[]>([]);
 
   useEffect(() => { setLiveInput(liveMsg); }, [liveMsg]);
   useEffect(() => {
@@ -210,6 +211,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         if (syncRes.ticker && syncRes.ticker.length > 0) setTickerStocks(syncRes.ticker);
         if (syncRes.pricing && syncRes.pricing.length > 0) setPricing(syncRes.pricing);
         if (syncRes.premiumSignals && syncRes.premiumSignals.length > 0) setPremiumSignals(syncRes.premiumSignals);
+        // Login logs
+        const logsRes = await fetch("/api/admin/loginlogs").then(r => r.json()).catch(() => ({}));
+        if (logsRes.logs) setLoginLogs(logsRes.logs);
       } catch (e) {}
       setLoading(false);
     };
@@ -416,6 +420,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"testimonials", label:"Testimoni" },
     { id:"pricing", label:"Harga/Paket" },
     { id:"ticker", label:"Ticker" },
+    { id:"loginlogs", label:"🔐 Login Log" },
   ];
 
   return (
@@ -898,6 +903,43 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           )}
 
         </div>
+
+
+          {tab==="loginlogs" && (
+            <div>
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                <div>
+                  <h2 className="text-white font-bold text-sm">🔐 Login Log — Silver ke Atas</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{loginLogs.length} login tercatat</p>
+                </div>
+                <button onClick={async()=>{ const r=await fetch("/api/admin/loginlogs").then(x=>x.json()).catch(()=>({})); if(r.logs) setLoginLogs(r.logs); }} className="text-xs px-3 py-1.5 rounded-lg border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-all">Refresh</button>
+              </div>
+              {loginLogs.length===0 ? (
+                <div className="card rounded-xl p-10 text-center text-slate-500 text-sm">Belum ada log login.</div>
+              ) : (
+                <div className="space-y-2">
+                  {loginLogs.map((log:any, i:number) => (
+                    <div key={i} className="card rounded-xl px-4 py-3 flex flex-wrap items-center gap-3 justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-black text-xs">
+                          {log.name?.charAt(0)||"?"}
+                        </div>
+                        <div>
+                          <div className="text-white text-sm font-bold">{log.name}</div>
+                          <div className="text-slate-500 text-xs">🌐 {log.ip}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs">
+                        <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${log.package==="elite"?"bg-yellow-400/10 text-yellow-300":log.package==="platinum"?"bg-slate-400/10 text-slate-300":log.package==="pro"?"bg-purple-400/10 text-purple-400":log.package==="gold"?"bg-yellow-500/10 text-yellow-400":log.package==="silver"?"bg-cyan-400/10 text-cyan-400":"bg-white/5 text-white"}`}>{log.package}</span>
+                        <span className="text-slate-600">...{log.token}</span>
+                        <span className="text-slate-500">{new Date(log.time).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
       </div>
     </div>
   );
