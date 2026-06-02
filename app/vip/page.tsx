@@ -414,19 +414,36 @@ export default function VipPage() {
           {tab==="ai" && (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-5 shadow-2xl shadow-cyan-500/30">
-                <span className="text-white text-3xl font-black">AI</span>
+                <span className="text-white text-3xl font-black">{pkgLevel>=2?"AI":"🔒"}</span>
               </div>
               <h2 className="text-white font-black text-xl mb-2">RC-AI Analyst</h2>
-              <p className="text-slate-400 text-sm mb-2 max-w-sm leading-relaxed">AI analis saham eksklusif yang bisa analisis teknikal, fundamental, bandarmologi, dan baca screenshot chart secara real-time.</p>
-              <p className="text-slate-500 text-xs mb-6">Powered by Gemini 1.5 Flash · Bisa kirim gambar chart</p>
-              <div className="flex flex-wrap gap-3 justify-center mb-6">
-                {["📊 Analisis teknikal","🔍 Baca chart Anda","🎯 Rekomen entry/TP/SL","💡 Bandarmologi","📈 Screening saham"].map((f,i)=>(
-                  <span key={i} className="text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 text-slate-400">{f}</span>
-                ))}
-              </div>
-              <a href="/ai" className="btn-primary px-8 py-3 rounded-xl font-bold text-sm inline-block">
-                Buka RC-AI Analyst →
-              </a>
+              <p className="text-slate-400 text-sm mb-2 max-w-sm leading-relaxed">AI analis saham eksklusif — analisis teknikal, fundamental, bandarmologi, dan baca screenshot chart secara real-time.</p>
+              {pkgLevel>=2 ? (
+                <>
+                  <p className="text-green-400 text-xs mb-5">✅ Akses tersedia · Paket {user?.package}</p>
+                  <div className="flex flex-wrap gap-3 justify-center mb-6">
+                    {["📊 Analisis teknikal","🔍 Baca chart","🎯 Entry/TP/SL","💡 Bandarmologi","📈 Screening"].map((f,i)=>(
+                      <span key={i} className="text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 text-slate-400">{f}</span>
+                    ))}
+                  </div>
+                  <a href="/ai" className="btn-primary px-8 py-3 rounded-xl font-bold text-sm inline-block">
+                    Buka RC-AI Analyst →
+                  </a>
+                </>
+              ) : (
+                <>
+                  <p className="text-slate-500 text-xs mb-4">Tersedia untuk paket <span className="text-purple-400 font-bold">Pro, Platinum, Elite</span></p>
+                  <p className="text-slate-600 text-xs mb-6">Paket kamu: <span className="text-white capitalize">{user?.package}</span></p>
+                  <div className="flex flex-wrap gap-2 justify-center mb-6">
+                    {["📊 Analisis teknikal","🔍 Baca chart","🎯 Entry/TP/SL","💡 Bandarmologi","📈 Screening"].map((f,i)=>(
+                      <span key={i} className="text-xs px-3 py-1.5 rounded-full border border-white/5 text-slate-600 line-through">{f}</span>
+                    ))}
+                  </div>
+                  <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Pro!" target="_blank" className="btn-primary px-8 py-3 rounded-xl font-bold text-sm inline-block">
+                    ⚡ Upgrade ke Pro →
+                  </a>
+                </>
+              )}
             </div>
           )}
 
