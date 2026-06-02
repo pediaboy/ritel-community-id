@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   }
 
   // For ticker, pricing, premiumSignals, stocks_mode - save to settings table
-  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode"];
+  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed"];
   if (settingsKeys.includes(type)) {
     await sb("POST", "/settings", 
       { key: type, value: data, updated_at: new Date().toISOString() },
@@ -73,5 +73,7 @@ export async function GET() {
     stocks_mode: settings.stocks_mode || "live",
     liveinfo: liveRows[0] || { message: "", is_active: false },
     customStocks,
+    motivasi: settings.motivasi || [],
+    ticker_speed: settings.ticker_speed || 32,
   });
 }
