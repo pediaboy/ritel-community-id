@@ -37,6 +37,25 @@ function LiveInfoBox() {
         <div>
           <div className="text-yellow-400 text-xs font-black mb-1.5 tracking-wide">INFO DARI ADMIN</div>
           <p className="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap">{info.message}</p>
+          {tab==="ai" && (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-5 shadow-2xl shadow-cyan-500/30">
+                <span className="text-white text-3xl font-black">AI</span>
+              </div>
+              <h2 className="text-white font-black text-xl mb-2">RC-AI Analyst</h2>
+              <p className="text-slate-400 text-sm mb-2 max-w-sm leading-relaxed">AI analis saham eksklusif yang bisa analisis teknikal, fundamental, bandarmologi, dan baca screenshot chart secara real-time.</p>
+              <p className="text-slate-500 text-xs mb-6">Powered by Gemini 1.5 Flash · Bisa kirim gambar chart</p>
+              <div className="flex flex-wrap gap-3 justify-center mb-6">
+                {["📊 Analisis teknikal","🔍 Baca chart Anda","🎯 Rekomen entry/TP/SL","💡 Bandarmologi","📈 Screening saham"].map((f,i)=>(
+                  <span key={i} className="text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 text-slate-400">{f}</span>
+                ))}
+              </div>
+              <a href="/ai" className="btn-primary px-8 py-3 rounded-xl font-bold text-sm inline-block">
+                Buka RC-AI Analyst →
+              </a>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
@@ -190,7 +209,7 @@ export default function VipPage() {
 
   if (!user) return <div className="min-h-screen bg-[#04060f] flex items-center justify-center"><div className="galaxy-stars"/><div className="relative z-10 text-slate-500 text-sm">Memverifikasi akses...</div></div>;
 
-  const tabs = [["signals","Sinyal"],["market","Market & Berita"],["premium","Sinyal Premium"],["modul","Modul"]];
+  const tabs = [["signals","Sinyal"],["market","Market & Berita"],["premium","Sinyal Premium"],["modul","Modul"],["ai","🤖 AI Analyst"]];
 
   return (
     <div className="min-h-screen bg-[#04060f]">
@@ -413,6 +432,25 @@ export default function VipPage() {
               )}
             </div>
           )}
+          {tab==="ai" && (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-5 shadow-2xl shadow-cyan-500/30">
+                <span className="text-white text-3xl font-black">AI</span>
+              </div>
+              <h2 className="text-white font-black text-xl mb-2">RC-AI Analyst</h2>
+              <p className="text-slate-400 text-sm mb-2 max-w-sm leading-relaxed">AI analis saham eksklusif yang bisa analisis teknikal, fundamental, bandarmologi, dan baca screenshot chart secara real-time.</p>
+              <p className="text-slate-500 text-xs mb-6">Powered by Gemini 1.5 Flash · Bisa kirim gambar chart</p>
+              <div className="flex flex-wrap gap-3 justify-center mb-6">
+                {["📊 Analisis teknikal","🔍 Baca chart Anda","🎯 Rekomen entry/TP/SL","💡 Bandarmologi","📈 Screening saham"].map((f,i)=>(
+                  <span key={i} className="text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 text-slate-400">{f}</span>
+                ))}
+              </div>
+              <a href="/ai" className="btn-primary px-8 py-3 rounded-xl font-bold text-sm inline-block">
+                Buka RC-AI Analyst →
+              </a>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
