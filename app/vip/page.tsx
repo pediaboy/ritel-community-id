@@ -23,7 +23,8 @@ function LiveInfoBox() {
     const load = () => {
       fetch("/api/admin/liveinfo").then(r=>r.json()).then(d=>{
         const li = d.liveInfo;
-        if(li && li.isActive && li.message?.trim()) setInfo({message:li.message,isActive:true});
+        const active = li?.isActive ?? li?.is_active;
+        if(li && active && li.message?.trim()) setInfo({message:li.message,isActive:true});
         else setInfo(null);
       }).catch(()=>{});
     };
@@ -167,34 +168,43 @@ export default function VipPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("vip_token");
-    const userStr = localStorage.getItem("vip_user");
     if (!token) { router.push("/login"); return; }
-    if (userStr) {
-      const u = JSON.parse(userStr);
-      if (new Date(u.expiredAt) < new Date()) {
-        localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user");
-        router.push("/login"); return;
-      }
-      setUser(u);
-    }
-    const storedSession = localStorage.getItem("vip_session");
-    fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,sessionId:storedSession||undefined})})
-      .then(r=>r.json()).then(d=>{
-        if(!d.success){localStorage.removeItem("vip_token");localStorage.removeItem("vip_user");localStorage.removeItem("vip_session");router.push("/login?error="+encodeURIComponent(d.message||""));}
-        else{
+
+    // Show cached user immediately while verifying
+    try {
+      const userStr = localStorage.getItem("vip_user");
+      if (userStr) { const u = JSON.parse(userStr); setUser(u); }
+    } catch {}
+
+    // Always verify token with server
+    fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (!d.success) {
+          localStorage.removeItem("vip_token");
+          localStorage.removeItem("vip_user");
+          router.push("/login?error=" + encodeURIComponent(d.message || "Session tidak valid"));
+        } else {
           setUser(d.user);
-          localStorage.setItem("vip_user",JSON.stringify(d.user));
-          if(d.sessionId) localStorage.setItem("vip_session",d.sessionId);
-          if(d.tokenId) localStorage.setItem("vip_tokenid",d.tokenId);
+          localStorage.setItem("vip_user", JSON.stringify(d.user));
+          setLoading(false);
+          // Load signals after auth success
+          fetch("/api/admin/signals").then(r=>r.json()).then(d=>{
+            if(d.signals) setSignals(d.signals);
+          }).catch(()=>{});
+          // Load news
+          fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
         }
-      }).catch(()=>{});
-    // Fetch sinyal dari Supabase via API
-    fetch("/api/admin/signals").then(r=>r.json()).then(d=>{
-      if(d.signals) setSignals(d.signals);
-    }).catch(()=>{});
-    // Load IHSG news
-    fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
-  }, []);
+      })
+      .catch(() => {
+        // Network error - use cached data
+        setLoading(false);
+      });
+  }, []);, []);
 
   const logout = () => {
     const tokenId = localStorage.getItem("vip_tokenid");
