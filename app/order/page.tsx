@@ -29,7 +29,33 @@ function formatDate(iso: string) {
 function OrderPageInner() {
   const params = useSearchParams();
   const paketId = (params.get("paket") || "basic").toLowerCase();
-  const pkg = PACKAGES[paketId] || PACKAGES.basic;
+  const flashPriceParam = params.get("flash"); // e.g. "Rp 50.000"
+  const flashDiscParam = params.get("disc");   // e.g. "50%"
+
+  const [apiPkg, setApiPkg] = useState<any>(null);
+  useEffect(() => {
+    fetch("/api/admin/sync").then(r=>r.json()).then(d=>{
+      if (d.pricing) {
+        const found = d.pricing.find((p:any) => p.id === paketId);
+        if (found) setApiPkg(found);
+      }
+    }).catch(()=>{});
+  }, [paketId]);
+
+  const basePkg = PACKAGES[paketId] || PACKAGES.basic;
+  const pkg = apiPkg ? { ...basePkg, priceLabel: apiPkg.priceLabel || basePkg.priceLabel } : basePkg;
+
+  // Flash sale: from URL params (passed by paket page) or from API
+  const apiFlash = apiPkg?.flashSale;
+  const flashActive = (flashPriceParam || (apiFlash && (!apiFlash.endTime || new Date(apiFlash.endTime) > new Date())));
+  const flashSale = flashActive ? {
+    price: flashPriceParam || apiFlash?.price,
+    discount: flashDiscParam || apiFlash?.discount,
+    rawPrice: apiFlash?.rawPrice || pkg.price,
+  } : null;
+
+  const displayPrice = flashSale?.price || pkg.priceLabel;
+  const rawPrice = flashSale?.rawPrice || pkg.price;
 
   const [step, setStep] = useState<"form"|"invoice"|"confirm">("form");
   const [nama, setNama] = useState("");
@@ -56,7 +82,7 @@ function OrderPageInner() {
           nama: nama.trim(),
           hp: hp.trim(),
           paket: pkg.name,
-          harga: pkg.price,
+          harga: rawPrice,
           metode: selectedMethod.label,
         }),
       });
@@ -91,7 +117,7 @@ function OrderPageInner() {
 👤 Nama        : ${order.nama}
 📱 No. HP      : ${order.hp}
 📦 Paket       : ${order.paket}
-💰 Total       : ${formatRp(order.harga)}/bulan
+💰 Total       : ${displayPrice}/bulan
 ━━━━━━━━━━━━━━━━━━━━
 💳 Metode Bayar: ${m.label}
 🏷 No. Akun   : ${m.number}
@@ -209,7 +235,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
 
                 <div className="bg-white/5 rounded-xl p-4 flex justify-between items-center">
                   <span className="text-slate-400 font-medium">Total Pembayaran</span>
-                  <span className="text-2xl font-black text-white">{formatRp(order.harga)}</span>
+                  <span className="text-2xl font-black text-white">{displayPrice}</span>
                 </div>
 
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4">
@@ -246,28 +272,32 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
         )}
 
         {step === "confirm" && order && (
-          <div className="card-glass rounded-2xl p-8 border border-green-500/30 text-center space-y-4">
-            <div className="text-5xl mb-2">✅</div>
-            <h2 className="text-xl font-black text-white">Konfirmasi Terkirim!</h2>
-            <p className="text-slate-400 text-sm">
-              Invoice dan detail pembelian sudah dikirim ke WhatsApp admin. Lampirkan <strong className="text-white">bukti transfer</strong> pada chat tersebut.
+          <div className="card-glass rounded-2xl p-8 border border-white/10 text-center">
+            <div className="w-20 h-20 mx-auto mb-5 rounded-full bg-green-500/10 border-2 border-green-500/40 flex items-center justify-center">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h2 className="text-white font-black text-xl mb-2">Bukti Terkirim!</h2>
+            <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+              Admin akan memverifikasi pembayaran dan mengaktifkan token VIP kamu. Maksimal 1x24 jam.
             </p>
-            <div className="bg-white/5 rounded-xl p-4 text-left space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Invoice</span>
-                <span className="text-white font-mono">{order.id}</span>
+            <div className="bg-white/5 rounded-xl p-4 mb-6 text-left space-y-2.5 text-sm">
+              <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                <span className="text-slate-400">No. Invoice</span>
+                <span className="text-white font-mono text-xs">{order.id}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center border-b border-white/5 pb-2">
                 <span className="text-slate-400">Paket</span>
                 <span className={`font-bold ${pkg.accent}`}>{order.paket}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Total</span>
-                <span className="text-white font-bold">{formatRp(order.harga)}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Total Bayar</span>
+                <span className="text-white font-black">{displayPrice}</span>
               </div>
             </div>
-            <p className="text-xs text-slate-500">Token VIP akan diaktivasi setelah pembayaran dikonfirmasi admin (max 1×24 jam)</p>
-            <Link href="/" className="block w-full py-3 rounded-xl font-bold text-sm bg-white/10 text-slate-300 hover:bg-white/15 transition-all">
+            <Link href="/" className="block w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:opacity-90 transition-all">
               Kembali ke Beranda
             </Link>
           </div>
@@ -284,3 +314,4 @@ export default function OrderPage() {
     </Suspense>
   );
 }
+
