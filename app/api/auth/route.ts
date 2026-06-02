@@ -14,24 +14,22 @@ async function getSession(tokenId: string): Promise<string|null> {
   return rows[0]?.value || null;
 }
 
-async function setSession(tokenId: string, sessionId: string|null) {
-  if (sessionId === null) {
-    await sb("DELETE", `/settings?key=eq.session_${tokenId}`);
-  } else {
-    await sb("POST", `/settings`, { key: `session_${tokenId}`, value: sessionId, updated_at: new Date().toISOString() }, { Prefer: "resolution=merge-duplicates,return=representation" });
-  }
+async function setSession(tokenId: string, sessionId: string) {
+  await sb("POST", `/settings`, { key: `session_${tokenId}`, value: sessionId, updated_at: new Date().toISOString() }, { Prefer: "resolution=merge-duplicates,return=representation" });
+}
+
+async function clearSession(tokenId: string) {
+  await sb("DELETE", `/settings?key=eq.session_${tokenId}`);
 }
 
 async function logAndNotify(name: string, pkg: string, token: string, ip: string) {
   try {
-    // 1. Simpan ke login_logs di settings
     const rows = await sb("GET", "/settings?key=eq.login_logs&limit=1");
     const existing: any[] = rows[0]?.value || [];
     const newLog = { id: Date.now().toString(), name, package: pkg, token: token.slice(-8), ip, time: new Date().toISOString() };
     const updated = [newLog, ...existing].slice(0, 50);
     await sb("POST", "/settings", { key: "login_logs", value: updated, updated_at: new Date().toISOString() }, { Prefer: "resolution=merge-duplicates,return=representation" });
 
-    // 2. Notif Telegram
     const chatRows = await sb("GET", "/settings?key=eq.telegram_admin_chat_id&limit=1");
     const chatId = chatRows[0]?.value;
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -52,8 +50,9 @@ export async function POST(req: Request) {
   const { token, action, sessionId, tokenId } = body;
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || req.headers.get("x-real-ip") || "-";
 
+  // LOGOUT
   if (action === "logout" && tokenId) {
-    await setSession(tokenId, null);
+    await clearSession(tokenId);
     return NextResponse.json({ success: true });
   }
 
@@ -66,21 +65,32 @@ export async function POST(req: Request) {
   if (!found.is_active) return NextResponse.json({ success: false, message: "Token dinonaktifkan. Hubungi admin." });
   if (found.expired_at && new Date(found.expired_at) < new Date()) return NextResponse.json({ success: false, message: "Token sudah expired. Hubungi admin untuk perpanjangan." });
 
+  const userPayload = { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at };
+
+  // Single session untuk Silver ke atas
   if (SINGLE_SESSION_PACKAGES.includes(found.package)) {
     const storedSession = await getSession(found.id);
     const incomingSession = sessionId || null;
 
-    if (storedSession && storedSession !== incomingSession) {
-      return NextResponse.json({ success: false, message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." });
-    }
-
-    if (!storedSession) {
+    if (storedSession) {
+      // Ada session aktif
+      if (storedSession === incomingSession) {
+        // Same device - login sukses, perpanjang session
+        return NextResponse.json({ success: true, sessionId: storedSession, tokenId: found.id, user: userPayload });
+      } else {
+        // Beda device - tolak
+        return NextResponse.json({ success: false, message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." });
+      }
+    } else {
+      // Belum ada session - login pertama kali, buat session baru
       const newSession = genSessionId();
       await setSession(found.id, newSession);
       logAndNotify(found.name, found.package, token, ip); // fire & forget
-      return NextResponse.json({ success: true, sessionId: newSession, tokenId: found.id, user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at } });
+      return NextResponse.json({ success: true, sessionId: newSession, tokenId: found.id, user: userPayload });
     }
   }
 
-  return NextResponse.json({ success: true, sessionId: sessionId || null, tokenId: found.id, user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at } });
+  // Basic - tidak ada session check, langsung sukses + log
+  logAndNotify(found.name, found.package, token, ip);
+  return NextResponse.json({ success: true, sessionId: null, tokenId: found.id, user: userPayload });
 }
