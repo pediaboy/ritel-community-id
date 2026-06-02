@@ -314,7 +314,7 @@ function Navbar() {
 // ===== HERO =====
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "44px" }}>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "0px" }}>
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 mb-5 text-xs text-cyan-300">
           Platform Analisa Saham Indonesia
@@ -326,14 +326,14 @@ function Hero() {
         <p className="text-slate-400 text-base sm:text-lg mb-7 max-w-2xl mx-auto leading-relaxed">
           Bandarmologi, Fundamental, Arahan Entry, Tape Reading, Bagger Pick, dan AI Agent analisa saham eksklusif untuk member VIP.
         </p>
-        <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto mb-7">
+        <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto mb-7">
           {[
             { val:"12.400+", label:"Member Aktif", icon:<Icons.Users />, cls:"text-white" },
             { val:"78%", label:"Win Rate", icon:<Icons.WinRate />, cls:"text-cyan-400" },
             { val:"34 Stock", label:"Bagger Picks", icon:<Icons.Gem />, cls:"text-green-400" },
           ].map((item, i) => (
-            <TiltCard key={i}>
-              <div className="card-glass rounded-xl p-3 text-center">
+            <TiltCard key={i} className="flex">
+              <div className="card-glass rounded-xl p-3 text-center flex flex-col items-center justify-center w-full" style={{minHeight:"88px"}}>
                 <div className={`flex justify-center mb-1 ${item.cls}`}>{item.icon}</div>
                 <div className={`text-lg font-black ${item.cls}`}>{item.val}</div>
                 <div className="text-xs text-slate-500 mt-0.5 leading-tight">{item.label}</div>
@@ -342,8 +342,8 @@ function Hero() {
           ))}
         </div>
         <div className="flex justify-center gap-3">
-          <a href="#pricing" className="btn-primary text-sm px-7 py-3 rounded-xl font-bold">Mulai Sekarang</a>
-          <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" className="btn-green text-sm px-7 py-3 rounded-xl font-bold">WA Admin</a>
+          <a href="#pricing" className="btn-primary font-bold rounded-xl" style={{fontSize:"14px",padding:"12px 0",width:"148px",textAlign:"center",display:"block"}}>Mulai Sekarang</a>
+          <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" className="btn-green font-bold rounded-xl" style={{fontSize:"14px",padding:"12px 0",width:"148px",textAlign:"center",display:"block"}}>WA Admin</a>
         </div>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-slate-600">
@@ -674,9 +674,11 @@ function PricingSection() {
                 <div className="text-2xl font-black text-white mb-1">{pkg.name}</div>
                 {flashSale ? (
                   <div>
-                    <span className="text-slate-500 line-through text-sm mr-2">{pkg.priceLabel}</span>
-                    <span className="text-3xl font-black text-cyan-400">{flashSale.price}</span>
-                    <span className="text-slate-400 text-sm">{pkg.period}</span>
+                    <div className="text-slate-500 line-through text-sm mb-1">{pkg.priceLabel}</div>
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-3xl font-black text-cyan-400">{flashSale.price}</span>
+                      <span className="text-slate-400 text-sm">{pkg.period}</span>
+                    </div>
                   </div>
                 ) : (
                   <div>
@@ -914,7 +916,10 @@ function Footer() {
             <a href="https://wa.me/6282218723401" target="_blank" className="hover:text-cyan-400 transition-colors">Hubungi Kami</a>
             <Link href="/paket" className="hover:text-cyan-400 transition-colors">Semua Paket</Link>
           </div>
-          <p className="text-xs text-slate-600">© 2025 Ritel Community.ID · Platform saham edukasi</p>
+          <div className="text-center">
+            <p className="text-xs text-slate-600">© 2026 Ritel Community.ID · Platform saham edukasi</p>
+            <p className="text-xs text-slate-700 mt-1">Developed by <span className="text-slate-500 font-medium">THIRAFI THARIQ AL IDRIS</span></p>
+          </div>
         </div>
       </div>
     </footer>
@@ -928,7 +933,7 @@ export default function HomePage() {
       <GalaxyBackground />
       <div className="relative z-10">
         <Navbar />
-        <div style={{ paddingTop: "88px" }}>
+        <div style={{ paddingTop: "80px" }}>
           <Hero />
           <MarketSection />
           <SignalsSection />
