@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { sb } from "@/lib/supabase";
-import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -23,14 +22,28 @@ async function setSession(tokenId: string, sessionId: string|null) {
   }
 }
 
-async function logLogin(name: string, pkg: string, token: string, ip: string) {
-  if (!["silver","gold","pro","platinum","elite"].includes(pkg)) return;
+async function logAndNotify(name: string, pkg: string, token: string, ip: string) {
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/admin/loginlogs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, pkg, token, ip }),
-    });
+    // 1. Simpan ke login_logs di settings
+    const rows = await sb("GET", "/settings?key=eq.login_logs&limit=1");
+    const existing: any[] = rows[0]?.value || [];
+    const newLog = { id: Date.now().toString(), name, package: pkg, token: token.slice(-8), ip, time: new Date().toISOString() };
+    const updated = [newLog, ...existing].slice(0, 50);
+    await sb("POST", "/settings", { key: "login_logs", value: updated, updated_at: new Date().toISOString() }, { Prefer: "resolution=merge-duplicates,return=representation" });
+
+    // 2. Notif Telegram
+    const chatRows = await sb("GET", "/settings?key=eq.telegram_admin_chat_id&limit=1");
+    const chatId = chatRows[0]?.value;
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (chatId && botToken) {
+      const wib = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta", day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" } as any);
+      const msg = `🔐 <b>LOGIN BARU — ${pkg.toUpperCase()}</b>\n\n👤 <b>${name}</b>\n🌐 IP: ${ip}\n🎟 Token: ...${token.slice(-8)}\n⏰ ${wib}`;
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: "HTML" }),
+      }).catch(() => {});
+    }
   } catch {}
 }
 
@@ -39,7 +52,6 @@ export async function POST(req: Request) {
   const { token, action, sessionId, tokenId } = body;
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || req.headers.get("x-real-ip") || "-";
 
-  // LOGOUT - clear session
   if (action === "logout" && tokenId) {
     await setSession(tokenId, null);
     return NextResponse.json({ success: true });
@@ -54,36 +66,21 @@ export async function POST(req: Request) {
   if (!found.is_active) return NextResponse.json({ success: false, message: "Token dinonaktifkan. Hubungi admin." });
   if (found.expired_at && new Date(found.expired_at) < new Date()) return NextResponse.json({ success: false, message: "Token sudah expired. Hubungi admin untuk perpanjangan." });
 
-  // Single session check for silver and above
   if (SINGLE_SESSION_PACKAGES.includes(found.package)) {
     const storedSession = await getSession(found.id);
     const incomingSession = sessionId || null;
 
     if (storedSession && storedSession !== incomingSession) {
-      return NextResponse.json({ 
-        success: false, 
-        message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." 
-      });
+      return NextResponse.json({ success: false, message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." });
     }
 
     if (!storedSession) {
       const newSession = genSessionId();
       await setSession(found.id, newSession);
-      // Log this new login
-      logLogin(found.name, found.package, token, ip);
-      return NextResponse.json({
-        success: true,
-        sessionId: newSession,
-        tokenId: found.id,
-        user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at },
-      });
+      logAndNotify(found.name, found.package, token, ip); // fire & forget
+      return NextResponse.json({ success: true, sessionId: newSession, tokenId: found.id, user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at } });
     }
   }
 
-  return NextResponse.json({
-    success: true,
-    sessionId: sessionId || null,
-    tokenId: found.id,
-    user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at },
-  });
+  return NextResponse.json({ success: true, sessionId: sessionId || null, tokenId: found.id, user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at } });
 }
