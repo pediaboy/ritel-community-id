@@ -1,23 +1,34 @@
 import { NextResponse } from "next/server";
 import { sb } from "@/lib/supabase";
-import { cookies } from "next/headers";
-import { v4 as uuidv4 } from "uuid";
 
 export const dynamic = "force-dynamic";
 
 const SINGLE_SESSION_PACKAGES = ["silver","gold","pro","platinum","elite"];
 
+function genSessionId() {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
+async function getSession(tokenId: string): Promise<string|null> {
+  const rows = await sb("GET", `/settings?key=eq.session_${tokenId}&limit=1`);
+  return rows[0]?.value || null;
+}
+
+async function setSession(tokenId: string, sessionId: string|null) {
+  if (sessionId === null) {
+    await sb("DELETE", `/settings?key=eq.session_${tokenId}`);
+  } else {
+    await sb("POST", `/settings`, { key: `session_${tokenId}`, value: sessionId, updated_at: new Date().toISOString() }, { Prefer: "resolution=merge-duplicates,return=representation" });
+  }
+}
+
 export async function POST(req: Request) {
   const body = await req.json();
-  const { token, action, sessionId } = body;
+  const { token, action, sessionId, tokenId } = body;
 
-  // LOGOUT action - clear session
-  if (action === "logout" && sessionId) {
-    // Clear session from token
-    const rows = await sb("GET", `/tokens?session_id=eq.${encodeURIComponent(sessionId)}&limit=1`);
-    if (rows[0]) {
-      await sb("PATCH", `/tokens?id=eq.${rows[0].id}`, { session_id: null });
-    }
+  // LOGOUT - clear session
+  if (action === "logout" && tokenId) {
+    await setSession(tokenId, null);
     return NextResponse.json({ success: true });
   }
 
@@ -32,17 +43,23 @@ export async function POST(req: Request) {
 
   // Single session check for silver and above
   if (SINGLE_SESSION_PACKAGES.includes(found.package)) {
+    const storedSession = await getSession(found.id);
     const incomingSession = sessionId || null;
-    if (found.session_id && found.session_id !== incomingSession) {
-      return NextResponse.json({ success: false, message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." });
+
+    if (storedSession && storedSession !== incomingSession) {
+      return NextResponse.json({ 
+        success: false, 
+        message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." 
+      });
     }
-    // Assign new session if none
-    if (!found.session_id) {
-      const newSessionId = uuidv4();
-      await sb("PATCH", `/tokens?id=eq.${found.id}`, { session_id: newSessionId });
+
+    if (!storedSession) {
+      const newSession = genSessionId();
+      await setSession(found.id, newSession);
       return NextResponse.json({
         success: true,
-        sessionId: newSessionId,
+        sessionId: newSession,
+        tokenId: found.id,
         user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at },
       });
     }
@@ -50,7 +67,8 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     success: true,
-    sessionId: found.session_id || null,
+    sessionId: sessionId || null,
+    tokenId: found.id,
     user: { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at },
   });
 }
