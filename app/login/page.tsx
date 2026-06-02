@@ -22,8 +22,8 @@ export default function LoginPage() {
     setLoading(true);
     setErr("");
     try {
-      // Ambil sessionId dari localStorage jika sudah ada (returning device)
-      const existingSession = localStorage.getItem("vip_session_id");
+      // Kirim sessionId yang sudah tersimpan (returning device)
+      const existingSession = localStorage.getItem("vip_session");
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
@@ -33,9 +33,9 @@ export default function LoginPage() {
       if (data.success) {
         localStorage.setItem("vip_token", token.trim());
         localStorage.setItem("vip_user", JSON.stringify(data.user));
-        // Simpan sessionId & tokenId untuk single-session check
-        if (data.sessionId) localStorage.setItem("vip_session_id", data.sessionId);
-        if (data.tokenId) localStorage.setItem("vip_token_id", data.tokenId);
+        // Pakai key yang sama dengan VIP page
+        if (data.sessionId) localStorage.setItem("vip_session", data.sessionId);
+        if (data.tokenId) localStorage.setItem("vip_tokenid", data.tokenId);
         router.push("/vip");
       } else {
         setErr(data.message || "Token tidak valid atau sudah expired.");
