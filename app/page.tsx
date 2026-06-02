@@ -1,3 +1,7 @@
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+
 // ===== LOADING SCREEN =====
 function LoadingScreen({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState(0);
@@ -144,9 +148,6 @@ function MotivasiTicker() {
   );
 }
 
-"use client";
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 
 // ===== GALAXY BACKGROUND + SCROLL NEON =====
 function GalaxyBackground() {
