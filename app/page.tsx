@@ -41,45 +41,16 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
   );
 }
 
-// ===== RC LOGO - Premium Neon Dark Blue =====
+// ===== RC LOGO =====
 function RCLogo({ size = 36 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="rcBg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#030712"/>
-          <stop offset="100%" stopColor="#0c1a35"/>
-        </linearGradient>
-        <linearGradient id="rcNeon" x1="0" y1="0" x2="40" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#0ea5e9"/>
-          <stop offset="50%" stopColor="#06b6d4"/>
-          <stop offset="100%" stopColor="#3b82f6"/>
-        </linearGradient>
-        <filter id="neonGlow">
-          <feGaussianBlur stdDeviation="1.5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      {/* Background */}
-      <rect width="40" height="40" rx="11" fill="url(#rcBg)"/>
-      {/* Outer neon border */}
-      <rect x="1" y="1" width="38" height="38" rx="10.5" fill="none" stroke="url(#rcNeon)" strokeWidth="1" strokeOpacity="0.7"/>
-      {/* Candlestick bars */}
-      <rect x="8" y="22" width="4.5" height="10" rx="1.2" fill="#0ea5e9" fillOpacity="0.15" stroke="#0ea5e9" strokeWidth="0.8" filter="url(#neonGlow)"/>
-      <line x1="10.25" y1="17" x2="10.25" y2="22" stroke="#0ea5e9" strokeWidth="1" strokeOpacity="0.8"/>
-      <line x1="10.25" y1="32" x2="10.25" y2="35" stroke="#0ea5e9" strokeWidth="1" strokeOpacity="0.5"/>
-      <rect x="17" y="13" width="4.5" height="12" rx="1.2" fill="#06b6d4" fillOpacity="0.25" stroke="#06b6d4" strokeWidth="1" filter="url(#neonGlow)"/>
-      <line x1="19.25" y1="8" x2="19.25" y2="13" stroke="#06b6d4" strokeWidth="1" strokeOpacity="0.9"/>
-      <line x1="19.25" y1="25" x2="19.25" y2="28" stroke="#06b6d4" strokeWidth="1" strokeOpacity="0.6"/>
-      <rect x="26" y="17" width="4.5" height="9" rx="1.2" fill="#3b82f6" fillOpacity="0.2" stroke="#3b82f6" strokeWidth="0.8" filter="url(#neonGlow)"/>
-      <line x1="28.25" y1="12" x2="28.25" y2="17" stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.7"/>
-      <line x1="28.25" y1="26" x2="28.25" y2="30" stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.5"/>
-      {/* Neon trend line */}
-      <polyline points="10,25 19,15 28,20" stroke="url(#rcNeon)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" filter="url(#neonGlow)" strokeOpacity="0.9"/>
-      {/* Inner glow corner accent */}
-      <circle cx="35" cy="5" r="3" fill="#06b6d4" fillOpacity="0.15"/>
-      <circle cx="5" cy="35" r="2" fill="#3b82f6" fillOpacity="0.1"/>
-    </svg>
+    <img 
+      src="/logo.png" 
+      alt="RITEL COMMUNITY" 
+      width={size} 
+      height={size} 
+      style={{ borderRadius: size * 0.27, objectFit: "cover", display: "block" }} 
+    />
   );
 }
 
