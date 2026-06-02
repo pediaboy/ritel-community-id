@@ -457,26 +457,34 @@ function NewsSection() {
   return (
     <section id="news" className="py-16 px-4 border-t border-white/5 relative z-10">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl font-black text-white mb-1">Berita Pasar <span className="gradient-text">Saham Indo</span></h2>
-          <p className="text-slate-500 text-sm">Berita saham Indonesia terkini dari BEI & IHSG</p>
-        </div>
-        {loading ? <div className="text-slate-500 text-center py-12">Memuat berita...</div> : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {displayNews.map((n, i) => (
-              <TiltCard key={i}>
-                <a href={n.url || "#"} target="_blank" rel="noopener noreferrer" className="card rounded-xl p-5 block group">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${catColor[n.category] || "bg-cyan-500/10 text-cyan-400"}`}>{n.category || "Pasar"}</span>
-                    <span className="text-xs text-slate-600">{n.time || n.source}</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors leading-snug mb-2">{n.title}</h3>
-                  <div className="mt-3 text-xs text-slate-600">{n.source}</div>
-                </a>
-              </TiltCard>
-            ))}
+        <div className="mb-6 flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h2 className="text-2xl font-black text-white mb-1">Berita Pasar <span className="gradient-text">Saham Indo</span></h2>
+            <p className="text-slate-500 text-sm">Berita saham Indonesia terkini dari BEI & IHSG</p>
           </div>
-        )}
+          <button onClick={()=>{ setLoading(true); fetch("/api/news").then(r=>r.json()).then(d=>{ setNews((d.news||[]).slice(0,6)); setLoading(false); }).catch(()=>setLoading(false)); }} className="flex items-center gap-2 text-xs px-4 py-2 rounded-lg border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-all font-medium">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div className="card-glass rounded-2xl p-4" style={{maxHeight:"520px",overflowY:"auto"}}>
+          {loading ? <div className="text-slate-500 text-center py-12">Memuat berita...</div> : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {displayNews.map((n, i) => (
+                <TiltCard key={i}>
+                  <a href={n.url || "#"} target="_blank" rel="noopener noreferrer" className="card rounded-xl p-5 block group">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${catColor[n.category] || "bg-cyan-500/10 text-cyan-400"}`}>{n.category || "Pasar"}</span>
+                      <span className="text-xs text-slate-600">{n.time || n.source}</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors leading-snug mb-2">{n.title}</h3>
+                    <div className="mt-3 text-xs text-slate-600">{n.source}</div>
+                  </a>
+                </TiltCard>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -923,8 +931,8 @@ export default function HomePage() {
         <div style={{ paddingTop: "88px" }}>
           <Hero />
           <MarketSection />
-          <NewsSection />
           <SignalsSection />
+          <NewsSection />
           <AIAgentSection />
           <PricingSection />
           <TestimonialsSection />
