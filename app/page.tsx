@@ -674,85 +674,478 @@ function AIAgentSection() {
 }
 
 // ===== PRICING =====
-function PricingSection() {
-  const [pricingData, setPricingData] = useState<any>(null);
-  useEffect(() => {
-    fetch("/api/admin/sync").then(r => r.json()).then(d => {
-      if (d.pricing && d.pricing.length > 0) {
-        const basic = d.pricing.find((p:any) => p.id === "basic" || p.name?.toLowerCase() === "basic");
-        if (basic) setPricingData(basic);
-      }
-    }).catch(() => {});
-  }, []);
 
-  const pkg = pricingData || {
-    name: "Basic",
-    priceLabel: "Rp 100.000",
-    period: "/bulan",
-    description: "Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.",
-    features: ["Sinyal saham harian","Berita pasar realtime","Chart IHSG live","Modul dasar investasi","Grup WA Basic"],
-  };
-  const flashSale = pricingData?.flashSale;
-
+// ===== PRICING SECTION (Midtrans-style order flow, flash sale timer, kalkulator %) =====
+// Custom Checkbox Dialog Component
+function CustomCheckDialog({ open, onConfirm, onClose, title, message }: {
+  open: boolean; onConfirm: () => void; onClose: () => void;
+  title: string; message: string;
+}) {
+  if (!open) return null;
   return (
-    <section id="pricing" className="py-16 px-4 border-t border-white/5 relative z-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-black text-white mb-2">Paket <span className="gradient-text">VIP</span></h2>
-          <p className="text-slate-500 text-sm">Mulai dari Rp 100.000/bulan — pilih level yang sesuai</p>
-        </div>
-        <div className="max-w-sm mx-auto">
-          <TiltCard>
-            <div className="card-glass rounded-2xl p-8 border-2 border-cyan-500/30 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bg-cyan-500 text-white text-xs font-black px-4 py-1 rounded-full">MULAI DARI SINI</span>
-              </div>
-              {flashSale && (
-                <div className="flex justify-center mb-4">
-                  <span className="flash-badge">FLASH SALE {flashSale.discount}</span>
-                </div>
-              )}
-              <div className="text-center mb-6">
-                <div className="text-2xl font-black text-white mb-1">{pkg.name}</div>
-                {flashSale ? (
-                  <div>
-                    <div className="text-slate-500 line-through text-sm mb-1">{pkg.priceLabel}</div>
-                    <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-3xl font-black text-cyan-400">{flashSale.price}</span>
-                      <span className="text-slate-400 text-sm">{pkg.period}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <span className="text-4xl font-black text-white">{pkg.priceLabel}</span>
-                    <span className="text-slate-400 text-sm">{pkg.period}</span>
-                  </div>
-                )}
-                <p className="text-slate-400 text-sm mt-3 leading-relaxed">{pkg.description}</p>
-              </div>
-              <ul className="space-y-2 mb-6">
-                {(pkg.features || []).map((f: string, i: number) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
-                    <span className="text-cyan-400 flex-shrink-0"><Icons.Check /></span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <a href={`https://wa.me/6282218723401?text=Halo%20min%20mau%20order%20paket%20${pkg.name}!`} target="_blank"
-                className="btn-primary w-full block text-center py-3 rounded-xl font-bold text-sm">
-                Order Paket {pkg.name}
-              </a>
-            </div>
-          </TiltCard>
-          <div className="text-center mt-6">
-            <p className="text-slate-500 text-sm mb-3">Butuh fitur lebih? Tersedia 5 paket lainnya.</p>
-            <Link href="/paket" className="text-cyan-400 hover:text-cyan-300 text-sm font-bold border border-cyan-500/30 px-6 py-2.5 rounded-xl hover:bg-cyan-500/5 transition-all inline-block">
-              Lihat Semua Paket
-            </Link>
+    <div className="fixed inset-0 z-[999] flex items-center justify-center px-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="bg-[#0d1117] border border-cyan-500/30 rounded-2xl p-6 shadow-2xl shadow-cyan-500/10">
+          {/* Icon */}
+          <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-cyan-500/10 border-2 border-cyan-500/40 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3 className="text-white font-black text-center text-lg mb-2">{title}</h3>
+          <p className="text-slate-400 text-sm text-center leading-relaxed mb-6">{message}</p>
+          <div className="flex gap-3">
+            <button onClick={onClose}
+              className="flex-1 py-2.5 rounded-xl border border-white/10 text-slate-400 text-sm font-medium hover:bg-white/5 transition-all">
+              Batal
+            </button>
+            <button onClick={onConfirm}
+              className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm hover:opacity-90 transition-all">
+              Konfirmasi
+            </button>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  );
+}
+
+// Flash sale timer
+function useFlashSaleTimer(endTime: string | null) {
+  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number } | null>(null);
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    if (!endTime) { setTimeLeft(null); setExpired(false); return; }
+    const calc = () => {
+      const diff = new Date(endTime).getTime() - Date.now();
+      if (diff <= 0) { setExpired(true); setTimeLeft(null); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft({ h, m, s });
+    };
+    calc();
+    const iv = setInterval(calc, 1000);
+    return () => clearInterval(iv);
+  }, [endTime]);
+
+  return { timeLeft, expired };
+}
+
+// Order Modal (Midtrans-style)
+function OrderModal({ pkg, flashSale, onClose }: { pkg: any; flashSale: any; onClose: () => void }) {
+  const [step, setStep] = useState<"form" | "invoice" | "done">("form");
+  const [nama, setNama] = useState("");
+  const [hp, setHp] = useState("");
+  const [metode, setMetode] = useState("dana");
+  const [loading, setLoading] = useState(false);
+  const [order, setOrder] = useState<any>(null);
+  const [err, setErr] = useState("");
+  const [copied, setCopied] = useState("");
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  const PAYMENT_METHODS = [
+    { id:"dana",    label:"DANA",    number:"082218723401", an:"THIRAFI THARIQ AL IDRIS", icon:"💚", color:"from-green-600 to-emerald-500" },
+    { id:"gopay",   label:"GoPay",   number:"082218723401", an:"THIRAFI THARIQ AL IDRIS", icon:"💙", color:"from-blue-600 to-sky-500" },
+    { id:"seabank", label:"SeaBank", number:"901555691160", an:"THIRAFI THARIQ AL IDRIS", icon:"🏦", color:"from-indigo-600 to-purple-600" },
+  ];
+  const selectedMethod = PAYMENT_METHODS.find(m => m.id === metode) || PAYMENT_METHODS[0];
+
+  const displayPrice = flashSale?.price || pkg.priceLabel;
+  const rawPrice = flashSale?.rawPrice || pkg.price;
+
+  function formatRp(n: number) { return "Rp " + n.toLocaleString("id-ID"); }
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString("id-ID", { day:"2-digit", month:"long", year:"numeric", hour:"2-digit", minute:"2-digit" });
+  }
+  function copy(text: string, key: string) {
+    navigator.clipboard.writeText(text).then(() => { setCopied(key); setTimeout(() => setCopied(""), 2000); });
+  }
+
+  const colorMap: any = {
+    blue:"from-blue-600 to-blue-800", cyan:"from-cyan-600 to-blue-700",
+    gold:"from-yellow-500 to-orange-600", purple:"from-purple-600 to-indigo-700",
+    platinum:"from-slate-400 to-slate-600", elite:"from-yellow-400 to-orange-500",
+  };
+  const pkgBg = colorMap[pkg.color] || "from-cyan-600 to-blue-700";
+
+  async function handleSubmit() {
+    setErr("");
+    if (!nama.trim()) { setErr("Nama tidak boleh kosong"); return; }
+    if (!hp.trim() || hp.trim().length < 9) { setErr("No HP tidak valid"); return; }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action:"create", nama:nama.trim(), hp:hp.trim(), paket:pkg.name, harga:rawPrice, metode:selectedMethod.label }),
+      });
+      const data = await res.json();
+      if (data.success) { setOrder(data.order); setStep("invoice"); }
+      else { setErr(data.message || "Gagal membuat order"); }
+    } catch { setErr("Terjadi kesalahan, coba lagi"); }
+    setLoading(false);
+  }
+
+  function goWhatsApp() {
+    if (!order) return;
+    const invoiceText =
+`🧾 *INVOICE PEMBELIAN - RITEL COMMUNITY*
+━━━━━━━━━━━━━━━━━━━━━━━━
+📋 No. Invoice : ${order.id}
+📅 Tanggal     : ${formatDate(order.created_at)}
+━━━━━━━━━━━━━━━━━━━━━━━━
+👤 Nama        : ${order.nama}
+📱 No. HP      : ${order.hp}
+📦 Paket       : ${order.paket}
+💰 Total       : ${displayPrice}/bulan
+━━━━━━━━━━━━━━━━━━━━━━━━
+💳 Metode      : ${selectedMethod.label}
+🏷  No. Akun   : ${selectedMethod.number}
+👤 a.n         : ${selectedMethod.an}
+━━━━━━━━━━━━━━━━━━━━━━━━
+_Mohon lampirkan bukti transfer._
+_Token VIP aktif setelah konfirmasi admin._`;
+    window.open(`https://wa.me/6282218723401?text=${encodeURIComponent(invoiceText)}`, "_blank");
+    setShowConfirmDialog(true);
+  }
+
+  return (
+    <>
+      <CustomCheckDialog
+        open={showConfirmDialog}
+        title="Pembayaran Terkirim?"
+        message="Pastikan bukti transfer sudah dikirim via WhatsApp. Admin akan memproses aktivasi token VIP kamu."
+        onConfirm={() => { setShowConfirmDialog(false); setStep("done"); }}
+        onClose={() => setShowConfirmDialog(false)}
+      />
+
+      <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center px-0 sm:px-4">
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative z-10 w-full sm:max-w-md bg-[#0a0e1a] sm:rounded-2xl rounded-t-2xl border border-white/10 overflow-hidden max-h-[92vh] overflow-y-auto">
+
+          {/* Header strip */}
+          <div className={`bg-gradient-to-r ${pkgBg} p-4 text-white`}>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-xs opacity-70">
+                  {step === "form" ? "Order Paket" : step === "invoice" ? "Invoice" : "Selesai"}
+                </p>
+                <p className="font-black text-lg">Paket {pkg.name}</p>
+              </div>
+              <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            {/* Steps indicator */}
+            <div className="flex items-center gap-1 mt-3">
+              {["Isi Data", "Invoice", "Konfirmasi"].map((s, i) => {
+                const stepIdx = step === "form" ? 0 : step === "invoice" ? 1 : 2;
+                return (
+                  <div key={i} className="flex items-center gap-1">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i <= stepIdx ? "bg-white text-[#0a0e1a]" : "bg-white/20 text-white/50"}`}>
+                      {i < stepIdx ? "✓" : i + 1}
+                    </div>
+                    <span className={`text-xs ${i <= stepIdx ? "text-white" : "text-white/50"}`}>{s}</span>
+                    {i < 2 && <div className={`flex-1 h-px w-6 ${i < stepIdx ? "bg-white" : "bg-white/20"}`}/>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="p-5">
+            {/* FORM */}
+            {step === "form" && (
+              <div className="space-y-4">
+                {/* Price display */}
+                <div className="bg-white/5 rounded-xl p-4 border border-white/8">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400 text-sm">Total Pembayaran</span>
+                    <div className="text-right">
+                      {flashSale && <div className="text-slate-500 line-through text-xs">{pkg.priceLabel}</div>}
+                      <span className="text-white font-black text-xl">{displayPrice}</span>
+                      <span className="text-slate-400 text-xs">/bulan</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">Nama Lengkap *</label>
+                  <input value={nama} onChange={e=>setNama(e.target.value)} placeholder="Masukkan nama lengkap" className="input-dark"/>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400 mb-1 block">No. WhatsApp / HP *</label>
+                  <input value={hp} onChange={e=>setHp(e.target.value)} placeholder="08xxxxxxxxxx" type="tel" className="input-dark"/>
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-400 mb-2 block">Metode Pembayaran</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {PAYMENT_METHODS.map(m => (
+                      <button key={m.id} onClick={()=>setMetode(m.id)}
+                        className={`p-3 rounded-xl border text-center transition-all
+                          ${metode===m.id ? "border-cyan-500 bg-cyan-500/15 text-cyan-300" : "border-white/10 bg-white/3 text-slate-400 hover:border-white/20"}`}>
+                        <div className="text-xl mb-1">{m.icon}</div>
+                        <div className="text-xs font-bold">{m.label}</div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-2 p-3 bg-white/5 rounded-xl border border-white/8 text-sm">
+                    <p className="text-xs text-slate-500 mb-1">Transfer ke:</p>
+                    <p className="font-bold text-white">{selectedMethod.label}: <span className="text-cyan-400 font-mono">{selectedMethod.number}</span></p>
+                    <p className="text-xs text-slate-400 mt-0.5">a.n {selectedMethod.an}</p>
+                  </div>
+                </div>
+
+                {err && <p className="text-red-400 text-xs bg-red-400/10 px-3 py-2 rounded-lg">{err}</p>}
+
+                <button onClick={handleSubmit} disabled={loading}
+                  className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:opacity-90 transition-opacity disabled:opacity-60">
+                  {loading ? "Memproses..." : "Buat Invoice →"}
+                </button>
+              </div>
+            )}
+
+            {/* INVOICE */}
+            {step === "invoice" && order && (
+              <div className="space-y-4">
+                {/* Invoice header */}
+                <div className="bg-[#0d1117] rounded-xl border border-white/10 overflow-hidden">
+                  <div className="flex justify-between items-center px-4 py-3 border-b border-white/8">
+                    <div>
+                      <p className="text-slate-400 text-xs">No. Invoice</p>
+                      <p className="text-white font-mono font-bold text-sm">{order.id}</p>
+                    </div>
+                    <span className="bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs font-black px-3 py-1 rounded-full">PENDING</span>
+                  </div>
+                  <div className="px-4 py-3 space-y-2.5 text-sm">
+                    {[
+                      ["Nama", order.nama],
+                      ["No. HP", order.hp],
+                      ["Paket", order.paket],
+                      ["Tanggal", formatDate(order.created_at)],
+                    ].map(([l, v]) => (
+                      <div key={l} className="flex justify-between items-center py-1 border-b border-white/5 last:border-0">
+                        <span className="text-slate-400">{l}</span>
+                        <span className="text-white font-medium">{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="px-4 py-3 bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border-t border-cyan-500/20 flex justify-between items-center">
+                    <span className="text-slate-300 font-medium">Total Bayar</span>
+                    <span className="text-white font-black text-xl">{displayPrice}</span>
+                  </div>
+                </div>
+
+                {/* Payment info */}
+                <div className="bg-[#0d1117] rounded-xl border border-white/10 p-4">
+                  <p className="text-xs text-slate-400 mb-3 font-semibold uppercase tracking-wide">Transfer Pembayaran ke:</p>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedMethod.color} flex items-center justify-center text-lg`}>
+                      {selectedMethod.icon}
+                    </div>
+                    <div>
+                      <p className="text-white font-bold">{selectedMethod.label}</p>
+                      <p className="text-slate-400 text-xs">a.n {selectedMethod.an}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between bg-white/5 rounded-lg px-4 py-3 border border-white/8">
+                    <span className="text-white font-mono font-bold text-base tracking-wider">{selectedMethod.number}</span>
+                    <button onClick={()=>copy(selectedMethod.number,"no")}
+                      className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-all ${copied==="no" ? "bg-green-500/20 text-green-400" : "bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"}`}>
+                      {copied==="no" ? "Disalin!" : "Salin"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-400/8 border border-yellow-400/20 rounded-xl p-4 text-xs text-yellow-300 flex gap-2">
+                  <span className="flex-shrink-0 text-base">⚠️</span>
+                  <span>Transfer tepat sesuai jumlah. Kirim bukti via WhatsApp agar token cepat diaktifkan.</span>
+                </div>
+
+                <button onClick={goWhatsApp}
+                  className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                  Kirim Bukti via WhatsApp
+                </button>
+                <button onClick={()=>setStep("form")} className="w-full py-2.5 text-slate-500 text-xs hover:text-slate-300 transition-colors">Kembali ke Form</button>
+              </div>
+            )}
+
+            {/* DONE */}
+            {step === "done" && (
+              <div className="text-center py-6">
+                {/* Custom success icon */}
+                <div className="w-20 h-20 mx-auto mb-5 rounded-full bg-green-500/10 border-2 border-green-500/40 flex items-center justify-center">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                </div>
+                <h3 className="text-white font-black text-xl mb-2">Bukti Terkirim!</h3>
+                <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                  Admin akan memverifikasi pembayaran dan mengaktifkan token VIP kamu secepatnya.
+                </p>
+                <div className="bg-white/5 rounded-xl p-4 mb-6 text-left space-y-2 text-sm">
+                  <div className="flex justify-between"><span className="text-slate-400">No. Invoice</span><span className="text-white font-mono">{order?.id}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Paket</span><span className="text-white">{order?.paket}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Total</span><span className="text-white font-bold">{displayPrice}</span></div>
+                </div>
+                <button onClick={onClose} className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm">Selesai</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PricingSection() {
+  const [pricingData, setPricingData] = useState<any>(null);
+  const [showOrder, setShowOrder] = useState(false);
+  const [flashExpired, setFlashExpired] = useState(false);
+
+  useEffect(() => {
+    const load = () => {
+      fetch("/api/admin/sync").then(r => r.json()).then(d => {
+        if (d.pricing && d.pricing.length > 0) {
+          const basic = d.pricing.find((p:any) => p.id === "basic" || p.name?.toLowerCase() === "basic");
+          if (basic) setPricingData(basic);
+        }
+      }).catch(() => {});
+    };
+    load();
+    const iv = setInterval(load, 30000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const pkg = pricingData || {
+    id:"basic", name:"Basic", price:100000, priceLabel:"Rp 100.000", period:"/bulan", color:"blue",
+    description:"Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.",
+    features:["Sinyal saham harian","Berita pasar realtime","Chart IHSG live","Modul dasar investasi","Grup WA Basic"],
+  };
+
+  const rawFlash = pricingData?.flashSale;
+  const flashSale = (rawFlash && !flashExpired) ? rawFlash : null;
+
+  const { timeLeft, expired: timerExpired } = useFlashSaleTimer(flashSale?.endTime || null);
+
+  useEffect(() => {
+    if (timerExpired) setFlashExpired(true);
+  }, [timerExpired]);
+
+  // Color map for card
+  const colorMap: any = {
+    blue:  { border:"border-blue-500/40", accent:"text-blue-400", badge:"bg-blue-500", bg:"from-blue-600 to-blue-800" },
+    cyan:  { border:"border-cyan-500/40", accent:"text-cyan-400", badge:"bg-cyan-500", bg:"from-cyan-600 to-blue-700" },
+    gold:  { border:"border-yellow-500/40", accent:"text-yellow-400", badge:"bg-yellow-500", bg:"from-yellow-500 to-orange-600" },
+    purple:{ border:"border-purple-500/40", accent:"text-purple-400", badge:"bg-purple-500", bg:"from-purple-600 to-indigo-700" },
+    platinum:{ border:"border-slate-400/40", accent:"text-slate-300", badge:"bg-slate-400", bg:"from-slate-400 to-slate-600" },
+    elite: { border:"border-yellow-400/60", accent:"text-yellow-400", badge:"bg-yellow-400", bg:"from-yellow-400 to-orange-500" },
+  };
+  const c = colorMap[pkg.color] || colorMap.blue;
+
+  return (
+    <>
+      {showOrder && <OrderModal pkg={pkg} flashSale={flashSale} onClose={() => setShowOrder(false)} />}
+      <section id="pricing" className="py-16 px-4 border-t border-white/5 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black text-white mb-2">Paket <span className="gradient-text">VIP</span></h2>
+            <p className="text-slate-500 text-sm">Mulai dari Rp 100.000/bulan — pilih level yang sesuai</p>
+          </div>
+
+          <div className="max-w-sm mx-auto">
+            <TiltCard>
+              <div className={`relative card-glass rounded-2xl p-6 border-2 ${c.border} hover:shadow-xl transition-all duration-300`}>
+                {/* Popular badge */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className={`${c.badge} text-white text-xs font-black px-4 py-1 rounded-full`}>MULAI DARI SINI</span>
+                </div>
+
+                {/* Flash sale banner */}
+                {flashSale && (
+                  <div className="bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/30 rounded-xl p-3 mb-4 mt-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="flash-badge">FLASH SALE {flashSale.discount}</span>
+                      {timeLeft && (
+                        <div className="flex items-center gap-1 text-xs">
+                          <span className="text-slate-400">Berakhir:</span>
+                          {[
+                            { v: timeLeft.h, l: "J" },
+                            { v: timeLeft.m, l: "M" },
+                            { v: timeLeft.s, l: "D" },
+                          ].map(({v, l}) => (
+                            <div key={l} className="bg-red-500/20 border border-red-500/30 rounded px-1.5 py-0.5 text-center min-w-[28px]">
+                              <div className="text-red-300 font-black font-mono text-sm leading-none">{String(v).padStart(2,"0")}</div>
+                              <div className="text-red-400/60 text-[9px] leading-none mt-0.5">{l}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Package name */}
+                <div className={`text-xl font-black ${c.accent} mb-2 mt-1`}>{pkg.name}</div>
+
+                {/* Price */}
+                {flashSale ? (
+                  <div className="mb-4">
+                    <div className="text-slate-500 line-through text-sm">{pkg.priceLabel}</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-white">{flashSale.price}</span>
+                      <span className="text-slate-400 text-sm">{pkg.period}</span>
+                    </div>
+                    <div className="text-xs text-green-400 font-bold mt-0.5">Hemat {flashSale.discount}!</div>
+                  </div>
+                ) : (
+                  <div className="mb-4 flex items-baseline gap-1">
+                    <span className="text-3xl font-black text-white">{pkg.priceLabel}</span>
+                    <span className="text-slate-400 text-sm">{pkg.period}</span>
+                  </div>
+                )}
+
+                <p className="text-slate-400 text-sm mb-5 leading-relaxed">{pkg.description}</p>
+
+                {/* WA Group highlight */}
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-2 mb-4 text-xs text-green-300 flex items-center gap-2">
+                  <span>Grup WA <strong>{pkg.name}</strong> — komunitas eksklusif</span>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-2 mb-6">
+                  {(pkg.features || []).map((f: string, i: number) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
+                      <span className={`${c.accent} flex-shrink-0 font-bold`}>✓</span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Order button */}
+                <button onClick={() => setShowOrder(true)}
+                  className={`w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r ${c.bg} hover:opacity-90 transition-all hover:scale-[1.02]`}>
+                  Order Paket {pkg.name} →
+                </button>
+              </div>
+            </TiltCard>
+
+            <div className="text-center mt-6">
+              <p className="text-slate-500 text-sm mb-3">Butuh fitur lebih? Tersedia 5 paket lainnya.</p>
+              <Link href="/paket" className="text-cyan-400 hover:text-cyan-300 text-sm font-bold border border-cyan-500/30 px-6 py-2.5 rounded-xl hover:bg-cyan-500/5 transition-all inline-block">
+                Lihat Semua Paket
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
