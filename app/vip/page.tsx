@@ -94,76 +94,191 @@ const PKG_COLORS: any = {
 };
 
 // ===== ALL MODULES (comprehensive, by level) =====
+const MODULE_CONTENT: any = {
+  b1: {
+    image: null,
+    lessons: [
+      { title:"Apa Itu Saham?", body:"Saham adalah bukti kepemilikan sebagian dari sebuah perusahaan. Saat kamu beli saham BBCA, kamu jadi salah satu pemilik Bank BCA. Keuntungan dari dua sumber: kenaikan harga (capital gain) dan pembagian laba perusahaan (dividen)." },
+      { title:"Cara Kerja Bursa Efek", body:"BEI adalah tempat jual beli saham terorganisir. Sesi I: 09:00–12:00, Sesi II: 13:30–15:49 WIB. Harga ditentukan mekanisme supply & demand — siapa yang mau beli dan siapa yang mau jual di harga berapa." },
+      { title:"Membuka Rekening Saham", body:"Pilih broker terdaftar OJK: BCA Sekuritas, Mirae Asset, Mandiri Sekuritas, Stockbit. Siapkan KTP, NPWP, foto selfie, rekening bank. Proses 1-3 hari kerja. Setelah aktif, transfer ke RDN dan mulai beli saham." },
+      { title:"Lot & Fraksi Harga", body:"1 lot = 100 lembar saham. Harga saham Rp 1.000 → 1 lot = Rp 100.000. Fraksi harga: saham < Rp 200 bergerak Rp 1/tick, > Rp 5.000 bergerak Rp 25/tick. Auto rejection mencegah harga naik/turun lebih dari 35% sehari." },
+      { title:"Transaksi Pertamamu", body:"Cari saham di aplikasi → masukkan kode (misal: BBCA) → pilih jumlah lot → klik Beli. Pastikan saldo RDN cukup. Order dieksekusi saat ada penjual di harga yang sama. Cek portofoliomu di menu Portofolio." },
+    ]
+  },
+  b2: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/38303af8a_generated_image.png",
+    lessons: [
+      { title:"Jenis Chart Saham", body:"3 jenis chart utama: Line chart (hanya harga penutupan), Bar chart (OHLC), dan Candlestick chart (paling populer). Trader profesional pakai candlestick karena paling informatif dan mudah dibaca secara visual." },
+      { title:"Anatomy Candlestick (OHLC)", body:"Setiap candle: Open (buka), High (tertinggi), Low (terendah), Close (tutup). Body = jarak open ke close. Shadow/ekor = jarak ke high/low. Candle hijau = close > open (bullish). Candle merah = close < open (bearish)." },
+      { title:"Pola Candle Penting", body:"Hammer: body kecil, ekor panjang bawah → sinyal reversal naik. Shooting Star: ekor panjang atas → sinyal reversal turun. Bullish Engulfing: candle hijau besar 'menelan' candle merah → sinyal kuat naik. Doji: open ≈ close → ketidakpastian pasar." },
+      { title:"Membaca Timeframe", body:"Daily chart = 1 candle = 1 hari (paling umum untuk swing trading). Weekly = trend menengah. Monthly = jangka panjang. Semakin besar timeframe, semakin kuat sinyalnya. Selalu cek daily, konfirmasi di weekly." },
+      { title:"Tools Chart Gratis", body:"TradingView (tradingview.com) — terbaik, bisa set alert harga gratis. RTI Business — data saham IDX lengkap. Stockbit — cocok untuk trader Indonesia. Semua gratis, tinggal daftar dan cari kode saham BEI." },
+    ]
+  },
+  b3: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/837ca8cd8_generated_image.png",
+    lessons: [
+      { title:"Modal Ideal untuk Mulai", body:"Tidak ada minimal modal di BEI — bahkan Rp 100.000 sudah bisa beli 1 lot. Idealnya mulai Rp 1–5 juta agar bisa diversifikasi 3-5 saham. Yang terpenting: jangan pakai uang yang dibutuhkan dalam 3-6 bulan ke depan." },
+      { title:"Aturan 1-2% Risk Per Trade", body:"Jika portofoliomu Rp 10 juta, maksimal risiko per transaksi = Rp 100.000–200.000 (1-2%). Artinya jika stop loss kena, kamu kehilangan maksimal 2% dari total modal — bukan hancur total. Ini aturan paling fundamental dalam manajemen modal." },
+      { title:"Diversifikasi Portofolio", body:"Jangan taruh semua telur dalam satu keranjang. Idealnya 3-7 saham dari sektor berbeda. Contoh: 1 perbankan (BBCA), 1 energi (PGAS), 1 konsumer (UNVR), 1 infrastruktur (JSMR). Korelasi rendah antar saham = risiko lebih terkontrol." },
+      { title:"3 Layer Portofolio", body:"Core (50%): Blue chip stabil — BBCA, TLKM, BMRI. Tahan lama, dividen bagus. Growth (30%): Mid-cap dengan potensi tumbuh — sektor teknologi, kesehatan. Speculative (20%): Small cap berpotensi tinggi, risiko besar — batasi ketat dan selalu pasang stop loss." },
+      { title:"Menghitung Profit & Loss", body:"Profit = (Harga Jual - Harga Beli) × Jumlah Lembar - Biaya Broker. Biaya broker 0.1-0.3% per transaksi. Contoh: Beli BBCA 1 lot @ Rp 9.000, jual @ Rp 9.500 → Profit ≈ Rp 48.000 setelah biaya. Selalu hitung net profit setelah biaya." },
+    ]
+  },
+  b4: {
+    image: null,
+    lessons: [
+      { title:"Sumber Berita Terpercaya", body:"CNBC Indonesia — berita pasar saham & makro terkini. Kontan.co.id — analisis saham & laporan keuangan. IDX.co.id — keterbukaan informasi resmi emiten. Investing.com — data ekonomi global & kalender ekonomi. Bloomberg/Reuters — sentimen global utama." },
+      { title:"Pengaruh BI Rate", body:"BI naikkan suku bunga → saham cenderung turun (investor lebih suka deposito/obligasi). BI turunkan suku bunga → saham cenderung naik (biaya modal murah, ekspansi bisnis lebih mudah). Sektor perbankan paling sensitif terhadap perubahan BI Rate." },
+      { title:"Dampak Data Makro", body:"Inflasi tinggi → BI naikkan rate → tekanan saham. GDP tumbuh → ekonomi sehat → saham naik. PMI manufaktur > 50 → ekspansi → positif. Data tenaga kerja AS (NFP) tiap Jumat pertama bulan → penggerak pasar global termasuk IHSG." },
+      { title:"Membaca Keterbukaan Informasi", body:"Buka idx.co.id → Perusahaan Tercatat → Keterbukaan Informasi. Cari: laporan keuangan kuartalan, laporan tahunan, corporate action (dividen, rights issue, buyback), keterbukaan material (akuisisi, pergantian direksi). Semua emiten BEI wajib lapor ke IDX." },
+      { title:"Tidak Panik Saat Market Turun", body:"Koreksi pasar adalah normal dan terjadi tiap tahun. IHSG pernah turun 50%+ saat krisis, tapi selalu recovery. Kunci: jangan investasi dengan uang pinjaman, jangan lihat portofolio tiap menit, fokus pada kualitas perusahaan bukan fluktuasi harga jangka pendek." },
+    ]
+  },
+  s1: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/92bd00609_generated_image.png",
+    lessons: [
+      { title:"Laporan Laba Rugi", body:"Komponen utama: Revenue (total pendapatan), Gross Profit (Revenue - HPP), EBITDA (laba sebelum bunga, pajak, depresiasi), Net Profit (laba bersih). Cari perusahaan dengan net profit margin konsisten naik tiap tahun — itu tanda bisnis makin efisien." },
+      { title:"Neraca Keuangan (Balance Sheet)", body:"Snapshot kondisi keuangan pada tanggal tertentu. Aset = Liabilitas + Ekuitas. Cek: Current Ratio (aset lancar / utang lancar) > 1.5 = bagus. DER (debt/equity) < 1 = lebih aman. Ekuitas terus naik dari tahun ke tahun = perusahaan tumbuh sehat." },
+      { title:"Laporan Arus Kas", body:"Paling susah dipalsukan. Operating Cash Flow positif dan tumbuh = bisnis sehat. Jika net profit positif tapi OCF negatif → waspada, bisa window dressing. Investing Cash Flow negatif bisa bagus (ekspansi). Free Cash Flow = OCF - Capex — ini yang paling dicermati investor institusi." },
+      { title:"Red Flags Perusahaan Bermasalah", body:"🚨 Piutang tumbuh jauh lebih cepat dari revenue, utang membengkak tiap tahun, gross margin terus menurun, pergantian auditor mendadak, direksi menjual saham besar-besaran, laporan keuangan sering direvisi, dan OCF terus negatif meski laba positif." },
+      { title:"Download & Baca Laporan Keuangan", body:"Buka idx.co.id → Perusahaan Tercatat → Laporan Keuangan. Atau di website IR perusahaan. Bandingkan minimal 4 kuartal (QoQ) dan 3 tahun (YoY) untuk lihat tren. Gunakan Stockbit atau RTI untuk ringkasan cepat tanpa baca PDF panjang." },
+    ]
+  },
+  s2: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/92bd00609_generated_image.png",
+    lessons: [
+      { title:"Price to Earnings Ratio (PER)", body:"PER = Harga Saham / EPS. Contoh: harga Rp 1.000, EPS Rp 100 → PER 10x = kamu bayar 10 tahun laba. PER rendah belum tentu murah — bandingkan dengan rata-rata sektornya. Bank besar biasanya PER 8-15x, sektor tech bisa 30-50x." },
+      { title:"Price to Book Value (PBV)", body:"PBV = Harga Saham / Nilai Buku per Saham. PBV < 1 = harga di bawah nilai aset bersih (potensi undervalue, tapi cek fundamentalnya). Untuk saham bank, PBV 1-2.5x wajar. PBV > 5x = mahal, kecuali growth sangat tinggi dan ROE konsisten." },
+      { title:"ROE & ROA", body:"ROE (Return on Equity) = Net Profit / Ekuitas. ROE > 15% bagus, > 20% sangat bagus — menunjukkan efisiensi penggunaan modal. ROA (Return on Assets) = Net Profit / Total Aset — untuk bank biasanya cek ROA > 1.5%. Konsistensi ROE selama 5 tahun lebih penting dari angka satu tahun." },
+      { title:"Debt to Equity Ratio (DER)", body:"DER = Total Utang / Ekuitas. DER < 1 = lebih banyak modal sendiri = lebih aman. DER 1-2 = masih bisa diterima di beberapa industri. DER > 3 = sangat berisiko, kecuali perbankan dan leasing yang memang model bisnisnya leverage tinggi." },
+      { title:"Cara Hitung Valuasi Sederhana", body:"Bandingkan PER saham dengan rata-rata industri. Jika PER di bawah rata-rata tapi ROE lebih tinggi = UNDERVALUED! Contoh: BBRI PER 8x, rata-rata bank besar 12x, tapi ROE 18% → potensi undervalue = entry point bagus. Kombinasikan dengan analisis teknikal untuk timing masuk terbaik." },
+    ]
+  },
+  s3: {
+    image: null,
+    lessons: [
+      { title:"Kriteria Saham Multi-Bagger", body:"Multi-bagger = saham naik 2x, 5x, 10x lipat. Ciri-cirinya: Revenue tumbuh 20%+ per tahun, net profit margin meningkat, market cap masih kecil (<Rp 5T), management berpengalaman & punya saham sendiri, berada di industri growth cycle." },
+      { title:"Cara Screening Saham", body:"Gunakan Stockbit Screener atau RTI: Filter → Market Cap < 5T + Revenue Growth YoY > 20% + ROE > 15% + DER < 1. Hasilnya 10-20 saham — analisis lebih lanjut satu per satu. Bandingkan dengan kompetitor di sektor yang sama untuk lihat keunggulan relatifnya." },
+      { title:"Competitive Moat (Keunggulan Kompetitif)", body:"Cari perusahaan dengan 'parit pertahanan' yang susah ditembus: Brand kuat (UNVR, MYOR), Network effect (GOTO), Biaya switching tinggi (software enterprise), Regulasi melindungi (TLKM, BBCA), atau skala ekonomi (INDF, ICBP). Moat = saham tahan banting jangka panjang." },
+      { title:"Low Float & Insider Ownership", body:"Float = jumlah saham beredar bebas. Float rendah + volume naik = harga bisa bergerak cepat. Insider ownership tinggi (direksi/komisaris pegang banyak saham sendiri) = manajemen percaya pada bisnisnya. Cek di laporan tahunan bagian Kepemilikan Saham." },
+      { title:"Sektor dalam Growth Cycle", body:"2024-2026 di BEI yang menarik: Digital banking & fintech, Data center & cloud (DCII), EV & baterai nikel (MBAP, ADRO), Healthcare post-COVID, CPO & transisi energi. Masuk di awal siklus pertumbuhan sektor = return terbesar sebelum mainstream." },
+    ]
+  },
+  s4: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/837ca8cd8_generated_image.png",
+    lessons: [
+      { title:"Position Sizing yang Benar", body:"Rumus: Modal per saham = Total Modal × % Risiko / % Stop Loss. Contoh: Modal Rp 10 juta, risiko 2% = Rp 200.000, stop loss 10% bawah entry → beli maksimal Rp 2 juta di saham itu. Konsisten dengan ukuran posisi adalah kunci long-term survival di pasar." },
+      { title:"Cut Loss: Kapan & Bagaimana", body:"Cut loss bukan kalah — cut loss adalah menyelamatkan modal untuk trade berikutnya. Tentukan stop loss SEBELUM beli. Aturan umum: -7% sampai -10% dari harga beli = exit. Jangan pernah hold saham turun karena 'nanti naik' tanpa alasan fundamental yang jelas dan terukur." },
+      { title:"Averaging Down yang Benar", body:"HANYA boleh dilakukan jika: (1) Fundamental perusahaan masih kuat, (2) Alasan awal beli masih valid, (3) Masih punya cash cadangan. JANGAN averaging down saham yang fundamentalnya memburuk. Averaging down saham buruk = memperbesar kerugian, bukan memperbaikinya." },
+      { title:"Trading Journal & Evaluasi", body:"Catat setiap transaksi: tanggal, kode saham, alasan beli, entry, TP, SL, hasil, dan pelajaran. Review bulanan: win rate berapa? risk/reward ratio berapa? Trader yang konsisten profit SEMUA punya trading journal — ini cermin terjujur dari kualitas keputusanmu." },
+      { title:"Target Return Realistis", body:"Benchmark IHSG jangka panjang ~15%/tahun. Target realistis investor aktif: 20-30%/tahun sudah sangat baik. Siapapun yang janji 100%+ per bulan hampir pasti scam. Warren Buffett rata-rata 20%/tahun dan itu dianggap luar biasa di seluruh dunia selama 50+ tahun." },
+    ]
+  },
+  g1: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/050d585f7_generated_image.png",
+    lessons: [
+      { title:"Support & Resistance", body:"Support = level harga di mana banyak pembeli masuk → harga memantul ke atas. Resistance = level di mana banyak penjual masuk → harga tertolak ke bawah. Cara menentukan: tarik garis horizontal di titik harga yang sudah beberapa kali memantul. Makin sering diuji = makin kuat levelnya." },
+      { title:"Trend Analysis", body:"Uptrend = Higher High (HH) + Higher Low (HL) → beli di setiap Higher Low. Downtrend = Lower High (LH) + Lower Low (LL) → jangan beli, tunggu konfirmasi reversal. Sideways = harga bergerak horizontal → beli di support, jual di resistance. Rule utama: Don't fight the trend!" },
+      { title:"Pattern Reversal: Head & Shoulders", body:"Pola 3 puncak: bahu kiri, kepala (tertinggi), bahu kanan. Saat harga tembus neckline ke bawah = sinyal jual kuat! Target price = jarak kepala ke neckline, diproyeksikan ke bawah. Double Top: 2 puncak setara = bearish. Double Bottom: 2 lembah setara = bullish kuat." },
+      { title:"Pattern Continuation: Flag & Pennant", body:"Bull Flag: candle naik kuat (tiang) + konsolidasi miring turun (bendera) → entry saat breakout atas. Pennant: konsolidasi segitiga simetris setelah gerakan kuat → arah breakout = konfirmasi lanjutan trend. Ascending Triangle: resistance horizontal + support naik = biasanya breakout ke atas." },
+      { title:"Moving Average sebagai Support/Resistance Dinamis", body:"MA 20 = support/resistance jangka pendek. MA 50 = menengah. MA 200 = jangka panjang (di atas MA200 = bull market). Harga bouncing dari MA = entry point bagus dengan stop loss di bawah MA. Golden Cross (MA50 silang ke atas MA200) = sinyal bullish jangka panjang yang kuat." },
+    ]
+  },
+  g2: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/32f51ddfa_generated_image.png",
+    lessons: [
+      { title:"RSI (Relative Strength Index)", body:"Skala 0-100. RSI > 70 = overbought (potensi koreksi). RSI < 30 = oversold (potensi rebound). RSI Divergence: harga buat Higher High tapi RSI buat Lower High = bearish divergence → sinyal reversal turun sangat kuat! Ini salah satu sinyal paling reliabel di teknikal analisis." },
+      { title:"MACD", body:"MACD Line = EMA 12 - EMA 26. Signal Line = EMA 9 dari MACD. Sinyal beli: MACD crossover ke atas Signal Line (terutama di area negatif). Sinyal jual: MACD crossover ke bawah Signal Line (di area positif). Histogram makin mengecil = momentum melemah, siap-siap reversal." },
+      { title:"Bollinger Bands", body:"3 garis: Middle Band (SMA 20), Upper Band (+2 SD), Lower Band (-2 SD). Squeeze (pita menyempit) = volatilitas rendah, siap breakout besar — perhatikan arah breakout-nya! Harga menyentuh lower band di uptrend yang masih valid = entry peluang bagus. Upper band = area take profit." },
+      { title:"Volume Analysis", body:"Harga naik + volume naik = naik kuat (valid). Harga naik + volume turun = lemah, hati-hati. Harga turun + volume naik = distribusi, waspada. Volume spike 3-5x rata-rata = ada aksi big player atau news penting. SELALU cek volume sebelum entry — volume adalah konfirmasi terpenting." },
+      { title:"Kombinasi Indikator Efektif", body:"Pakai maksimal 3 indikator: (1) Trend: MA 20 + MA 50, (2) Momentum: RSI atau MACD, (3) Volatilitas: Bollinger Bands. Tunggu minimal 2 dari 3 memberikan sinyal searah sebelum entry — ini disebut konfluensi. Probabilitas sukses jauh lebih tinggi dari satu sinyal saja." },
+    ]
+  },
+  g3: {
+    image: "https://media.base44.com/images/public/6a1dca69a67dba3797387df2/d1eca2064_generated_image.png",
+    lessons: [
+      { title:"Siapa Itu Bandar?", body:"Bandar adalah pelaku pasar bermodal besar — institusi, sekuritas besar, atau konglomerat — yang punya kemampuan menggerakkan harga saham tertentu. Di saham small-mid cap BEI, bandar sangat aktif. Pola mereka: akumulasi di harga rendah → pump → distribusi di harga tinggi." },
+      { title:"Deteksi Fase Akumulasi", body:"Ciri saham diakumulasi: Volume naik tapi harga sideways (bandar serap tekanan jual), candle-candle kecil dengan ekor panjang di bawah, broker tertentu konsisten net buy, bid jauh lebih tebal dari offer di market depth. Ini adalah fase terbaik untuk ikut masuk!" },
+      { title:"Deteksi Fase Distribusi", body:"Setelah harga sudah naik tinggi: Volume tidak konsisten, candle panjang tapi sering berbalik, asing mulai net sell, berita positif bermunculan justru saat bandar sedang jual ke retailer yang FOMO. Sinyal: segera profit taking atau exit sebelum dump terjadi." },
+      { title:"Tape Reading & Market Depth", body:"Market depth: antrian bid (pembeli) vs offer (penjual). Bid tebal di support = bandar ada di bawah → aman. Offer tebal di resistance = banyak penjual → hati-hati breakout palsu. Tape reading = amati kecepatan dan ukuran transaksi real-time untuk deteksi big player bergerak." },
+      { title:"Hindari Jebakan Pump & Dump", body:"Ciri pump & dump: Kenaikan cepat >20% dalam beberapa hari, volume ekstrem, berita terlalu positif mendadak, banyak grup WA/Telegram rekomendasikan bersamaan. Solusi: jangan chase harga yang sudah naik banyak. Masuk hanya di fase akumulasi, BUKAN saat sudah pump." },
+    ]
+  },
+  g4: {
+    image: null,
+    lessons: [
+      { title:"Fear & Greed", body:"Fear (takut) membuat investor jual di harga terendah. Greed (serakah) membuat investor beli di harga tertinggi. Keduanya musuh utama investor. Solusi: punya sistem trading dengan aturan entry & exit yang objektif dan terukur — sehingga emosi tidak ikut campur dalam keputusan." },
+      { title:"FOMO & Panic Selling", body:"FOMO: Saham sudah naik 30%, kamu beli karena takut ketinggalan → biasanya itulah puncaknya. Panic Selling: Saham turun 10%, kamu jual panik → biasanya itulah bottomnya. Solusi: Selalu tentukan rencana sebelum masuk. Jika sudah melewati entry zone-mu, skip dan cari peluang berikutnya." },
+      { title:"Trading Journal", body:"Catat setiap trade: Tanggal, Saham, Alasan beli (setup apa), Entry, TP, SL, Hasil, dan Evaluasi (apa yang benar/salah). Review setiap bulan. Trader yang konsisten profit SEMUA punya trading journal. Ini adalah cermin terjujur dari kualitas setiap keputusan tradingmu." },
+      { title:"Bias Kognitif yang Merusak", body:"• Confirmation bias: cari info yang hanya mendukung keputusanmu
+• Anchoring: terpaku pada harga beli, susah cut loss
+• Sunk cost fallacy: 'sayang dijual rugi' padahal fundamental sudah rusak
+• Overconfidence: merasa ahli setelah beberapa kali profit
+Solusi: selalu cari second opinion dan respek pada stop loss." },
+      { title:"Membangun Sistem Trading", body:"Sistem yang baik punya: (1) Kriteria entry yang jelas dan terukur, (2) Target profit (TP) realistis, (3) Stop loss yang ketat dan WAJIB diikuti, (4) Position sizing yang konsisten, (5) Maximum drawdown — jika portofolio turun 20%, berhenti trading 2 minggu untuk evaluasi & reset mindset." },
+    ]
+  },
+};
+
 const ALL_MODULES = [
-  // BASIC
   {id:"b1",level:0,pkgLabel:"Basic",icon:"📘",tag:"Pemula",title:"Dasar Investasi Saham",
-   desc:"Modul pengantar lengkap untuk investor pemula. Kamu akan belajar dari nol: apa itu saham, bagaimana Bursa Efek Indonesia bekerja, cara membuka rekening saham, memahami lot, fraksi harga, auto rejection, jam perdagangan, dan cara melakukan transaksi pertamamu. Dirancang agar siapapun — tanpa latar belakang keuangan — bisa langsung paham dan siap mulai berinvestasi dengan percaya diri.",
+   desc:"Modul pengantar lengkap dari nol: apa itu saham, cara kerja BEI, membuka rekening, lot & fraksi harga, dan cara melakukan transaksi pertamamu.",
    topics:["Definisi saham & instrumen pasar modal","Mekanisme kerja BEI & JATS","Cara buka rekening & pilih broker","Lot, fraksi harga, auto rejection","Jam perdagangan & sesi bursa","Cara beli saham pertamamu"]},
   {id:"b2",level:0,pkgLabel:"Basic",icon:"📊",tag:"Pemula",title:"Membaca Chart Saham",
-   desc:"Belajar membaca grafik harga saham dari dasar. Modul ini mengajarkan perbedaan jenis chart (line, bar, candlestick), cara membaca pergerakan harga harian, dan memahami arti warna merah-hijau pada candlestick. Setelah menyelesaikan modul ini, kamu bisa melihat chart saham dengan lebih percaya diri dan mulai mengidentifikasi tren sederhana tanpa perlu software mahal.",
-   topics:["Jenis chart: line, bar, candlestick","Anatomy candle: OHLC","Bullish vs bearish candle","Timeframe: daily, weekly, monthly","Cara baca volume pada chart","Tools gratis: TradingView, RTI Business"]},
+   desc:"Belajar membaca grafik harga dari dasar: jenis chart, anatomy candlestick, pola candle penting, timeframe, dan tools gratis yang bisa langsung dipakai.",
+   topics:["Jenis chart: line, bar, candlestick","Anatomy candle: OHLC","Bullish vs bearish candle","Pola candle: hammer, engulfing, doji","Timeframe: daily, weekly, monthly","Tools gratis: TradingView, RTI Business"]},
   {id:"b3",level:0,pkgLabel:"Basic",icon:"💰",tag:"Pemula",title:"Manajemen Modal Pemula",
-   desc:"Salah satu skill terpenting sebelum mulai trading adalah tahu cara mengatur modal. Modul ini membahas berapa modal ideal untuk mulai berinvestasi, cara membagi portofolio agar tidak all-in di satu saham, pentingnya tidak menggunakan uang yang dibutuhkan sehari-hari, dan cara memahami toleransi risiko diri sendiri. Investor yang bertahan adalah investor yang bisa mengelola modalnya dengan baik.",
-   topics:["Modal ideal untuk pemula","Aturan 1%-2% risk per trade","Diversifikasi portofolio sederhana","Jangan pakai uang darurat","Menghitung potensi profit & loss","Mindset jangka panjang vs short term"]},
+   desc:"Cara mengatur modal agar tidak habis sebelum belajar: aturan 1-2%, diversifikasi, 3 layer portofolio, dan cara hitung profit/loss secara akurat.",
+   topics:["Modal ideal untuk pemula","Aturan 1%-2% risk per trade","Diversifikasi portofolio sederhana","3 layer: core, growth, speculative","Jangan pakai uang darurat","Menghitung profit & loss net setelah biaya"]},
   {id:"b4",level:0,pkgLabel:"Basic",icon:"📰",tag:"Pemula",title:"Membaca Berita & Sentimen Pasar",
-   desc:"Pasar saham sangat dipengaruhi berita dan sentimen. Modul ini mengajarkan cara membaca berita ekonomi secara efektif, memfilter mana yang relevan dan mana yang hanya rumor, serta bagaimana berita makro seperti inflasi, suku bunga BI, kebijakan pemerintah, dan sentimen global (The Fed, DXY, harga komoditas) berdampak langsung pada IHSG dan saham-saham di BEI.",
-   topics:["Sumber berita terpercaya untuk investor","Pengaruh BI Rate terhadap saham","Dampak data inflasi & GDP","Membaca keterbukaan informasi emiten","Pengaruh sentimen global (Fed, DXY)","Cara tidak panik saat market turun"]},
-  // SILVER
+   desc:"Cara membaca berita ekonomi efektif, sumber terpercaya, pengaruh BI Rate & data makro, membaca keterbukaan informasi IDX, dan cara tidak panik saat koreksi.",
+   topics:["Sumber berita terpercaya untuk investor","Pengaruh BI Rate terhadap saham","Dampak data inflasi & GDP","Membaca keterbukaan informasi IDX","Pengaruh sentimen global (Fed, DXY)","Cara tidak panik saat market turun"]},
   {id:"s1",level:1,pkgLabel:"Silver",icon:"🔍",tag:"Fundamental",title:"Analisis Fundamental: Laporan Keuangan",
-   desc:"Fundamental analysis adalah kunci menemukan saham bagus dengan harga wajar. Kamu akan belajar membaca tiga laporan keuangan utama: neraca keuangan, laporan laba rugi, dan laporan arus kas. Kamu akan memahami apa arti setiap angka, bagaimana mengidentifikasi perusahaan yang sehat secara keuangan, dan mana yang harus dihindari. Skill ini digunakan semua investor sukses jangka panjang.",
-   topics:["Laporan laba rugi: revenue, EBITDA, net profit","Neraca: aset, liabilitas, ekuitas","Laporan arus kas: operating, investing, financing","Tanda perusahaan sehat vs bermasalah","Download laporan keuangan di IDX.co.id","Perbandingan antar kuartal (QoQ, YoY)"]},
+   desc:"Cara membaca 3 laporan keuangan utama: laba rugi, neraca, arus kas. Identifikasi perusahaan sehat vs bermasalah dari angka-angka kuncinya.",
+   topics:["Laporan laba rugi: revenue, EBITDA, net profit","Neraca: aset, liabilitas, ekuitas","Laporan arus kas: operating, investing, financing","Red flags perusahaan bermasalah","Download & baca laporan keuangan IDX","Perbandingan antar kuartal (QoQ, YoY)"]},
   {id:"s2",level:1,pkgLabel:"Silver",icon:"📐",tag:"Fundamental",title:"Rasio Keuangan & Valuasi Saham",
-   desc:"Setelah bisa membaca laporan keuangan, langkah selanjutnya adalah menilai apakah harga saham sudah murah atau mahal dibanding nilainya yang sebenarnya. Modul ini membahas rasio keuangan penting: PER, PBV, ROE, DER, dividend yield, dan cara menggunakannya untuk membandingkan saham sejenis dalam satu industri. Kamu akan punya alat yang tepat untuk menyaring saham undervalued.",
-   topics:["Price to Earnings Ratio (PER)","Price to Book Value (PBV)","Return on Equity (ROE) & ROA","Debt to Equity Ratio (DER)","Dividend Yield & Payout Ratio","Cara hitung intrinsic value sederhana"]},
+   desc:"Cara menilai saham murah atau mahal dengan PER, PBV, ROE, DER, dividend yield — lengkap dengan cara hitung valuasi sederhana yang bisa langsung dipraktikkan.",
+   topics:["Price to Earnings Ratio (PER)","Price to Book Value (PBV)","Return on Equity (ROE) & ROA","Debt to Equity Ratio (DER)","Cara hitung valuasi sederhana","Perbandingan antar emiten sejenis"]},
   {id:"s3",level:1,pkgLabel:"Silver",icon:"🔭",tag:"Fundamental",title:"Screening Saham Berpotensi Bagger",
-   desc:"Bagger saham adalah saham yang harganya naik berkali-kali lipat dalam jangka menengah hingga panjang. Modul ini mengajarkan metode screening sistematis untuk menemukan saham dengan potensi pertumbuhan tinggi sebelum harganya meledak — menggunakan kriteria fundamental yang terbukti: revenue growth, margin expansion, competitive moat, dan positioning industri.",
-   topics:["Kriteria saham multi-bagger: growth + value","Screening dengan RTI, Stockbit, TradingView","Revenue growth & margin expansion","Emiten dengan competitive moat","Low float, high insider ownership","Sektor yang sedang dalam growth cycle"]},
+   desc:"Metode sistematis menemukan saham multi-bagger: kriteria growth + value, cara screening di Stockbit/RTI, competitive moat, low float, dan sektor growth cycle terkini.",
+   topics:["Kriteria saham multi-bagger","Cara screening Stockbit & RTI","Revenue growth & margin expansion","Competitive moat emiten BEI","Low float & insider ownership","Sektor dalam growth cycle 2024-2026"]},
   {id:"s4",level:1,pkgLabel:"Silver",icon:"⚖️",tag:"Manajemen Risiko",title:"Risk & Money Management Lanjutan",
-   desc:"Investor yang survive jangka panjang bukan yang paling pintar analisis, tapi yang paling disiplin menjaga modal. Modul ini membahas position sizing, cara menentukan maksimal kerugian per trade, strategi cut loss yang tepat, averaging down yang benar, dan bagaimana membangun portofolio yang terdiversifikasi secara optimal.",
-   topics:["Position sizing: Kelly Criterion & fixed %","Cut loss: aturan dan psikologi di baliknya","Averaging down: kapan boleh, kapan bahaya","Portofolio 3 layer: core, growth, speculative","Rekap kinerja bulanan & evaluasi","Target return realistis per tahun"]},
-  // GOLD
+   desc:"Position sizing, cut loss yang tepat, averaging down yang benar, trading journal untuk evaluasi, dan target return realistis yang bisa dijadikan benchmark.",
+   topics:["Position sizing yang benar","Cut loss: aturan dan cara eksekusi","Averaging down: kapan boleh, kapan bahaya","Trading journal untuk evaluasi","Rekap kinerja bulanan","Target return realistis per tahun"]},
   {id:"g1",level:2,pkgLabel:"Gold",icon:"📈",tag:"Teknikal",title:"Analisis Teknikal Mendalam",
-   desc:"Technical analysis adalah seni membaca pergerakan harga untuk memprediksi arah ke depan. Modul Gold ini membahas semua chart pattern penting yang digunakan trader profesional: dari pattern reversal, continuation, hingga pattern khusus yang sering muncul di saham-saham IDX. Dilengkapi contoh nyata dan cara entry-exit setiap pattern.",
-   topics:["Support & resistance: cara menentukan level kuat","Trend: uptrend, downtrend, sideways","Pattern reversal: head & shoulders, double top","Pattern continuation: flag, pennant, triangle","Moving Average: SMA, EMA, WMA","Cara trade setiap pattern dengan entry & SL"]},
+   desc:"Support & resistance, trend analysis, chart pattern reversal (H&S, double top/bottom), continuation pattern (flag, pennant), dan moving average sebagai support dinamis.",
+   topics:["Support & resistance: cara menentukan level","Trend: uptrend, downtrend, sideways","Pattern reversal: H&S, double top/bottom","Pattern continuation: flag, pennant, triangle","Moving Average: SMA, EMA golden cross","Entry & SL untuk setiap pattern"]},
   {id:"g2",level:2,pkgLabel:"Gold",icon:"📡",tag:"Teknikal",title:"Indikator Teknikal & Oscillator",
-   desc:"Indikator membantu konfirmasi sinyal dari price action. Modul ini membahas indikator yang paling efektif di pasar saham Indonesia, cara mengkombinasikannya tanpa overanalyzing, dan menghindari kesalahan umum yang dilakukan pemula. Prinsipnya: less is more — 2-3 indikator yang dikuasai lebih baik dari 10 indikator yang tidak dipahami.",
-   topics:["RSI: overbought, oversold, divergence","MACD: signal line & histogram","Bollinger Bands: squeeze & expansion","Stochastic & CCI untuk timing entry","Volume: OBV, volume spread analysis","Cara kombinasi indikator tanpa konflik"]},
+   desc:"RSI divergence, MACD crossover, Bollinger Bands squeeze, volume analysis, dan cara kombinasi 3 indikator efektif tanpa overanalyzing.",
+   topics:["RSI: overbought, oversold, divergence","MACD: signal line & histogram","Bollinger Bands: squeeze & expansion","Volume analysis: OBV & volume spike","Konfluensi 3 indikator untuk entry","Cara hindari overanalyzing"]},
   {id:"g3",level:2,pkgLabel:"Gold",icon:"🎯",tag:"Bandarmologi",title:"Bandarmologi & Tape Reading",
-   desc:"Bandarmologi adalah ilmu membaca jejak big player (bandar) di pasar saham Indonesia — bagaimana mereka mengakumulasi, mendistribusikan, dan menggerakkan harga. Modul ini mengajarkan cara mendeteksi aksi bandar melalui analisis volume, bid-offer, dan pergerakan harga abnormal. Tape reading akan mengajarkan kamu membaca order flow secara real-time untuk ikut arus smart money.",
-   topics:["Definisi & cara kerja bandar di BEI","Deteksi akumulasi & distribusi via volume","Analisis bid-offer & market depth","Tape reading: baca order flow real-time","Pola pump before dump & accumulation phase","Saham gorengan vs saham fundamentis"]},
+   desc:"Cara deteksi aksi bandar: fase akumulasi, fase distribusi, tape reading market depth real-time, dan cara hindari jebakan pump & dump.",
+   topics:["Cara kerja bandar di BEI","Deteksi fase akumulasi via volume","Deteksi fase distribusi","Market depth & tape reading","Pola pump before dump","Cara masuk di fase akumulasi bukan pump"]},
   {id:"g4",level:2,pkgLabel:"Gold",icon:"🧠",tag:"Psikologi",title:"Psikologi & Emosi Trading",
-   desc:"Psikologi adalah faktor terbesar yang membedakan trader sukses dan yang gagal — bahkan lebih penting dari kemampuan analisis. Modul ini membahas secara mendalam bagaimana mengelola fear dan greed, menghindari FOMO dan panic selling, membangun kebiasaan journaling untuk evaluasi berkelanjutan, dan mengembangkan mindset investor jangka panjang yang tidak terguncang oleh volatilitas pasar sehari-hari.",
-   topics:["Fear & greed: kenali dan kelola","FOMO & panic selling: cara menghindari","Trading journal: catat, evaluasi, improve","Bias kognitif yang sering merugikan investor","Membangun sistem trading yang disiplin","Mindset jangka panjang: Buffett vs trader harian"]},
-  // PRO
+   desc:"Cara kelola fear & greed, hindari FOMO & panic selling, bias kognitif yang merusak, trading journal, dan cara membangun sistem trading yang disiplin.",
+   topics:["Fear & greed: kenali dan kelola","FOMO & panic selling: cara menghindari","Trading journal: catat, evaluasi, improve","Bias kognitif yang sering merugikan","Membangun sistem trading disiplin","Mindset long-term vs short-term trader"]},
   {id:"p1",level:3,pkgLabel:"Pro",icon:"🤖",tag:"AI Agent",title:"AI Agent Trading Assistant 24/7",
-   desc:"AI Agent eksklusif Ritel Community yang bisa kamu ajak bicara kapan saja, 24 jam sehari, 7 hari seminggu. Tanyakan apapun tentang saham: analisis fundamental emiten, baca laporan keuangan terbaru, cek sentimen berita, identifikasi potensi entry berdasarkan data teknikal, hingga review portofoliomu. AI Agent dilatih dengan data pasar Indonesia sehingga memahami konteks BEI dan dinamika saham lokal.",
+   desc:"AI Agent eksklusif Ritel Community — analisis saham, baca laporan keuangan, cek sentimen berita, rekomendasi entry/TP/SL, dan review portofolio kapan saja.",
    topics:["Tanya analisis saham kapan saja 24/7","Review fundamental emiten real-time","Interpretasi laporan keuangan otomatis","Rekomendasi entry berdasarkan teknikal","Sentiment analysis berita saham","Bantu susun watchlist personal"]},
   {id:"p2",level:3,pkgLabel:"Pro",icon:"👁️",tag:"Watchlist",title:"Watchlist & Screening Personal Pro",
-   desc:"Sistem watchlist personal yang dikurasi khusus sesuai profil risiko dan strategi investasimu. Setiap minggu analis kami memperbarui daftar saham yang sedang dalam radar dengan penjelasan mengapa layak dipantau — mulai dari alasan teknikal, fundamental, hingga sentimen sektoral. Tidak perlu lagi bingung memilih dari ratusan emiten.",
+   desc:"Watchlist mingguan dikurasi analis senior sesuai profil risikomu — saham dalam radar dengan alasan teknikal, fundamental, dan sentimen sektoral.",
    topics:["Watchlist mingguan dikurasi analis senior","Kriteria masuk & keluar watchlist","Saham di fase akumulasi yang perlu dipantau","Screening berdasarkan sector rotation","Update trigger: kapan waktu beli","Notifikasi perubahan signifikan saham pilihan"]},
   {id:"p3",level:3,pkgLabel:"Pro",icon:"📋",tag:"Laporan",title:"Laporan Mingguan Eksklusif Pro",
-   desc:"Laporan mingguan eksklusif khusus member Pro yang membahas secara mendalam kondisi pasar, analisis IHSG jangka pendek dan menengah, sektor yang sedang outperform, saham pilihan minggu ini dengan analisis lengkap, dan rangkuman sentimen global yang mempengaruhi BEI. Disusun oleh tim analis berpengalaman dan dikirim setiap awal pekan.",
+   desc:"Analisis IHSG mingguan mendalam, sektor outperform, top picks dan alasannya, rangkuman sentimen global, dan strategi portofolio jangka menengah.",
    topics:["Analisis IHSG mingguan mendalam","Sektor yang sedang outperform","Top picks minggu ini & alasannya","Rangkuman sentimen global","Kalender ekonomi & event penting","Strategi portofolio jangka menengah"]},
-  // PLATINUM
-  {id:"pl1",level:4,pkgLabel:"Platinum",icon:"💬",tag:"Konsultasi",title:"Konsultasi 1-on-1 dengan Analis Senior",
-   desc:"Akses konsultasi langsung dengan analis senior Ritel Community secara personal. Kamu bisa mendiskusikan portofoliomu, meminta second opinion atas keputusan investasi, atau bertanya tentang saham spesifik yang sedang dipertimbangkan. Konsultasi dilakukan via chat WhatsApp atau voice call sesuai jadwal. Ini layanan yang biasanya hanya tersedia bagi nasabah high-net-worth di private banking.",
+  {id:"pl1",level:4,pkgLabel:"Platinum",icon:"🎓",tag:"Konsultasi",title:"Konsultasi 1-on-1 dengan Analis Senior",
+   desc:"Sesi tanya jawab langsung dengan analis berpengalaman: review portofoliomu, second opinion keputusan besar, diskusi saham spesifik, dan rencana investasi personal.",
    topics:["Review portofolio personal bersama analis","Second opinion keputusan investasi besar","Tanya saham spesifik: layak atau tidak?","Strategi rebalancing portofolio","Diskusi sektor & timing masuk optimal","Rencana investasi jangka panjang personal"]},
-  {id:"pl2",level:4,pkgLabel:"Platinum",icon:"🧬",tag:"AI Advanced",title:"AI Agent Advanced + Analisis Portofolio",
-   desc:"Versi lanjutan AI Agent khusus Platinum yang dilengkapi kemampuan analisis portofolio komprehensif. Masukkan daftar saham yang kamu pegang, dan AI akan menganalisis diversifikasi, korelasi antar aset, exposure sektoral, estimasi risiko, dan memberikan saran rebalancing yang konkret. AI Platinum memiliki akses ke lebih banyak data historis dan menghasilkan analisis lebih mendalam.",
+  {id:"pl2",level:4,pkgLabel:"Platinum",icon:"🤖",tag:"AI+",title:"AI Agent + Analisis Portofolio",
+   desc:"AI Agent Pro dikombinasikan dengan analisis portofolio komprehensif: diversifikasi, exposure sektoral, estimasi return historis, dan simulasi skenario market.",
    topics:["Analisis portofolio komprehensif oleh AI","Cek diversifikasi & korelasi aset","Exposure sektoral & risiko konsentrasi","Saran rebalancing berbasis data historis","Estimasi return berdasarkan historis 10 tahun","Simulasi skenario market crash & bull run"]},
-  {id:"pl3",level:4,pkgLabel:"Platinum",icon:"⚡",tag:"Sinyal",title:"Sinyal Real-time 24/7 Tanpa Delay",
-   desc:"Sinyal trading tanpa delay, langsung dari meja analis ke grup WA Platinum Elite dalam hitungan detik. Berbeda dengan paket lain yang memiliki delay beberapa jam, member Platinum mendapatkan sinyal entry, antri, TP, dan SL secara real-time. Ini krusial untuk saham dengan volatilitas tinggi di mana keterlambatan beberapa menit saja bisa membuat entry jauh dari harga ideal.",
-   topics:["Sinyal masuk tanpa delay ke WhatsApp","Update TP & SL secara real-time","Alert pergerakan abnormal saham pilihan","Intraday signal untuk trader aktif","Pre-market & post-market update harian","Weekend watchlist & strategi mingguan"]},
-  // ELITE
-  {id:"e1",level:5,pkgLabel:"Elite",icon:"👨‍🏫",tag:"Mentoring",title:"Mentoring Langsung (1-on-1 Intensif)",
-   desc:"Program mentoring one-on-one paling intensif yang kami tawarkan. Kamu akan dipasangkan dengan mentor senior yang berpengalaman lebih dari 10 tahun di pasar modal Indonesia. Sesi mentoring dilakukan secara reguler via video call, mencakup review portofolio mendalam, coaching strategi personal, simulasi pengambilan keputusan, hingga pengembangan sistem trading yang benar-benar sesuai dengan gaya dan tujuan finansialmu.",
+  {id:"e1",level:5,pkgLabel:"Elite",icon:"🏆",tag:"Mentoring",title:"Mentoring Langsung Intensif",
+   desc:"Sesi mentoring intensif dengan mentor senior: coaching portofolio, pengembangan sistem trading personal, simulasi keputusan nyata, dan roadmap menuju financial freedom.",
    topics:["Sesi video call regular dengan mentor senior","Review & coaching portofolio intensif","Pengembangan sistem trading personal","Simulasi pengambilan keputusan nyata","Koreksi kesalahan pola investasi","Roadmap menuju financial freedom"]},
-  {id:"e2",level:5,pkgLabel:"Elite",icon:"💼",tag:"Portfolio",title:"Portfolio Management Personal Elite",
-   desc:"Layanan manajemen portofolio personal eksklusif Elite — analis kami membantu merencanakan, memonitor, dan mengoptimalkan portofoliomu secara aktif. Setiap bulan kamu mendapatkan laporan portofolio personal yang mencakup performance review, analisis alokasi, identifikasi peluang optimasi, dan rencana aksi konkret untuk bulan berikutnya. Setara layanan wealth management di bank private.",
+  {id:"e2",level:5,pkgLabel:"Elite",icon:"💼",tag:"Portofolio",title:"Portfolio Management Personal",
+   desc:"Manajemen portofolio komprehensif: perencanaan alokasi, monitoring aktif bulanan, laporan performance personal, identifikasi drag, dan strategi exit terencana.",
    topics:["Perencanaan alokasi portofolio awal","Monitoring & rebalancing aktif bulanan","Laporan performance personal bulanan","Identifikasi drag performance & solusinya","Strategi exit & profit taking terencana","Target return & timeline finansial personal"]},
-  {id:"e3",level:5,pkgLabel:"Elite",icon:"🎓",tag:"Event",title:"Webinar & Event Eksklusif Elite",
-   desc:"Akses eksklusif ke semua event, webinar, dan workshop yang diselenggarakan Ritel Community — termasuk sesi tertutup yang tidak tersedia untuk paket lain. Event rutin mencakup: market outlook bulanan dengan tamu ahli, workshop teknikal intensif, sesi tanya jawab langsung dengan analis top, hingga gathering offline tahunan member Elite.",
-   topics:["Webinar market outlook bulanan","Workshop teknikal intensif live","Sesi Q&A langsung dengan analis top","Akses rekaman semua event sebelumnya","Gathering offline tahunan member Elite","Networking eksklusif sesama investor Elite"]},
 ];
 
 const TAG_COLORS: any = {
@@ -409,18 +524,43 @@ export default function VipPage() {
                         <svg className={`w-4 h-4 text-slate-500 flex-shrink-0 mt-1 transition-transform ${expandedModul===m.id?"rotate-180":""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
                       </button>
                       {expandedModul===m.id&&(
-                        <div className="px-4 pb-5 border-t border-white/5">
+                        <div className="px-4 pb-6 border-t border-white/5">
                           <p className="text-slate-300 text-sm leading-relaxed mt-4 mb-4">{m.desc}</p>
-                          <div className="mb-4">
-                            <p className="text-xs text-slate-500 font-semibold mb-2 uppercase tracking-wide">Yang akan kamu pelajari:</p>
+                          {/* Checklist topik */}
+                          <div className="mb-5">
+                            <p className="text-xs text-cyan-400 font-bold mb-2 uppercase tracking-wider">✦ Yang akan kamu pelajari:</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                              {m.topics.map((t,i)=>(
-                                <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                                  <span className="text-cyan-400 flex-shrink-0">✓</span>{t}
+                              {m.topics.map((t:string,i:number)=>(
+                                <div key={i} className="flex items-center gap-2 text-xs text-slate-300 bg-white/3 rounded-lg px-3 py-2 border border-white/5">
+                                  <span className="text-green-400 flex-shrink-0 font-bold">✓</span>{t}
                                 </div>
                               ))}
                             </div>
                           </div>
+                          {/* Chart image if available */}
+                          {MODULE_CONTENT[m.id]?.image && (
+                            <div className="mb-5">
+                              <p className="text-xs text-slate-500 font-semibold mb-2 uppercase tracking-wider">Contoh Chart & Diagram:</p>
+                              <div className="rounded-xl overflow-hidden border border-cyan-500/20">
+                                <img src={MODULE_CONTENT[m.id].image} alt={m.title} className="w-full object-cover" style={{maxHeight:320}} />
+                              </div>
+                            </div>
+                          )}
+                          {/* Detail lessons */}
+                          {MODULE_CONTENT[m.id]?.lessons && (
+                            <div className="space-y-3">
+                              <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Panduan Detail:</p>
+                              {MODULE_CONTENT[m.id].lessons.map((lesson:any, li:number)=>(
+                                <div key={li} className="bg-white/3 border border-white/8 rounded-xl p-4">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <span className="w-5 h-5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 text-xs font-black flex items-center justify-center flex-shrink-0">{li+1}</span>
+                                    <span className="text-white text-xs font-bold">{lesson.title}</span>
+                                  </div>
+                                  <p className="text-slate-400 text-xs leading-relaxed pl-7 whitespace-pre-line">{lesson.body}</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
