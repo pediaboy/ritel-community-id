@@ -139,7 +139,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [editTestiId, setEditTestiId] = useState<string|null>(null);
   const [showTestiForm, setShowTestiForm] = useState(false);
 
-  const [pricingForm, setPricingForm] = useState<any>({ id:"", name:"", priceLabel:"", period:"/bulan", description:"", features:"", flashSale:{ discount:"", price:"" }, hasFlashSale:false });
+  const [pricingForm, setPricingForm] = useState<any>({ id:"", name:"", priceLabel:"", period:"/bulan", description:"", features:"", flashSale:{ discount:"", price:"", rawPrice:0, endTime:"" }, hasFlashSale:false, discountPct:"", flashDuration:"" });
   const [editPricingId, setEditPricingId] = useState<string|null>(null);
   const [showPricingForm, setShowPricingForm] = useState(false);
 
@@ -351,14 +351,37 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   // ===== PRICING =====
+  const calcFlashPrice = (basePrice: number, pct: number) => {
+    const discounted = Math.round(basePrice * (1 - pct/100));
+    return "Rp " + discounted.toLocaleString("id-ID");
+  };
   const openPricingEdit = (p: any) => {
+    const fs = p.flashSale || { discount:"", price:"", rawPrice:0, endTime:"" };
+    // Back-calculate discount pct if exists
+    let discPct = "";
+    if (fs.discount) discPct = fs.discount.replace("%","");
     setPricingForm({
       id: p.id, name: p.name, priceLabel: p.priceLabel, period: p.period,
       description: p.description, features: (p.features||[]).join("\n"),
-      flashSale: p.flashSale || { discount:"", price:"" },
-      hasFlashSale: !!p.flashSale,
+      flashSale: fs, hasFlashSale: !!p.flashSale,
+      discountPct: discPct,
+      flashDuration: "",
     });
     setEditPricingId(p.id); setShowPricingForm(true); window.scrollTo(0,0);
+  };
+  const applyDiscountCalc = () => {
+    const pct = parseFloat(pricingForm.discountPct);
+    if (isNaN(pct) || pct <= 0 || pct >= 100) { alert("Masukkan % diskon yang valid (1-99)"); return; }
+    const basePkg = pricing.find(p => p.id === editPricingId);
+    if (!basePkg) return;
+    const rawBase = basePkg.price || 100000;
+    const flashPrice = calcFlashPrice(rawBase, pct);
+    const endTime = pricingForm.flashDuration
+      ? new Date(Date.now() + parseFloat(pricingForm.flashDuration) * 3600000).toISOString()
+      : pricingForm.flashSale?.endTime || "";
+    setPricingForm({...pricingForm,
+      flashSale: { ...pricingForm.flashSale, discount: pct+"%" , price: flashPrice, rawPrice: Math.round(rawBase*(1-pct/100)), endTime },
+    });
   };
   const savePricing = () => {
     if (!pricingForm.priceLabel.trim()) { alert("Isi harga!"); return; }
@@ -803,26 +826,75 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="mb-4">
                 <h2 className="text-white font-bold text-sm">Manajemen Harga Paket</h2>
-                <p className="text-slate-500 text-xs mt-0.5">Edit harga, deskripsi, fitur, dan flash sale setiap paket</p>
+                <p className="text-slate-500 text-xs mt-0.5">Edit harga, deskripsi, fitur, flash sale + kalkulator % + timer</p>
               </div>
               {showPricingForm && editPricingId && (
                 <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">Edit Paket: {pricing.find(p=>p.id===editPricingId)?.name}</h3>
                   <div className="space-y-3 mb-4">
-                    <div><label className="text-xs text-slate-500 mb-1 block">Label Harga (tampil di web)</label><input value={pricingForm.priceLabel} onChange={e=>setPricingForm({...pricingForm,priceLabel:e.target.value})} placeholder="Rp 100.000" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Label Harga Normal</label><input value={pricingForm.priceLabel} onChange={e=>setPricingForm({...pricingForm,priceLabel:e.target.value})} placeholder="Rp 100.000" className="input-dark"/></div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Periode</label><input value={pricingForm.period} onChange={e=>setPricingForm({...pricingForm,period:e.target.value})} placeholder="/bulan" className="input-dark"/></div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Deskripsi Paket</label><textarea value={pricingForm.description} onChange={e=>setPricingForm({...pricingForm,description:e.target.value})} rows={3} className="input-dark resize-none"/></div>
-                    <div><label className="text-xs text-slate-500 mb-1 block">Fitur (1 per baris)</label><textarea value={pricingForm.features} onChange={e=>setPricingForm({...pricingForm,features:e.target.value})} rows={6} placeholder="Sinyal saham harian&#10;Berita pasar realtime" className="input-dark resize-none"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Fitur (1 per baris)</label><textarea value={pricingForm.features} onChange={e=>setPricingForm({...pricingForm,features:e.target.value})} rows={5} placeholder="Sinyal saham harian&#10;Berita pasar realtime" className="input-dark resize-none"/></div>
                   </div>
-                  <div className="card rounded-xl p-4 mb-4 border border-orange-500/20">
+                  {/* Flash Sale */}
+                  <div className="bg-orange-500/5 border border-orange-500/20 rounded-xl p-4 mb-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <input type="checkbox" checked={pricingForm.hasFlashSale} onChange={e=>setPricingForm({...pricingForm,hasFlashSale:e.target.checked})} className="accent-orange-500"/>
+                      <button onClick={()=>setPricingForm({...pricingForm,hasFlashSale:!pricingForm.hasFlashSale})}
+                        className={`relative w-10 h-5 rounded-full transition-all ${pricingForm.hasFlashSale?"bg-orange-500":"bg-slate-700"}`}>
+                        <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${pricingForm.hasFlashSale?"left-5":"left-0.5"}`}/>
+                      </button>
                       <label className="text-sm font-bold text-white">Aktifkan Flash Sale</label>
+                      {pricingForm.flashSale?.endTime && new Date(pricingForm.flashSale.endTime) > new Date() && (
+                        <span className="ml-auto text-xs text-orange-300 bg-orange-500/10 px-2 py-0.5 rounded-full">Timer aktif</span>
+                      )}
                     </div>
                     {pricingForm.hasFlashSale && (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div><label className="text-xs text-slate-500 mb-1 block">Diskon (contoh: 50%)</label><input value={pricingForm.flashSale?.discount||""} onChange={e=>setPricingForm({...pricingForm,flashSale:{...pricingForm.flashSale,discount:e.target.value}})} placeholder="50%" className="input-dark"/></div>
-                        <div><label className="text-xs text-slate-500 mb-1 block">Harga Flash Sale</label><input value={pricingForm.flashSale?.price||""} onChange={e=>setPricingForm({...pricingForm,flashSale:{...pricingForm.flashSale,price:e.target.value}})} placeholder="Rp 50.000" className="input-dark"/></div>
+                      <div className="space-y-3">
+                        {/* Calculator */}
+                        <div className="bg-black/30 rounded-xl p-3 border border-orange-500/10">
+                          <p className="text-xs text-orange-400 font-bold mb-2">Kalkulator Diskon Otomatis</p>
+                          <div className="flex gap-2 items-end">
+                            <div className="flex-1">
+                              <label className="text-xs text-slate-500 mb-1 block">% Diskon</label>
+                              <input value={pricingForm.discountPct||""} onChange={e=>setPricingForm({...pricingForm,discountPct:e.target.value})}
+                                placeholder="50" type="number" min="1" max="99" className="input-dark"/>
+                            </div>
+                            <div className="flex-1">
+                              <label className="text-xs text-slate-500 mb-1 block">Durasi Timer (jam)</label>
+                              <input value={pricingForm.flashDuration||""} onChange={e=>setPricingForm({...pricingForm,flashDuration:e.target.value})}
+                                placeholder="24" type="number" min="0" className="input-dark"/>
+                            </div>
+                            <button onClick={applyDiscountCalc}
+                              className="px-3 py-2.5 rounded-xl text-xs font-bold bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 border border-orange-500/20 transition-all whitespace-nowrap">
+                              Hitung
+                            </button>
+                          </div>
+                          {pricingForm.discountPct && !isNaN(parseFloat(pricingForm.discountPct)) && (
+                            <p className="text-xs text-green-400 mt-2">
+                              Harga setelah diskon {pricingForm.discountPct}%: <strong>{calcFlashPrice(pricing.find(p=>p.id===editPricingId)?.price||100000, parseFloat(pricingForm.discountPct))}</strong>
+                            </p>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs text-slate-500 mb-1 block">Label Diskon (auto/manual)</label>
+                            <input value={pricingForm.flashSale?.discount||""} onChange={e=>setPricingForm({...pricingForm,flashSale:{...pricingForm.flashSale,discount:e.target.value}})}
+                              placeholder="50%" className="input-dark"/>
+                          </div>
+                          <div>
+                            <label className="text-xs text-slate-500 mb-1 block">Harga Flash Sale (auto/manual)</label>
+                            <input value={pricingForm.flashSale?.price||""} onChange={e=>setPricingForm({...pricingForm,flashSale:{...pricingForm.flashSale,price:e.target.value}})}
+                              placeholder="Rp 50.000" className="input-dark"/>
+                          </div>
+                        </div>
+                        {pricingForm.flashSale?.endTime && (
+                          <div className="flex items-center gap-2 text-xs text-slate-400">
+                            <span>Timer: {new Date(pricingForm.flashSale.endTime) > new Date() ? "Aktif hingga "+new Date(pricingForm.flashSale.endTime).toLocaleString("id-ID") : "Sudah berakhir"}</span>
+                            <button onClick={()=>setPricingForm({...pricingForm,flashSale:{...pricingForm.flashSale,endTime:""}})}
+                              className="text-red-400 hover:text-red-300 text-xs">Hapus Timer</button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -962,3 +1034,4 @@ export default function AdminPage() {
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
   return <AdminDashboard onLogout={() => { localStorage.removeItem("admin_auth"); setAuthed(false); }} />;
 }
+
