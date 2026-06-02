@@ -169,7 +169,7 @@ function PaketCard({ pkg }: { pkg: any }) {
           </ul>
         </div>
 
-        <Link href={`/order?paket=${pkg.id}${activeFlash && fs?.price ? `&flash=${encodeURIComponent(fs.price)}&disc=${encodeURIComponent(fs.discount||"")}` : ""}`}
+        <Link href={`/order?paket=${pkg.id}${activeFlash && fs?.price ? `&flash=${encodeURIComponent(fs.price)}&disc=${encodeURIComponent(fs.discount||"")}&raw=${fs.rawPrice||pkg.price}` : ""}`}
           className={`w-full block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 active:scale-95 bg-gradient-to-r ${c.bg} text-white shadow-lg`}>
           Order Paket {pkg.name} →
         </Link>
