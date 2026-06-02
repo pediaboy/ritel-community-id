@@ -3,19 +3,8 @@ import { sb } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-const SINGLE_SESSION_PACKAGES = ["silver","gold","pro","platinum","elite"];
-
 function genSessionId() {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
-
-async function getSession(tokenId: string): Promise<string|null> {
-  const rows = await sb("GET", `/settings?key=eq.session_${tokenId}&limit=1`);
-  return rows[0]?.value || null;
-}
-
-async function setSession(tokenId: string, sessionId: string) {
-  await sb("POST", `/settings`, { key: `session_${tokenId}`, value: sessionId, updated_at: new Date().toISOString() }, { Prefer: "resolution=merge-duplicates,return=representation" });
 }
 
 async function clearSession(tokenId: string) {
@@ -47,7 +36,7 @@ async function logAndNotify(name: string, pkg: string, token: string, ip: string
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { token, action, sessionId, tokenId } = body;
+  const { token, action, tokenId } = body;
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || req.headers.get("x-real-ip") || "-";
 
   // LOGOUT
@@ -66,31 +55,9 @@ export async function POST(req: Request) {
   if (found.expired_at && new Date(found.expired_at) < new Date()) return NextResponse.json({ success: false, message: "Token sudah expired. Hubungi admin untuk perpanjangan." });
 
   const userPayload = { name: found.name, email: found.email, package: found.package, expiredAt: found.expired_at };
+  const newSession = genSessionId();
 
-  // Single session untuk Silver ke atas
-  if (SINGLE_SESSION_PACKAGES.includes(found.package)) {
-    const storedSession = await getSession(found.id);
-    const incomingSession = sessionId || null;
-
-    if (storedSession) {
-      // Ada session aktif
-      if (storedSession === incomingSession) {
-        // Same device - login sukses, perpanjang session
-        return NextResponse.json({ success: true, sessionId: storedSession, tokenId: found.id, user: userPayload });
-      } else {
-        // Beda device - tolak
-        return NextResponse.json({ success: false, message: "Token ini sedang digunakan di perangkat lain. Logout dari perangkat lain terlebih dahulu atau hubungi admin." });
-      }
-    } else {
-      // Belum ada session - login pertama kali, buat session baru
-      const newSession = genSessionId();
-      await setSession(found.id, newSession);
-      logAndNotify(found.name, found.package, token, ip); // fire & forget
-      return NextResponse.json({ success: true, sessionId: newSession, tokenId: found.id, user: userPayload });
-    }
-  }
-
-  // Basic - tidak ada session check, langsung sukses + log
+  // Semua role: unlimited device, tidak ada session check
   logAndNotify(found.name, found.package, token, ip);
-  return NextResponse.json({ success: true, sessionId: null, tokenId: found.id, user: userPayload });
+  return NextResponse.json({ success: true, sessionId: newSession, tokenId: found.id, user: userPayload });
 }
