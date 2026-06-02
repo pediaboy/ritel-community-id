@@ -59,6 +59,42 @@ const colorMap: any = {
   elite:   { border:"border-yellow-400/60", glow:"shadow-yellow-400/30", badge:"bg-yellow-400", accent:"text-yellow-400", bg:"from-yellow-400 via-yellow-500 to-orange-500" },
 };
 
+
+// ===== MOTIVASI QUOTES =====
+const MOTIVASI_QUOTES = [
+  { text: "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.", icon: "🌟" },
+  { text: "Pasar modal adalah tempat paling adil — siapa yang paling siap, dia yang paling untung.", icon: "📈" },
+  { text: "Cari mentor yang bisa membantu dirimu memahami bidang ini. Pengalaman mereka bisa memangkas kurva belajarmu bertahun-tahun.", icon: "🎯" },
+  { text: "Bukan soal seberapa besar modal yang kamu punya — tapi seberapa besar pengetahuan yang kamu miliki.", icon: "💡" },
+  { text: "Konsistensi dalam belajar lebih berharga dari satu keberuntungan besar yang tidak bisa diulang.", icon: "🔥" },
+  { text: "Investor sukses bukan mereka yang tidak pernah rugi, tapi mereka yang belajar dari setiap kesalahan.", icon: "💎" },
+];
+
+function MotivQuotes() {
+  const [motivList, setMotivList] = useState(MOTIVASI_QUOTES);
+  useEffect(() => {
+    try {
+      const syncData = JSON.parse(localStorage.getItem("rc_sync") || "{}");
+      if (syncData.motivasi && syncData.motivasi.length > 0) {
+        setMotivList(syncData.motivasi.map((m: any, i: number) => ({
+          text: m.text,
+          icon: ["🌟","📈","🎯","💡","🔥","💎","⚡","🚀"][i % 8]
+        })));
+      }
+    } catch {}
+  }, []);
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {motivList.map((q, i) => (
+        <div key={i} className="card-glass rounded-xl p-5 border border-white/8 hover:border-yellow-500/20 transition-all">
+          <div className="text-2xl mb-3">{q.icon}</div>
+          <p className="text-slate-300 text-sm leading-relaxed italic">"{q.text}"</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PaketCard({ pkg }: { pkg: any }) {
   const c = colorMap[pkg.color] || colorMap.blue;
   const fs = pkg.flashSale;
@@ -191,8 +227,16 @@ export default function PaketPage() {
             {packages.map((pkg) => <PaketCard key={pkg.id} pkg={pkg} />)}
           </div>
 
+          {/* MOTIVASI QUOTES SECTION */}
+          <div className="mt-16 mb-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-black text-white mb-2">Kenapa Harus Mulai <span className="gradient-text">Sekarang?</span></h2>
+            </div>
+            <MotivQuotes />
+          </div>
+
           {/* Comparison table */}
-          <div className="mt-16 card-glass rounded-2xl overflow-hidden">
+          <div className="mt-4 card-glass rounded-2xl overflow-hidden">
             <div className="p-6 border-b border-cyan-500/20">
               <h2 className="text-xl font-black text-white">Perbandingan Fitur</h2>
             </div>
@@ -244,3 +288,4 @@ export default function PaketPage() {
     </div>
   );
 }
+
