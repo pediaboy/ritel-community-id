@@ -211,11 +211,7 @@ const MODULE_CONTENT: any = {
       { title:"Fear & Greed", body:"Fear (takut) membuat investor jual di harga terendah. Greed (serakah) membuat investor beli di harga tertinggi. Keduanya musuh utama investor. Solusi: punya sistem trading dengan aturan entry & exit yang objektif dan terukur — sehingga emosi tidak ikut campur dalam keputusan." },
       { title:"FOMO & Panic Selling", body:"FOMO: Saham sudah naik 30%, kamu beli karena takut ketinggalan → biasanya itulah puncaknya. Panic Selling: Saham turun 10%, kamu jual panik → biasanya itulah bottomnya. Solusi: Selalu tentukan rencana sebelum masuk. Jika sudah melewati entry zone-mu, skip dan cari peluang berikutnya." },
       { title:"Trading Journal", body:"Catat setiap trade: Tanggal, Saham, Alasan beli (setup apa), Entry, TP, SL, Hasil, dan Evaluasi (apa yang benar/salah). Review setiap bulan. Trader yang konsisten profit SEMUA punya trading journal. Ini adalah cermin terjujur dari kualitas setiap keputusan tradingmu." },
-      { title:"Bias Kognitif yang Merusak", body:"• Confirmation bias: cari info yang hanya mendukung keputusanmu
-• Anchoring: terpaku pada harga beli, susah cut loss
-• Sunk cost fallacy: 'sayang dijual rugi' padahal fundamental sudah rusak
-• Overconfidence: merasa ahli setelah beberapa kali profit
-Solusi: selalu cari second opinion dan respek pada stop loss." },
+      { title:"Bias Kognitif yang Merusak", body:"• Confirmation bias: cari info yang hanya mendukung keputusanmu\n• Anchoring: terpaku pada harga beli, susah cut loss\n• Sunk cost fallacy: 'sayang dijual rugi' padahal fundamental sudah rusak\n• Overconfidence: merasa ahli setelah beberapa kali profit\nSolusi: selalu cari second opinion dan respek pada stop loss." },
       { title:"Membangun Sistem Trading", body:"Sistem yang baik punya: (1) Kriteria entry yang jelas dan terukur, (2) Target profit (TP) realistis, (3) Stop loss yang ketat dan WAJIB diikuti, (4) Position sizing yang konsisten, (5) Maximum drawdown — jika portofolio turun 20%, berhenti trading 2 minggu untuk evaluasi & reset mindset." },
     ]
   },
