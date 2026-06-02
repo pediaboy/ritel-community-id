@@ -1516,8 +1516,15 @@ function Footer() {
 
 // ===== MAIN =====
 export default function HomePage() {
-  const [showLoading, setShowLoading] = useState(true);
-  if (showLoading) return <LoadingScreen onDone={() => setShowLoading(false)} />;
+  const [showLoading, setShowLoading] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const seen = sessionStorage.getItem("rc_loading_shown");
+    return !seen;
+  });
+  if (showLoading) return <LoadingScreen onDone={() => {
+    sessionStorage.setItem("rc_loading_shown", "1");
+    setShowLoading(false);
+  }} />;
   return (
     <div className="min-h-screen relative">
       <GalaxyBackground />
