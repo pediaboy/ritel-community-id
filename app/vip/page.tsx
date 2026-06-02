@@ -158,10 +158,15 @@ export default function VipPage() {
       }
       setUser(u);
     }
-    fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})})
+    const storedSession = localStorage.getItem("vip_session");
+    fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,sessionId:storedSession||undefined})})
       .then(r=>r.json()).then(d=>{
-        if(!d.success){localStorage.removeItem("vip_token");localStorage.removeItem("vip_user");router.push("/login");}
-        else{setUser(d.user);localStorage.setItem("vip_user",JSON.stringify(d.user));}
+        if(!d.success){localStorage.removeItem("vip_token");localStorage.removeItem("vip_user");localStorage.removeItem("vip_session");router.push("/login?error="+encodeURIComponent(d.message||""));}
+        else{
+          setUser(d.user);
+          localStorage.setItem("vip_user",JSON.stringify(d.user));
+          if(d.sessionId) localStorage.setItem("vip_session",d.sessionId);
+        }
       }).catch(()=>{});
     // Fetch sinyal dari Supabase via API
     fetch("/api/admin/signals").then(r=>r.json()).then(d=>{
@@ -171,7 +176,12 @@ export default function VipPage() {
     fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
   }, []);
 
-  const logout = () => { localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); router.push("/login"); };
+  const logout = () => {
+    const sessionId = localStorage.getItem("vip_session");
+    const token = localStorage.getItem("vip_token");
+    if(sessionId && token) fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,action:"logout",sessionId})}).catch(()=>{});
+    localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); localStorage.removeItem("vip_session"); router.push("/login");
+  };
   const pkgLevel = PKG_LEVELS.indexOf(user?.package||"basic");
   const mySignals = signals.filter(s=>(s.package||[]).includes(user?.package));
   const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel);
