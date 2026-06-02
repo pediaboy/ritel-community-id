@@ -466,6 +466,9 @@ function SignalsSection() {
   const [signals, setSignals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Package order - basic is public, silver+ is locked
+  const PKG_LEVEL: Record<string,number> = { basic:1, silver:2, gold:3, pro:4, platinum:5, elite:6 };
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -476,7 +479,6 @@ function SignalsSection() {
       setLoading(false);
     };
     load();
-    // Polling setiap 15 detik biar langsung muncul saat admin tambah
     const iv = setInterval(load, 15000);
     return () => clearInterval(iv);
   }, []);
@@ -494,7 +496,24 @@ function SignalsSection() {
     platinum:"bg-slate-300/10 text-slate-300", elite:"bg-yellow-300/10 text-yellow-300",
   };
 
-  const display = signals.length > 0 ? signals : [];
+  // Determine if signal is basic-only (visible to public)
+  // A signal is "public" if its package includes ONLY "basic"
+  // Or if its minimum package is "basic" (first in package array)
+  const isBasicSignal = (s: any) => {
+    const pkgs: string[] = s.package || [];
+    if (pkgs.length === 0) return false;
+    // If package array contains only basic, it's public
+    if (pkgs.length === 1 && pkgs[0] === "basic") return true;
+    // If basic is included AND no higher tier, show it
+    const minLevel = Math.min(...pkgs.map((p: string) => PKG_LEVEL[p] || 99));
+    return minLevel === 1; // basic=1
+  };
+
+  const publicSignals = signals.filter(isBasicSignal);
+  const lockedSignals = signals.filter(s => !isBasicSignal(s));
+
+  // Show max 3 locked cards as blurred preview
+  const previewLocked = lockedSignals.slice(0, 3);
 
   return (
     <section id="signals" className="py-16 px-4 border-t border-white/5 relative z-10">
@@ -512,48 +531,100 @@ function SignalsSection() {
 
         {loading ? (
           <div className="text-slate-500 text-center py-12">Memuat sinyal...</div>
-        ) : display.length === 0 ? (
+        ) : signals.length === 0 ? (
           <div className="card-glass rounded-xl p-10 text-center">
             <div className="flex justify-center mb-3 text-slate-600"><Icons.Candlestick /></div>
             <p className="text-slate-500 text-sm">Belum ada sinyal aktif saat ini.</p>
             <p className="text-slate-600 text-xs mt-1">Sinyal baru akan muncul otomatis di sini.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {display.map((s, i) => (
-              <TiltCard key={s.id || i}>
-                <div className="card rounded-xl p-5">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <div className="font-black text-white text-lg">{s.kode}</div>
-                      <div className="text-xs text-slate-500">{s.saham}</div>
+          <>
+            {/* PUBLIC signals - basic only */}
+            {publicSignals.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                {publicSignals.map((s, i) => (
+                  <TiltCard key={s.id || i}>
+                    <div className="card rounded-xl p-5">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <div className="font-black text-white text-lg">{s.kode}</div>
+                          <div className="text-xs text-slate-500">{s.saham}</div>
+                        </div>
+                        <span className={`text-xs font-black px-2.5 py-1 rounded-lg border ${actionColor[s.action] || "text-white bg-white/10 border-white/10"}`}>
+                          {s.action}
+                        </span>
+                      </div>
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">{s.entry}</span></div>
+                        <div className="flex justify-between"><span className="text-slate-500">Target</span><span className="text-green-400 font-medium">{s.tp}</span></div>
+                        <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">{s.sl}</span></div>
+                      </div>
+                      {s.notes && <p className="mt-3 text-xs text-slate-400 border-t border-white/5 pt-3">{s.notes}</p>}
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-400/10 text-slate-400">basic</span>
+                      </div>
                     </div>
-                    <span className={`text-xs font-black px-2.5 py-1 rounded-lg border ${actionColor[s.action] || "text-white bg-white/10 border-white/10"}`}>
-                      {s.action}
-                    </span>
-                  </div>
-                  <div className="space-y-1.5 text-xs">
-                    <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">{s.entry}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-500">Target</span><span className="text-green-400 font-medium">{s.tp}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">{s.sl}</span></div>
-                  </div>
-                  {s.notes && <p className="mt-3 text-xs text-slate-400 border-t border-white/5 pt-3">{s.notes}</p>}
-                  {s.package && s.package.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1">
-                      {s.package.map((p: string) => (
-                        <span key={p} className={`text-xs px-2 py-0.5 rounded-full capitalize ${pkgLevelColor[p] || "bg-white/5 text-slate-500"}`}>{p}</span>
-                      ))}
+                  </TiltCard>
+                ))}
+              </div>
+            )}
+
+            {/* LOCKED signals - silver and above, shown blurred */}
+            {previewLocked.length > 0 && (
+              <div className="relative mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {previewLocked.map((s, i) => (
+                    <div key={s.id || i} className="relative">
+                      {/* Blurred card */}
+                      <div className="card rounded-xl p-5 blur-sm select-none pointer-events-none">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <div className="font-black text-white text-lg">XXXX</div>
+                            <div className="text-xs text-slate-500">••••••••••</div>
+                          </div>
+                          <span className="text-xs font-black px-2.5 py-1 rounded-lg border text-green-400 bg-green-400/10 border-green-400/20">BUY</span>
+                        </div>
+                        <div className="space-y-1.5 text-xs">
+                          <div className="flex justify-between"><span className="text-slate-500">Entry</span><span className="text-white font-medium">•••</span></div>
+                          <div className="flex justify-between"><span className="text-slate-500">Target</span><span className="text-green-400 font-medium">•••</span></div>
+                          <div className="flex justify-between"><span className="text-slate-500">Stop Loss</span><span className="text-red-400 font-medium">•••</span></div>
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-1">
+                          {(s.package||[]).map((p:string)=>(
+                            <span key={p} className={`text-xs px-2 py-0.5 rounded-full capitalize ${pkgLevelColor[p]||"bg-white/5 text-slate-500"}`}>{p}</span>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Lock overlay */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-xl backdrop-blur-[2px]">
+                        <div className="text-2xl mb-2">🔒</div>
+                        <p className="text-white text-xs font-bold text-center px-4">Khusus Member VIP</p>
+                        <p className="text-slate-400 text-[11px] text-center mt-1 px-4">
+                          {(s.package||[]).join(", ")} ke atas
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </TiltCard>
-            ))}
-          </div>
+                {lockedSignals.length > 3 && (
+                  <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black to-transparent rounded-b-xl pointer-events-none"/>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         <div className="card-glass rounded-xl p-5 text-center">
-          <p className="text-slate-400 text-sm mb-3">Sinyal lengkap dengan analisis mendalam tersedia untuk member VIP.</p>
-          <a href="https://wa.me/6282218723401?text=Halo%20mau%20daftar%20VIP!" target="_blank" className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">Daftar VIP</a>
+          <p className="text-slate-400 text-sm mb-1">
+            {lockedSignals.length > 0 
+              ? `${lockedSignals.length} sinyal VIP tersembunyi · Upgrade untuk akses penuh`
+              : "Sinyal lengkap dengan analisis mendalam tersedia untuk member VIP."}
+          </p>
+          <p className="text-slate-600 text-xs mb-3">Silver, Gold, Pro, Platinum & Elite dapat akses semua sinyal</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <a href="/login" className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">🔑 Login VIP</a>
+            <a href="https://wa.me/6282218723401?text=Halo%20mau%20daftar%20VIP!" target="_blank" className="btn-green text-sm px-6 py-2.5 rounded-xl inline-block">Daftar VIP</a>
+          </div>
         </div>
       </div>
     </section>
