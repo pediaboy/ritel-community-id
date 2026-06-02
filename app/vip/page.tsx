@@ -166,6 +166,7 @@ export default function VipPage() {
           setUser(d.user);
           localStorage.setItem("vip_user",JSON.stringify(d.user));
           if(d.sessionId) localStorage.setItem("vip_session",d.sessionId);
+          if(d.tokenId) localStorage.setItem("vip_tokenid",d.tokenId);
         }
       }).catch(()=>{});
     // Fetch sinyal dari Supabase via API
@@ -177,10 +178,9 @@ export default function VipPage() {
   }, []);
 
   const logout = () => {
-    const sessionId = localStorage.getItem("vip_session");
-    const token = localStorage.getItem("vip_token");
-    if(sessionId && token) fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,action:"logout",sessionId})}).catch(()=>{});
-    localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); localStorage.removeItem("vip_session"); router.push("/login");
+    const tokenId = localStorage.getItem("vip_tokenid");
+    if(tokenId) fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"logout",tokenId})}).catch(()=>{});
+    localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); localStorage.removeItem("vip_session"); localStorage.removeItem("vip_tokenid"); router.push("/login");
   };
   const pkgLevel = PKG_LEVELS.indexOf(user?.package||"basic");
   const mySignals = signals.filter(s=>(s.package||[]).includes(user?.package));
