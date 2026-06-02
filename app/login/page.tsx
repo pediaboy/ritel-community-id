@@ -28,7 +28,7 @@ export default function LoginPage() {
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: t }),
+        body: JSON.stringify({ token: t, isNewLogin: true }),
       });
       const data = await res.json();
       if (data.success) {
