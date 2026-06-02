@@ -59,7 +59,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "loginlogs" | "mutasi" | "orders";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -146,6 +146,18 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tickerForm, setTickerForm] = useState<any>({ kode:"", price:"", change:"" });
   const [editTickerId, setEditTickerId] = useState<string|null>(null);
   const [showTickerForm, setShowTickerForm] = useState(false);
+
+  // MOTIVASI
+  const [motivasiList, setMotivasiList] = useLocalStore<any[]>("motivasi", [
+    { id:"m1", text:"Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu." },
+    { id:"m2", text:"Pasar tidak menghukum yang berani belajar. Pasar menghukum yang tidak mau bersiap." },
+    { id:"m3", text:"Setiap investor sukses pernah menjadi pemula. Yang membedakan mereka adalah konsistensi belajar." },
+    { id:"m4", text:"Cari mentor yang tepat, karena pengalaman mereka bisa memotong kurva belajarmu bertahun-tahun." },
+    { id:"m5", text:"Profit bukan keberuntungan — itu adalah hasil dari disiplin, ilmu, dan manajemen risiko yang benar." },
+  ]);
+  const [motivasiForm, setMotivasiForm] = useState<any>({ text:"" });
+  const [editMotivasiId, setEditMotivasiId] = useState<string|null>(null);
+  const [showMotivasiForm, setShowMotivasiForm] = useState(false);
 
   const [premSigForm, setPremSigForm] = useState<any>({ title:"", content:"", isActive:true });
   const [editPremSigId, setEditPremSigId] = useState<string|null>(null);
@@ -437,6 +449,22 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     syncToAPI("premiumSignals", updated);
   };
 
+  // MOTIVASI CRUD
+  const saveMotivasi = () => {
+    if (!motivasiForm.text.trim()) { alert("Isi kata motivasi!"); return; }
+    let updated;
+    if (editMotivasiId) {
+      updated = motivasiList.map(m => m.id === editMotivasiId ? { ...m, text: motivasiForm.text } : m);
+    } else {
+      updated = [...motivasiList, { id: "m"+Date.now(), text: motivasiForm.text }];
+    }
+    setMotivasiList(updated);
+    syncToAPI("motivasi", updated);
+    setMotivasiForm({ text:"" }); setEditMotivasiId(null); setShowMotivasiForm(false);
+  };
+  const editMotivasi = (m: any) => { setMotivasiForm({ text: m.text }); setEditMotivasiId(m.id); setShowMotivasiForm(true); window.scrollTo(0,0); };
+  const delMotivasi = (id: string) => { if (!confirm("Hapus motivasi ini?")) return; const updated = motivasiList.filter(m=>m.id!==id); setMotivasiList(updated); syncToAPI("motivasi", updated); };
+
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
     { id:"tokens", label:"Token VIP" },
@@ -444,6 +472,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"liveinfo", label:"Live Info" },
     { id:"testimonials", label:"Testimoni" },
     { id:"pricing", label:"Harga/Paket" },
+    { id:"motivasi", label:"Motivasi" },
     { id:"ticker", label:"Ticker" },
     { id:"mutasi", label:"💰 Mutasi" },
     { id:"orders", label:"🧾 Orders" },
@@ -824,9 +853,18 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           {/* ======== PRICING ======== */}
           {tab==="pricing" && (
             <div>
-              <div className="mb-4">
-                <h2 className="text-white font-bold text-sm">Manajemen Harga Paket</h2>
-                <p className="text-slate-500 text-xs mt-0.5">Edit harga, deskripsi, fitur, flash sale + kalkulator % + timer</p>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Manajemen Harga/Paket</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">Tambah, edit, hapus paket · Flash sale + kalkulator otomatis · Edit periode /bulan</p>
+                </div>
+                <button onClick={()=>{
+                  const newId = "paket_"+Date.now();
+                  const newPkg = { id:newId, name:"Paket Baru", price:200000, priceLabel:"Rp 200.000", period:"/bulan", color:"blue", popular:false, isElite:false, hasAI:false, flashSale:null, description:"Deskripsi paket baru.", features:["Fitur 1","Fitur 2"] };
+                  const updated = [...pricing, newPkg];
+                  setPricing(updated); syncToAPI("pricing", updated);
+                  openPricingEdit(newPkg);
+                }} className="btn-primary text-xs px-4 py-2 rounded-xl">➕ Tambah Paket</button>
               </div>
               {showPricingForm && editPricingId && (
                 <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
@@ -921,9 +959,14 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         {(p.features||[]).slice(0,3).map((f:string,i:number)=><li key={i} className="text-xs text-slate-500 flex gap-1"><span className="text-cyan-400">✓</span>{f}</li>)}
                         {(p.features||[]).length>3 && <li className="text-xs text-slate-600">+{p.features.length-3} fitur lainnya</li>}
                       </ul>
-                      <button onClick={()=>openPricingEdit(p)} className="w-full py-2 rounded-lg text-xs font-bold bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 transition-all">
-                        Edit Paket
-                      </button>
+                      <div className="flex gap-2">
+                        <button onClick={()=>openPricingEdit(p)} className="flex-1 py-2 rounded-lg text-xs font-bold bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 transition-all">
+                          Edit
+                        </button>
+                        <button onClick={()=>{ if(!confirm("Hapus paket "+p.name+"?")) return; const updated=pricing.filter(x=>x.id!==p.id); setPricing(updated); syncToAPI("pricing",updated); }} className="px-3 py-2 rounded-lg text-xs font-bold bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all">
+                          Hapus
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -934,14 +977,33 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           {/* ======== TICKER ======== */}
           {tab==="ticker" && (
             <div>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
                 <div>
                   <h2 className="text-white font-bold text-sm">Manajemen Ticker Saham</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">Kelola saham yang muncul di ticker berjalan atas halaman</p>
+                  <p className="text-slate-500 text-xs mt-0.5">Kelola saham di ticker berjalan + atur kecepatan animasi</p>
                 </div>
                 <button onClick={()=>{setTickerForm({kode:"",price:"",change:""});setEditTickerId(null);setShowTickerForm(!showTickerForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
                   {showTickerForm&&!editTickerId?"Tutup":"Tambah Ticker"}
                 </button>
+              </div>
+              {/* Ticker Speed Control */}
+              <div className="card rounded-xl p-4 mb-4">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400 font-bold block mb-1">Kecepatan Ticker (detik)</label>
+                    <p className="text-xs text-slate-600">Makin kecil = makin cepat. Default: 32 detik</p>
+                  </div>
+                  <div className="flex items-center gap-3 ml-auto">
+                    <span className="text-xs text-slate-500">Cepat (10s)</span>
+                    <input type="range" min="10" max="80" step="5" value={tickerSpeed}
+                      onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); syncToAPI("ticker_speed", v); }}
+                      className="w-32 accent-blue-500"/>
+                    <span className="text-xs text-slate-500">Lambat (80s)</span>
+                    <span className="text-blue-400 font-black text-sm w-12 text-center">{tickerSpeed}s</span>
+                  </div>
+                  <button onClick={()=>{ setTickerSpeed(32); syncToAPI("ticker_speed", 32); }}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-slate-500 hover:text-white hover:bg-white/5">Reset</button>
+                </div>
               </div>
               {showTickerForm && (
                 <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
@@ -982,6 +1044,54 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
           {tab==="mutasi" && <MutasiTab />}
           {tab==="orders" && <OrdersTab />}
+
+          {/* ======== MOTIVASI ======== */}
+          {tab==="motivasi" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Kata Motivasi</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">Tampil sebagai ticker berjalan di halaman utama & VIP</p>
+                </div>
+                <button onClick={()=>{setMotivasiForm({text:""});setEditMotivasiId(null);setShowMotivasiForm(!showMotivasiForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                  {showMotivasiForm&&!editMotivasiId?"Tutup":"Tambah Motivasi"}
+                </button>
+              </div>
+              {showMotivasiForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
+                  <h3 className="text-white font-bold mb-3 text-sm">{editMotivasiId?"Edit Kata Motivasi":"Tambah Kata Motivasi"}</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs text-slate-500 mb-1 block">Isi Kata Motivasi</label>
+                      <textarea value={motivasiForm.text} onChange={e=>setMotivasiForm({...motivasiForm,text:e.target.value})}
+                        placeholder="Jangan takut untuk belajar — setiap langkah kecil adalah investasi untuk masa depanmu..."
+                        rows={3} className="input-dark resize-none"/>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={saveMotivasi} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-bold">{editMotivasiId?"Update":"Simpan"}</button>
+                      <button onClick={()=>{setShowMotivasiForm(false);setEditMotivasiId(null);}} className="px-4 py-2.5 rounded-xl text-sm text-slate-400 border border-white/10 hover:bg-white/5">Batal</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="space-y-3">
+                {motivasiList.length===0 ? (
+                  <div className="card rounded-xl p-10 text-center text-slate-500 text-sm">Belum ada kata motivasi.</div>
+                ) : motivasiList.map(m=>(
+                  <div key={m.id} className="card rounded-xl p-4 flex items-start gap-3">
+                    <span className="text-yellow-400 text-lg flex-shrink-0 mt-0.5">✨</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-slate-300 text-sm leading-relaxed">{m.text}</p>
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <Btn onClick={()=>editMotivasi(m)} color="blue">Edit</Btn>
+                      <Btn onClick={()=>delMotivasi(m.id)} color="red">Hapus</Btn>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {tab==="loginlogs" && (
             <div>
@@ -1034,4 +1144,5 @@ export default function AdminPage() {
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
   return <AdminDashboard onLogout={() => { localStorage.removeItem("admin_auth"); setAuthed(false); }} />;
 }
+
 
