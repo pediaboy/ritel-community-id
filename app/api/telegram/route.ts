@@ -93,7 +93,11 @@ async function handleSignals(chatId: number|string) {
     txt += `${a} <b>${s.kode}</b> — ${s.action}\n   Entry: ${s.entry||"—"} | TP: ${s.tp||"—"} | SL: ${s.sl||"—"}\n`;
   });
   if (signals.length > 8) txt += `\n...+${signals.length - 8} lainnya`;
+
+  // Tombol edit per sinyal (maks 5)
+  const editBtns = signals.slice(0,5).map((s:any) => [{ text: `✏️ Edit ${s.kode}`, callback_data: `sig_edit_${s.id}` }]);
   await sendKeyboard(chatId, txt, [
+    ...editBtns,
     [{ text: "➕ Tambah", callback_data: "sig_add" }, { text: "🗑️ Hapus Semua", callback_data: "sig_delall_confirm" }],
     [{ text: "🏠 Menu", callback_data: "main_menu" }],
   ]);
@@ -457,6 +461,8 @@ async function processUpdate(update: any) {
       if (state.flow === "li") { await handleLiveInfoEdit(chatId, text); return; }
       if (state.flow === "order") { await handleOrderConfirm(chatId, text); return; }
       if (state.flow === "search") { await handleTokenSearch(chatId, text); return; }
+      if (state.flow === "pricing_edit") { await handlePricingEdit(chatId, text); return; }
+      if (state.flow === "signal_edit") { await handleSignalEdit(chatId, text); return; }
     }
 
     if (text.startsWith("/start") || text.startsWith("/menu")) {
@@ -655,11 +661,144 @@ async function processUpdate(update: any) {
       const pricing: any[] = rows[0]?.value || [];
       const pkg = pricing.find((p:any) => p.id === pkgId);
       if (!pkg) { await sendMsg(chatId, "❌ Paket tidak ditemukan"); return; }
-      await sendMsg(chatId, 
-        `✏️ <b>Edit Paket ${pkg.name}</b>\n\nHarga: ${pkg.priceLabel}\n\nGunakan command:\n/flashsale ${pkg.id} [persen] [jam]\nContoh: /flashsale ${pkg.id} 50 24\n\nUntuk hapus flash sale:\n/removefs ${pkg.id}`
+      userState.set(String(chatId), {
+        flow: "pricing_edit", step: "pe_price",
+        pkgId: pkg.id, pkgName: pkg.name,
+        origDesc: pkg.description || "",
+      });
+      await sendKeyboard(chatId,
+        `✏️ <b>Edit Paket ${pkg.name}</b>\n\nHarga saat ini: <b>${pkg.priceLabel}</b>\n\nKetik <b>harga baru</b> (contoh: Rp 250.000):`,
+        [
+          [{ text: "⚡ Set Flash Sale", callback_data: `pe_flash_${pkg.id}` }],
+          [{ text: "🗑️ Hapus Flash Sale", callback_data: `pe_rmflash_${pkg.id}` }],
+          [{ text: "❌ Batal", callback_data: "menu_pricing" }],
+        ]
       );
       return;
     }
+
+    if (data === "pe_save") {
+      const state = userState.get(String(chatId));
+      if (!state) return;
+      const rows = await sb("GET", '/settings?key=eq.pricing');
+      const pricing: any[] = rows[0]?.value || [];
+      const updated = pricing.map((p:any) => p.id === state.pkgId
+        ? { ...p, priceLabel: state.priceLabel, description: state.description }
+        : p
+      );
+      await sb("PATCH", `/settings?key=eq.pricing`, { value: updated, updated_at: new Date().toISOString() });
+      userState.delete(String(chatId));
+      await sendKeyboard(chatId, `✅ Paket <b>${state.pkgName}</b> berhasil diupdate!\n\nHarga: ${state.priceLabel}`, [
+        [{ text: "💰 Lihat Semua Paket", callback_data: "menu_pricing" }],
+        [{ text: "🏠 Menu", callback_data: "main_menu" }],
+      ]);
+      return;
+    }
+    if (data === "pe_cancel") {
+      userState.delete(String(chatId));
+      await handlePricing(chatId);
+      return;
+    }
+
+    if (data.startsWith("pe_flash_")) {
+      const pkgId = data.replace("pe_flash_", "");
+      const rows = await sb("GET", '/settings?key=eq.pricing');
+      const pricing: any[] = rows[0]?.value || [];
+      const pkg = pricing.find((p:any) => p.id === pkgId);
+      if (!pkg) return;
+      await sendMsg(chatId,
+        `⚡ <b>Set Flash Sale - ${pkg.name}</b>\n\nFormat: /flashsale ${pkg.id} [persen] [jam]\nContoh: /flashsale ${pkg.id} 50 24\n(jam timer opsional)`
+      );
+      return;
+    }
+    if (data.startsWith("pe_rmflash_")) {
+      const pkgId = data.replace("pe_rmflash_", "");
+      await handleRemoveFlashSale(chatId, [pkgId]);
+      return;
+    }
+
+    if (data.startsWith("sig_edit_")) {
+      const sigId = data.replace("sig_edit_", "");
+      const signals = await sb("GET", `/signals?id=eq.${sigId}`);
+      const sig = signals[0];
+      if (!sig) { await sendMsg(chatId, "❌ Sinyal tidak ditemukan"); return; }
+      userState.set(String(chatId), {
+        flow: "signal_edit", step: "se_tp",
+        sigId, kode: sig.kode,
+        tp: sig.tp, origSl: sig.sl, origNotes: sig.notes || "",
+      });
+      await sendMsg(chatId, `✏️ <b>Edit Sinyal ${sig.kode}</b>\n\nTP saat ini: ${sig.tp}\nSL: ${sig.sl}\n\nKetik <b>TP baru</b> (atau . untuk skip):`);
+      return;
+    }
+    if (data === "se_save") {
+      const state = userState.get(String(chatId));
+      if (!state) return;
+      await sb("PATCH", `/signals?id=eq.${state.sigId}`, { tp: state.tp, sl: state.sl, notes: state.notes });
+      userState.delete(String(chatId));
+      await sendKeyboard(chatId, `✅ Sinyal <b>${state.kode}</b> berhasil diupdate!\n\nTP: ${state.tp} | SL: ${state.sl}`, [
+        [{ text: "⚡ Lihat Sinyal", callback_data: "menu_signals" }],
+        [{ text: "🏠 Menu", callback_data: "main_menu" }],
+      ]);
+      return;
+    }
+    if (data === "se_cancel") {
+      userState.delete(String(chatId));
+      await handleSignals(chatId);
+      return;
+    }
+  }
+}
+
+
+// ================== PRICING EDIT FLOW ==================
+async function handlePricingEdit(chatId: number|string, text: string) {
+  const state = userState.get(String(chatId));
+  if (!state) return;
+
+  if (state.step === "pe_price") {
+    userState.set(String(chatId), { ...state, priceLabel: text, step: "pe_desc" });
+    await sendMsg(chatId, `✅ Harga: <b>${text}</b>\n\nSekarang ketik <b>deskripsi</b> paket (atau ketik . untuk skip):`);
+    return;
+  }
+  if (state.step === "pe_desc") {
+    const desc = text === "." ? state.origDesc : text;
+    userState.set(String(chatId), { ...state, description: desc, step: "pe_confirm" });
+    await sendKeyboard(chatId,
+      `📋 <b>Konfirmasi Edit Paket ${state.pkgName}</b>\n\nHarga baru: <b>${state.priceLabel}</b>\nDeskripsi: ${desc}\n\nSimpan perubahan?`,
+      [
+        [{ text: "✅ Simpan", callback_data: "pe_save" }, { text: "❌ Batal", callback_data: "pe_cancel" }]
+      ]
+    );
+    return;
+  }
+}
+
+// ================== SIGNAL EDIT FLOW ==================
+async function handleSignalEdit(chatId: number|string, text: string) {
+  const state = userState.get(String(chatId));
+  if (!state) return;
+
+  if (state.step === "se_tp") {
+    userState.set(String(chatId), { ...state, tp: text, step: "se_sl" });
+    await sendMsg(chatId, `✅ TP: <b>${text}</b>\n\nKetik <b>Stop Loss</b> baru (atau . untuk skip):`);
+    return;
+  }
+  if (state.step === "se_sl") {
+    const sl = text === "." ? state.origSl : text;
+    userState.set(String(chatId), { ...state, sl, step: "se_notes" });
+    await sendMsg(chatId, `✅ SL: <b>${sl}</b>\n\nKetik <b>catatan</b> sinyal (atau . untuk skip):`);
+    return;
+  }
+  if (state.step === "se_notes") {
+    const notes = text === "." ? state.origNotes : text;
+    userState.set(String(chatId), { ...state, notes, step: "se_confirm" });
+    await sendKeyboard(chatId,
+      `📋 <b>Konfirmasi Edit Sinyal ${state.kode}</b>\n\nTP: ${state.tp}\nSL: ${state.sl}\nNotes: ${notes}\n\nSimpan?`,
+      [
+        [{ text: "✅ Simpan", callback_data: "se_save" }, { text: "❌ Batal", callback_data: "se_cancel" }]
+      ]
+    );
+    return;
   }
 }
 
@@ -676,4 +815,5 @@ export async function POST(req: Request) {
 export async function GET() {
   return NextResponse.json({ status: "Telegram Bot RC Admin webhook active" });
 }
+
 
