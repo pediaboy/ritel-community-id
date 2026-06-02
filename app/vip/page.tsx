@@ -1,3 +1,8 @@
+"use client";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 // ===== MOTIVASI TICKER VIP =====
 function MotivasiTickerVIP() {
   const [list, setList] = useState<string[]>([]);
@@ -35,10 +40,6 @@ function MotivasiTickerVIP() {
   );
 }
 
-"use client";
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 // ===== TILT =====
 function TiltCard({ children, className="" }: { children: React.ReactNode; className?: string }) {
