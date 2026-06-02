@@ -3,12 +3,13 @@ import { sb } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8675129710:AAHB_w1AsglY_3ZPhNekfYLoPdOtUeTIAU0";
 const ADMIN_IDS_RAW = process.env.TELEGRAM_ADMIN_IDS || "";
 const ADMIN_IDS = ADMIN_IDS_RAW.split(",").map(s=>s.trim()).filter(Boolean);
 const WA_NUMBER = "6282218723401";
 
 function isAdmin(userId: string|number): boolean {
+  if (!ADMIN_IDS_RAW || ADMIN_IDS.length === 0) return true;
   return ADMIN_IDS.includes(String(userId));
 }
 
@@ -459,8 +460,12 @@ async function processUpdate(update: any) {
     }
 
     if (text.startsWith("/start") || text.startsWith("/menu")) {
+      if (!isAdmin(userId)) {
+        await sendMsg(chatId, `🤖 <b>RC Admin Bot</b>\n\nID Telegram kamu: <code>${userId}</code>\n\nSampaikan ID ini ke developer untuk akses admin.`);
+        return;
+      }
       await sendKeyboard(chatId,
-        `🏠 <b>RC Admin Bot</b>\n\nHalo Admin! Pilih menu:\n\nVersi: Telegram Bot (no AI)\nID kamu: <code>${userId}</code>`,
+        `🏠 <b>RC Admin Bot - Ritel Community</b>\n\nHalo Admin! \nID: <code>${userId}</code>`,
         mainMenu()
       );
       return;
@@ -671,3 +676,4 @@ export async function POST(req: Request) {
 export async function GET() {
   return NextResponse.json({ status: "Telegram Bot RC Admin webhook active" });
 }
+
