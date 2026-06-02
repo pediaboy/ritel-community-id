@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sb } from "@/lib/supabase";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -22,9 +23,21 @@ async function setSession(tokenId: string, sessionId: string|null) {
   }
 }
 
+async function logLogin(name: string, pkg: string, token: string, ip: string) {
+  if (!["silver","gold","pro","platinum","elite"].includes(pkg)) return;
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/admin/loginlogs`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, pkg, token, ip }),
+    });
+  } catch {}
+}
+
 export async function POST(req: Request) {
   const body = await req.json();
   const { token, action, sessionId, tokenId } = body;
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || req.headers.get("x-real-ip") || "-";
 
   // LOGOUT - clear session
   if (action === "logout" && tokenId) {
@@ -56,6 +69,8 @@ export async function POST(req: Request) {
     if (!storedSession) {
       const newSession = genSessionId();
       await setSession(found.id, newSession);
+      // Log this new login
+      logLogin(found.name, found.package, token, ip);
       return NextResponse.json({
         success: true,
         sessionId: newSession,
