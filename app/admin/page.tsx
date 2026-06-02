@@ -113,6 +113,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"t6", kode:"GOTO", price:"86", change:"+4.88%" },
   ];
   const [tickerStocks, setTickerStocks] = useLocalStore<any[]>("ticker_stocks", defaultTicker);
+  const [tickerSpeed, setTickerSpeed] = useLocalStore<number>("ticker_speed", 32);
 
   // PREMIUM SIGNALS (halaman sinyal premium)
   const defaultPremiumSignals = [
