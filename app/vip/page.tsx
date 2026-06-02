@@ -1,3 +1,40 @@
+// ===== MOTIVASI TICKER VIP =====
+function MotivasiTickerVIP() {
+  const [list, setList] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const syncData = JSON.parse(localStorage.getItem("rc_sync") || "{}");
+      if (syncData.motivasi && syncData.motivasi.length > 0) {
+        setList(syncData.motivasi.map((m: any) => m.text));
+      } else {
+        setList([
+          "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.",
+          "Pasar tidak menghukum yang berani belajar. Pasar menghukum yang tidak mau bersiap.",
+          "Cari mentor yang tepat — pengalaman mereka bisa memotong kurva belajarmu bertahun-tahun.",
+        ]);
+      }
+    } catch {}
+  }, []);
+  if (list.length === 0) return null;
+  const doubled = [...list, ...list];
+  return (
+    <div style={{ background:"rgba(234,179,8,0.04)", borderTop:"1px solid rgba(234,179,8,0.1)", borderBottom:"1px solid rgba(234,179,8,0.1)", padding:"7px 0", overflow:"hidden" }}>
+      <div style={{ display:"flex" }}>
+        <div style={{ display:"flex", animation:"motivasiMove 55s linear infinite", whiteSpace:"nowrap", alignItems:"center" }}>
+          {doubled.map((text, i) => (
+            <span key={i} className="inline-flex items-center gap-2 px-8 text-xs" style={{ color:"rgba(234,179,8,0.7)" }}>
+              <span style={{ color:"rgba(234,179,8,0.4)" }}>✦</span>
+              {text}
+              <span style={{ color:"rgba(234,179,8,0.25)", marginLeft:16 }}>|</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <style>{`@keyframes motivasiMove { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }`}</style>
+    </div>
+  );
+}
+
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -452,4 +489,5 @@ export default function VipPage() {
     </div>
   );
 }
+
 
