@@ -12,6 +12,10 @@ export default function LoginPage() {
   useEffect(() => {
     const saved = localStorage.getItem("vip_token");
     if (saved) router.push("/vip");
+    // Show error from URL param (e.g. session conflict)
+    const params = new URLSearchParams(window.location.search);
+    const errParam = params.get("error");
+    if (errParam) setErr(decodeURIComponent(errParam));
   }, []);
 
   const login = async () => {
