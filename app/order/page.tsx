@@ -12,10 +12,16 @@ const PACKAGES: any = {
   elite:    { name:"Elite",    price:1000000, accent:"text-yellow-400",  bg:"from-yellow-400 to-orange-500" },
 };
 
+// Payment logos as components
+const PayLogo = {
+  dana: () => <div className="flex items-center justify-center w-10 h-7 rounded-md font-black text-white text-sm" style={{background:"#108FE8",letterSpacing:1}}>DANA</div>,
+  gopay: () => <div className="flex items-center justify-center w-10 h-7 rounded-md font-black text-white text-sm" style={{background:"#00AED6",letterSpacing:0.5}}>Go<span style={{color:"#FFD700"}}>Pay</span></div>,
+  seabank: () => <div className="flex items-center justify-center w-12 h-7 rounded-md font-black text-white text-xs" style={{background:"linear-gradient(135deg,#2A5FE3,#1a3fbf)",letterSpacing:0.5}}>SeaBank</div>,
+};
 const PAYMENT_METHODS = [
-  { id:"dana",    label:"DANA",    number:"082218723401", an:"THIRAFI THARIQ AL IDRIS", icon:"💚" },
-  { id:"gopay",   label:"GoPay",   number:"082218723401", an:"THIRAFI THARIQ AL IDRIS", icon:"💙" },
-  { id:"seabank", label:"SeaBank", number:"901555691160", an:"THIRAFI THARIQ AL IDRIS", icon:"🏦" },
+  { id:"dana",    label:"DANA",    number:"082218723401", an:"THIRAFI THARIQ AL IDRIS" },
+  { id:"gopay",   label:"GoPay",   number:"082218723401", an:"THIRAFI THARIQ AL IDRIS" },
+  { id:"seabank", label:"SeaBank", number:"901555691160", an:"THIRAFI THARIQ AL IDRIS" },
 ];
 
 function formatRp(n: number) {
@@ -183,7 +189,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                       ${metodePay === m.id
                         ? "border-cyan-500 bg-cyan-500/20 text-cyan-300"
                         : "border-white/10 bg-white/5 text-slate-400 hover:border-white/20"}`}>
-                    <div className="text-xl mb-1">{m.icon}</div>
+                    <div className="flex justify-center mb-1">{(PayLogo as any)[m.id]?.()}</div>
                     <div>{m.label}</div>
                   </button>
                 ))}
