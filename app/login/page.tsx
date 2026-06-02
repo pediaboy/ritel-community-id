@@ -55,7 +55,7 @@ export default function LoginPage() {
 
         <div className="card-glass rounded-2xl p-8 border border-white/10">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-xl mb-4">RC</div>
+            <img src="/logo.png" alt="RITEL" className="w-14 h-14 mx-auto rounded-2xl object-cover mb-4" />
             <h1 className="text-xl font-black text-white">Login VIP</h1>
             <p className="text-slate-500 text-xs mt-1">Masukkan token VIP kamu untuk akses eksklusif</p>
           </div>
