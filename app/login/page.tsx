@@ -12,7 +12,6 @@ export default function LoginPage() {
   useEffect(() => {
     const saved = localStorage.getItem("vip_token");
     if (saved) router.push("/vip");
-    // Show error from URL param (e.g. session conflict)
     const params = new URLSearchParams(window.location.search);
     const errParam = params.get("error");
     if (errParam) setErr(decodeURIComponent(errParam));
@@ -23,15 +22,20 @@ export default function LoginPage() {
     setLoading(true);
     setErr("");
     try {
+      // Ambil sessionId dari localStorage jika sudah ada (returning device)
+      const existingSession = localStorage.getItem("vip_session_id");
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ token: token.trim() }),
+        body: JSON.stringify({ token: token.trim(), sessionId: existingSession || null }),
       });
       const data = await res.json();
       if (data.success) {
         localStorage.setItem("vip_token", token.trim());
         localStorage.setItem("vip_user", JSON.stringify(data.user));
+        // Simpan sessionId & tokenId untuk single-session check
+        if (data.sessionId) localStorage.setItem("vip_session_id", data.sessionId);
+        if (data.tokenId) localStorage.setItem("vip_token_id", data.tokenId);
         router.push("/vip");
       } else {
         setErr(data.message || "Token tidak valid atau sudah expired.");
@@ -45,7 +49,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        {/* Back */}
         <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-white text-xs mb-8 transition-colors">
           ← Kembali ke Beranda
         </Link>
