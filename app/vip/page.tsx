@@ -38,24 +38,6 @@ function LiveInfoBox() {
         <div>
           <div className="text-yellow-400 text-xs font-black mb-1.5 tracking-wide">INFO DARI ADMIN</div>
           <p className="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap">{info.message}</p>
-          {tab==="ai" && (
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-5 shadow-2xl shadow-cyan-500/30">
-                <span className="text-white text-3xl font-black">AI</span>
-              </div>
-              <h2 className="text-white font-black text-xl mb-2">RC-AI Analyst</h2>
-              <p className="text-slate-400 text-sm mb-2 max-w-sm leading-relaxed">AI analis saham eksklusif yang bisa analisis teknikal, fundamental, bandarmologi, dan baca screenshot chart secara real-time.</p>
-              <p className="text-slate-500 text-xs mb-6">Powered by Gemini 1.5 Flash · Bisa kirim gambar chart</p>
-              <div className="flex flex-wrap gap-3 justify-center mb-6">
-                {["📊 Analisis teknikal","🔍 Baca chart Anda","🎯 Rekomen entry/TP/SL","💡 Bandarmologi","📈 Screening saham"].map((f,i)=>(
-                  <span key={i} className="text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 text-slate-400">{f}</span>
-                ))}
-              </div>
-              <a href="/ai" className="btn-primary px-8 py-3 rounded-xl font-bold text-sm inline-block">
-                Buka RC-AI Analyst →
-              </a>
-            </div>
-          )}
 
         </div>
       </div>
@@ -165,18 +147,12 @@ export default function VipPage() {
   const [ihsgNews, setIhsgNews] = useState<any[]>([]);
   const [tab, setTab] = useState("signals");
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("vip_token");
     if (!token) { router.push("/login"); return; }
 
-    // Show cached user immediately while verifying
-    try {
-      const userStr = localStorage.getItem("vip_user");
-      if (userStr) { const u = JSON.parse(userStr); setUser(u); }
-    } catch {}
-
-    // Always verify token with server
     fetch("/api/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -187,29 +163,22 @@ export default function VipPage() {
         if (!d.success) {
           localStorage.removeItem("vip_token");
           localStorage.removeItem("vip_user");
-          router.push("/login?error=" + encodeURIComponent(d.message || "Session tidak valid"));
+          router.push("/login?error=" + encodeURIComponent(d.message || "Token tidak valid"));
         } else {
           setUser(d.user);
           localStorage.setItem("vip_user", JSON.stringify(d.user));
           setLoading(false);
-          // Load signals after auth success
-          fetch("/api/admin/signals").then(r=>r.json()).then(d=>{
-            if(d.signals) setSignals(d.signals);
-          }).catch(()=>{});
-          // Load news
+          fetch("/api/admin/signals").then(r=>r.json()).then(d=>{ if(d.signals) setSignals(d.signals); }).catch(()=>{});
           fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
         }
       })
-      .catch(() => {
-        // Network error - use cached data
-        setLoading(false);
-      });
+      .catch(() => { setLoading(false); });
   }, []);
 
   const logout = () => {
-    const tokenId = localStorage.getItem("vip_tokenid");
-    if(tokenId) fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"logout",tokenId})}).catch(()=>{});
-    localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user"); localStorage.removeItem("vip_session"); localStorage.removeItem("vip_tokenid"); router.push("/login");
+    localStorage.removeItem("vip_token");
+    localStorage.removeItem("vip_user");
+    router.push("/login");
   };
   const pkgLevel = PKG_LEVELS.indexOf(user?.package||"basic");
   const mySignals = signals.filter(s=>(s.package||[]).includes(user?.package));
