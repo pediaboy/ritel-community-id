@@ -128,7 +128,7 @@ export default function PaketPage() {
                       </ul>
                     </div>
 
-                    <a href={`https://wa.me/6282218723401?text=Halo%20min%20saya%20mau%20order%20paket%20${pkg.name}%20${pkg.flashSale?.price||pkg.priceLabel}`} target="_blank"
+                    <a href={`/order?pkg=${pkg.id}`}
                       className={`w-full block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 bg-gradient-to-r ${c.bg} text-white`}>
                       Order Paket {pkg.name}
                     </a>
