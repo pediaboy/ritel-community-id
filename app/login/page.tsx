@@ -105,6 +105,11 @@ export default function LoginPage() {
             >
               💬 WA Admin untuk Bergabung
             </a>
+            <div className="mt-2">
+              <Link href="/paket" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-500/20 hover:border-blue-400/40 px-5 py-2.5 rounded-lg inline-block transition-all">
+                Lihat Semua Paket VIP →
+              </Link>
+            </div>
           </div>
         </div>
 
