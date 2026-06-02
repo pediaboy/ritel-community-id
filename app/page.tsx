@@ -1,3 +1,149 @@
+// ===== LOADING SCREEN =====
+function LoadingScreen({ onDone }: { onDone: () => void }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 300);
+    const t2 = setTimeout(() => setPhase(2), 900);
+    const t3 = setTimeout(() => setPhase(3), 1600);
+    const t4 = setTimeout(() => setPhase(4), 2400);
+    const t5 = setTimeout(() => onDone(), 3200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
+  }, []);
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+      style={{ background: "radial-gradient(ellipse at center, #040d1a 0%, #020610 40%, #000204 100%)" }}>
+      {/* Stars */}
+      <div style={{ position:"absolute", inset:0 }}>
+        {Array.from({length:120}).map((_,i) => (
+          <div key={i} style={{
+            position:"absolute",
+            left: Math.random()*100+"%",
+            top: Math.random()*100+"%",
+            width: Math.random()*2.5+0.5+"px",
+            height: Math.random()*2.5+0.5+"px",
+            background: "#fff",
+            borderRadius:"50%",
+            opacity: Math.random()*0.7+0.2,
+            animation: `twinkle ${Math.random()*3+2}s ease-in-out infinite`,
+            animationDelay: Math.random()*4+"s",
+          }}/>
+        ))}
+      </div>
+      {/* Nebula glows */}
+      <div style={{position:"absolute",top:"20%",left:"15%",width:"300px",height:"300px",background:"radial-gradient(circle,rgba(30,90,240,0.12) 0%,transparent 70%)",borderRadius:"50%",filter:"blur(40px)"}}/>
+      <div style={{position:"absolute",bottom:"25%",right:"15%",width:"250px",height:"250px",background:"radial-gradient(circle,rgba(0,200,255,0.08) 0%,transparent 70%)",borderRadius:"50%",filter:"blur(40px)"}}/>
+      <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"400px",height:"400px",background:"radial-gradient(circle,rgba(10,40,120,0.15) 0%,transparent 70%)",borderRadius:"50%",filter:"blur(60px)"}}/>
+
+      {/* Center content */}
+      <div className="relative z-10 text-center px-4">
+        {/* Logo */}
+        <div style={{ opacity: phase>=1?1:0, transform: phase>=1?"scale(1)":"scale(0.5)", transition:"all 0.6s cubic-bezier(0.34,1.56,0.64,1)" }}
+          className="flex justify-center mb-6">
+          <div style={{
+            width:72, height:72, borderRadius:20,
+            background:"linear-gradient(135deg,#1e5af0,#00c8ff)",
+            boxShadow:"0 0 40px rgba(30,90,240,0.6), 0 0 80px rgba(30,90,240,0.2)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            fontSize:28, fontWeight:900, color:"#fff",
+          }}>RC</div>
+        </div>
+
+        {/* Title letters */}
+        <div style={{ opacity: phase>=2?1:0, transform: phase>=2?"translateY(0)":"translateY(20px)", transition:"all 0.7s ease" }}>
+          <div style={{ fontSize:"clamp(22px,5vw,36px)", fontWeight:900, letterSpacing:"0.15em", color:"#fff", marginBottom:4 }}>
+            {"RITEL COMMUNITY".split("").map((ch, i) => (
+              <span key={i} style={{
+                display:"inline-block",
+                animation: phase>=2 ? `letterDrop 0.5s ease forwards` : "none",
+                animationDelay: `${i*0.04}s`,
+                opacity:0,
+                color: ch === " " ? "transparent" : undefined,
+              }}>{ch === " " ? " " : ch}</span>
+            ))}
+          </div>
+          <div style={{
+            fontSize:"clamp(14px,3vw,20px)", fontWeight:900, letterSpacing:"0.3em",
+            background:"linear-gradient(90deg,#1e5af0,#00c8ff,#1e5af0)",
+            WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
+            backgroundSize:"200% auto", animation:"shimmerText 2s linear infinite",
+          }}>.ID</div>
+        </div>
+
+        {/* Tagline */}
+        <div style={{ opacity: phase>=3?1:0, transform: phase>=3?"translateY(0)":"translateY(10px)", transition:"all 0.5s ease 0.2s", marginTop:16 }}>
+          <p style={{ color:"rgba(148,163,184,0.8)", fontSize:"clamp(10px,2vw,13px)", letterSpacing:"0.2em" }}>
+            PLATFORM ANALISA SAHAM INDONESIA
+          </p>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ marginTop:32, opacity: phase>=2?1:0, transition:"opacity 0.5s ease" }}>
+          <div style={{ width:200, height:2, background:"rgba(255,255,255,0.08)", borderRadius:4, margin:"0 auto", overflow:"hidden" }}>
+            <div style={{
+              height:"100%",
+              background:"linear-gradient(90deg,#1e5af0,#00c8ff)",
+              borderRadius:4,
+              width: phase>=4?"100%":phase>=3?"70%":phase>=2?"35%":"5%",
+              transition:"width 0.6s ease",
+              boxShadow:"0 0 8px rgba(0,200,255,0.8)",
+            }}/>
+          </div>
+          <p style={{ color:"rgba(100,116,139,0.7)", fontSize:10, marginTop:8, letterSpacing:"0.1em" }}>
+            {phase<=2?"INITIALIZING...":phase===3?"LOADING MARKET DATA...":"READY"}
+          </p>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes twinkle { 0%,100%{opacity:0.2;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+        @keyframes letterDrop { 0%{opacity:0;transform:translateY(-20px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes shimmerText { 0%{background-position:0% center} 100%{background-position:200% center} }
+      `}</style>
+    </div>
+  );
+}
+
+// ===== MOTIVASI TICKER =====
+function MotivasiTicker() {
+  const [list, setList] = useState<string[]>([
+    "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.",
+    "Pasar tidak menghukum yang berani belajar. Pasar menghukum yang tidak mau bersiap.",
+    "Setiap investor sukses pernah menjadi pemula. Yang membedakan mereka adalah konsistensi belajar.",
+    "Cari mentor yang tepat — pengalaman mereka bisa memotong kurva belajarmu bertahun-tahun.",
+    "Profit bukan keberuntungan, itu adalah hasil dari disiplin, ilmu, dan manajemen risiko yang benar.",
+    "Investasi terbaik yang bisa kamu lakukan adalah investasi pada dirimu sendiri.",
+    "Bukan tentang timing the market, tapi time in the market dan terus belajar.",
+  ]);
+
+  useEffect(() => {
+    try {
+      const syncData = JSON.parse(localStorage.getItem("rc_sync") || "{}");
+      if (syncData.motivasi && syncData.motivasi.length > 0) {
+        setList(syncData.motivasi.map((m: any) => m.text));
+      }
+    } catch {}
+  }, []);
+
+  if (list.length === 0) return null;
+  const doubled = [...list, ...list];
+  return (
+    <div style={{ background:"rgba(234,179,8,0.04)", borderTop:"1px solid rgba(234,179,8,0.1)", borderBottom:"1px solid rgba(234,179,8,0.1)", padding:"8px 0", overflow:"hidden" }}>
+      <div style={{ display:"flex" }}>
+        <div style={{ display:"flex", animation:"motivasiMove 60s linear infinite", whiteSpace:"nowrap", alignItems:"center" }}>
+          {doubled.map((text, i) => (
+            <span key={i} className="inline-flex items-center gap-2 px-8 text-xs" style={{ color:"rgba(234,179,8,0.75)" }}>
+              <span style={{ color:"rgba(234,179,8,0.5)" }}>✦</span>
+              {text}
+              <span style={{ color:"rgba(234,179,8,0.3)", marginLeft:16 }}>|</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <style>{`@keyframes motivasiMove { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }`}</style>
+    </div>
+  );
+}
+
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -171,6 +317,7 @@ const Icons = {
 
 // ===== TICKER =====
 function StockTicker() {
+  const [tickerSpeedVal, setTickerSpeedVal] = useState(32);
   const [stocks, setStocks] = useState([
     { kode:"BBCA", price:"9.875", change:"+1.28%" },
     { kode:"BBRI", price:"4.680", change:"-0.64%" },
@@ -186,7 +333,12 @@ function StockTicker() {
   useEffect(() => {
     const load = async () => {
       try {
+        const spd = localStorage.getItem("rc_admin_ticker_speed");
+        if (spd) setTickerSpeedVal(parseInt(spd));
+      } catch {}
+      try {
         const syncData = await fetch("/api/admin/sync").then(r => r.json());
+        if (syncData.ticker_speed) setTickerSpeedVal(syncData.ticker_speed);
         if (syncData.ticker && syncData.ticker.length > 0) {
           setStocks(syncData.ticker.map((s: any) => ({ kode: s.kode, price: s.price, change: s.change })));
           return;
@@ -213,7 +365,7 @@ function StockTicker() {
   return (
     <div className="bg-black/80 border-b border-white/5 overflow-hidden" style={{ height: "44px" }}>
       <div style={{ display: "flex", height: "100%" }}>
-        <div style={{ display: "flex", animation: "tickerMove 32s linear infinite", whiteSpace: "nowrap", alignItems: "center" }}>
+        <div style={{ display: "flex", animation: `tickerMove ${tickerSpeedVal}s linear infinite`, whiteSpace: "nowrap", alignItems: "center" }}>
           {doubled.map((s, i) => {
             const pos = s.change.startsWith("+");
             return (
@@ -1363,9 +1515,12 @@ function Footer() {
 
 // ===== MAIN =====
 export default function HomePage() {
+  const [showLoading, setShowLoading] = useState(true);
+  if (showLoading) return <LoadingScreen onDone={() => setShowLoading(false)} />;
   return (
     <div className="min-h-screen relative">
       <GalaxyBackground />
+      <MotivasiTicker />
       <div className="relative z-10">
         <Navbar />
         <div style={{ paddingTop: "80px" }}>
@@ -1392,3 +1547,4 @@ export default function HomePage() {
     </div>
   );
 }
+
