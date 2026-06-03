@@ -238,6 +238,8 @@ const ACTION_COLORS: any = {
 // ── SIGNAL CARD ──────────────────────────────────────────────────
 function SignalCard({ s }: { s: any }) {
   const ac = ACTION_COLORS[s.action] || ACTION_COLORS.HOLD;
+  // is_done override
+  const isDone = s.is_done === true;
   const entryNum = parseFloat(String(s.entry).replace(/\./g,"").replace(",",".")) || 0;
   const tpNum = parseFloat(String(s.tp).replace(/\./g,"").replace(",",".")) || 0;
   const pct = entryNum > 0 ? ((tpNum - entryNum) / entryNum * 100) : 0;
@@ -543,33 +545,53 @@ export default function VipPage() {
   const [partners, setPartners] = useState<any[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("vip_token");
-    if (!token) { router.push("/login"); return; }
-    fetch("/api/auth", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({token}) })
+    // Support new username/password login
+    const rcUser = localStorage.getItem("rc_user");
+    let tokenAuth = localStorage.getItem("vip_token");
+    
+    const loadData = (userData: any) => {
+      setUser(userData);
+      setLoading(false);
+      fetch("/api/admin/signals").then(r=>r.json()).then(data => {
+        const all = data.signals || [];
+        setSignals(all.filter((s:any) => !s.is_bagger && !s.is_bandar));
+        setBaggerSignals(all.filter((s:any) => s.is_bagger));
+        setBandarSignals(all.filter((s:any) => s.is_bandar));
+      }).catch(()=>{});
+      fetch("/api/admin/sync").then(r=>r.json()).then(data => {
+        if (data.signals && data.signals.length > 0) {
+          const all = data.signals;
+          setSignals(prev => prev.length === 0 ? all.filter((s:any) => !s.isBagger && !s.isBandar) : prev);
+          setBaggerSignals(prev => prev.length === 0 ? all.filter((s:any) => s.isBagger || s.action==="BAGGER") : prev);
+          setBandarSignals(prev => prev.length === 0 ? all.filter((s:any) => s.isBandar || s.action==="BANDAR") : prev);
+        }
+        if (data.premiumSignals) setPremiumContent(data.premiumSignals);
+        if (data.owners) setOwners(data.owners);
+        if (data.partners) setPartners(data.partners);
+      }).catch(()=>{});
+      fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
+    };
+
+    if (rcUser) {
+      try {
+        const u = JSON.parse(rcUser);
+        if (u && u.auth_token) {
+          const mapped = { name: u.username, package: u.role||"free", expiredAt: u.vip_expired_at, username: u.username, is_verified: u.is_verified, role: u.role, auth_token: u.auth_token };
+          loadData(mapped);
+          return;
+        }
+      } catch {}
+    }
+    if (!tokenAuth) { router.push("/login"); return; }
+    fetch("/api/auth", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({token:tokenAuth}) })
       .then(r=>r.json())
       .then(d => {
         if (!d.success) {
           localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user");
           router.push("/login?error=" + encodeURIComponent(d.message||"Token tidak valid"));
         } else {
-          setUser(d.user);
           localStorage.setItem("vip_user", JSON.stringify(d.user));
-          setLoading(false);
-
-          // Load signals
-          fetch("/api/admin/sync").then(r=>r.json()).then(data => {
-            if (data.signals) {
-              const all = data.signals;
-              setSignals(all.filter((s:any) => !s.isBagger && !s.isBandar));
-              setBaggerSignals(all.filter((s:any) => s.isBagger || s.action==="BAGGER"));
-              setBandarSignals(all.filter((s:any) => s.isBandar || s.action==="BANDAR"));
-            }
-            if (data.premiumSignals) setPremiumContent(data.premiumSignals);
-            if (data.owners) setOwners(data.owners);
-            if (data.partners) setPartners(data.partners);
-          }).catch(()=>{});
-
-          fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
+          loadData(d.user);
         }
       })
       .catch(()=>setLoading(false));
@@ -577,6 +599,7 @@ export default function VipPage() {
 
   const logout = () => {
     localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user");
+    localStorage.removeItem("rc_user");
     router.push("/login");
   };
 
@@ -715,11 +738,32 @@ export default function VipPage() {
                 <p style={{ fontSize:36, marginBottom:12 }}>📡</p>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Belum ada sinyal {sigFilter !== "Semua" ? sigFilter : ""}.</p>
               </div>
-            ) : (
-              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                {filteredSignals.map((s,i)=><SignalCard key={i} s={s}/>)}
-              </div>
-            )}
+            ) : (() => {
+              // Group by date with dividers
+              const todayStr = new Date().toLocaleDateString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"long",year:"numeric"});
+              const yestStr = new Date(Date.now()-86400000).toLocaleDateString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"long",year:"numeric"});
+              let lastDate = "";
+              const items: React.ReactNode[] = [];
+              filteredSignals.forEach((s, i) => {
+                const d = new Date(s.created_at||Date.now());
+                const dStr = d.toLocaleDateString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"long",year:"numeric"});
+                const label = dStr === todayStr ? "Hari Ini" : dStr === yestStr ? "Kemarin" : dStr;
+                if (dStr !== lastDate) {
+                  lastDate = dStr;
+                  items.push(
+                    <div key={"div_"+i} style={{ display:"flex", alignItems:"center", gap:10, margin:"8px 0 4px" }}>
+                      <div style={{ flex:1, height:1, background:"rgba(255,255,255,0.08)" }}/>
+                      <span style={{ fontSize:11, fontWeight:700, color:dStr===todayStr?"#60a5fa":"rgba(255,255,255,0.35)", background:dStr===todayStr?"rgba(30,90,240,0.12)":"rgba(255,255,255,0.04)", padding:"3px 10px", borderRadius:100, border:dStr===todayStr?"1px solid rgba(30,90,240,0.3)":"1px solid rgba(255,255,255,0.08)" }}>
+                        {label}
+                      </span>
+                      <div style={{ flex:1, height:1, background:"rgba(255,255,255,0.08)" }}/>
+                    </div>
+                  );
+                }
+                items.push(<SignalCard key={i} s={s}/>);
+              });
+              return <div style={{ display:"flex", flexDirection:"column", gap:12 }}>{items}</div>;
+            })()}
           </div>
         )}
 
