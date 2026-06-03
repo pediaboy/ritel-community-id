@@ -194,6 +194,7 @@ function AdminFeedTab() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [content_text, setContentText] = useState("");
+  const [authorName, setAuthorName] = useState("Admin RITEL COMMUNITY.ID");
   const [tag, setTag] = useState("info");
   const [pinned, setPinned] = useState(false);
   const [showHome, setShowHome] = useState(true);
@@ -212,7 +213,7 @@ function AdminFeedTab() {
     if (!content_text.trim() || posting) return;
     setPosting(true);
     try {
-      const res = await fetch("/api/admin/feed", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ action:"create", content:content_text, tag, pinned, show_home:showHome, show_vip:showVip }) });
+      const res = await fetch("/api/admin/feed", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ action:"create", content:content_text, tag, pinned, show_home:showHome, show_vip:showVip, author:authorName }) });
       const data = await res.json();
       if (data.success) { setMsg("✅ Feed diposting!"); setContentText(""); await loadFeed(); }
       else setMsg("❌ " + data.message);
@@ -229,7 +230,13 @@ function AdminFeedTab() {
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
         <div className="flex items-center gap-3 mb-3">
           <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#00c8ff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>RC</div>
-          <div><div className="text-white font-bold text-sm">Admin RITEL COMMUNITY.ID</div><div className="text-slate-500 text-xs">Verified Admin</div></div>
+          <div className="flex-1">
+            <select value={authorName} onChange={e=>setAuthorName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none font-bold mb-0.5">
+              <option value="Admin RITEL COMMUNITY.ID">Admin RITEL COMMUNITY.ID</option>
+              <option value="elthoriqqqq_">elthoriqqqq_</option>
+            </select>
+            <div className="flex items-center gap-1.5"><span title="Verified" style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:13,height:13,borderRadius:"50%",background:"#1D9BF0"}}><svg width="7" height="7" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8.5 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span><span className="text-slate-500 text-xs">Verified Admin</span></div>
+          </div>
         </div>
         <textarea value={content_text} onChange={e=>setContentText(e.target.value)} rows={4} maxLength={2000} placeholder="Tulis pengumuman, analisis, sinyal..." className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm resize-none outline-none focus:border-blue-500/50 mb-3"/>
         <div className="grid grid-cols-2 gap-3 mb-3">
@@ -1157,43 +1164,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             </div>
           )}
 
-          {/* ======== POST FEED ======== */}
-          {tab==="admin_feed" && (
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <div>
-                  <h2 className="text-white font-bold text-sm">📝 Manajemen Post Feed</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">{feedPosts.length} post · moderasi konten komunitas</p>
-                </div>
-                <button onClick={()=>{ setFeedLoading(true); fetch("/api/community/posts?limit=100").then(r=>r.json()).then(d=>{setFeedPosts(d.posts||[]);setFeedLoading(false);}).catch(()=>setFeedLoading(false)); }} className="btn-primary text-xs px-4 py-2 rounded-xl">{feedLoading?"Loading...":"Refresh"}</button>
-              </div>
-              <div className="space-y-3">
-                {feedPosts.length===0 ? (
-                  <div className="card rounded-xl p-8 text-center text-slate-500 text-sm">Belum ada post di feed.</div>
-                ) : feedPosts.map(p=>(
-                  <div key={p.id} className="card rounded-xl p-4">
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs flex-shrink-0" style={{background:"linear-gradient(135deg,#1e5af0,#06b6d4)"}}>{(p.username||"U").slice(0,1).toUpperCase()}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-white text-sm">{p.username}</span>
-                          {p.is_verified && <span className="text-xs px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30">✔ verified</span>}
-                          <span className="text-xs text-slate-600">{new Date(p.created_at).toLocaleString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
-                          <span className="text-xs text-slate-500">&#10084; {p.likes||0}</span>
-                        </div>
-                        <p className="text-slate-300 text-sm mt-1 line-clamp-3">{p.content}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 pt-2 border-t border-white/5">
-                      <Btn onClick={async()=>{ if(!confirm("Hapus post ini?"))return; await fetch(`/api/community/posts`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"delete",post_id:p.id,user_id:"__ADMIN__"})}).catch(()=>{}); setFeedPosts(feedPosts.filter(x=>x.id!==p.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
-          {/* ======== TOKENS ======== */}
+                    {/* ======== TOKENS ======== */}
           {tab==="tokens" && (
             <div>
               <div className="flex justify-between items-center mb-4">
@@ -1833,6 +1805,7 @@ export default function AdminPage() {
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
   return <AdminDashboard onLogout={() => { localStorage.removeItem("admin_auth"); setAuthed(false); }} />;
 }
+
 
 
 
