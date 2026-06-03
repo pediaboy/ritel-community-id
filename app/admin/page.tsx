@@ -93,11 +93,15 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/sync").then(r=>r.json()).then(d=>{
+    fetch("/api/admin/sync").then(r=>r.json()).then((d:any)=>{
       if (d.owners?.length) setOwners(d.owners);
       if (d.partners?.length) setPartners(d.partners);
       if (d.wa_links) setWaLinks(d.wa_links);
+      if (Array.isArray(d.bagger_signals) && d.bagger_signals.length > 0) setBaggerList(d.bagger_signals);
+      if (Array.isArray(d.bandar_signals) && d.bandar_signals.length > 0) setBandarList(d.bandar_signals);
+      if (Array.isArray(d.done_signal_ids)) setDoneSignalIds(d.done_signal_ids);
     }).catch(()=>{});
+    fetch("/api/posts?limit=100").then(r=>r.json()).then((d:any)=>setFeedPosts(d.posts||[])).catch(()=>{});
   },[]);
 
   const saveOwners = (updated: any[]) => {
@@ -476,6 +480,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [showBaggerForm, setShowBaggerForm] = useState(false);
   const [showBandarForm, setShowBandarForm] = useState(false);
   const [feedPosts, setFeedPosts] = useState<any[]>([]);
+  const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
 
   const [tokForm, setTokForm] = useState<any>({ email:"", name:"", package:"gold", expiredAt:"" });
   const [editTokId, setEditTokId] = useState<string|null>(null);
@@ -928,7 +933,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-black text-white text-base">{s.kode}</span>
-                          {s.is_done && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}
+                          {doneSignalIds.includes(s.id) && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}
                         </div>
                         <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
                       </div>
@@ -942,7 +947,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     {s.notes && <p className="text-xs text-slate-500 border-t border-white/5 pt-2 mb-3 line-clamp-2">{s.notes}</p>}
                     <div className="flex flex-wrap gap-1 mb-3">{(s.package||[]).map((p:string)=><span key={p} className="text-xs px-1.5 py-0.5 rounded bg-white/5 text-slate-500 capitalize">{p}</span>)}</div>
                     <div className="flex gap-2 pt-2 border-t border-white/5">
-                      <Btn onClick={async()=>{ const done=!s.is_done; await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id,is_done:done,done_at:done?new Date().toISOString():null})}).catch(()=>{}); setSignals(signals.map(x=>x.id===s.id?{...x,is_done:done}:x)); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={async()=>{ 
+                        const isDoneNow = doneSignalIds.includes(s.id);
+                        const newIds = isDoneNow ? doneSignalIds.filter((x:string)=>x!==s.id) : [...doneSignalIds, s.id];
+                        setDoneSignalIds(newIds);
+                        await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"done_signal_ids",data:newIds})}).catch(()=>{});
+                        setSignals(signals.map(x=>x.id===s.id?{...x,is_done:!isDoneNow}:x));
+                      }} color={doneSignalIds.includes(s.id)?"yellow":"green"} className="flex-1 text-center">{doneSignalIds.includes(s.id)?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
                       <Btn onClick={()=>editSig(s)} color="blue" className="flex-1 text-center">Edit</Btn>
                       <Btn onClick={()=>delSig(s.id)} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
@@ -989,14 +1000,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={async()=>{
-                      const payload = {...baggerForm, is_bagger:true, id:editBaggerId||Date.now().toString()};
-                      if(editBaggerId){
-                        await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
-                        setBaggerList(baggerList.map(x=>x.id===editBaggerId?{...payload}:x));
-                      } else {
-                        await fetch("/api/admin/signals",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
-                        setBaggerList([{...payload,created_at:new Date().toISOString()},...baggerList]);
-                      }
+                      const payload = {...baggerForm, id:editBaggerId||Date.now().toString(), created_at: editBaggerId ? (baggerList.find((x:any)=>x.id===editBaggerId)?.created_at||new Date().toISOString()) : new Date().toISOString()};
+                      const newList = editBaggerId ? baggerList.map((x:any)=>x.id===editBaggerId?payload:x) : [{...payload},...baggerList];
+                      setBaggerList(newList);
+                      await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bagger_signals",data:newList})}).catch(()=>{});
                       setBaggerForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});
                       setEditBaggerId(null); setShowBaggerForm(false);
                     }} className="btn-primary text-sm flex-1">{editBaggerId?"Update":"Simpan Bagger"}</button>
@@ -1023,9 +1030,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                     {s.notes && <p className="text-xs text-slate-400 mb-3 line-clamp-2">{s.notes}</p>}
                     <div className="flex gap-2 flex-wrap">
-                      <Btn onClick={async()=>{ const done=!s.is_done; await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id,is_done:done,done_at:done?new Date().toISOString():null})}).catch(()=>{}); setBaggerList(baggerList.map(x=>x.id===s.id?{...x,is_done:done}:x)); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={async()=>{ const done=!s.is_done; const newList=baggerList.map((x:any)=>x.id===s.id?{...x,is_done:done,done_at:done?new Date().toISOString():null}:x); setBaggerList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bagger_signals",data:newList})}).catch(()=>{}); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
                       <Btn onClick={()=>{setBaggerForm({...s});setEditBaggerId(s.id);setShowBaggerForm(true);window.scrollTo(0,0);}} color="blue" className="flex-1 text-center">Edit</Btn>
-                      <Btn onClick={async()=>{ if(!confirm("Hapus bagger pick ini?"))return; await fetch(`/api/admin/signals?id=${s.id}`,{method:"DELETE"}).catch(()=>{}); setBaggerList(baggerList.filter(x=>x.id!==s.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus bagger pick ini?"))return; const newList=baggerList.filter((x:any)=>x.id!==s.id); setBaggerList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bagger_signals",data:newList})}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
                   </div>
                 ))}
@@ -1070,14 +1077,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={async()=>{
-                      const payload = {...bandarForm, is_bandar:true, id:editBandarId||Date.now().toString()};
-                      if(editBandarId){
-                        await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
-                        setBandarList(bandarList.map(x=>x.id===editBandarId?{...payload}:x));
-                      } else {
-                        await fetch("/api/admin/signals",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
-                        setBandarList([{...payload,created_at:new Date().toISOString()},...bandarList]);
-                      }
+                      const payload = {...bandarForm, id:editBandarId||Date.now().toString(), created_at: editBandarId ? (bandarList.find((x:any)=>x.id===editBandarId)?.created_at||new Date().toISOString()) : new Date().toISOString()};
+                      const newList = editBandarId ? bandarList.map((x:any)=>x.id===editBandarId?payload:x) : [{...payload},...bandarList];
+                      setBandarList(newList);
+                      await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bandar_signals",data:newList})}).catch(()=>{});
                       setBandarForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});
                       setEditBandarId(null); setShowBandarForm(false);
                     }} className="btn-primary text-sm flex-1">{editBandarId?"Update":"Simpan Sinyal Bandar"}</button>
@@ -1104,9 +1107,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                     {s.notes && <p className="text-xs text-slate-400 mb-3">{s.notes}</p>}
                     <div className="flex gap-2 flex-wrap">
-                      <Btn onClick={async()=>{ const done=!s.is_done; await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id,is_done:done,done_at:done?new Date().toISOString():null})}).catch(()=>{}); setBandarList(bandarList.map(x=>x.id===s.id?{...x,is_done:done}:x)); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={async()=>{ const done=!s.is_done; const newList=bandarList.map((x:any)=>x.id===s.id?{...x,is_done:done,done_at:done?new Date().toISOString():null}:x); setBandarList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bandar_signals",data:newList})}).catch(()=>{}); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
                       <Btn onClick={()=>{setBandarForm({...s});setEditBandarId(s.id);setShowBandarForm(true);window.scrollTo(0,0);}} color="blue" className="flex-1 text-center">Edit</Btn>
-                      <Btn onClick={async()=>{ if(!confirm("Hapus sinyal bandar ini?"))return; await fetch(`/api/admin/signals?id=${s.id}`,{method:"DELETE"}).catch(()=>{}); setBandarList(bandarList.filter(x=>x.id!==s.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus sinyal bandar ini?"))return; const newList=bandarList.filter((x:any)=>x.id!==s.id); setBandarList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bandar_signals",data:newList})}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
                   </div>
                 ))}
