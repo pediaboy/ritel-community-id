@@ -132,7 +132,10 @@ function HeartbeatChart({ changePercent }: { changePercent: number }) {
   const dataRef = useRef<number[]>([]);
   const isPositive = changePercent >= 0;
   const color = isPositive ? "#22c55e" : "#ef4444";
-  const amplitude = Math.min(Math.abs(changePercent) * 3, 18) + 4;
+  // Amplitude sesuai persentase: 1% = kecil, 10%+ = dramatis
+  const rawAmp = Math.abs(changePercent);
+  const amplitude = rawAmp < 1 ? 4 : rawAmp < 3 ? 7 : rawAmp < 6 ? 11 : rawAmp < 10 ? 15 : rawAmp < 20 ? 20 : 26;
+  const speed = rawAmp < 2 ? 50 : rawAmp < 8 ? 38 : 28; // lebih tinggi %= lebih cepat
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -143,22 +146,28 @@ function HeartbeatChart({ changePercent }: { changePercent: number }) {
     const mid = H / 2;
     let t = 0;
 
-    // Init flat data
     if (dataRef.current.length === 0) {
       dataRef.current = Array(W).fill(mid);
     }
 
     const draw = () => {
       t++;
-      // Heartbeat pattern: spike every 40 frames
-      const cycle = t % 40;
+      const cycle = t % speed;
       let newY = mid;
-      if (cycle === 10) newY = mid - amplitude * 0.5;
-      else if (cycle === 12) newY = mid + amplitude * 1.8;
-      else if (cycle === 14) newY = mid - amplitude * (isPositive ? 2.2 : 1.0);
-      else if (cycle === 16) newY = mid + amplitude * (isPositive ? 0.4 : 1.2);
-      else if (cycle === 18) newY = mid + amplitude * 0.2;
-      else newY = mid + (Math.random() - 0.5) * 1.2;
+      // Pola EKG: P-QRS-T wave
+      const pct3 = Math.floor(speed * 0.3);
+      const pct35 = Math.floor(speed * 0.35);
+      const pct42 = Math.floor(speed * 0.42);
+      const pct48 = Math.floor(speed * 0.48);
+      const pct55 = Math.floor(speed * 0.55);
+      const pct6 = Math.floor(speed * 0.6);
+      if (cycle === pct3) newY = mid - amplitude * 0.3;
+      else if (cycle === pct35) newY = mid + amplitude * 0.2;
+      else if (cycle === pct42) newY = mid - amplitude * (isPositive ? 2.5 : 1.2);
+      else if (cycle === pct48) newY = mid + amplitude * (isPositive ? 0.8 : 2.0);
+      else if (cycle === pct55) newY = mid - amplitude * 0.4;
+      else if (cycle === pct6) newY = mid + amplitude * 0.15;
+      else newY = mid + (Math.random() - 0.5) * 0.8;
 
       dataRef.current.push(newY);
       if (dataRef.current.length > W) dataRef.current.shift();
@@ -264,13 +273,33 @@ function SignalCard({ s, isDone }: { s: any; isDone?: boolean }) {
       </div>
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", padding:"0 16px 10px", gap:8 }}>
-        {[{label:"Entry",val:s.entry,cls:"rgba(255,255,255,0.85)"},{label:"Target",val:s.tp,cls:"#22c55e"},{label:"Stop Loss",val:s.sl,cls:"#ef4444"}].map(({label,val,cls})=>(
+        {[{label:"Entry",val:s.entry,cls:"rgba(255,255,255,0.85)"},{label:"Stop Loss",val:s.sl,cls:"#ef4444"},{label:"TP1",val:s.tp,cls:"#22c55e"}].map(({label,val,cls})=>(
           <div key={label} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
             <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:3 }}>{label}</p>
             <p style={{ color:cls, fontWeight:800, fontSize:14 }}>{val||"-"}</p>
           </div>
         ))}
       </div>
+      {/* Multi TP */}
+      {(s.tp2||s.tp3) && (
+        <div style={{ display:"flex", gap:8, padding:"0 16px 10px" }}>
+          {s.tp2 && <div style={{ flex:1, background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.15)", borderRadius:10, padding:"6px 10px" }}>
+            <p style={{ color:"rgba(255,255,255,0.3)", fontSize:9, marginBottom:2 }}>TP2</p>
+            <p style={{ color:"#4ade80", fontWeight:800, fontSize:13 }}>{s.tp2}</p>
+          </div>}
+          {s.tp3 && <div style={{ flex:1, background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.15)", borderRadius:10, padding:"6px 10px" }}>
+            <p style={{ color:"rgba(255,255,255,0.3)", fontSize:9, marginBottom:2 }}>TP3</p>
+            <p style={{ color:"#86efac", fontWeight:800, fontSize:13 }}>{s.tp3}</p>
+          </div>}
+        </div>
+      )}
+      {/* Centang TP individual jika ada is_done tracking */}
+      {isSignalDone && (
+        <div style={{ margin:"0 16px 10px", background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.2)", borderRadius:10, padding:"6px 12px", display:"flex", alignItems:"center", gap:8 }}>
+          <span style={{ color:"#22c55e", fontSize:16 }}>✅</span>
+          <span style={{ color:"#22c55e", fontSize:11, fontWeight:700 }}>TARGET TERCAPAI</span>
+        </div>
+      )}
       {/* Heartbeat chart */}
       <div style={{ padding:"0 16px 10px" }}>
         <HeartbeatChart changePercent={pct} />
@@ -525,6 +554,27 @@ const PAKET_VIP = [
   { id:"elite", name:"VIP ELITE", price:"Rp 1.000.000", color:"#fde68a", badge:"🏆", features:["Semua fitur Platinum","Mentoring Private","AI Elite + GPT-4","Laporan Harian Personal"] },
 ];
 
+// ── GREETING BANNER ──────────────────────────────────────────────
+function GreetingBanner({ greetingPagi, greetingMalam }: { greetingPagi:string; greetingMalam:string }) {
+  const [show, setShow] = useState(false);
+  const [text, setText] = useState("");
+  useEffect(() => {
+    const hour = new Date().getHours();
+    const jakartaHour = new Date(new Date().toLocaleString("en",{timeZone:"Asia/Jakarta"})).getHours();
+    const g = jakartaHour >= 5 && jakartaHour < 10 ? (greetingPagi||"Selamat pagi! Semangat trading hari ini 💪")
+            : jakartaHour >= 21 ? (greetingMalam||"Selamat malam! Review portofolio hari ini 📊") : "";
+    if (g) { setText(g); setShow(true); const t=setTimeout(()=>setShow(false),5000); return()=>clearTimeout(t); }
+  }, [greetingPagi, greetingMalam]);
+  if (!show) return null;
+  return (
+    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(6,182,212,0.08))", border:"1px solid rgba(30,90,240,0.2)", borderRadius:14, padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
+      <span style={{ fontSize:22 }}>{text.includes("pagi")?"🌤":"🌙"}</span>
+      <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, flex:1 }}>{text}</p>
+      <span style={{ color:"rgba(255,255,255,0.3)", fontSize:18 }}>×</span>
+    </div>
+  );
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────
 export default function VipPage() {
   const router = useRouter();
@@ -539,6 +589,8 @@ export default function VipPage() {
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
   const [loading, setLoading] = useState(true);
   const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
+  const [greetingPagi, setGreetingPagi] = useState("");
+  const [greetingMalam, setGreetingMalam] = useState("");
   const [owners, setOwners] = useState<any[]>([
     { name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"👑", tag:"Owner" },
   ]);
@@ -559,6 +611,8 @@ export default function VipPage() {
         if (data.bandar_signals) setBandarSignals(data.bandar_signals);
         if (data.done_signal_ids) setDoneSignalIds(data.done_signal_ids || []);
         if (data.premiumSignals) setPremiumContent(data.premiumSignals);
+        if (data.greeting_pagi) setGreetingPagi(data.greeting_pagi);
+        if (data.greeting_malam) setGreetingMalam(data.greeting_malam);
         if (data.owners) setOwners(data.owners);
         if (data.partners) setPartners(data.partners);
       }).catch(()=>{});
@@ -601,7 +655,7 @@ export default function VipPage() {
     const pkg = s.package || [];
     return pkg.includes(user?.package) || pkg.includes("all");
   });
-  const filteredSignals = sigFilter==="Semua" ? mySignals : mySignals.filter(s=>s.action===sigFilter);
+  const filteredSignals = (sigFilter==="Semua" ? mySignals : mySignals.filter((s:any)=>s.action===sigFilter)).filter((s:any)=>!s.is_tomorrow);
   const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel);
   const lockedModules = ALL_MODULES.filter(m=>m.level>pkgLevel);
 
@@ -657,6 +711,7 @@ export default function VipPage() {
         {/* ── HOME TAB ── */}
         {tab==="home" && (
           <div style={{ padding:"16px" }}>
+            <GreetingBanner greetingPagi={greetingPagi} greetingMalam={greetingMalam} />
             <LiveInfoBox />
             <AdminFeedVIP />
 
@@ -726,7 +781,33 @@ export default function VipPage() {
               ))}
             </div>
 
-            {filteredSignals.length===0 ? (
+            {/* SINYAL BESOK */}
+            {sigFilter==="Semua" && signals.filter((s:any)=>s.is_tomorrow).length>0 && (
+              <div style={{ background:"rgba(234,179,8,0.04)", border:"1px solid rgba(234,179,8,0.15)", borderRadius:16, padding:"14px 16px", marginBottom:16 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
+                  <span style={{ color:"#fbbf24", fontWeight:900, fontSize:14 }}>🌙 Sinyal Besok</span>
+                  <span style={{ color:"rgba(251,191,36,0.5)", fontSize:11 }}>{signals.filter((s:any)=>s.is_tomorrow).length} sinyal</span>
+                </div>
+                {signals.filter((s:any)=>s.is_tomorrow).map((s:any)=>(
+                  <div key={s.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", background:"rgba(255,255,255,0.03)", borderRadius:10, marginBottom:6 }}>
+                    <div style={{ width:36, height:36, borderRadius:8, background:"rgba(234,179,8,0.08)", border:"1px solid rgba(234,179,8,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:900, color:"#fbbf24", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+                        <span style={{ color:"#fff", fontWeight:900, fontSize:14 }}>{s.kode}</span>
+                        <span style={{ background:"rgba(234,179,8,0.15)", color:"#fbbf24", fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:6 }}>{s.action}</span>
+                      </div>
+                      <span style={{ color:"rgba(255,255,255,0.35)", fontSize:11 }}>Entry: {s.entry} · TP: {s.tp}{s.tp2?` · TP2: ${s.tp2}`:""}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {filteredSignals.filter((s:any)=>!s.is_tomorrow).length===0 && sigFilter==="Semua" ? (
+              <div style={{ textAlign:"center", padding:"48px 16px" }}>
+                <p style={{ fontSize:36, marginBottom:12 }}>📡</p>
+                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Belum ada sinyal aktif.</p>
+              </div>
+            ) : filteredSignals.length===0 ? (
               <div style={{ textAlign:"center", padding:"48px 16px" }}>
                 <p style={{ fontSize:36, marginBottom:12 }}>📡</p>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Belum ada sinyal {sigFilter !== "Semua" ? sigFilter : ""}.</p>
