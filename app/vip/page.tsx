@@ -529,7 +529,141 @@ const ALL_MODULES = [
    topics:["Sesi video call regular dengan mentor senior","Review & coaching portofolio intensif","Pengembangan sistem trading personal","Simulasi pengambilan keputusan nyata","Koreksi kesalahan pola investasi","Roadmap menuju financial freedom"]},
   {id:"e2",level:5,pkgLabel:"Elite",icon:"💼",tag:"Portofolio",title:"Portfolio Management Personal",
    desc:"Manajemen portofolio komprehensif: perencanaan alokasi, monitoring aktif bulanan, laporan performance personal, identifikasi drag, dan strategi exit terencana.",
-   topics:["Perencanaan alokasi portofolio awal","Monitoring & rebalancing aktif bulanan","Laporan performance personal bulanan","Identifikasi drag performance & solusinya","Strategi exit & profit taking terencana","Target return & timeline finansial personal"]},
+   topics:["Perencanaan alokasi portofolio awal","Monitoring & rebalancing aktif bulanan","Laporan performance personal bulanan","Identifikasi drag performance & solusinya","Strategi exit & profit taking terencana","Target return & timeline finansial personal"]},,
+
+  // ===== TAMBAHAN MODUL LEVEL 0 (BASIC) =====
+  {id:"b5",level:0,pkgLabel:"Basic",icon:"🕒",tag:"Pemula",title:"Jam Perdagangan & Kalender Market",
+   desc:"Kapan harus pantau market, kalender ex-dividend, RUPST, dan event korporasi yang menggerakkan harga saham.",
+   topics:["Sesi I & II BEI: jam & strategi","Pre-opening & closing auction","Kalender ex-dividend emiten","RUPST & pengaruhnya terhadap harga","Event korporasi: rights issue, buyback, stock split","Libur bursa & pengaruh ke portofolio"]},
+  {id:"b6",level:0,pkgLabel:"Basic",icon:"🏦",tag:"Pemula",title:"Jenis Instrumen Investasi di BEI",
+   desc:"Perbedaan saham, obligasi, reksa dana, ETF, dan waran — karakteristik, risiko, dan imbal hasil masing-masing instrumen.",
+   topics:["Saham vs obligasi: perbedaan fundamental","Reksa dana saham vs reksa dana campuran","ETF IDX30 & EIDO: cara beli","Waran: leverage instrument berisiko tinggi","Rights issue: dilusi & peluang","Pilih instrumen sesuai profil risiko"]},
+  {id:"b7",level:0,pkgLabel:"Basic",icon:"📑",tag:"Pemula",title:"Memahami Market Cap & Sektor Saham",
+   desc:"Klasifikasi saham berdasarkan market cap (big cap, mid cap, small cap) dan 11 sektor IDX — karakteristik, volatilitas, dan strategi per sektor.",
+   topics:["Big cap, mid cap, small cap: definisi","11 sektor saham di BEI","Sektor defensif vs siklus","Saham LQ45 & IDX30: kriteria","Sektor rotation: kapan masuk & keluar","Pengaruh sektor terhadap diversifikasi"]},
+  {id:"b8",level:0,pkgLabel:"Basic",icon:"🌍",tag:"Pemula",title:"Pengaruh Global terhadap IHSG",
+   desc:"Hubungan IHSG dengan S&P 500, Dow Jones, Hang Seng, harga komoditas, dan pergerakan rupiah/dolar — serta cara manfaatkan informasi ini.",
+   topics:["Korelasi IHSG dengan bursa global","Dampak Fed rate terhadap IHSG","DXY Index: pengaruh ke pasar emerging","Harga komoditas: CPO, nikel, batu bara","Rupiah vs dolar: dampak ke emiten","Cara gunakan sentimen global untuk entry"]},
+  // ===== TAMBAHAN MODUL LEVEL 1 (SILVER) =====
+  {id:"s5",level:1,pkgLabel:"Silver",icon:"📊",tag:"Teknikal",title:"Volume Analysis & Confirmation",
+   desc:"Volume adalah konfirmasi terkuat dari pergerakan harga. Pelajari cara baca volume spike, OBV, volume divergence, dan pola volume di titik reversal kunci.",
+   topics:["Volume sebagai konfirmasi trend","Volume spike: sinyal kuat atau fake-out?","On Balance Volume (OBV) indicator","Volume divergence: waspada reversal","High volume di support = accumulation","Low volume di resistance = weakness"]},
+  {id:"s6",level:1,pkgLabel:"Silver",icon:"🧮",tag:"Fundamental",title:"Analisis Dividen & Dividend Yield",
+   desc:"Strategi dividend investing: cara hitung dividend yield, payout ratio, jadwal ex-date, saham dividen konsisten BEI, dan dividend trap yang harus dihindari.",
+   topics:["Cara hitung dividend yield","Payout ratio & sustainability dividen","Jadwal: cum date, ex date, payment date","Saham dividen konsisten: BBCA, TLKM, UNVR","Dividend trap: yield tinggi tapi fundamental buruk","Reinvestment dividen untuk compounding"]},
+  {id:"s7",level:1,pkgLabel:"Silver",icon:"🏭",tag:"Fundamental",title:"Analisis Sektoral & Industry Comparison",
+   desc:"Cara membandingkan emiten dalam satu sektor: peer comparison, competitive positioning, market share, dan identifikasi pemimpin sektor.",
+   topics:["Peer comparison dalam satu sektor","Market share & competitive position","Gross margin comparison antar emiten","Identifikasi pemimpin sektor (market leader)","Saham second liner yang mengejar","Kapan second liner outperform leader?"]},
+  {id:"s8",level:1,pkgLabel:"Silver",icon:"📉",tag:"Manajemen Risiko",title:"Memahami Drawdown & Recovery",
+   desc:"Apa itu drawdown, cara hitung max drawdown portofolio, strategi recovery, dan kapan harus stop trading untuk evaluasi ulang.",
+   topics:["Apa itu drawdown dan max drawdown","Cara hitung drawdown portofolio","Drawdown vs volatilitas: perbedaan penting","Strategi recovery yang terstruktur","Kapan harus stop trading (circuit breaker)","Evaluasi penyebab drawdown sistematis"]},
+  // ===== TAMBAHAN MODUL LEVEL 2 (GOLD) =====
+  {id:"g5",level:2,pkgLabel:"Gold",icon:"🕯️",tag:"Teknikal",title:"Candlestick Pattern Lanjutan",
+   desc:"Pattern multi-candle paling powerful: Three White Soldiers, Three Black Crows, Morning/Evening Star, Three Inside Up/Down, Harami, dan cara validasi dengan volume.",
+   topics:["Three White Soldiers & Three Black Crows","Morning Star & Evening Star","Three Inside Up/Down","Harami & Harami Cross","Abandoned Baby: reversal ekstrem","Validasi semua pattern dengan volume spike"]},
+  {id:"g6",level:2,pkgLabel:"Gold",icon:"📐",tag:"Teknikal",title:"Fibonacci & Level Retracement",
+   desc:"Fibonacci retracement dan extension — cara menentukan level 38.2%, 50%, 61.8% sebagai target entry, TP, dan SL dengan contoh nyata saham BEI.",
+   topics:["Fibonacci retracement: cara gambar","Level kunci: 38.2%, 50%, 61.8%","Golden zone: area entry terbaik","Fibonacci extension: proyeksi target","Kombinasi Fibo dengan support/resistance","Contoh penerapan di BBCA, TLKM, MDKA"]},
+  {id:"g7",level:2,pkgLabel:"Gold",icon:"〰️",tag:"Teknikal",title:"Elliot Wave Theory Dasar",
+   desc:"Prinsip dasar Elliot Wave: 5 wave impulse + 3 wave corrective, cara identifikasi posisi wave saat ini, dan cara pakai untuk menentukan target harga.",
+   topics:["5 wave impulse: motive wave","3 wave corrective: A-B-C","Aturan dasar Elliot Wave (tidak boleh dilanggar)","Cara identifikasi wave di chart riil","Wave 3: terpanjang dan terkuat","Gunakan Elliot Wave untuk proyeksi target"]},
+  {id:"g8",level:2,pkgLabel:"Gold",icon:"⚡",tag:"Teknikal",title:"Strategi Breakout & Breakdown",
+   desc:"Cara trading breakout yang benar: identifikasi konsolidasi, false breakout vs valid breakout, teknik entry, SL optimal, dan cara menghindari jebakan breakout palsu.",
+   topics:["Identifikasi fase konsolidasi (base)","Valid breakout: kriteria volume & closing","False breakout: tanda & cara hindari","Entry teknik: buy on breakout vs buy on retest","Stop loss optimal untuk strategi breakout","Breakout dari all-time high: target harga"]},
+  {id:"g9",level:2,pkgLabel:"Gold",icon:"🌊",tag:"Teknikal",title:"Ichimoku Cloud untuk Swing Trading",
+   desc:"Ichimoku Kinko Hyo — sistem lengkap dalam satu indikator: Tenkan, Kijun, Chikou Span, Kumo Cloud, dan cara baca sinyal beli/jual yang kuat.",
+   topics:["5 komponen Ichimoku: fungsi masing-masing","Kumo Cloud: support & resistance dinamis","Sinyal beli: TK cross di atas cloud","Sinyal jual: TK cross di bawah cloud","Chikou Span sebagai konfirmator","Twist sinyal dan setup terbaik untuk swing"]},
+  {id:"g10",level:2,pkgLabel:"Gold",icon:"🎯",tag:"Teknikal",title:"Intraday Trading & Tape Reading",
+   desc:"Dasar-dasar trading intraday BEI: cara baca order book (bid/ask), identifikasi bandar di tape reading, strategi scalping yang aman, dan manajemen posisi intraday.",
+   topics:["Order book: cara baca bid & ask","Tape reading: deteksi order besar","Big buyer vs big seller di market depth","Strategi scalping 1-2% per hari","Entry time optimal: awal sesi & pre-close","Cut loss disiplin untuk intraday trader"]},
+  {id:"g11",level:2,pkgLabel:"Gold",icon:"🔄",tag:"Teknikal",title:"Sector Rotation Strategy",
+   desc:"Strategi perpindahan dana antar sektor mengikuti siklus ekonomi — identifikasi sektor yang akan outperform berikutnya dan cara masuk sebelum institusi besar.",
+   topics:["Siklus ekonomi & sector rotation model","Sektor defensif: konsumer, kesehatan, utilitas","Sektor siklus: teknologi, properti, komoditas","Early cycle vs late cycle indicators","Flow asing sebagai petunjuk sector rotation","Cara screening saham di sektor yang mulai naik"]},
+  // ===== TAMBAHAN MODUL LEVEL 3 (PRO) =====
+  {id:"p4",level:3,pkgLabel:"Pro",icon:"🔭",tag:"Bandarmologi",title:"Bandarmologi Lanjutan: Smart Money Flow",
+   desc:"Teknik canggih deteksi smart money: analisis broker summary, distribusi kepemilikan, unusual volume di off-market, dan pola pre-market accumulation.",
+   topics:["Cara baca broker summary BEI","Net foreign buy/sell: cara interpretasi","Distribusi kepemilikan: laporan bulanan IDX","Unusual volume off-market hours","Crossing saham: sinyal accumulation bandar","Pre-IPO accumulation pattern"]},
+  {id:"p5",level:3,pkgLabel:"Pro",icon:"📊",tag:"Teknikal",title:"Advanced Chart Pattern: Wyckoff Method",
+   desc:"Metode Wyckoff untuk identifikasi siklus lengkap akumulasi dan distribusi — spring, last point of support (LPS), sign of strength, dan cara timing entry yang presisi.",
+   topics:["Fase Wyckoff: Accumulation, Markup, Distribution, Markdown","Spring & upthrust: sinyal reversal Wyckoff","Last Point of Support (LPS) sebagai entry ideal","Sign of Strength (SOS) konfirmasi breakout","Sign of Weakness (SOW) untuk exit","Menerapkan Wyckoff di saham BEI"]},
+  {id:"p6",level:3,pkgLabel:"Pro",icon:"🧠",tag:"Psikologi",title:"Trading Psychology Advanced",
+   desc:"Psikologi trading tingkat lanjut: bias konfirmasi, anchoring bias, disposition effect, overconfidence trap, dan cara membangun sistem keputusan berbasis aturan.",
+   topics:["Confirmation bias: musuh terbesarmu","Anchoring bias: perangkap harga beli lama","Disposition effect: hold loser, sell winner","Overconfidence setelah winning streak","Sistem keputusan berbasis aturan (rule-based)","Pre-trade checklist untuk keputusan objektif"]},
+  {id:"p7",level:3,pkgLabel:"Pro",icon:"📈",tag:"Laporan",title:"Analisis Laporan Tahunan (Annual Report)",
+   desc:"Cara ekstrak insight berharga dari annual report: management discussion, strategi ekspansi, segmen bisnis, related party transaction, dan sinyal perubahan arah bisnis.",
+   topics:["Bagian terpenting annual report","Management Discussion & Analysis (MD&A)","Strategi ekspansi & capex plan","Segmen bisnis: mana yang paling profitable","Related party transaction: waspada conflict of interest","Letter to shareholders: baca antara baris"]},
+  {id:"p8",level:3,pkgLabel:"Pro",icon:"🌐",tag:"Makro",title:"Analisis Makroekonomi untuk Investor",
+   desc:"Cara mengintegrasikan data makro ke keputusan investasi: siklus kredit, yield curve, PMI, CPI, dan leading indicator yang mendahului pergerakan IHSG.",
+   topics:["Siklus kredit & pengaruh ke saham","Yield curve inversion: sinyal resesi","PMI manufaktur sebagai leading indicator","CPI & PPI: pengaruh ke margin emiten","Current account & neraca perdagangan","Cara buat macro playbook personal"]},
+  // ===== TAMBAHAN MODUL LEVEL 4 (PLATINUM) =====
+  {id:"pl3",level:4,pkgLabel:"Platinum",icon:"💡",tag:"Teknikal",title:"Intermarket Analysis",
+   desc:"Hubungan antar pasar: obligasi vs saham, dolar vs komoditas, oil vs saham energi, emas vs risk-off sentiment, dan cara manfaatkan korelasi ini untuk timing.",
+   topics:["Saham vs obligasi: inverse relationship","DXY vs saham emerging market","Oil price vs saham energi & transportasi","Emas sebagai risk-off barometer","CRB Index & saham komoditas IDX","Intermarket matrix untuk timing masuk"]},
+  {id:"pl4",level:4,pkgLabel:"Platinum",icon:"⚙️",tag:"Fundamental",title:"Analisis Arus Kas Lanjutan & DCF",
+   desc:"Discounted Cash Flow (DCF) valuation dari nol: cara proyeksi FCF, WACC, terminal value, dan cara pakai DCF untuk cari saham undervalue di BEI.",
+   topics:["Free Cash Flow (FCF): cara hitung","Proyeksi FCF 5 tahun ke depan","WACC: cost of capital","Terminal value: metode Gordon Growth","Sensitivity analysis DCF","Contoh DCF: BBCA, ASII, TLKM"]},
+  {id:"pl5",level:4,pkgLabel:"Platinum",icon:"🏗️",tag:"Fundamental",title:"Special Situations: IPO, Rights Issue & Akuisisi",
+   desc:"Cara analisis dan trading special situations: IPO hunting, rights issue arbitrage, akuisisi target, buyback play, dan mandatory tender offer (MTO).",
+   topics:["IPO analysis: cara nilai sebelum listing","Rights issue: dilusi atau peluang?","Akuisisi target: ciri-ciri dan cara deteksi","Buyback: sinyal manajemen percaya diri","MTO & delisting: strategi exit","Privatisasi BUMN: sejarah & pola"]},
+  {id:"pl6",level:4,pkgLabel:"Platinum",icon:"🌏",tag:"Makro",title:"Global Macro & Geopolitical Risk",
+   desc:"Dampak konflik geopolitik, kebijakan Fed dan ECB, trade war, dan sanksi ekonomi terhadap pasar saham Indonesia — serta cara positioning portofolio di tengah ketidakpastian global.",
+   topics:["Dampak perang & konflik terhadap IHSG","Kebijakan Fed tapering & rate hike","Trade war: dampak ke emiten ekspor","Supply chain disruption: sektor paling terdampak","Flight to quality: kapan terjadi & cara antisipasi","Hedging sederhana di portofolio retail"]},
+  // ===== TAMBAHAN MODUL LEVEL 5 (ELITE) =====
+  {id:"e3",level:5,pkgLabel:"Elite",icon:"🚀",tag:"Strategi",title:"Membangun Sistem Trading Mechanical",
+   desc:"Desain sistem trading yang objektif, backtest-able, dan konsisten: parameter entry/exit, filter trend, manajemen posisi adaptif, dan cara evaluasi edge statistik.",
+   topics:["Definisi edge statistik dalam trading","Parameter entry: konkret dan terukur","Filter trend: avoid trading counter-trend","Posisi sizing adaptif berdasarkan volatilitas","Backtest manual dengan historical data","Evaluasi sistem: win rate, RR ratio, expectancy"]},
+  {id:"e4",level:5,pkgLabel:"Elite",icon:"📚",tag:"Strategi",title:"Value Investing ala Warren Buffett",
+   desc:"Prinsip value investing: circle of competence, moat analysis, intrinsic value, margin of safety, dan cara cari saham 'Buffett-style' di pasar modal Indonesia.",
+   topics:["Circle of competence: investasi apa yang kamu mengerti","Economic moat: 5 tipe keunggulan kompetitif","Intrinsic value: cara sederhana menghitung","Margin of safety: beli di bawah nilai wajar","Konsentrasi vs diversifikasi: Buffett approach","Saham BEI dengan karakter Buffettian"]},
+  {id:"e5",level:5,pkgLabel:"Elite",icon:"🎭",tag:"Psikologi",title:"Anti-Fragility dalam Investing",
+   desc:"Prinsip Anti-Fragility ala Nassim Taleb untuk investor: cara bangun portofolio yang tumbuh lebih kuat di tengah volatilitas, black swan preparation, dan barbell strategy.",
+   topics:["Fragile vs robust vs anti-fragile","Black Swan: skenario ekstrem yang mungkin","Barbell strategy: safe + speculative","Optionality: beli peluang, bukan kepastian","Positioning saat IHSG koreksi 30-40%","Recovery playbook setelah market crash"]},
+  {id:"e6",level:5,pkgLabel:"Elite",icon:"🏛️",tag:"Fundamental",title:"Analisis BUMN & Emiten Pemerintah",
+   desc:"Nuansa khusus analisis emiten BUMN: pengaruh kebijakan pemerintah, dividen spesial atas permintaan negara, privatisasi, dan cara bedakan BUMN yang sehat vs yang hanya dieksploitasi.",
+   topics:["Karakteristik unik BUMN vs swasta","Kebijakan pemerintah sebagai driver harga","Dividen spesial BUMN: angka & timing","Privatisasi & IPO BUMN baru","BUMN holding: MIND ID, Aviasi, Pangan","Cara bedakan BUMN value vs value trap"]},
+  // ===== MODUL EXTRA DETAIL BANDARMOLOGI =====
+  {id:"ban1",level:2,pkgLabel:"Gold",icon:"🕵️",tag:"Bandarmologi",title:"Panduan Lengkap: Cara Kerja Bandar",
+   desc:"Penjelasan menyeluruh tentang siapa bandar sebenarnya, bagaimana mereka beroperasi di BEI, alat yang mereka gunakan, dan cara retail investor mengikuti jejak mereka.",
+   topics:["Siapa sebenarnya 'bandar' di BEI?","Institusi besar: reksa dana, asing, asuransi","Cara bandar akumulasi tanpa ketahuan","Gunakan crossing & negotiated deal","Manipulasi volume: wash trading patterns","Cara retail ikut pergerakan smart money"]},
+  {id:"ban2",level:2,pkgLabel:"Gold",icon:"🔬",tag:"Bandarmologi",title:"Deteksi Akumulasi Bandar via Broker Summary",
+   desc:"Cara membaca broker summary BEI untuk deteksi siapa yang accumulate dan siapa yang distribute — dilengkapi contoh saham real yang berhasil dideteksi sebelum naik.",
+   topics:["Cara akses broker summary di RTI/Stockbit","Interpretasi top 5 broker beli vs jual","Konsistensi akumulasi broker spesifik","Net broker: deteksi arah pergerakan besar","Contoh kasus: deteksi akumulasi MDKA sebelum +300%","False signal broker summary: cara menghindari"]},
+  {id:"ban3",level:2,pkgLabel:"Gold",icon:"📡",tag:"Bandarmologi",title:"Market Depth & Level 2 Data",
+   desc:"Cara membaca order book level 2, identifikasi dinding beli/jual buatan bandar, cara baca unusual bid/ask, dan perbedaan genuine order vs order manipulation.",
+   topics:["Level 2 data: bid, ask, size","Fake wall: dinding semu untuk arahkan retail","Iceberg order: order tersembunyi","Spoofing: memasang & tarik order cepat","Cara bedakan genuine buy wall vs manipulasi","Live tape reading practice dengan data riil"]},
+  {id:"ban4",level:3,pkgLabel:"Pro",icon:"🎯",tag:"Bandarmologi",title:"Timing Entry Mengikuti Bandar",
+   desc:"Teknik presisi entry mengikuti jejak bandar: identifikasi quiet accumulation period, entry pada retrace pertama setelah mini breakout, dan cara kelola posisi hingga target.",
+   topics:["Quiet accumulation: saham 'tidur' lama di base","Mini breakout: konfirmasi bandar selesai akumulasi","Entry teknik: buy on first pullback setelah breakout","Posisi sizing saat conviction tinggi","Hold vs take profit sebagian: cara buat keputusan","Exit saat distribusi mulai terdeteksi"]},
+  // ===== MODUL EXTRA DETAIL MULTI-BAGGER =====
+  {id:"bag1",level:1,pkgLabel:"Silver",icon:"💎",tag:"Fundamental",title:"Panduan Detail: Menemukan Multi-Bagger",
+   desc:"Framework sistematis untuk menemukan saham 5x-10x lipat: dari kriteria awal, due diligence mendalam, timing masuk, hingga cara hold melalui volatilitas.",
+   topics:["Definisi multi-bagger & historical examples BEI","5 kriteria utama multi-bagger","TAM (Total Addressable Market) analysis","Founder-led company advantage","Kapan masuk: early stage vs momentum","Hold melalui drawdown 30-50%: cara psikologis"]},
+  {id:"bag2",level:1,pkgLabel:"Silver",icon:"🌱",tag:"Fundamental",title:"Identifikasi Sektor Multi-Bagger Berikutnya",
+   desc:"Cara identifikasi sektor yang akan menghasilkan multi-bagger berikutnya berdasarkan analisis siklus industri, penetrasi pasar, dan tailwind makroekonomi.",
+   topics:["Industry lifecycle: introduction, growth, maturity","Penetrasi pasar: TAM vs SAM vs SOM","Tailwind makro jangka panjang","Sektor yang menghasilkan bagger BEI 2018-2024","Sektor potensial bagger 2025-2030","Early mover advantage: masuk sebelum ramai"]},
+  {id:"bag3",level:2,pkgLabel:"Gold",icon:"🔍",tag:"Fundamental",title:"Due Diligence Mendalam Saham Bagger",
+   desc:"Cara melakukan due diligence 360°: analisis kompetitor, kunjungan virtual toko/pabrik, analisis Google Trends, scraping data alternatif, dan validasi tesis investasi.",
+   topics:["Competitive landscape mapping","Analisis Google Trends untuk demand proxy","Review di e-commerce & app store sebagai data point","Channel check: distributor, customer interview","Inside ownership: direksi beli sahamnya sendiri?","Validasi tesis investasi dengan multiple data points"]},
+  {id:"bag4",level:3,pkgLabel:"Pro",icon:"📈",tag:"Fundamental",title:"Portfolio Construction untuk Multi-Bagger Hunting",
+   desc:"Cara membangun portofolio yang terstruktur untuk hunting bagger: alokasi sizing, concentration vs diversification, cara handle bagger yang sudah run, dan kapan harvest.",
+   topics:["Alokasi sizing untuk high-conviction bagger pick","Concentration: berapa persen maksimal satu saham?","Cara average up saat bagger terus naik","Partial profit taking: sell 20-50% di target awal","Bagger yang sudah run: hold atau switch?","Tax consideration saat harvest bagger"]},
+  // ===== MODUL PERGERAKAN HARGA =====
+  {id:"mv1",level:0,pkgLabel:"Basic",icon:"📊",tag:"Pemula",title:"Memahami Pergerakan Harga Saham",
+   desc:"Mengapa harga saham bergerak — dari supply & demand dasar hingga faktor penggerak fundamental dan teknikal, serta cara memanfaatkan pola pergerakan.",
+   topics:["Supply & demand: dasar pergerakan harga","Siapa yang menggerakkan harga?","Harga vs nilai: perbedaan krusial","Volatilitas: teman atau musuh trader?","Mean reversion & momentum: dua kekuatan","Cara baca pergerakan harga dengan tenang"]},
+  {id:"mv2",level:1,pkgLabel:"Silver",icon:"📉",tag:"Teknikal",title:"Pola Pergerakan dalam Trend",
+   desc:"Bagaimana harga bergerak dalam trend: higher high/higher low, pullback yang sehat, koreksi vs reversal, dan cara bedakan temporary weakness dari perubahan trend sesungguhnya.",
+   topics:["HH & HL: struktur uptrend","LH & LL: struktur downtrend","Pullback sehat: 38-50% Fibo","Koreksi vs reversal: cara bedakan","Trend change confirmation: dua kriteria wajib","Trading dengan trend vs counter-trend: mana lebih profitable?"]},
+  {id:"mv3",level:2,pkgLabel:"Gold",icon:"🌀",tag:"Teknikal",title:"Pergerakan Harga dalam Sideways Market",
+   desc:"Cara profit di pasar sideways: identifikasi range-bound market, strategi range trading, Bollinger Bands squeeze, dan cara antisipasi breakout dari konsolidasi panjang.",
+   topics:["Identifikasi range-bound market","Range trading: buy support, sell resistance","False breakout di pasar sideways","Bollinger Bands squeeze: breakout imminent","Persiapan untuk breakout: watchlist criteria","Sejarah konsolidasi panjang sebelum big move di BEI"]},
+  {id:"mv4",level:2,pkgLabel:"Gold",icon:"💥",tag:"Teknikal",title:"Volume Price Action: Membaca Niat Harga",
+   desc:"Price action murni tanpa indikator: cara baca bar/candle secara standalone, pin bar, inside bar, outside bar, dan cara dapatkan sinyal entry berkualitas tinggi.",
+   topics:["Price action trading: filosofi dasar","Pin bar: penolakan harga yang powerful","Inside bar: konsolidasi sebelum breakout","Outside bar: engulfing yang kuat","Cara baca sinyal strength & weakness","Entry & SL berbasis price action murni"]},
+  {id:"mv5",level:3,pkgLabel:"Pro",icon:"🌊",tag:"Teknikal",title:"Liquidity Hunting & Stop Hunt Analysis",
+   desc:"Cara market maker dan bandar 'memburu' stop loss retail sebelum bergerak ke arah sesungguhnya — dan cara repositioning entry setelah stop hunt selesai.",
+   topics:["Liquidity pools: di mana stop loss retail terkumpul","Stop hunt: cara kerja & pola umum","Cara baca stop hunt candle di chart","Entry after stop hunt: teknik presisi tinggi","Avoid placing SL di level obvious","Cara bangun sistem anti stop-hunt"]},
+
 ];
 
 const TAG_COLORS: any = {
@@ -782,6 +916,18 @@ export default function VipPage() {
             </div>
 
             {/* SINYAL BESOK */}
+            {/* SINYAL DISEMATKAN */}
+            {sigFilter==="Semua" && signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length>0 && (
+              <div style={{ background:"rgba(6,182,212,0.04)",border:"1px solid rgba(6,182,212,0.15)",borderRadius:16,padding:"14px 16px",marginBottom:16 }}>
+                <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:10 }}>
+                  <span style={{ color:"#06b6d4",fontWeight:900,fontSize:14 }}>📌 Sinyal Disematkan</span>
+                  <span style={{ color:"rgba(6,182,212,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
+                </div>
+                <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+                  {signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).map((s:any,i:number)=><SignalCard key={i} s={s}/>)}
+                </div>
+              </div>
+            )}
             {sigFilter==="Semua" && signals.filter((s:any)=>s.is_tomorrow).length>0 && (
               <div style={{ background:"rgba(234,179,8,0.04)", border:"1px solid rgba(234,179,8,0.15)", borderRadius:16, padding:"14px 16px", marginBottom:16 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
@@ -1085,7 +1231,7 @@ export default function VipPage() {
                     <div style={{ flex:1 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                         <span style={{ fontWeight:800, fontSize:14 }}>{o.name}</span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#1E5AF0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>
+                        <span title="Verified" style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",width:16,height:16,borderRadius:"50%",background:"#1D9BF0",flexShrink:0 }}><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8.5 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
                       </div>
                       <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{o.role}</p>
                     </div>
@@ -1130,6 +1276,18 @@ export default function VipPage() {
 
             {/* Logout */}
             <button onClick={logout} style={{ width:"100%", padding:"14px", borderRadius:14, background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#ef4444", fontWeight:700, fontSize:14, cursor:"pointer" }}>Keluar dari Akun</button>
+            {/* Contact Admin */}
+            <div style={{ marginTop:12 }}>
+              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>📞 Kontak Admin</h3>
+              <a href="https://wa.me/6282218723401?text=Halo%20Admin%20RITEL%20COMMUNITY.ID" target="_blank" rel="noreferrer"
+                style={{ display:"flex",alignItems:"center",gap:12,background:"rgba(37,211,102,0.08)",border:"1px solid rgba(37,211,102,0.2)",borderRadius:14,padding:"14px 16px",textDecoration:"none" }}>
+                <div style={{ width:40,height:40,borderRadius:"50%",background:"rgba(37,211,102,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}>📱</div>
+                <div>
+                  <p style={{ fontWeight:800,fontSize:14,color:"#25d366" }}>WhatsApp Admin</p>
+                  <p style={{ color:"rgba(255,255,255,0.4)",fontSize:11 }}>082218723401 · Chat sekarang</p>
+                </div>
+              </a>
+            </div>
           </div>
         )}
 
@@ -1155,3 +1313,4 @@ export default function VipPage() {
     </div>
   );
 }
+
