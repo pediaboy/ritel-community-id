@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   }
 
   // For ticker, pricing, premiumSignals, stocks_mode - save to settings table
-  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed", "owners", "partners", "wa_links", "bagger_signals", "bandar_signals", "done_signal_ids"];
+  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed", "owners", "partners", "wa_links", "bagger_signals", "bandar_signals", "done_signal_ids", "greeting_pagi", "greeting_malam"];
   if (settingsKeys.includes(type)) {
     await sb("POST", "/settings", 
       { key: type, value: data, updated_at: new Date().toISOString() },
@@ -81,5 +81,7 @@ export async function GET() {
     bagger_signals: settings.bagger_signals || [],
     bandar_signals: settings.bandar_signals || [],
     done_signal_ids: settings.done_signal_ids || [],
+    greeting_pagi: settings.greeting_pagi || "",
+    greeting_malam: settings.greeting_malam || "",
   });
 }
