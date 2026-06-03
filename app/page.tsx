@@ -385,6 +385,33 @@ function StockTicker() {
   );
 }
 
+// ===== JAKARTA REALTIME CLOCK =====
+function JakartaClockBar() {
+  const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone:"Asia/Jakarta" }));
+      const days = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      const months = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+      setDate(`${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`);
+      setTime(now.toTimeString().slice(0,8));
+    };
+    tick();
+    const iv = setInterval(tick, 1000);
+    return ()=>clearInterval(iv);
+  },[]);
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[70] flex items-center justify-end gap-2 px-4 py-1.5" style={{ background:"rgba(4,6,15,0.95)", borderBottom:"1px solid rgba(255,255,255,0.04)", height:"28px" }}>
+      <span style={{ fontSize:10, color:"rgba(255,255,255,0.3)" }}>🕐</span>
+      <span style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.55)", fontVariantNumeric:"tabular-nums", letterSpacing:"0.05em" }}>{time}</span>
+      <span style={{ fontSize:10, color:"rgba(255,255,255,0.25)" }}>WIB Jakarta</span>
+      <span style={{ fontSize:10, color:"rgba(255,255,255,0.15)", margin:"0 4px" }}>•</span>
+      <span style={{ fontSize:10, color:"rgba(255,255,255,0.25)" }}>{date}</span>
+    </div>
+  );
+}
+
 // ===== NAVBAR =====
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -396,8 +423,9 @@ function Navbar() {
   }, []);
   return (
     <>
-    <div className="fixed top-0 left-0 right-0 z-[60]"><StockTicker /></div>
-    <nav className={`fixed left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/95 backdrop-blur-md border-b border-white/5" : "bg-black/70 backdrop-blur-sm"}`} style={{top:"44px"}}>
+    <JakartaClockBar />
+    <div className="fixed top-0 left-0 right-0 z-[60]" style={{top:"28px"}}><StockTicker /></div>
+    <nav className={`fixed left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/95 backdrop-blur-md border-b border-white/5" : "bg-black/70 backdrop-blur-sm"}`} style={{top:"72px"}}>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <RCLogo size={36} />
@@ -440,7 +468,7 @@ function Navbar() {
 // ===== HERO =====
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "0px" }}>
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ paddingTop: "0px" }}>
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 mb-5 text-xs text-cyan-300">
           Platform Analisa Saham Indonesia
@@ -558,6 +586,54 @@ function NewsSection() {
               ))}
             </div>
           )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ===== HOMEPAGE FEED =====
+function HomepageFeed() {
+  const [posts, setPosts] = useState<any[]>([]);
+  useEffect(() => {
+    const load = () => fetch("/api/admin/feed").then(r=>r.json()).then(d=>{
+      if (d.success) setPosts(d.feed.filter((p:any)=>p.show_home!==false).slice(0,6));
+    }).catch(()=>{});
+    load();
+    const iv = setInterval(load, 30000);
+    return ()=>clearInterval(iv);
+  },[]);
+  if (posts.length===0) return null;
+  const tagColors: Record<string,string> = { info:"#3b82f6", sinyal:"#22c55e", berita:"#f59e0b", analisis:"#8b5cf6", penting:"#ef4444" };
+  return (
+    <section className="py-12 px-4 border-t border-white/5 relative z-10">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6">
+          <h2 className="text-2xl font-black text-white mb-1">Update <span className="gradient-text">Terbaru</span></h2>
+          <p className="text-slate-500 text-sm">Pengumuman & analisis langsung dari tim RITEL COMMUNITY.ID</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {posts.map(p=>(
+            <TiltCard key={p.id}>
+              <div className="card rounded-xl p-5" style={{border:p.pinned?"1px solid rgba(30,90,240,0.3)":""}}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div style={{width:34,height:34,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#00c8ff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff",flexShrink:0}}>RC</div>
+                  <div style={{flex:1}}>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-bold text-sm">Admin RITEL COMMUNITY.ID</span>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="#1E5AF0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>
+                      {p.pinned&&<span className="text-xs text-yellow-400">📌</span>}
+                    </div>
+                    <div className="flex gap-2 mt-0.5">
+                      {p.tag&&<span style={{fontSize:10,background:`${tagColors[p.tag]||"#6b7280"}22`,color:tagColors[p.tag]||"#9ca3af",padding:"1px 6px",borderRadius:4,fontWeight:700}}>{p.tag}</span>}
+                      <span className="text-slate-600 text-xs">{new Date(p.created_at).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{p.content}</p>
+              </div>
+            </TiltCard>
+          ))}
         </div>
       </div>
     </section>
@@ -1464,6 +1540,56 @@ function Footer() {
   );
 }
 
+// ===== BOTTOM NAV =====
+function BottomNav() {
+  const [active, setActive] = useState("beranda");
+  // Scroll-based detection
+  useEffect(() => {
+    const onScroll = () => {
+      const sections = [
+        { id:"beranda", el:document.getElementById("hero") || document.body },
+        { id:"sinyal", el:document.getElementById("signals") },
+        { id:"paket", el:document.getElementById("pricing") },
+        { id:"info", el:document.getElementById("news") },
+      ];
+      const scrollY = window.scrollY + window.innerHeight/2;
+      for (let i = sections.length-1; i>=0; i--) {
+        const s = sections[i];
+        if (s.el && s.el.offsetTop <= scrollY) { setActive(s.id); break; }
+      }
+    };
+    window.addEventListener("scroll", onScroll, {passive:true});
+    return ()=>window.removeEventListener("scroll", onScroll);
+  },[]);
+
+  const scrollTo = (id:string, href?:string) => {
+    if (href) { window.location.href = href; return; }
+    const el = document.getElementById(id);
+    if (el) { el.scrollIntoView({behavior:"smooth", block:"start"}); setActive(id); }
+  };
+
+  const tabs = [
+    { id:"beranda", label:"Beranda", href:"hero", icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> },
+    { id:"sinyal", label:"Sinyal", href:"signals", icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
+    { id:"paket", label:"Paket", href:"pricing", icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> },
+    { id:"info", label:"Info", href:"news", icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> },
+    { id:"login", label:"Login", icon:<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, link:"/login" },
+  ];
+
+  return (
+    <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.08)", padding:"6px 0 env(safe-area-inset-bottom,16px)", display:"flex", alignItems:"center", justifyContent:"space-around" }}>
+      {tabs.map(item=>(
+        <button key={item.id} onClick={()=>{ if(item.link){window.location.href=item.link;}else if(item.href){scrollTo("",item.href==="hero"?"":item.href);} }}
+          style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 10px", position:"relative", WebkitTapHighlightColor:"transparent" }}>
+          {active===item.id && !item.link && <div style={{ position:"absolute", top:-6, left:"50%", transform:"translateX(-50%)", width:32, height:3, background:"#1e5af0", borderRadius:3 }}/>}
+          <span style={{ color: (active===item.id&&!item.link) ? "#1e5af0" : item.id==="login" ? "#22c55e" : "rgba(255,255,255,0.35)", transition:"color 0.2s" }}>{item.icon}</span>
+          <span style={{ fontSize:9, fontWeight:700, color: (active===item.id&&!item.link) ? "#1e5af0" : item.id==="login" ? "#22c55e" : "rgba(255,255,255,0.3)", transition:"color 0.2s" }}>{item.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ===== MAIN =====
 export default function HomePage() {
   const [showLoading, setShowLoading] = useState(() => {
@@ -1481,8 +1607,9 @@ export default function HomePage() {
       <MotivasiTicker />
       <div className="relative z-10">
         <Navbar />
-        <div style={{ paddingTop: "112px" }}>
+        <div style={{ paddingTop: "144px", paddingBottom:"80px" }}>
           <Hero />
+          <HomepageFeed />
           <MarketSection />
           <SignalsSection />
           <NewsSection />
@@ -1495,9 +1622,10 @@ export default function HomePage() {
           <Footer />
         </div>
       </div>
+      <BottomNav />
       {/* WA Float button */}
       <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-400 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200">
+        className="fixed bottom-24 right-4 z-50 w-14 h-14 bg-green-500 hover:bg-green-400 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
         </svg>

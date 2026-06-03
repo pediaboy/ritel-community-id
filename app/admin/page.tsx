@@ -59,7 +59,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders" | "owners_partners" | "admin_feed" | "bagger" | "bandar";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -258,6 +258,160 @@ function AdminFeedTab() {
               </div>
               <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{p.content}</p>
               <p className="text-slate-600 text-[10px] mt-2">{new Date(p.created_at).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+// ===== BAGGER & BANDAR TAB =====
+function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAPI:(t:string,d:any)=>void }) {
+  const isBagger = type==="bagger";
+  const storeKey = isBagger ? "bagger_signals" : "bandar_signals";
+  const [items, setItems] = useState<any[]>([]);
+  const [editId, setEditId] = useState<string|null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [msg, setMsg] = useState("");
+  const emptyForm = { kode:"", saham:"", entry:"", tp:"", sl:"", notes:"", action: isBagger?"BAGGER":"BANDAR" };
+  const [form, setForm] = useState<any>(emptyForm);
+
+  useEffect(() => {
+    fetch("/api/admin/sync").then(r=>r.json()).then(d=>{
+      const all = d.signals || [];
+      setItems(all.filter((s:any) => isBagger
+        ? (s.isBagger || s.action==="BAGGER" || s.type==="bagger")
+        : (s.isBandar || s.action==="BANDAR" || s.type==="bandar")
+      ));
+    }).catch(()=>{});
+  },[type]);
+
+  const save = async () => {
+    if (!form.kode.trim()) { alert("Kode saham wajib diisi"); return; }
+    const item = { ...form, id: editId||Date.now().toString(), isBagger, isBandar:!isBagger, type, created_at: editId ? undefined : new Date().toISOString() };
+    let updated;
+    // Fetch all signals, merge
+    const r = await fetch("/api/admin/sync");
+    const d = await r.json();
+    const allSigs = d.signals || [];
+    if (editId) {
+      updated = allSigs.map((s:any)=>s.id===editId ? {...s,...item} : s);
+    } else {
+      updated = [...allSigs, item];
+    }
+    await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({type:"signals",data:updated}) });
+    setItems(updated.filter((s:any)=>isBagger?(s.isBagger||s.action==="BAGGER"):(s.isBandar||s.action==="BANDAR")));
+    setMsg(`✅ ${isBagger?"Bagger":"Bandar"} ${editId?"diperbarui":"ditambahkan"}!`);
+    setTimeout(()=>setMsg(""),2500);
+    setForm(emptyForm); setEditId(null); setShowForm(false);
+  };
+
+  const del = async (id:string) => {
+    if (!confirm("Hapus sinyal ini?")) return;
+    const r = await fetch("/api/admin/sync");
+    const d = await r.json();
+    const updated = (d.signals||[]).filter((s:any)=>s.id!==id);
+    await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"signals",data:updated})});
+    setItems(items.filter(x=>x.id!==id));
+    setMsg("✅ Dihapus!"); setTimeout(()=>setMsg(""),2000);
+  };
+
+  const edit = (item:any) => {
+    setForm({kode:item.kode||"",saham:item.saham||"",entry:item.entry||"",tp:item.tp||"",sl:item.sl||"",notes:item.notes||"",action:item.action||emptyForm.action});
+    setEditId(item.id); setShowForm(true);
+  };
+
+  const acColor = isBagger ? { bg:"rgba(245,158,11,0.1)", text:"#f59e0b", border:"rgba(245,158,11,0.3)" } : { bg:"rgba(139,92,246,0.1)", text:"#8b5cf6", border:"rgba(139,92,246,0.3)" };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-white font-bold text-sm">{isBagger?"🚀 Bagger Picks":"🔍 Sinyal Bandar"}</h2>
+        <button onClick={()=>{setShowForm(!showForm);setEditId(null);setForm(emptyForm);}} className="text-xs px-3 py-1.5 rounded-lg font-bold" style={{background:acColor.bg,color:acColor.text,border:`1px solid ${acColor.border}`}}>
+          {showForm?"Tutup":"+Tambah"}
+        </button>
+      </div>
+      <p className="text-slate-500 text-xs mb-4">{isBagger?"Saham multi-bagger pilihan analis":"Deteksi pola akumulasi bandar"}</p>
+      {msg&&<div className="mb-3 text-xs p-2 rounded-lg bg-green-500/10 text-green-400">{msg}</div>}
+
+      {showForm&&(
+        <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-5 space-y-3">
+          <p className="text-white font-bold text-xs mb-2">{editId?"Edit":"Tambah"} {isBagger?"Bagger":"Bandar"}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-slate-400 text-xs mb-1 block">Kode Saham *</label>
+              <input value={form.kode} onChange={e=>setForm({...form,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none uppercase"/>
+            </div>
+            <div>
+              <label className="text-slate-400 text-xs mb-1 block">Nama Emiten</label>
+              <input value={form.saham} onChange={e=>setForm({...form,saham:e.target.value})} placeholder="Bank Central Asia" className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+            </div>
+            <div>
+              <label className="text-slate-400 text-xs mb-1 block">Entry / Akumulasi</label>
+              <input value={form.entry} onChange={e=>setForm({...form,entry:e.target.value})} placeholder="9.800 – 10.200" className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+            </div>
+            <div>
+              <label className="text-slate-400 text-xs mb-1 block">Target (TP)</label>
+              <input value={form.tp} onChange={e=>setForm({...form,tp:e.target.value})} placeholder="12.000" className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+            </div>
+            <div>
+              <label className="text-slate-400 text-xs mb-1 block">Stop Loss</label>
+              <input value={form.sl} onChange={e=>setForm({...form,sl:e.target.value})} placeholder="9.200" className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+            </div>
+            <div>
+              <label className="text-slate-400 text-xs mb-1 block">Action Label</label>
+              <input value={form.action} onChange={e=>setForm({...form,action:e.target.value.toUpperCase()})} placeholder={isBagger?"BAGGER":"BANDAR"} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none uppercase"/>
+            </div>
+          </div>
+          <div>
+            <label className="text-slate-400 text-xs mb-1 block">Catatan / Analisis</label>
+            <textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} rows={3} placeholder={isBagger?"Alasan bagger: revenue tumbuh 40% YoY, ekspansi ke...":"Deteksi akumulasi: volume anomali 3x rata-rata, broker asing net buy..."} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none resize-none"/>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={save} className="flex-1 py-2.5 text-white text-xs font-bold rounded-xl" style={{background:`linear-gradient(135deg,${isBagger?"#f59e0b,#d97706":"#8b5cf6,#6d28d9"})`}}>
+              {editId?"Simpan Perubahan":"+Tambah"}
+            </button>
+            {editId&&<button onClick={()=>{setShowForm(false);setEditId(null);setForm(emptyForm);}} className="px-4 py-2.5 text-slate-400 text-xs font-bold rounded-xl bg-white/5">Batal</button>}
+          </div>
+        </div>
+      )}
+
+      {items.length===0 ? (
+        <div className="text-center py-10">
+          <p className="text-3xl mb-3">{isBagger?"🚀":"🔍"}</p>
+          <p className="text-slate-500 text-sm">Belum ada {isBagger?"bagger":"bandar"} signals. Klik +Tambah.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {items.map(item=>(
+            <div key={item.id} className="bg-[#0a1628] border border-white/10 rounded-2xl p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div style={{width:40,height:40,borderRadius:10,background:acColor.bg,border:`1px solid ${acColor.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:11,color:acColor.text,flexShrink:0}}>{(item.kode||"--").slice(0,4)}</div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-black text-base">{item.kode}</span>
+                      <span style={{background:acColor.bg,color:acColor.text,border:`1px solid ${acColor.border}`,fontSize:10,fontWeight:800,padding:"2px 8px",borderRadius:6}}>{item.action}</span>
+                    </div>
+                    <p className="text-slate-400 text-xs">{item.saham}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={()=>edit(item)} className="text-xs px-2 py-1 rounded-lg text-blue-400 border border-blue-500/20 bg-blue-500/5">Edit</button>
+                  <button onClick={()=>del(item.id)} className="text-xs px-2 py-1 rounded-lg text-red-400 border border-red-500/20 bg-red-500/5">Hapus</button>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                {[{l:"Entry",v:item.entry,c:"rgba(255,255,255,0.8)"},{l:"Target",v:item.tp,c:"#22c55e"},{l:"Stop Loss",v:item.sl,c:"#ef4444"}].map(({l,v,c})=>(
+                  <div key={l} style={{background:"rgba(255,255,255,0.03)",borderRadius:8,padding:"6px 8px"}}>
+                    <p style={{color:"rgba(255,255,255,0.3)",fontSize:9,marginBottom:2}}>{l}</p>
+                    <p style={{color:c,fontWeight:700,fontSize:13}}>{v||"-"}</p>
+                  </div>
+                ))}
+              </div>
+              {item.notes&&<p className="text-slate-400 text-xs leading-relaxed border-t border-white/5 pt-2 mt-2">{item.notes}</p>}
             </div>
           ))}
         </div>
@@ -1321,6 +1475,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
           {/* ADMIN FEED */}
           {tab==="admin_feed" && <AdminFeedTab />}
+
+          {/* BAGGER */}
+          {tab==="bagger" && <BaggerBandarTab type="bagger" syncToAPI={syncToAPI} />}
+
+          {/* BANDAR */}
+          {tab==="bandar" && <BaggerBandarTab type="bandar" syncToAPI={syncToAPI} />}
       </div>
     </div>
   );
