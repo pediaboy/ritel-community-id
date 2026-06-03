@@ -467,6 +467,15 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [sigForm, setSigForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", sl:"", notes:"", package:["gold","pro","platinum","elite"] });
   const [editSigId, setEditSigId] = useState<string|null>(null);
   const [showSigForm, setShowSigForm] = useState(false);
+  const [baggerList, setBaggerList] = useState<any[]>([]);
+  const [bandarList, setBandarList] = useState<any[]>([]);
+  const [baggerForm, setBaggerForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", sl:"", notes:"", package:["gold","pro","platinum","elite"] });
+  const [bandarForm, setBandarForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", sl:"", notes:"", package:["gold","pro","platinum","elite"] });
+  const [editBaggerId, setEditBaggerId] = useState<string|null>(null);
+  const [editBandarId, setEditBandarId] = useState<string|null>(null);
+  const [showBaggerForm, setShowBaggerForm] = useState(false);
+  const [showBandarForm, setShowBandarForm] = useState(false);
+  const [feedPosts, setFeedPosts] = useState<any[]>([]);
 
   const [tokForm, setTokForm] = useState<any>({ email:"", name:"", package:"gold", expiredAt:"" });
   const [editTokId, setEditTokId] = useState<string|null>(null);
@@ -808,6 +817,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
+    { id:"bagger", label:"🚀 Bagger" },
+    { id:"bandar", label:"🔍 Bandar" },
+    { id:"admin_feed", label:"📝 Post Feed" },
     { id:"tokens", label:"Token VIP" },
     { id:"topstocks", label:"Top Saham" },
     { id:"liveinfo", label:"Live Info" },
@@ -818,6 +830,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"mutasi", label:"💰 Mutasi" },
     { id:"orders", label:"🧾 Orders" },
     { id:"loginlogs", label:"🔐 Login Log" },
+    { id:"owners_partners", label:"👑 Owner" },
   ];
 
   return (
@@ -912,7 +925,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 ) : signals.map(s=>(
                   <div key={s.id} className="card rounded-xl p-4">
                     <div className="flex justify-between items-start mb-3">
-                      <div><span className="font-black text-white text-base">{s.kode}</span><div className="text-slate-500 text-xs mt-0.5">{s.saham}</div></div>
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-black text-white text-base">{s.kode}</span>
+                          {s.is_done && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}
+                        </div>
+                        <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
+                      </div>
                       <span className={`text-xs font-black px-2.5 py-1 rounded-lg ${actionColor[s.action]||"text-white"} bg-white/5`}>{s.action}</span>
                     </div>
                     <div className="space-y-1 text-xs mb-3">
@@ -923,8 +942,207 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     {s.notes && <p className="text-xs text-slate-500 border-t border-white/5 pt-2 mb-3 line-clamp-2">{s.notes}</p>}
                     <div className="flex flex-wrap gap-1 mb-3">{(s.package||[]).map((p:string)=><span key={p} className="text-xs px-1.5 py-0.5 rounded bg-white/5 text-slate-500 capitalize">{p}</span>)}</div>
                     <div className="flex gap-2 pt-2 border-t border-white/5">
+                      <Btn onClick={async()=>{ const done=!s.is_done; await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id,is_done:done,done_at:done?new Date().toISOString():null})}).catch(()=>{}); setSignals(signals.map(x=>x.id===s.id?{...x,is_done:done}:x)); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
                       <Btn onClick={()=>editSig(s)} color="blue" className="flex-1 text-center">Edit</Btn>
                       <Btn onClick={()=>delSig(s.id)} color="red" className="flex-1 text-center">Hapus</Btn>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======== BAGGER ======== */}
+          {tab==="bagger" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">🚀 Bagger Picks</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">Saham berpotensi naik 2x-10x jangka panjang</p>
+                </div>
+                <button onClick={()=>{setBaggerForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});setEditBaggerId(null);setShowBaggerForm(!showBaggerForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">{showBaggerForm&&!editBaggerId?"Tutup":"Tambah Bagger"}</button>
+              </div>
+              {showBaggerForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-yellow-500/20">
+                  <h3 className="text-white font-bold mb-4 text-sm">{editBaggerId?"Edit Bagger Pick":"Tambah Bagger Pick Baru"}</h3>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={baggerForm.kode} onChange={e=>setBaggerForm({...baggerForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Nama Saham</label><input value={baggerForm.saham} onChange={e=>setBaggerForm({...baggerForm,saham:e.target.value})} placeholder="Bank Central Asia" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Target (TP)</label><input value={baggerForm.tp} onChange={e=>setBaggerForm({...baggerForm,tp:e.target.value})} placeholder="2x - 5x dari entry" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Entry / Akumulasi</label><input value={baggerForm.entry} onChange={e=>setBaggerForm({...baggerForm,entry:e.target.value})} placeholder="1.200-1.350" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Stop Loss</label><input value={baggerForm.sl} onChange={e=>setBaggerForm({...baggerForm,sl:e.target.value})} placeholder="1.100" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Aksi</label>
+                      <select value={baggerForm.action} onChange={e=>setBaggerForm({...baggerForm,action:e.target.value})} className="input-dark">
+                        {["BUY","ANTRI","HOLD","ACCUMULATE"].map(a=><option key={a} value={a} className="bg-black">{a}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="mb-3"><label className="text-xs text-slate-500 mb-1 block">Analisa &amp; Katalis</label><textarea value={baggerForm.notes} onChange={e=>setBaggerForm({...baggerForm,notes:e.target.value})} placeholder="Kenapa saham ini berpotensi jadi bagger? Katalis apa yang mendorong?" rows={3} className="input-dark resize-none"/></div>
+                  <div className="mb-3">
+                    <label className="text-xs text-slate-500 mb-2 block">Akses Paket</label>
+                    <div className="flex flex-wrap gap-2">{["basic","silver","gold","pro","platinum","elite"].map(p=>(
+                      <label key={p} className="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" checked={baggerForm.package.includes(p)} onChange={e=>setBaggerForm({...baggerForm,package:e.target.checked?[...baggerForm.package,p]:baggerForm.package.filter((x:string)=>x!==p)})} className="accent-yellow-400"/>
+                        <span className="text-xs text-slate-300 capitalize">{p}</span>
+                      </label>
+                    ))}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={async()=>{
+                      const payload = {...baggerForm, is_bagger:true, id:editBaggerId||Date.now().toString()};
+                      if(editBaggerId){
+                        await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
+                        setBaggerList(baggerList.map(x=>x.id===editBaggerId?{...payload}:x));
+                      } else {
+                        await fetch("/api/admin/signals",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
+                        setBaggerList([{...payload,created_at:new Date().toISOString()},...baggerList]);
+                      }
+                      setBaggerForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});
+                      setEditBaggerId(null); setShowBaggerForm(false);
+                    }} className="btn-primary text-sm flex-1">{editBaggerId?"Update":"Simpan Bagger"}</button>
+                    <button onClick={()=>{setShowBaggerForm(false);setEditBaggerId(null);}} className="text-sm flex-1 py-2 rounded-xl bg-white/5 text-slate-400">Batal</button>
+                  </div>
+                </div>
+              )}
+              <div className="grid grid-cols-1 gap-3">
+                {baggerList.length===0 ? (
+                  <div className="card rounded-xl p-8 text-center text-slate-500 text-sm">Belum ada Bagger Pick. Klik "Tambah Bagger" untuk membuat.</div>
+                ) : baggerList.map(s=>(
+                  <div key={s.id} className="card rounded-xl p-4 border-l-4 border-yellow-500/60">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="flex items-center gap-2"><span className="font-black text-white text-base">{s.kode}</span><span className="text-xs px-2 py-0.5 rounded bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 font-bold">🚀 BAGGER</span>{s.is_done&&<span className="text-xs px-2 py-0.5 rounded bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}</div>
+                        <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
+                      </div>
+                      <span className="text-xs font-bold text-slate-400">{s.action}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                      <div className="bg-white/03 rounded p-2"><div className="text-slate-500">Entry</div><div className="text-white font-bold">{s.entry||"-"}</div></div>
+                      <div className="bg-white/03 rounded p-2"><div className="text-slate-500">Target</div><div className="text-yellow-400 font-bold">{s.tp||"-"}</div></div>
+                      <div className="bg-white/03 rounded p-2"><div className="text-slate-500">SL</div><div className="text-red-400 font-bold">{s.sl||"-"}</div></div>
+                    </div>
+                    {s.notes && <p className="text-xs text-slate-400 mb-3 line-clamp-2">{s.notes}</p>}
+                    <div className="flex gap-2 flex-wrap">
+                      <Btn onClick={async()=>{ const done=!s.is_done; await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id,is_done:done,done_at:done?new Date().toISOString():null})}).catch(()=>{}); setBaggerList(baggerList.map(x=>x.id===s.id?{...x,is_done:done}:x)); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={()=>{setBaggerForm({...s});setEditBaggerId(s.id);setShowBaggerForm(true);window.scrollTo(0,0);}} color="blue" className="flex-1 text-center">Edit</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus bagger pick ini?"))return; await fetch(`/api/admin/signals?id=${s.id}`,{method:"DELETE"}).catch(()=>{}); setBaggerList(baggerList.filter(x=>x.id!==s.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======== BANDAR ======== */}
+          {tab==="bandar" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">🔍 Bandarmologi Signals</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">Deteksi pola akumulasi & distribusi smart money</p>
+                </div>
+                <button onClick={()=>{setBandarForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});setEditBandarId(null);setShowBandarForm(!showBandarForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">{showBandarForm&&!editBandarId?"Tutup":"Tambah Sinyal Bandar"}</button>
+              </div>
+              {showBandarForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-purple-500/20">
+                  <h3 className="text-white font-bold mb-4 text-sm">{editBandarId?"Edit Sinyal Bandar":"Tambah Sinyal Bandar Baru"}</h3>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={bandarForm.kode} onChange={e=>setBandarForm({...bandarForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Nama Saham</label><input value={bandarForm.saham} onChange={e=>setBandarForm({...bandarForm,saham:e.target.value})} placeholder="Nama emiten" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Pola Bandar</label>
+                      <select value={bandarForm.action} onChange={e=>setBandarForm({...bandarForm,action:e.target.value})} className="input-dark">
+                        {["AKUMULASI","DISTRIBUSI","BREAKOUT","MARKUP","MARKDOWN","BUY","SELL"].map(a=><option key={a} value={a} className="bg-black">{a}</option>)}
+                      </select>
+                    </div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Zona Entry</label><input value={bandarForm.entry} onChange={e=>setBandarForm({...bandarForm,entry:e.target.value})} placeholder="Range harga akumulasi" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Target Harga</label><input value={bandarForm.tp} onChange={e=>setBandarForm({...bandarForm,tp:e.target.value})} placeholder="Target distribusi bandar" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Stop Loss</label><input value={bandarForm.sl} onChange={e=>setBandarForm({...bandarForm,sl:e.target.value})} placeholder="Invalidation level" className="input-dark"/></div>
+                  </div>
+                  <div className="mb-3"><label className="text-xs text-slate-500 mb-1 block">Analisa Bandarmologi</label><textarea value={bandarForm.notes} onChange={e=>setBandarForm({...bandarForm,notes:e.target.value})} placeholder="Pola tape reading, volume anomali, dugaan aksi bandar..." rows={3} className="input-dark resize-none"/></div>
+                  <div className="mb-3">
+                    <label className="text-xs text-slate-500 mb-2 block">Akses Paket</label>
+                    <div className="flex flex-wrap gap-2">{["basic","silver","gold","pro","platinum","elite"].map(p=>(
+                      <label key={p} className="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" checked={bandarForm.package.includes(p)} onChange={e=>setBandarForm({...bandarForm,package:e.target.checked?[...bandarForm.package,p]:bandarForm.package.filter((x:string)=>x!==p)})} className="accent-purple-400"/>
+                        <span className="text-xs text-slate-300 capitalize">{p}</span>
+                      </label>
+                    ))}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={async()=>{
+                      const payload = {...bandarForm, is_bandar:true, id:editBandarId||Date.now().toString()};
+                      if(editBandarId){
+                        await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
+                        setBandarList(bandarList.map(x=>x.id===editBandarId?{...payload}:x));
+                      } else {
+                        await fetch("/api/admin/signals",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(()=>{});
+                        setBandarList([{...payload,created_at:new Date().toISOString()},...bandarList]);
+                      }
+                      setBandarForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});
+                      setEditBandarId(null); setShowBandarForm(false);
+                    }} className="btn-primary text-sm flex-1">{editBandarId?"Update":"Simpan Sinyal Bandar"}</button>
+                    <button onClick={()=>{setShowBandarForm(false);setEditBandarId(null);}} className="text-sm flex-1 py-2 rounded-xl bg-white/5 text-slate-400">Batal</button>
+                  </div>
+                </div>
+              )}
+              <div className="grid grid-cols-1 gap-3">
+                {bandarList.length===0 ? (
+                  <div className="card rounded-xl p-8 text-center text-slate-500 text-sm">Belum ada sinyal bandar. Klik "Tambah Sinyal Bandar" untuk membuat.</div>
+                ) : bandarList.map(s=>(
+                  <div key={s.id} className="card rounded-xl p-4 border-l-4 border-purple-500/60">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="flex items-center gap-2"><span className="font-black text-white text-base">{s.kode}</span><span className="text-xs px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 border border-purple-500/30 font-bold">🔍 BANDAR</span>{s.is_done&&<span className="text-xs px-2 py-0.5 rounded bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}</div>
+                        <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
+                      </div>
+                      <span className="text-xs font-bold text-purple-400">{s.action}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                      <div className="bg-white/03 rounded p-2"><div className="text-slate-500">Zona Entry</div><div className="text-white font-bold">{s.entry||"-"}</div></div>
+                      <div className="bg-white/03 rounded p-2"><div className="text-slate-500">Target</div><div className="text-purple-400 font-bold">{s.tp||"-"}</div></div>
+                      <div className="bg-white/03 rounded p-2"><div className="text-slate-500">SL</div><div className="text-red-400 font-bold">{s.sl||"-"}</div></div>
+                    </div>
+                    {s.notes && <p className="text-xs text-slate-400 mb-3">{s.notes}</p>}
+                    <div className="flex gap-2 flex-wrap">
+                      <Btn onClick={async()=>{ const done=!s.is_done; await fetch("/api/admin/signals",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id,is_done:done,done_at:done?new Date().toISOString():null})}).catch(()=>{}); setBandarList(bandarList.map(x=>x.id===s.id?{...x,is_done:done}:x)); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={()=>{setBandarForm({...s});setEditBandarId(s.id);setShowBandarForm(true);window.scrollTo(0,0);}} color="blue" className="flex-1 text-center">Edit</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus sinyal bandar ini?"))return; await fetch(`/api/admin/signals?id=${s.id}`,{method:"DELETE"}).catch(()=>{}); setBandarList(bandarList.filter(x=>x.id!==s.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======== POST FEED ======== */}
+          {tab==="admin_feed" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">📝 Manajemen Post Feed</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{feedPosts.length} post · moderasi konten komunitas</p>
+                </div>
+                <button onClick={()=>{ setFeedLoading(true); fetch("/api/posts?limit=100").then(r=>r.json()).then(d=>{setFeedPosts(d.posts||[]);setFeedLoading(false);}).catch(()=>setFeedLoading(false)); }} className="btn-primary text-xs px-4 py-2 rounded-xl">{feedLoading?"Loading...":"Refresh"}</button>
+              </div>
+              <div className="space-y-3">
+                {feedPosts.length===0 ? (
+                  <div className="card rounded-xl p-8 text-center text-slate-500 text-sm">Belum ada post di feed.</div>
+                ) : feedPosts.map(p=>(
+                  <div key={p.id} className="card rounded-xl p-4">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs flex-shrink-0" style={{background:"linear-gradient(135deg,#1e5af0,#06b6d4)"}}>{(p.username||"U").slice(0,1).toUpperCase()}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-white text-sm">{p.username}</span>
+                          {p.is_verified && <span className="text-xs px-1.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30">✔ verified</span>}
+                          <span className="text-xs text-slate-600">{new Date(p.created_at).toLocaleString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+                          <span className="text-xs text-slate-500">&#10084; {p.likes||0}</span>
+                        </div>
+                        <p className="text-slate-300 text-sm mt-1 line-clamp-3">{p.content}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 pt-2 border-t border-white/5">
+                      <Btn onClick={async()=>{ if(!confirm("Hapus post ini?"))return; await fetch(`/api/posts?id=${p.id}`,{method:"DELETE",headers:{"Authorization":"Bearer ADMIN_PANEL"}}).catch(()=>{}); setFeedPosts(feedPosts.filter(x=>x.id!==p.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
                   </div>
                 ))}
