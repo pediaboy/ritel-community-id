@@ -25,6 +25,10 @@ function MotivasiTicker() {
             {text}
           </span>
         ))}
+        {/* Developer Footer */}
+        <div style={{ textAlign:"center",fontSize:10,color:"rgba(255,255,255,0.12)",padding:"8px 0 24px" }}>
+          Developed by THIRAFI THARIQ AL IDRIS
+        </div>
       </div>
     </div>
   );
@@ -113,7 +117,7 @@ export default function HomePage() {
 
       <div style={{ flex:1,overflowY:"auto",paddingBottom:80,position:"relative",zIndex:1 }}>
         {/* Hero */}
-        <div style={{ padding:"24px 16px 20px",textAlign:"center" }}>
+        <div style={{ padding:"14px 16px 10px",textAlign:"center" }}>
           <div style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(30,90,240,0.1)",border:"1px solid rgba(30,90,240,0.2)",borderRadius:100,padding:"4px 14px",marginBottom:16,fontSize:11,color:"#60a5fa",fontWeight:700 }}>
             🇮🇩 Platform Sinyal Saham Indonesia
           </div>
@@ -129,11 +133,12 @@ export default function HomePage() {
         </div>
 
         {/* Stats */}
-        <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,padding:"0 16px",marginBottom:20 }}>
-          {[{v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#22c55e"},{v:"1.000+",l:"Member VIP",c:"#1e5af0"},{v:"95%",l:"Akurasi",c:"#f59e0b"}].map(s=>(
-            <div key={s.l} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 10px",textAlign:"center" }}>
-              <div style={{ fontSize:20,fontWeight:900,color:s.c }}>{s.v}</div>
-              <div style={{ fontSize:10,color:"rgba(255,255,255,0.3)",marginTop:3 }}>{s.l}</div>
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,padding:"0 16px",marginBottom:12 }}>
+          {[{v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#22c55e",icon:"📡"},{v:"1.000+",l:"Member Aktif",c:"#1e5af0",icon:"👥"},{v:"95%",l:"Win Rate",c:"#f59e0b",icon:"🎯"}].map(s=>(
+            <div key={s.l} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 8px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:80,boxSizing:"border-box" }}>
+              <div style={{ fontSize:16,marginBottom:2 }}>{s.icon}</div>
+              <div style={{ fontSize:18,fontWeight:900,color:s.c,lineHeight:1.1 }}>{s.v}</div>
+              <div style={{ fontSize:9,color:"rgba(255,255,255,0.3)",marginTop:3,fontWeight:600 }}>{s.l}</div>
             </div>
           ))}
         </div>
