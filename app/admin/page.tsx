@@ -614,16 +614,19 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   // ===== SIGNALS =====
   const saveSig = async () => {
     if (!sigForm.kode.trim() || !sigForm.saham.trim()) { alert("Isi kode dan nama saham!"); return; }
-    const sigPayload = {...sigForm, tp2:sigForm.tp2||"", tp3:sigForm.tp3||"", is_tomorrow:sigForm.is_tomorrow||false, is_pinned:sigForm.is_pinned||false};
+    const sigPayload = {...sigForm, tp2:sigForm.tp2||"", tp3:sigForm.tp3||"", is_tomorrow:sigForm.is_tomorrow||false, is_pinned:sigForm.is_pinned||false, is_bagger:sigForm.is_bagger||false, is_bandar:sigForm.is_bandar||false};
     if (editSigId) {
-      await fetch(`/api/admin/signals?id=${editSigId}`, {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigPayload, id:editSigId})}).catch(()=>{});
-      setSignals(signals.map(s => s.id === editSigId ? { ...sigPayload, id: editSigId } : s));
+      const res = await fetch("/api/admin/signals", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigPayload, id:editSigId})}).then(r=>r.json()).catch(()=>({}));
+      if (res && res.success === false) { alert("Gagal update: " + (res.error||"unknown")); return; }
     } else {
       const newId = Date.now().toString();
-      await fetch("/api/admin/signals", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigForm, id:newId})}).catch(()=>{});
-      setSignals([{ ...sigForm, id: newId, createdAt: new Date().toISOString() }, ...signals]);
+      const res = await fetch("/api/admin/signals", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigPayload, id:newId})}).then(r=>r.json()).catch(()=>({}));
+      if (res && res.success === false) { alert("Gagal simpan: " + (res.error||"unknown")); return; }
     }
-    setSigForm({ saham:"", kode:"", action:"BUY", entry:"", tp:"", sl:"", notes:"", package:["gold","pro","platinum","elite"] });
+    // Re-fetch dari DB supaya VIP juga dapat data terbaru
+    const refreshed = await fetch("/api/admin/signals").then(r=>r.json()).catch(()=>({}));
+    if (refreshed.signals) setSignals(refreshed.signals.map((s:any)=>({...s,saham:s.saham||"",kode:s.kode||"",action:s.action||"BUY",entry:s.entry||"",tp:s.tp||"",sl:s.sl||"",notes:s.notes||"",package:s.package||["gold"]})));
+    setSigForm({ saham:"", kode:"", action:"BUY", entry:"", tp:"", tp2:"", tp3:"", sl:"", notes:"", package:["gold","pro","platinum","elite"], is_tomorrow:false, is_pinned:false });
     setEditSigId(null); setShowSigForm(false);
   };
   const editSig = (s: any) => { setSigForm({...s}); setEditSigId(s.id); setShowSigForm(true); window.scrollTo(0,0); };
@@ -1774,7 +1777,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                     <div className="flex gap-2">
                       <Btn onClick={async()=>{ const updated=signals.map((x:any)=>x.id===s.id?{...x,is_tomorrow:false}:x); setSignals(updated); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"signals_tomorrow",data:updated})}).catch(()=>{}); }} color="yellow" className="flex-1 text-center">Pindah ke Hari Ini</Btn>
-                      <Btn onClick={async()=>{ if(!confirm("Hapus?"))return; const updated=signals.filter((x:any)=>x.id!==s.id); setSignals(updated); await fetch("/api/admin/signals",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id})}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus?"))return; const updated=signals.filter((x:any)=>x.id!==s.id); setSignals(updated); await fetch(`/api/admin/signals?id=${s.id}`,{method:"DELETE"}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
                   </div>
                 ))}
