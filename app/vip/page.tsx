@@ -236,10 +236,9 @@ const ACTION_COLORS: any = {
 };
 
 // ── SIGNAL CARD ──────────────────────────────────────────────────
-function SignalCard({ s }: { s: any }) {
+function SignalCard({ s, isDone }: { s: any; isDone?: boolean }) {
   const ac = ACTION_COLORS[s.action] || ACTION_COLORS.HOLD;
-  // is_done override
-  const isDone = s.is_done === true;
+  const isSignalDone = isDone === true || s.is_done === true;
   const entryNum = parseFloat(String(s.entry).replace(/\./g,"").replace(",",".")) || 0;
   const tpNum = parseFloat(String(s.tp).replace(/\./g,"").replace(",",".")) || 0;
   const pct = entryNum > 0 ? ((tpNum - entryNum) / entryNum * 100) : 0;
@@ -539,6 +538,7 @@ export default function VipPage() {
   const [sigFilter, setSigFilter] = useState("Semua");
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
   const [loading, setLoading] = useState(true);
+  const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
   const [owners, setOwners] = useState<any[]>([
     { name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"👑", tag:"Owner" },
   ]);
@@ -552,19 +552,12 @@ export default function VipPage() {
     const loadData = (userData: any) => {
       setUser(userData);
       setLoading(false);
-      fetch("/api/admin/signals").then(r=>r.json()).then(data => {
-        const all = data.signals || [];
-        setSignals(all.filter((s:any) => !s.is_bagger && !s.is_bandar));
-        setBaggerSignals(all.filter((s:any) => s.is_bagger));
-        setBandarSignals(all.filter((s:any) => s.is_bandar));
-      }).catch(()=>{});
-      fetch("/api/admin/sync").then(r=>r.json()).then(data => {
-        if (data.signals && data.signals.length > 0) {
-          const all = data.signals;
-          setSignals(prev => prev.length === 0 ? all.filter((s:any) => !s.isBagger && !s.isBandar) : prev);
-          setBaggerSignals(prev => prev.length === 0 ? all.filter((s:any) => s.isBagger || s.action==="BAGGER") : prev);
-          setBandarSignals(prev => prev.length === 0 ? all.filter((s:any) => s.isBandar || s.action==="BANDAR") : prev);
-        }
+      // Load dari sync: signals, bagger, bandar, done_ids, owners, dll
+      fetch("/api/admin/sync").then(r=>r.json()).then((data:any) => {
+        if (data.signals) setSignals(data.signals.filter((s:any) => !s.is_bagger && !s.is_bandar));
+        if (data.bagger_signals) setBaggerSignals(data.bagger_signals);
+        if (data.bandar_signals) setBandarSignals(data.bandar_signals);
+        if (data.done_signal_ids) setDoneSignalIds(data.done_signal_ids || []);
         if (data.premiumSignals) setPremiumContent(data.premiumSignals);
         if (data.owners) setOwners(data.owners);
         if (data.partners) setPartners(data.partners);
