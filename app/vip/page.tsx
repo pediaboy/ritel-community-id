@@ -1713,12 +1713,7 @@ export default function VipPage() {
                   </a>
                   <button onClick={()=>setTab("sinyal")} style={{ background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.6)", fontWeight:700, fontSize:13, padding:"12px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.1)", cursor:"pointer" }}>Lihat Sinyal</button>
                 </div>
-                {/* Preview locked cards */}
-                <div style={{ marginTop:24, display:"flex", flexDirection:"column", gap:10, filter:"blur(4px)", opacity:0.4, pointerEvents:"none" }}>
-                  {[{kode:"CUAN",saham:"Petrindo Jaya Kreasi Tbk.",entry:"680",tp:"900",sl:"650",action:"BUY"},{kode:"DSSA",saham:"Dian Swastatika Sentosa Tbk.",entry:"580",tp:"800",sl:"550",action:"BUY"}].map((s,i)=>(
-                    <BaggerCard key={i} s={s}/>
-                  ))}
-                </div>
+
               </div>
             ) : baggerSignals.length===0 ? (
               <div style={{ textAlign:"center", padding:"48px 16px" }}>
