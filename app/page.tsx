@@ -73,47 +73,6 @@ const NAV_ITEMS = [
 ];
 
 
-const TESTIMONI_DATA = [
-  { name:"Budi Santoso", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#1d4ed8", date:"2 hari lalu", text:"Sinyal dari RC beneran akurat banget! Dalam 2 bulan portofolio naik 34%. Portfolio gua dari 15jt jadi 22jt. Rekomen banget!" },
-  { name:"Siti Rahmawati", pkg:"Pro", pkgColor:"#8b5cf6", rating:5, verified:true, color:"#7c3aed", date:"3 hari lalu", text:"AI Agent-nya keren banget, bisa analisis chart langsung. Modul edukasinya juga detail dari dasar sampai advanced. Worth it!" },
-  { name:"Andi Wijaya", pkg:"Silver", pkgColor:"#06b6d4", rating:4, verified:false, color:"#0891b2", date:"5 hari lalu", text:"Komunitas aktif, admin responsif. Sinyal silver udah worth it buat pemula kayak gua. Lanjut upgrade Gold!" },
-  { name:"Dewi Kusuma", pkg:"Platinum", pkgColor:"#e2e8f0", rating:5, verified:true, color:"#059669", date:"1 minggu lalu", text:"Konsultasi 1-on-1 dengan analis senior ngebantu banget. Return gua konsisten setiap bulan. Best investment platform!" },
-  { name:"Rizki Pratama", pkg:"Elite", pkgColor:"#fde68a", rating:5, verified:true, color:"#d97706", date:"1 minggu lalu", text:"Dari modal 10jt sekarang udah 47jt dalam 8 bulan. RC adalah keputusan terbaik gua di dunia investasi!" },
-  { name:"Fauzan Hidayat", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#dc2626", date:"10 hari lalu", text:"Sinyal TP1 selalu kena, sering nyentuh TP2 dan TP3 juga. Analisis bandarnya tajam banget!" },
-  { name:"Maya Sari", pkg:"Pro", pkgColor:"#8b5cf6", rating:5, verified:false, color:"#7c3aed", date:"2 minggu lalu", text:"Groupnya aktif 24 jam, selalu ada yang jawab pertanyaan. Admin ramah dan profesional." },
-  { name:"Dika Firmansyah", pkg:"Basic", pkgColor:"#3b82f6", rating:4, verified:false, color:"#1d4ed8", date:"2 minggu lalu", text:"Cocok untuk pemula. Modul dasarnya mudah dipahami, sinyal juga selalu disertai analisis." },
-  { name:"Rini Hastuti", pkg:"Silver", pkgColor:"#06b6d4", rating:5, verified:true, color:"#0891b2", date:"3 minggu lalu", text:"Screening saham baggernya jitu banget! Udah dapat 3 bagger dalam 6 bulan ikut RC." },
-  { name:"Tommy Susanto", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#d97706", date:"3 minggu lalu", text:"Sebelum ikut RC sering panic selling. Sekarang lebih tenang dan disiplin thanks to psikologi trading module." },
-  { name:"Linda Cahyani", pkg:"Platinum", pkgColor:"#e2e8f0", rating:5, verified:true, color:"#7c3aed", date:"1 bulan lalu", text:"Live session 1-on-1 dengan analis senior worth banget! Portfolio gua naik konsisten." },
-  { name:"Hendra Gunawan", pkg:"Pro", pkgColor:"#8b5cf6", rating:5, verified:false, color:"#059669", date:"1 bulan lalu", text:"Bandarmologi module bikin gua bisa deteksi akumulasi bandar sebelum saham naik besar. Epic!" },
-  { name:"Nisa Permata", pkg:"Gold", pkgColor:"#f59e0b", rating:4, verified:true, color:"#dc2626", date:"1 bulan lalu", text:"Sinyal masih sangat baik. Admin cepat response kalau ada pertanyaan. Highly recommended!" },
-  { name:"Arif Rahman", pkg:"Elite", pkgColor:"#fde68a", rating:5, verified:true, color:"#d97706", date:"6 minggu lalu", text:"Mentoring langsung dengan mentor senior. Portofolio gua dimanage dengan baik. ROI 89% dalam setahun!" },
-  { name:"Putri Wulandari", pkg:"Silver", pkgColor:"#06b6d4", rating:5, verified:false, color:"#0891b2", date:"6 minggu lalu", text:"Baru 3 bulan join udah balik modal 2x lipat. Sinyal silvernya konsisten dan akurat." },
-  { name:"Bagus Setiawan", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#1d4ed8", date:"2 bulan lalu", text:"Bagger picks-nya luarbiasa. Dapat saham naik 300% dalam 4 bulan. RC changed my life!" },
-  { name:"Sri Mulyani", pkg:"Pro", pkgColor:"#8b5cf6", rating:4, verified:true, color:"#7c3aed", date:"2 bulan lalu", text:"AI agent-nya cepat dan akurat analisisnya. Bisa tanya kapanpun dan selalu ada jawaban lengkap." },
-  { name:"Agus Pranoto", pkg:"Basic", pkgColor:"#3b82f6", rating:5, verified:false, color:"#059669", date:"2 bulan lalu", text:"Cocok banget buat pemula. Penjelasannya simple tapi mudah dipahami. Mau upgrade Gold!" },
-  { name:"Yuni Astuti", pkg:"Platinum", pkgColor:"#e2e8f0", rating:5, verified:true, color:"#dc2626", date:"2 bulan lalu", text:"Sinyal real-time 24/7 dan akses semua modul. Worth every rupiah yang gua bayar!" },
-  { name:"Wahyu Nugroho", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#d97706", date:"3 bulan lalu", text:"Tape reading intraday-nya akurat. Bisa profit harian sekarang berkat panduan dari RC." },
-  { name:"Fitriani Dewi", pkg:"Silver", pkgColor:"#06b6d4", rating:4, verified:false, color:"#0891b2", date:"3 bulan lalu", text:"Sebelumnya gak tau apa-apa soal saham. Sekarang udah bisa baca chart dan analisis sendiri!" },
-  { name:"Rendra Saputra", pkg:"Elite", pkgColor:"#fde68a", rating:5, verified:true, color:"#7c3aed", date:"3 bulan lalu", text:"Return 120% dalam 10 bulan dengan bimbingan dari RC. Best decision I've ever made!" },
-  { name:"Amalia Rahman", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#1d4ed8", date:"4 bulan lalu", text:"Signal BUY BBCA kemarin TP1 kena dalam 3 hari! Akurasi RC emang top level." },
-  { name:"Yoga Pratama", pkg:"Pro", pkgColor:"#8b5cf6", rating:4, verified:false, color:"#059669", date:"4 bulan lalu", text:"Modul fundamental sangat detail dan aplikatif. Sekarang bisa valuasi saham sendiri dengan DCF." },
-  { name:"Nurul Hasanah", pkg:"Basic", pkgColor:"#3b82f6", rating:5, verified:true, color:"#dc2626", date:"4 bulan lalu", text:"Komunitas RC solid banget. Member saling support dan share analisis. Bikin makin semangat investasi!" },
-  { name:"Dodi Permana", pkg:"Platinum", pkgColor:"#e2e8f0", rating:5, verified:true, color:"#d97706", date:"5 bulan lalu", text:"Bagger picks RC konsisten. Dapat 5 bagger dalam setahun ikut RC. Return total 340%!" },
-  { name:"Kartika Sari", pkg:"Silver", pkgColor:"#06b6d4", rating:4, verified:false, color:"#0891b2", date:"5 bulan lalu", text:"Manajemen risiko yang diajarkan RC bikin gua lebih tenang. Tidak panik lagi saat market turun." },
-  { name:"Bayu Kurniawan", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#1d4ed8", date:"5 bulan lalu", text:"Admin selalu update sinyal dan analisis. Grup aktif diskusi setiap hari. Mantap!" },
-  { name:"Tri Wahyuni", pkg:"Pro", pkgColor:"#8b5cf6", rating:5, verified:true, color:"#7c3aed", date:"6 bulan lalu", text:"AI Agent RC 24/7 ready. Kalau ada pertanyaan teknikal dijawab detail dengan chart analysis langsung!" },
-  { name:"Maulana Ibrahim", pkg:"Elite", pkgColor:"#fde68a", rating:5, verified:true, color:"#d97706", date:"6 bulan lalu", text:"Dari newbie total sekarang udah bisa trading mandiri. Terima kasih RC atas ilmu dan bimbingannya!" },
-  { name:"Anggraini Putri", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:false, color:"#059669", date:"7 bulan lalu", text:"Sinyal bandar RC tepat banget. Beli di harga akumulasi, jual saat distribusi. Profit konsisten!" },
-  { name:"Farhan Aziz", pkg:"Silver", pkgColor:"#06b6d4", rating:4, verified:true, color:"#dc2626", date:"7 bulan lalu", text:"Worth banget! Modal 5jt dalam 4 bulan jadi 9jt. RC beneran ngebantu trader pemula." },
-  { name:"Widi Santoso", pkg:"Platinum", pkgColor:"#e2e8f0", rating:5, verified:true, color:"#d97706", date:"8 bulan lalu", text:"Level konsultasi dan layanan RC unmatched. Analis seniornya expert dan sabar menjelaskan." },
-  { name:"Indah Lestari", pkg:"Basic", pkgColor:"#3b82f6", rating:5, verified:false, color:"#0891b2", date:"8 bulan lalu", text:"Modul pemula RC sangat komprehensif. Belajar dari nol sampai bisa analisis sendiri dalam 2 bulan!" },
-  { name:"Prasetyo Adi", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#1d4ed8", date:"9 bulan lalu", text:"Sinyal TP3 kena berkali-kali. RC emang level tersendiri untuk komunitas saham Indonesia." },
-  { name:"Shinta Melati", pkg:"Pro", pkgColor:"#8b5cf6", rating:4, verified:true, color:"#7c3aed", date:"9 bulan lalu", text:"Watchlist RC selalu update. Saham-saham yang masuk watchlist selalu ada yang naik signifikan." },
-  { name:"Reza Firmansyah", pkg:"Elite", pkgColor:"#fde68a", rating:5, verified:true, color:"#d97706", date:"10 bulan lalu", text:"Portofolio management personal dari RC top banget. ROI 156% dalam setahun. Luar biasa!" },
-  { name:"Oktavia Sari", pkg:"Silver", pkgColor:"#06b6d4", rating:5, verified:false, color:"#059669", date:"10 bulan lalu", text:"Analisis fundamental yang diajarkan RC buka pikiran gua soal value investing. Thanks RC!" },
-  { name:"Bambang Susilo", pkg:"Gold", pkgColor:"#f59e0b", rating:5, verified:true, color:"#dc2626", date:"11 bulan lalu", text:"Ikut RC dari awal. Kualitas sinyal dan edukasi selalu konsisten tinggi. Highly recommended!" },
-  { name:"Fitria Handayani", pkg:"Platinum", pkgColor:"#e2e8f0", rating:5, verified:true, color:"#d97706", date:"1 tahun lalu", text:"1 tahun bersama RC, portofolio naik 267%. Investasi terbaik adalah investasi ke RC!" },
 ];
 
 export default function HomePage() {
@@ -163,9 +122,9 @@ export default function HomePage() {
             <br/>Bersama Kami
           </h1>
           <p style={{ color:"rgba(255,255,255,0.45)",fontSize:13,lineHeight:1.7,maxWidth:280,margin:"0 auto 20px" }}>Sinyal trading premium, analisis mendalam, dan komunitas investor aktif Indonesia.</p>
-          <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-            <Link href="/paket" style={{ background:"linear-gradient(135deg,#1e5af0,#0ea5e9)",color:"#fff",fontWeight:800,fontSize:13,padding:"11px 24px",borderRadius:12,textDecoration:"none" }}>Mulai Sekarang</Link>
-            <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" style={{ background:"rgba(34,197,94,0.12)",border:"1px solid rgba(34,197,94,0.25)",color:"#22c55e",fontWeight:800,fontSize:13,padding:"11px 24px",borderRadius:12,textDecoration:"none" }}>WA Admin</a>
+          <div style={{ display:"flex",gap:10,justifyContent:"center",maxWidth:320,margin:"0 auto" }}>
+            <Link href="/paket" style={{ flex:1,display:"block",textAlign:"center",background:"linear-gradient(135deg,#1e5af0,#0ea5e9)",color:"#fff",fontWeight:800,fontSize:13,padding:"12px 0",borderRadius:12,textDecoration:"none" }}>Mulai Sekarang</Link>
+            <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" style={{ flex:1,display:"block",textAlign:"center",background:"rgba(34,197,94,0.12)",border:"1px solid rgba(34,197,94,0.25)",color:"#22c55e",fontWeight:800,fontSize:13,padding:"12px 0",borderRadius:12,textDecoration:"none" }}>WA Admin</a>
           </div>
         </div>
 
@@ -246,44 +205,20 @@ export default function HomePage() {
         </div>
 
 
-        {/* ===== TESTIMONI 40+ ===== */}
-        <div style={{ padding:"0 16px",marginBottom:24 }}>
-          <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16 }}>
-            <div>
-              <h3 style={{ fontWeight:900,fontSize:18,marginBottom:4 }}>⭐ Testimoni Member</h3>
-              <p style={{ color:"rgba(255,255,255,0.4)",fontSize:12 }}>Bergabung dengan 1.000+ investor aktif</p>
-            </div>
-            <div style={{ textAlign:"center" }}>
-              <p style={{ fontWeight:900,fontSize:22,color:"#facc15" }}>4.9</p>
-              <div style={{ display:"flex",gap:1,justifyContent:"center" }}>
-                {[1,2,3,4,5].map(i=><span key={i} style={{ color:"#facc15",fontSize:12 }}>★</span>)}
+        {/* Link ke Testimoni */}
+        <div style={{ padding:"0 16px",marginBottom:16 }}>
+          <a href="/testimoni" style={{ display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(250,204,21,0.06)",border:"1px solid rgba(250,204,21,0.15)",borderRadius:16,padding:"16px",textDecoration:"none" }}>
+            <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+              <span style={{ fontSize:28 }}>⭐</span>
+              <div>
+                <div style={{ fontWeight:800,fontSize:14,color:"#facc15" }}>Testimoni Member</div>
+                <div style={{ fontSize:11,color:"rgba(255,255,255,0.35)",marginTop:2 }}>40+ ulasan · Rating 4.9/5.0</div>
               </div>
-              <p style={{ color:"rgba(255,255,255,0.3)",fontSize:10 }}>40+ ulasan</p>
             </div>
-          </div>
-          <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
-            {TESTIMONI_DATA.map((t,i)=>(
-              <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px" }}>
-                <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:10 }}>
-                  <div style={{ width:38,height:38,borderRadius:"50%",background:`linear-gradient(135deg,${t.color},${t.color}88)`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:13,color:"#fff",flexShrink:0 }}>{t.name[0]}</div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ display:"flex",alignItems:"center",gap:6 }}>
-                      <span style={{ fontWeight:800,fontSize:13,color:"#fff" }}>{t.name}</span>
-                      {t.verified && <span title="Verified" style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",width:14,height:14,borderRadius:"50%",background:"#1D9BF0",flexShrink:0 }}><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8.5 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>}
-                    </div>
-                    <div style={{ display:"flex",alignItems:"center",gap:6 }}>
-                      <span style={{ fontSize:10,color:`${t.pkgColor}`,background:`${t.pkgColor}15`,padding:"1px 6px",borderRadius:4,fontWeight:700 }}>{t.pkg}</span>
-                      <span style={{ color:"rgba(255,255,255,0.25)",fontSize:10 }}>· {t.date}</span>
-                    </div>
-                  </div>
-                  <div style={{ display:"flex",gap:1 }}>{[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=t.rating?"#facc15":"rgba(255,255,255,0.1)",fontSize:12 }}>★</span>)}</div>
-                </div>
-                <p style={{ color:"rgba(255,255,255,0.7)",fontSize:12,lineHeight:1.7,fontStyle:"italic" }}>"{t.text}"</p>
-              </div>
-            ))}
-          </div>
+            <span style={{ color:"rgba(255,255,255,0.3)",fontSize:18 }}>→</span>
+          </a>
         </div>
-        {/* Grup & Channel */}
+                {/* Grup & Channel */}
         <div style={{ padding:"0 16px",marginBottom:24 }}>
           <h3 style={{ fontWeight:900,fontSize:14,marginBottom:12 }}>💬 Komunitas RC</h3>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:10 }}>
