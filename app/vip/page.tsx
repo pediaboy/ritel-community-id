@@ -1859,6 +1859,36 @@ export default function VipPage() {
           </div>
         )}
 
+        {/* ── AI ANALYST TAB ── */}
+        {tab==="ai" && (
+          <div style={{ padding:"0 16px 100px" }}>
+            <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.1),rgba(6,182,212,0.08))",border:"1px solid rgba(6,182,212,0.2)",borderRadius:20,padding:"20px",textAlign:"center",marginBottom:16,marginTop:8 }}>
+              <div style={{ fontSize:36,marginBottom:8 }}>🤖</div>
+              <h2 style={{ fontWeight:900,fontSize:18,marginBottom:6 }}>RC-AI Analyst</h2>
+              <p style={{ color:"rgba(255,255,255,0.45)",fontSize:13,lineHeight:1.6,marginBottom:16 }}>Analisis saham BEI dengan AI — teknikal, fundamental, bandarmologi. Kirim chart untuk analisis visual!</p>
+              <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#06b6d4,#1e5af0)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",borderRadius:14,textDecoration:"none" }}>
+                🚀 Buka RC-AI Chat
+              </a>
+            </div>
+            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16 }}>
+              {[
+                {icon:"📊",t:"Analisis Teknikal",d:"Support, resistance, pola chart"},
+                {icon:"🔍",t:"Analisis Fundamental",d:"Laporan keuangan & valuasi"},
+                {icon:"🎯",t:"Rekomendasi TP/SL",d:"Entry, target, stop loss optimal"},
+                {icon:"🖼️",t:"Analisis Chart",d:"Upload screenshot chart kamu"},
+                {icon:"🏦",t:"Bandarmologi",d:"Deteksi akumulasi smart money"},
+                {icon:"🧠",t:"Psikologi Trading",d:"Kelola emosi & bias kognitif"},
+              ].map((f,i)=>(
+                <a key={i} href="/ai" style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"14px 12px",textDecoration:"none",display:"block" }}>
+                  <div style={{ fontSize:22,marginBottom:6 }}>{f.icon}</div>
+                  <div style={{ color:"#fff",fontWeight:800,fontSize:12,marginBottom:3 }}>{f.t}</div>
+                  <div style={{ color:"rgba(255,255,255,0.35)",fontSize:10,lineHeight:1.4 }}>{f.d}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ── PROFILE TAB ── */}
         {tab==="profile" && (
           <div style={{ padding:"16px" }}>
@@ -1956,6 +1986,7 @@ export default function VipPage() {
           { id:"bandar", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>, label:"Bandar" },
           { id:"bagger", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>, label:"Bagger" },
           { id:"modul", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>, label:"Modul" },
+          { id:"ai", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>, label:"RC-AI" },
           { id:"profile", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label:"Profil" },
         ].map(item => (
           <button key={item.id} onClick={()=>setTab(item.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 12px", position:"relative", transition:"all 0.2s" }}>
