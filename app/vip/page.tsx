@@ -838,7 +838,7 @@ export default function VipPage() {
       setUser(userData);
       setLoading(false);
       // Load dari sync: signals, bagger, bandar, done_ids, owners, dll
-      fetch("/api/admin/sync").then(r=>r.json()).then((data:any) => {
+      const loadSync = () => fetch("/api/admin/sync").then(r=>r.json()).then((data:any) => {
         if (data.signals) setSignals(data.signals.filter((s:any) => !s.is_bagger && !s.is_bandar));
         if (data.bagger_signals) setBaggerSignals(data.bagger_signals);
         if (data.bandar_signals) setBandarSignals(data.bandar_signals);
@@ -849,6 +849,10 @@ export default function VipPage() {
         if (data.owners) setOwners(data.owners);
         if (data.partners) setPartners(data.partners);
       }).catch(()=>{});
+      loadSync();
+      // Auto refresh signals setiap 30 detik
+      const interval = setInterval(loadSync, 30000);
+      return () => clearInterval(interval);
       fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
     };
 
@@ -884,9 +888,10 @@ export default function VipPage() {
   };
 
   const pkgLevel = PKG_LEVELS.indexOf(user?.package||"basic");
+  const userPkg = (user?.package || "basic").toLowerCase();
   const mySignals = signals.filter(s => {
-    const pkg = s.package || [];
-    return pkg.includes(user?.package) || pkg.includes("all");
+    const pkg = (s.package || []).map((p:string)=>p.toLowerCase());
+    return pkg.includes(userPkg) || pkg.includes("all") || pkg.length === 0;
   });
   const filteredSignals = (sigFilter==="Semua" ? mySignals : mySignals.filter((s:any)=>s.action===sigFilter)).filter((s:any)=>!s.is_tomorrow);
   const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel).sort((a,b)=>a.level-b.level);
@@ -1425,10 +1430,11 @@ export default function VipPage() {
           { id:"modul", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>, label:"Modul" },
           { id:"profile", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label:"Profil" },
         ].map(item => (
-          <button key={item.id} onClick={()=>setTab(item.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 12px", position:"relative" }}>
-            {tab===item.id && <div style={{ position:"absolute", top:-6, left:"50%", transform:"translateX(-50%)", width:32, height:3, background:"#1e5af0", borderRadius:3 }}/>}
-            <span style={{ color: tab===item.id ? "#1e5af0" : "rgba(255,255,255,0.35)", transition:"color 0.2s" }}>{item.icon}</span>
-            <span style={{ fontSize:9, fontWeight:700, color: tab===item.id ? "#1e5af0" : "rgba(255,255,255,0.3)", transition:"color 0.2s" }}>{item.label}</span>
+          <button key={item.id} onClick={()=>setTab(item.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 12px", position:"relative", transition:"all 0.2s" }}>
+            {tab===item.id && <div style={{ position:"absolute", top:-6, left:"50%", transform:"translateX(-50%)", width:36, height:3, background:"linear-gradient(90deg,transparent,#06b6d4,transparent)", borderRadius:3, boxShadow:"0 0 8px rgba(6,182,212,0.9), 0 0 16px rgba(6,182,212,0.5)" }}/>}
+            {tab===item.id && <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, rgba(6,182,212,0.08) 0%, transparent 70%)", borderRadius:10, pointerEvents:"none" }}/>}
+            <span style={{ color: tab===item.id ? "#06b6d4" : "rgba(255,255,255,0.35)", transition:"all 0.2s", filter: tab===item.id ? "drop-shadow(0 0 4px rgba(6,182,212,0.8))" : "none" }}>{item.icon}</span>
+            <span style={{ fontSize:9, fontWeight:700, color: tab===item.id ? "#06b6d4" : "rgba(255,255,255,0.3)", transition:"all 0.2s", textShadow: tab===item.id ? "0 0 8px rgba(6,182,212,0.8)" : "none" }}>{item.label}</span>
           </button>
         ))}
       </div>
