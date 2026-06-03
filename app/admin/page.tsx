@@ -148,7 +148,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <p className="text-white font-bold text-sm">{o.name}</p>
-                  {o.verified && <span style={{background:"rgba(59,130,246,0.15)",color:"#3b82f6",border:"1px solid rgba(59,130,246,0.3)",fontSize:9,fontWeight:800,padding:"1px 6px",borderRadius:4}}>✔ verified</span>}
+                  {o.verified && <span title="Verified" style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:16,height:16,borderRadius:"50%",background:"#1D9BF0",flexShrink:0}}><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8.5 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>}
                 </div>
                 <p className="text-slate-400 text-xs">{o.role} · {o.tag}</p>
               </div>
@@ -515,7 +515,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"m4", text:"Cari mentor yang tepat, karena pengalaman mereka bisa memotong kurva belajarmu bertahun-tahun." },
     { id:"m5", text:"Profit bukan keberuntungan — itu adalah hasil dari disiplin, ilmu, dan manajemen risiko yang benar." },
   ]);
-  const [motivasiForm, setMotivasiForm] = useState<any>({ text:"" });
+  const [motivasiForm, setMotivasiForm] = useState<any>({ text:"", jam:"", durasi_menit:5 });
+  const [motivasiSpeed, setMotivasiSpeed] = useLocalStore<number>("ticker_speed", 32);
   const [editMotivasiId, setEditMotivasiId] = useState<string|null>(null);
   const [showMotivasiForm, setShowMotivasiForm] = useState(false);
 
@@ -1680,7 +1681,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div className="space-y-3">
                     <div>
                       <label className="text-xs text-slate-500 mb-1 block">Isi Kata Motivasi</label>
-                      <textarea value={motivasiForm.text} onChange={e=>setMotivasiForm({...motivasiForm,text:e.target.value})}
+                      <input value={motivasiForm.jam} onChange={e=>setMotivasiForm({...motivasiForm,jam:e.target.value})} className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="Jam tampil (opsional, contoh: 08:00)"/>
+                      <div className="flex gap-2 items-center">
+                        <input type="number" value={motivasiForm.durasi_menit} onChange={e=>setMotivasiForm({...motivasiForm,durasi_menit:parseInt(e.target.value)||5})} className="w-20 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" min={1} max={60}/>
+                        <span className="text-slate-400 text-xs">menit durasi tampil</span>
+                      </div>
+                                            <textarea value={motivasiForm.text} onChange={e=>setMotivasiForm({...motivasiForm,text:e.target.value})}
                         placeholder="Jangan takut untuk belajar — setiap langkah kecil adalah investasi untuk masa depanmu..."
                         rows={3} className="input-dark resize-none"/>
                     </div>
@@ -1707,7 +1713,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-slate-600">Muncul otomatis sesuai jam WIB, menghilang setelah 5 detik.</p>
+                <div className="flex items-center gap-3 mb-2">
+                  <label className="text-xs text-slate-400 flex-shrink-0">Kecepatan Ticker:</label>
+                  <input type="range" min={10} max={80} value={motivasiSpeed} onChange={e=>{ const v=parseInt(e.target.value); setMotivasiSpeed(v); syncToAPI("ticker_speed",v); }} className="flex-1"/>
+                  <span className="text-xs text-white w-8">{motivasiSpeed}s</span>
+                </div>
+                <p className="text-xs text-slate-600">Jam kosong = tampil terus-menerus. Isi jam WIB untuk jadwal otomatis.</p>
               </div>
               <div className="space-y-3">
                 {motivasiList.length===0 ? (
@@ -1822,5 +1833,6 @@ export default function AdminPage() {
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
   return <AdminDashboard onLogout={() => { localStorage.removeItem("admin_auth"); setAuthed(false); }} />;
 }
+
 
 
