@@ -410,7 +410,7 @@ export default function VipPage() {
     <div className="min-h-screen bg-[#04060f] flex items-center justify-center">
       <div className="galaxy-stars"/>
       <div className="relative z-10 text-center">
-        <div style={{ width:48, height:48, borderRadius:14, background:"linear-gradient(135deg,#1e5af0,#06b6d4)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:16, color:"#fff", margin:"0 auto 16px" }}>RC</div>
+        <img src="/logo.png" alt="RC" style={{ width:48, height:48, borderRadius:14, objectFit:"cover", display:"block", margin:"0 auto 16px" }} />
         <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13 }}>Memverifikasi akses...</p>
       </div>
     </div>
@@ -426,7 +426,7 @@ export default function VipPage() {
         <MotivasiTickerVIP />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:8, textDecoration:"none" }}>
-            <div style={{ width:34, height:34, borderRadius:10, background:"linear-gradient(135deg,#1e5af0,#06b6d4)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:12, color:"#fff" }}>RC</div>
+            <img src="/logo.png" alt="RC" style={{ width:34, height:34, borderRadius:10, objectFit:"cover", flexShrink:0 }} />
             <div>
               <div style={{ color:"#fff", fontWeight:900, fontSize:13 }}>RITEL COMMUNITY.ID</div>
               <div style={{ color:"rgba(255,255,255,0.35)", fontSize:10 }}>Area VIP Member</div>
@@ -585,22 +585,178 @@ export default function VipPage() {
         {/* ── BAGGER TAB ── */}
         {tab==="bagger" && (
           <div style={{ padding:"16px" }}>
-            <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>🚀 Bagger Picks</h2>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
+              <h2 style={{ fontWeight:900, fontSize:18 }}>🚀 Bagger Picks</h2>
+              <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", fontSize:10, fontWeight:700, padding:"4px 10px", borderRadius:8 }}>Paket {user.package?.toUpperCase()}</span>
+            </div>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Saham berpotensi naik 2x–10x lipat</p>
-            {baggerSignals.length===0 ? (
+
+            {/* Role gate: Gold+ only */}
+            {pkgLevel < 2 ? (
+              <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", borderRadius:16, padding:"36px 20px", textAlign:"center", marginBottom:16 }}>
+                <p style={{ fontSize:40, marginBottom:12 }}>🔒</p>
+                <p style={{ fontWeight:900, fontSize:16, marginBottom:6 }}>Bagger Picks — VIP Gold ke atas</p>
+                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13, marginBottom:20, lineHeight:1.6 }}>
+                  Akses daftar saham multi-bagger pilihan analis.<br/>Potensi naik 2x–10x dengan analisis mendalam.
+                </p>
+                <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
+                  <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20saya%20${encodeURIComponent(user.name||"")}%20mau%20upgrade%20ke%20Gold`} target="_blank" rel="noreferrer"
+                    style={{ display:"inline-block", background:"linear-gradient(135deg,#f59e0b,#d97706)", color:"#000", fontWeight:900, fontSize:13, padding:"12px 28px", borderRadius:12, textDecoration:"none" }}>
+                    Upgrade ke Gold
+                  </a>
+                  <button onClick={()=>setTab("sinyal")} style={{ background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.6)", fontWeight:700, fontSize:13, padding:"12px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.1)", cursor:"pointer" }}>Lihat Sinyal</button>
+                </div>
+                {/* Preview locked cards */}
+                <div style={{ marginTop:24, display:"flex", flexDirection:"column", gap:10, filter:"blur(4px)", opacity:0.4, pointerEvents:"none" }}>
+                  {[{kode:"CUAN",saham:"Petrindo Jaya Kreasi Tbk.",entry:"680",tp:"900",sl:"650",action:"BUY"},{kode:"DSSA",saham:"Dian Swastatika Sentosa Tbk.",entry:"580",tp:"800",sl:"550",action:"BUY"}].map((s,i)=>(
+                    <BaggerCard key={i} s={s}/>
+                  ))}
+                </div>
+              </div>
+            ) : baggerSignals.length===0 ? (
               <div style={{ textAlign:"center", padding:"48px 16px" }}>
                 <p style={{ fontSize:36, marginBottom:12 }}>🚀</p>
-                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Bagger picks terbaru segera hadir!</p>
+                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Bagger picks terbaru segera hadir! Stay tuned.</p>
               </div>
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                 {baggerSignals.map((s,i)=><BaggerCard key={i} s={s}/>)}
               </div>
             )}
+
+            {/* Modul bagger (untuk semua, tapi konten locked jika < gold) */}
+            {pkgLevel >= 1 && (
+              <div style={{ marginTop:24 }}>
+                <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>📚 Modul Multi-Bagger</h3>
+                {ALL_MODULES.filter(m=>m.tag==="Fundamental"||m.title.toLowerCase().includes("bagger")).map(m=>(
+                  <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:expandedModul===m.id?"rgba(245,158,11,0.06)":"rgba(255,255,255,0.03)", border:`1px solid ${expandedModul===m.id?"rgba(245,158,11,0.25)":"rgba(255,255,255,0.07)"}`, borderRadius:14, padding:"14px 16px", marginBottom:10, cursor:"pointer", transition:"all 0.2s" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                      <span style={{ fontSize:22, flexShrink:0 }}>{m.icon}</span>
+                      <div style={{ flex:1 }}>
+                        <p style={{ fontWeight:700, fontSize:13, marginBottom:2 }}>{m.title}</p>
+                        <div style={{ display:"flex", gap:6 }}>
+                          <span style={{ fontSize:10, background:"rgba(245,158,11,0.12)", color:"#f59e0b", padding:"1px 7px", borderRadius:4 }}>{m.pkgLabel}</span>
+                          <span style={{ fontSize:10, color:"rgba(255,255,255,0.3)" }}>{m.topics.length} topik</span>
+                        </div>
+                      </div>
+                      <span style={{ color:"rgba(255,255,255,0.3)", fontSize:14, flexShrink:0 }}>{expandedModul===m.id?"▲":"▼"}</span>
+                    </div>
+                    {expandedModul===m.id && (
+                      <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                        <p style={{ color:"rgba(255,255,255,0.5)", fontSize:12, lineHeight:1.6, marginBottom:10 }}>{m.desc}</p>
+                        <ul style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                          {m.topics.map((t:string,i:number)=>(
+                            <li key={i} style={{ display:"flex", gap:8, fontSize:12, color:"rgba(255,255,255,0.65)" }}>
+                              <span style={{ color:"#22c55e", flexShrink:0 }}>✓</span>{t}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* ── PROFILE TAB ── */}
+        {/* ── MODUL TAB ── */}
+        {tab==="modul" && (
+          <div style={{ padding:"16px" }}>
+            <div style={{ marginBottom:20 }}>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📚 Modul Edukasi</h2>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Materi eksklusif sesuai paket kamu</p>
+            </div>
+
+            {/* Unlocked Modules */}
+            {myModules.length > 0 && (
+              <div style={{ marginBottom:24 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+                  <div style={{ width:6, height:6, borderRadius:"50%", background:"#22c55e" }}/>
+                  <span style={{ color:"#22c55e", fontWeight:700, fontSize:12 }}>Modul Aktif ({myModules.length})</span>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {myModules.map(m=>(
+                    <div key={m.id} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:16, overflow:"hidden" }}>
+                      {/* Header - always visible, click to expand */}
+                      <button onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)}
+                        style={{ width:"100%", display:"flex", alignItems:"center", gap:12, padding:"14px 16px", background:"transparent", border:"none", cursor:"pointer", textAlign:"left" }}>
+                        <div style={{ width:44, height:44, borderRadius:12, background:"rgba(30,90,240,0.12)", border:"1px solid rgba(30,90,240,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>{m.icon}</div>
+                        <div style={{ flex:1 }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                            <span style={{ color:"#fff", fontWeight:800, fontSize:13 }}>{m.title}</span>
+                          </div>
+                          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                            <span style={{ fontSize:10, background:`${m.tag==="Fundamental"?"rgba(59,130,246,0.15)":m.tag==="Teknikal"?"rgba(139,92,246,0.15)":m.tag==="Psikologi"?"rgba(236,72,153,0.15)":m.tag==="Bandarmologi"?"rgba(245,158,11,0.15)":"rgba(34,197,94,0.15)"}`, color:`${m.tag==="Fundamental"?"#60a5fa":m.tag==="Teknikal"?"#a78bfa":m.tag==="Psikologi"?"#f472b6":m.tag==="Bandarmologi"?"#fbbf24":"#4ade80"}`, padding:"2px 8px", borderRadius:4, fontWeight:700 }}>{m.tag}</span>
+                            <span style={{ fontSize:10, background:"rgba(30,90,240,0.1)", color:"#60a5fa", padding:"2px 8px", borderRadius:4, fontWeight:600 }}>{m.pkgLabel}</span>
+                            <span style={{ fontSize:10, color:"rgba(255,255,255,0.3)" }}>{m.topics.length} topik</span>
+                          </div>
+                        </div>
+                        <div style={{ flexShrink:0, display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
+                          <div style={{ width:28, height:28, borderRadius:8, background: expandedModul===m.id ? "rgba(30,90,240,0.3)" : "rgba(255,255,255,0.05)", border: expandedModul===m.id ? "1px solid rgba(30,90,240,0.4)" : "1px solid rgba(255,255,255,0.1)", display:"flex", alignItems:"center", justifyContent:"center", color: expandedModul===m.id ? "#60a5fa" : "rgba(255,255,255,0.4)", fontSize:14, transition:"all 0.2s" }}>
+                            {expandedModul===m.id ? "▲" : "▼"}
+                          </div>
+                        </div>
+                      </button>
+                      {/* Expanded content */}
+                      {expandedModul===m.id && (
+                        <div style={{ padding:"0 16px 16px", borderTop:"1px solid rgba(255,255,255,0.05)" }}>
+                          <p style={{ color:"rgba(255,255,255,0.5)", fontSize:12, lineHeight:1.7, marginBottom:12, marginTop:12 }}>{m.desc}</p>
+                          <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                            {m.topics.map((t:string,i:number)=>(
+                              <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:10, background:"rgba(34,197,94,0.05)", border:"1px solid rgba(34,197,94,0.1)", borderRadius:10, padding:"10px 12px" }}>
+                                <span style={{ color:"#22c55e", flexShrink:0, marginTop:1, fontWeight:900 }}>✓</span>
+                                <span style={{ color:"rgba(255,255,255,0.75)", fontSize:12, lineHeight:1.5 }}>{t}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ marginTop:12, padding:"10px 14px", background:"rgba(30,90,240,0.06)", border:"1px solid rgba(30,90,240,0.15)", borderRadius:10 }}>
+                            <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>📖 Materi tersedia di grup WhatsApp eksklusif paket {m.pkgLabel} kamu</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Locked Modules */}
+            {lockedModules.length > 0 && (
+              <div>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+                  <div style={{ width:6, height:6, borderRadius:"50%", background:"rgba(255,255,255,0.2)" }}/>
+                  <span style={{ color:"rgba(255,255,255,0.3)", fontWeight:700, fontSize:12 }}>Terkunci ({lockedModules.length})</span>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {lockedModules.map(m=>(
+                    <div key={m.id} style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.05)", borderRadius:16, overflow:"hidden", opacity:0.6 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px" }}>
+                        <div style={{ width:44, height:44, borderRadius:12, background:"rgba(255,255,255,0.04)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0, filter:"grayscale(1)" }}>{m.icon}</div>
+                        <div style={{ flex:1 }}>
+                          <span style={{ color:"rgba(255,255,255,0.5)", fontWeight:700, fontSize:13 }}>{m.title}</span>
+                          <div style={{ display:"flex", gap:6, marginTop:4 }}>
+                            <span style={{ fontSize:10, background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.3)", padding:"2px 8px", borderRadius:4, fontWeight:600 }}>{m.pkgLabel}</span>
+                            <span style={{ fontSize:10, color:"rgba(255,255,255,0.2)" }}>{m.topics.length} topik</span>
+                          </div>
+                        </div>
+                        <div style={{ width:28, height:28, borderRadius:8, background:"rgba(255,255,255,0.03)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>🔒</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop:16, textAlign:"center" }}>
+                  <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20saya%20${encodeURIComponent(user.name||"")}%20mau%20upgrade%20paket`} target="_blank" rel="noreferrer"
+                    style={{ display:"inline-block", background:"linear-gradient(135deg,#1e5af0,#06b6d4)", color:"#fff", fontWeight:800, fontSize:13, padding:"12px 28px", borderRadius:12, textDecoration:"none" }}>
+                    Upgrade untuk Akses Semua Modul
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+                {/* ── PROFILE TAB ── */}
         {tab==="profile" && (
           <div style={{ padding:"16px" }}>
             {/* User card */}
@@ -677,12 +833,13 @@ export default function VipPage() {
       </div>
 
       {/* ── BOTTOM NAV ── */}
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.08)", padding:"6px 0 20px", display:"flex", alignItems:"center", justifyContent:"space-around" }}>
+      <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.08)", padding:"6px 0 20px", display:"flex", alignItems:"center", justifyContent:"space-around", overflowX:"auto" }}>
         {[
           { id:"home", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>, label:"Beranda" },
           { id:"sinyal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, label:"Sinyal" },
           { id:"bandar", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>, label:"Bandar" },
           { id:"bagger", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>, label:"Bagger" },
+          { id:"modul", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>, label:"Modul" },
           { id:"profile", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label:"Profil" },
         ].map(item => (
           <button key={item.id} onClick={()=>setTab(item.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 12px", position:"relative" }}>
