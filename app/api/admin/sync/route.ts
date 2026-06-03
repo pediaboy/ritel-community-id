@@ -3,31 +3,46 @@ import { sb } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
+function encodeMeta(s: any, notesText: string): string {
+  const meta: any = {};
+  for (const k of ["tp2","tp3","is_tomorrow","is_pinned","is_done","category","done_at"]) {
+    if (s[k] !== undefined) meta[k] = s[k];
+  }
+  if (Object.keys(meta).length === 0) return notesText;
+  return notesText + "\n__META__:" + JSON.stringify(meta);
+}
+
+function decodeMeta(row: any): any {
+  const notes: string = row.notes || "";
+  const idx = notes.lastIndexOf("\n__META__:");
+  if (idx === -1) return row;
+  const plain = notes.slice(0, idx);
+  try { return { ...row, notes: plain, ...JSON.parse(notes.slice(idx + 10)) }; }
+  catch { return row; }
+}
+
 export async function POST(req: Request) {
   const body = await req.json();
   const { type, data } = body;
 
   if (type === "signals" || type === "signals_bulk") {
-    // Bulk replace signals - preserve ALL fields including is_pinned, is_tomorrow, is_done
     await sb("DELETE", "/signals?id=neq.NONE");
     if (data && data.length > 0) {
-      const rows = data.map((s: any) => ({
-        id: s.id || Date.now().toString(),
-        saham: s.saham || "",
-        kode: s.kode || "",
-        action: s.action || "BUY",
-        entry: s.entry || "",
-        tp: s.tp || "",
-        tp2: s.tp2 || "",
-        tp3: s.tp3 || "",
-        sl: s.sl || "",
-        notes: s.notes || "",
-        package: s.package || ["gold"],
-        is_pinned: s.is_pinned || false,
-        is_tomorrow: s.is_tomorrow || false,
-        is_done: s.is_done || false,
-        created_at: s.created_at || new Date().toISOString(),
-      }));
+      const rows = data.map((s: any) => {
+        const notesRaw = (s.notes || "").replace(/\n__META__:.*$/s, "");
+        return {
+          id: s.id || Date.now().toString(),
+          saham: s.saham || "",
+          kode: s.kode || "",
+          action: s.action || "BUY",
+          entry: s.entry || "",
+          tp: s.tp || "",
+          sl: s.sl || "",
+          notes: encodeMeta(s, notesRaw),
+          package: s.package || ["gold"],
+          created_at: s.created_at || new Date().toISOString(),
+        };
+      });
       await sb("POST", "/signals", rows);
     }
     return NextResponse.json({ success: true });
@@ -81,8 +96,10 @@ export async function GET() {
     settings[row.key] = row.value;
   }
 
+  const decodedSignals = (signals || []).map(decodeMeta);
+
   return NextResponse.json({
-    signals,
+    signals: decodedSignals,
     tokens,
     ticker: settings.ticker || [],
     pricing: settings.pricing || [],
