@@ -140,16 +140,28 @@ function PaketCard({ pkg }: { pkg: any }) {
                 )}
               </div>
               <div className="text-slate-500 line-through text-sm">{pkg.priceLabel}</div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-white">{fs.price}</span>
-                <span className="text-slate-400 text-sm">{pkg.period}</span>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-slate-400 leading-none mb-0.5">
+                  {(fs.price||"").toString().startsWith("Rp") ? "Rp" : ""}
+                </span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-white">
+                    {(fs.price||"").toString().replace(/^Rp\s*/,"").trim()}
+                  </span>
+                  <span className="text-slate-400 text-sm">{pkg.period}</span>
+                </div>
               </div>
               <div className="text-xs text-green-400 font-bold">Hemat {fs.discount}!</div>
             </div>
           ) : (
-            <div className="flex items-end gap-1 mb-3">
-              <span className="text-3xl font-black text-white">{pkg.priceLabel}</span>
-              <span className="text-slate-400 text-sm pb-1">{pkg.period}</span>
+            <div className="flex flex-col mb-3">
+              <span className="text-xs font-bold text-slate-400 leading-none mb-0.5">Rp</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl font-black text-white">
+                  {(pkg.priceLabel||"").replace(/^Rp\s*/,"")}
+                </span>
+                <span className="text-slate-400 text-sm">{pkg.period}</span>
+              </div>
             </div>
           )}
 
