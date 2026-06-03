@@ -76,9 +76,6 @@ const NAV_ITEMS = [
   { href:"https://chat.whatsapp.com/JzF3gCFvZsbJrx3KuVtQeS", label:"Komunitas", icon:"💬", desc:"Grup diskusi & channel WA", color:"#22c55e", bg:"rgba(34,197,94,0.08)", border:"rgba(34,197,94,0.2)", external:true },
 ];
 
-
-];
-
 export default function HomePage() {
   const [syncData, setSyncData] = useState<any>({});
 
