@@ -59,7 +59,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders" | "community_users" | "admin_feed";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -79,6 +79,353 @@ function Btn({ onClick, color, children, className = "" }: { onClick: () => void
 
 function isExpired(dt: string) { return dt ? new Date(dt) < new Date() : false; }
 function isNearExpiry(dt: string) { if (!dt) return false; const d = new Date(dt); const now = new Date(); return d > now && d.getTime() - now.getTime() < 3 * 24 * 60 * 60 * 1000; }
+
+
+
+// ===== ADMIN FEED TAB =====
+function AdminFeedTab() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [content_text, setContentText] = useState("");
+  const [tag, setTag] = useState("info");
+  const [pinned, setPinned] = useState(false);
+  const [showHome, setShowHome] = useState(true);
+  const [showVip, setShowVip] = useState(true);
+  const [posting, setPosting] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const loadFeed = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/feed");
+      const data = await res.json();
+      if (data.success) setPosts(data.feed);
+    } catch {}
+    setLoading(false);
+  };
+
+  useEffect(() => { loadFeed(); }, []);
+
+  const handlePost = async () => {
+    if (!content_text.trim() || posting) return;
+    setPosting(true);
+    try {
+      const res = await fetch("/api/admin/feed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action:"create", content: content_text, tag, pinned, show_home: showHome, show_vip: showVip }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMsg("✅ Feed berhasil diposting!");
+        setContentText(""); setPinned(false);
+        await loadFeed();
+      } else { setMsg("❌ " + data.message); }
+    } catch { setMsg("❌ Error."); }
+    setPosting(false);
+    setTimeout(() => setMsg(""), 3000);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Hapus post ini?")) return;
+    try {
+      await fetch("/api/admin/feed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action:"delete", id }),
+      });
+      setPosts(p => p.filter(post => post.id !== id));
+    } catch {}
+  };
+
+  const handlePin = async (id: string) => {
+    try {
+      await fetch("/api/admin/feed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action:"pin", id }),
+      });
+      await loadFeed();
+    } catch {}
+  };
+
+  const tagColors: Record<string,string> = { info:"#3b82f6", sinyal:"#22c55e", berita:"#f59e0b", analisis:"#8b5cf6", penting:"#ef4444" };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-white font-bold text-sm">Admin Feed</h2>
+          <p className="text-slate-500 text-xs mt-0.5">Post sebagai "Admin RITEL COMMUNITY.ID" — tampil di homepage & halaman VIP</p>
+        </div>
+      </div>
+
+      {/* CREATE POST */}
+      <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-5">
+        <div className="flex items-center gap-3 mb-3">
+          <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#00c8ff)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, color:"#fff" }}>RC</div>
+          <div>
+            <div className="text-white font-bold text-sm flex items-center gap-1">
+              Admin RITEL COMMUNITY.ID
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#1E5AF0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>
+            </div>
+            <div className="text-slate-500 text-xs">Verified Admin</div>
+          </div>
+        </div>
+        <textarea value={content_text} onChange={e => setContentText(e.target.value)} rows={4} maxLength={2000}
+          placeholder="Tulis pengumuman, analisis, sinyal, atau info untuk member..."
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm resize-none outline-none focus:border-blue-500/50 mb-3"/>
+        
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label className="text-slate-400 text-xs mb-1 block">Tag</label>
+            <select value={tag} onChange={e => setTag(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none">
+              <option value="info">info</option>
+              <option value="sinyal">sinyal</option>
+              <option value="analisis">analisis</option>
+              <option value="berita">berita</option>
+              <option value="penting">penting</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-slate-400 text-xs mb-1 block">Opsi</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={pinned} onChange={e => setPinned(e.target.checked)} className="rounded"/>
+                <span className="text-white text-xs">📌 Pin di atas</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={showHome} onChange={e => setShowHome(e.target.checked)} className="rounded"/>
+                <span className="text-white text-xs">🏠 Tampil di Homepage</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={showVip} onChange={e => setShowVip(e.target.checked)} className="rounded"/>
+                <span className="text-white text-xs">💎 Tampil di VIP</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {msg && <div className={`mb-3 text-xs p-2 rounded-lg ${msg.startsWith("✅") ? "text-green-400 bg-green-500/10" : "text-red-400 bg-red-500/10"}`}>{msg}</div>}
+        <button onClick={handlePost} disabled={!content_text.trim() || posting}
+          className="w-full py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl disabled:opacity-40 hover:bg-blue-500 transition-colors">
+          {posting ? "Memposting..." : "📢 Post Sekarang"}
+        </button>
+      </div>
+
+      {/* FEED LIST */}
+      {loading ? (
+        <div className="text-center py-8 text-slate-500 text-sm">Memuat...</div>
+      ) : posts.length === 0 ? (
+        <div className="text-center py-8 text-slate-600 text-sm">Belum ada feed. Buat post pertama kamu!</div>
+      ) : (
+        <div className="space-y-3">
+          {posts.map(p => (
+            <div key={p.id} style={{ background: p.pinned ? "rgba(30,90,240,0.07)" : "rgba(255,255,255,0.02)", border: p.pinned ? "1px solid rgba(30,90,240,0.25)" : "1px solid rgba(255,255,255,0.06)", borderRadius:14, padding:"14px 16px" }}>
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  {p.tag && <span style={{ fontSize:10, background:`${tagColors[p.tag]||"#6b7280"}22`, color:tagColors[p.tag]||"#9ca3af", padding:"2px 8px", borderRadius:4, fontWeight:600 }}>{p.tag}</span>}
+                  {p.pinned && <span className="text-[10px] text-yellow-400">📌 Pinned</span>}
+                  <span className="text-slate-600 text-[10px]">{p.show_home && "🏠"}{p.show_vip && "💎"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => handlePin(p.id)} className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${p.pinned ? "text-yellow-400 border-yellow-500/30" : "text-slate-500 border-white/10 hover:text-yellow-400"}`}>
+                    {p.pinned ? "Unpin" : "Pin"}
+                  </button>
+                  <button onClick={() => handleDelete(p.id)} className="text-[10px] text-red-400 border border-red-500/20 px-2 py-0.5 rounded hover:bg-red-500/10 transition-colors">
+                    Hapus
+                  </button>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{p.content}</p>
+              <p className="text-slate-600 text-[10px] mt-2">{new Date(p.created_at).toLocaleString("id-ID",{day:"2-digit",month:"long",hour:"2-digit",minute:"2-digit"})}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===== COMMUNITY USERS TAB =====
+function CommunityUsersTab() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [editUser, setEditUser] = useState<any>(null);
+  const [subForm, setSubForm] = useState({ subscription: "", expired_at: "" });
+  const [msg, setMsg] = useState("");
+
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/community/users");
+      const data = await res.json();
+      if (data.success) setUsers(data.users);
+    } catch {}
+    setLoading(false);
+  };
+
+  useEffect(() => { loadUsers(); }, []);
+
+  const adminPayload = { requester_role: "admin", requester_id: "admin_rc" };
+
+  const handleBlock = async (uid: string, block: boolean) => {
+    const res = await fetch("/api/community/users", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: block?"block":"unblock", target_id: uid, ...adminPayload }),
+    });
+    if ((await res.json()).success) {
+      setUsers(p => p.map(u => u.id===uid ? {...u, is_blocked: block} : u));
+    }
+  };
+
+  const handleVerify = async (uid: string, verify: boolean) => {
+    const res = await fetch("/api/community/users", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "set_verified", target_id: uid, is_verified: verify, ...adminPayload }),
+    });
+    if ((await res.json()).success) {
+      setUsers(p => p.map(u => u.id===uid ? {...u, is_verified: verify} : u));
+    }
+  };
+
+  const handleDelete = async (uid: string) => {
+    if (!confirm("Hapus user ini? Tidak bisa dikembalikan.")) return;
+    const res = await fetch("/api/community/users", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", target_id: uid, ...adminPayload }),
+    });
+    if ((await res.json()).success) {
+      setUsers(p => p.filter(u => u.id !== uid));
+    }
+  };
+
+  const handleSetSub = async () => {
+    if (!editUser) return;
+    const res = await fetch("/api/community/users", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "set_subscription", target_id: editUser.id, subscription: subForm.subscription, expired_at: subForm.expired_at || null, ...adminPayload }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setUsers(p => p.map(u => u.id===editUser.id ? {...u, subscription: data.user.subscription, expired_at: data.user.expired_at} : u));
+      setMsg("✅ Subscription diupdate!");
+      setEditUser(null);
+    } else {
+      setMsg("❌ " + data.message);
+    }
+  };
+
+  const filtered = users.filter(u =>
+    !search || u.username?.includes(search.toLowerCase()) || u.display_name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const subColors: Record<string,string> = {
+    free:"bg-gray-700 text-gray-300", basic:"bg-blue-900/60 text-blue-300",
+    silver:"bg-cyan-900/60 text-cyan-300", gold:"bg-yellow-900/60 text-yellow-300",
+    platinum:"bg-purple-900/60 text-purple-300", owner:"bg-gradient-to-r from-blue-600 to-cyan-500 text-white",
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-white font-bold text-sm">User Komunitas</h2>
+          <p className="text-slate-500 text-xs mt-0.5">{users.length} user terdaftar</p>
+        </div>
+        <button onClick={loadUsers} className="text-blue-400 text-xs hover:text-blue-300">↻ Refresh</button>
+      </div>
+
+      {msg && <div className="mb-3 bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 text-blue-300 text-xs">{msg}</div>}
+
+      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Cari username atau nama..."
+        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm mb-3 outline-none focus:border-blue-500/50"/>
+
+      {/* Set Subscription Modal */}
+      {editUser && (
+        <div className="bg-[#0A1628] border border-blue-500/30 rounded-2xl p-4 mb-4">
+          <h3 className="text-white font-bold text-sm mb-3">Set Subscription: <span className="text-blue-400">{editUser.display_name}</span></h3>
+          <div className="space-y-2">
+            <select value={subForm.subscription} onChange={e => setSubForm(p => ({...p, subscription: e.target.value}))}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm outline-none">
+              <option value="free">Free</option>
+              <option value="basic">Basic</option>
+              <option value="silver">Silver</option>
+              <option value="gold">Gold</option>
+              <option value="platinum">Platinum</option>
+            </select>
+            <input type="date" value={subForm.expired_at} onChange={e => setSubForm(p => ({...p, expired_at: e.target.value}))}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm outline-none"
+              placeholder="Tanggal expired (opsional)"/>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button onClick={handleSetSub} className="flex-1 py-2 bg-blue-600 text-white text-xs rounded-xl font-bold">Simpan</button>
+            <button onClick={() => setEditUser(null)} className="px-4 py-2 bg-white/5 text-gray-400 text-xs rounded-xl">Batal</button>
+          </div>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-center py-8 text-gray-500 text-sm">Memuat...</div>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map(u => (
+            <div key={u.id} className={`bg-[#0A1628] border rounded-xl p-3 ${u.is_blocked ? "border-red-500/20" : "border-white/5"}`}>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black"
+                    style={{background:"linear-gradient(135deg,#1e5af0,#00c8ff)"}}>
+                    {u.avatar || (u.display_name||"U").slice(0,2).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-white font-semibold text-sm">{u.display_name}</span>
+                      {u.is_verified && <svg width="14" height="14" viewBox="0 0 24 24" fill="#1E5AF0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>}
+                      {u.is_blocked && <span className="text-[10px] text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">BLOCKED</span>}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-gray-500 text-xs">@{u.username}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${subColors[u.subscription||"free"]||subColors.free}`}>
+                        {u.subscription||"free"}
+                      </span>
+                    </div>
+                    {u.expired_at && (
+                      <span className="text-[10px] text-gray-600">exp: {new Date(u.expired_at).toLocaleDateString("id-ID")}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {/* Actions */}
+              <div className="flex gap-1.5 mt-3 flex-wrap">
+                <button onClick={() => { setEditUser(u); setSubForm({ subscription: u.subscription||"free", expired_at: u.expired_at ? u.expired_at.slice(0,10) : "" }); }}
+                  className="px-2.5 py-1 bg-blue-600/20 text-blue-400 text-[11px] rounded-lg border border-blue-500/20 font-medium hover:bg-blue-600/30 transition-colors">
+                  Set Sub
+                </button>
+                <button onClick={() => handleVerify(u.id, !u.is_verified)}
+                  className={`px-2.5 py-1 text-[11px] rounded-lg border font-medium transition-colors ${u.is_verified ? "bg-blue-600/20 text-blue-400 border-blue-500/20" : "bg-white/5 text-gray-400 border-white/10"}`}>
+                  {u.is_verified ? "✓ Verified" : "Verify"}
+                </button>
+                <button onClick={() => handleBlock(u.id, !u.is_blocked)}
+                  className={`px-2.5 py-1 text-[11px] rounded-lg border font-medium transition-colors ${u.is_blocked ? "bg-green-600/20 text-green-400 border-green-500/20" : "bg-yellow-600/20 text-yellow-400 border-yellow-500/20"}`}>
+                  {u.is_blocked ? "Unblock" : "Block"}
+                </button>
+                {u.role !== "admin" && (
+                  <button onClick={() => handleDelete(u.id)}
+                    className="px-2.5 py-1 bg-red-600/20 text-red-400 text-[11px] rounded-lg border border-red-500/20 font-medium hover:bg-red-600/30 transition-colors">
+                    Hapus
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && <p className="text-gray-600 text-sm text-center py-6">Tidak ada user ditemukan.</p>}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>("signals");
@@ -478,6 +825,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"mutasi", label:"💰 Mutasi" },
     { id:"orders", label:"🧾 Orders" },
     { id:"loginlogs", label:"🔐 Login Log" },
+    { id:"community_users", label:"👥 Komunitas" },
+    { id:"admin_feed", label:"📢 Feed" },
   ];
 
   return (
@@ -1129,6 +1478,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               )}
             </div>
           )}
+          {/* ======== COMMUNITY USERS ======== */}
+          {tab==="community_users" && <CommunityUsersTab />}
+          {/* ======== ADMIN FEED ======== */}
+          {tab==="admin_feed" && <AdminFeedTab />}
       </div>
     </div>
   );

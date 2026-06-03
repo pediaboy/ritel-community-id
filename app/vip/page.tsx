@@ -288,12 +288,43 @@ const TAG_COLORS: any = {
   "Event":"bg-violet-500/10 text-violet-400",
 };
 
+
+// ===== ADMIN FEED VIP =====
+function AdminFeedVIP({ posts }: { posts: any[] }) {
+  if (posts.length === 0) return null;
+  const tagColors: Record<string,string> = { info:"#3b82f6", sinyal:"#22c55e", berita:"#f59e0b", analisis:"#8b5cf6", penting:"#ef4444" };
+  return (
+    <div className="space-y-3 mb-6">
+      {posts.map(p => (
+        <div key={p.id} style={{ background: p.pinned ? "rgba(30,90,240,0.08)" : "rgba(255,255,255,0.03)", border: p.pinned ? "1px solid rgba(30,90,240,0.3)" : "1px solid rgba(255,255,255,0.06)", borderRadius:14, padding:"16px" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+            <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#00c8ff)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, color:"#fff", flexShrink:0 }}>RC</div>
+            <div>
+              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                <span style={{ color:"#fff", fontWeight:700, fontSize:13 }}>Admin RITEL COMMUNITY.ID</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#1E5AF0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>
+                {p.pinned && <span style={{ fontSize:10, color:"#f59e0b" }}>📌</span>}
+              </div>
+              <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:2 }}>
+                <span style={{ fontSize:11, color:"rgba(255,255,255,0.35)" }}>{new Date(p.created_at).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+                {p.tag && <span style={{ fontSize:10, background:`${tagColors[p.tag]||"#6b7280"}22`, color:tagColors[p.tag]||"#9ca3af", padding:"1px 6px", borderRadius:4, fontWeight:600 }}>{p.tag}</span>}
+              </div>
+            </div>
+          </div>
+          <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, lineHeight:1.6, whiteSpace:"pre-wrap" }}>{p.content}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function VipPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [signals, setSignals] = useState<any[]>([]);
   const [premiumSignals, setPremiumSignals] = useState<any[]>([]);
   const [ihsgNews, setIhsgNews] = useState<any[]>([]);
+  const [adminFeed, setAdminFeed] = useState<any[]>([]);
   const [tab, setTab] = useState("signals");
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
   const [loading, setLoading] = useState(true);
@@ -318,6 +349,7 @@ export default function VipPage() {
           localStorage.setItem("vip_user", JSON.stringify(d.user));
           setLoading(false);
           fetch("/api/admin/signals").then(r=>r.json()).then(d=>{ if(d.signals) setSignals(d.signals); }).catch(()=>{});
+          fetch("/api/admin/feed").then(r=>r.json()).then(d=>{ if(d.success) setAdminFeed(d.feed.filter((p:any)=>p.show_vip!==false).slice(0,5)); }).catch(()=>{});
           fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
         }
       })
@@ -337,7 +369,7 @@ export default function VipPage() {
 
   if (!user) return <div className="min-h-screen bg-[#04060f] flex items-center justify-center"><div className="galaxy-stars"/><div className="relative z-10 text-slate-500 text-sm">Memverifikasi akses...</div></div>;
 
-  const tabs = [["signals","Sinyal"],["market","Market & Berita"],["premium","Sinyal Premium"],["modul","Modul"],["ai","🤖 AI Analyst"]];
+  const tabs = [["signals","Sinyal"],["paket","Paket & Harga"],["premium","Sinyal Premium"],["modul","Modul"],["ai","🤖 AI Analyst"]];
 
   return (
     <div className="min-h-screen bg-[#04060f]">
@@ -361,6 +393,7 @@ export default function VipPage() {
         </header>
 
         <div className="max-w-5xl mx-auto px-4 py-6">
+          <AdminFeedVIP posts={adminFeed} />
           <LiveInfoBox/>
           <div className="mb-6">
             <h1 className="text-xl font-black text-white mb-2">Selamat datang, {user.name}!</h1>
@@ -412,48 +445,40 @@ export default function VipPage() {
             </div>
           )}
 
-          {/* MARKET + BERITA IHSG REALTIME */}
-          {tab==="market" && (
+          {/* PAKET & HARGA */}
+          {/* PAKET & HARGA */}
+          {tab==="paket" && (
             <div>
-              <h2 className="text-white font-bold text-sm mb-4">IHSG Live Chart (TradingView)</h2>
-              <TiltCard className="mb-6">
-                <div className="card-glass rounded-2xl overflow-hidden">
-                  <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tv_vip&symbol=IDX%3ACOMPOSITE&interval=D&hidesidetoolbar=0&theme=dark&style=1&timezone=Asia%2FJakarta&withdateranges=1" style={{width:"100%",height:"400px",border:"none"}} title="IHSG VIP"/>
-                </div>
-              </TiltCard>
-              <div>
-                <h3 className="text-white font-bold text-sm mb-4">Berita Pasar Saham IHSG Realtime</h3>
-                {ihsgNews.length===0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      {title:"IHSG Menguat Ditopang Sektor Perbankan",source:"CNBC Indonesia",time:"1 jam lalu",url:"#"},
-                      {title:"Asing Net Buy Rp 1.2 T, Sentimen Positif",source:"Kontan",time:"2 jam lalu",url:"#"},
-                      {title:"BBCA Cetak Rekor Laba Baru Q1 2025",source:"Bisnis.com",time:"3 jam lalu",url:"#"},
-                      {title:"BI Pertahankan Suku Bunga 5.75%",source:"Detik Finance",time:"4 jam lalu",url:"#"},
-                      {title:"Saham Nikel Menguat, ANTM Naik 3%",source:"IDX Channel",time:"5 jam lalu",url:"#"},
-                      {title:"GOTO Profitabel Pertama Kali, Saham Melesat",source:"Tempo",time:"6 jam lalu",url:"#"},
-                    ].map((n,i)=>(
-                      <TiltCard key={i}>
-                        <a href={n.url} target="_blank" className="card rounded-xl p-4 block group">
-                          <div className="text-xs text-cyan-400 mb-2 font-medium">{n.source} · {n.time}</div>
-                          <h4 className="text-white text-sm font-bold group-hover:text-cyan-400 transition-colors leading-snug">{n.title}</h4>
-                        </a>
-                      </TiltCard>
-                    ))}
+              <h2 className="text-white font-bold text-sm mb-2">Upgrade Paket VIP</h2>
+              <p className="text-slate-500 text-xs mb-5">Pilih paket sesuai kebutuhan trading kamu</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {[
+                  { id:"basic", name:"VIP STARTER", price:"Rp 100.000", color:"#3b82f6", badge:"⭐", features:["Analisa Teknikal Lengkap","Fundamental Emiten","Stock Screening Harian","Sinyal Saham Harian"] },
+                  { id:"pro", name:"VIP PRO", price:"Rp 300.000", color:"#8b5cf6", badge:"💜", features:["Bandarmologi Real-time","Tape Reading Intraday","Bagger Watchlist","Semua fitur Starter"] },
+                  { id:"elite", name:"VIP ELITE", price:"Rp 500.000", color:"#f59e0b", badge:"🏆", popular:true, features:["Multibagger Research","Konsultasi Portofolio","AI Agent Full Akses","Semua fitur Pro"] },
+                  { id:"platinum", name:"VIP PLATINUM", price:"Rp 1.000.000", color:"#e2e8f0", badge:"💎", features:["AI Agent Premium + GPT-4","Live Session 1on1","Mentoring Private Bulanan","Semua fitur Elite"] },
+                ].map(p => (
+                  <div key={p.id} style={{ background:"rgba(4,7,15,0.9)", border:`1px solid ${p.color}40`, borderRadius:16, padding:"20px", position:"relative", boxShadow: (p as any).popular ? `0 0 24px ${p.color}30` : "none" }}>
+                    {(p as any).popular && <div style={{ position:"absolute", top:-10, left:"50%", transform:"translateX(-50%)", background:p.color, color:"#000", fontSize:9, fontWeight:900, padding:"3px 12px", borderRadius:100 }}>TERPOPULER</div>}
+                    <div className="text-2xl mb-2">{p.badge}</div>
+                    <div style={{ fontSize:11, color:p.color, fontWeight:800, letterSpacing:"0.1em", marginBottom:4 }}>{p.name}</div>
+                    <div style={{ fontSize:20, fontWeight:900, color:"#fff", marginBottom:12 }}>{p.price}<span style={{ fontSize:11, color:"rgba(255,255,255,0.4)" }}>/bulan</span></div>
+                    <ul className="space-y-2 mb-4">
+                      {p.features.map((f:string,i:number) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-slate-300">
+                          <span style={{ color:p.color }}>✓</span>{f}
+                        </li>
+                      ))}
+                    </ul>
+                    <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20saya%20mau%20upgrade%20ke%20${p.name}`} target="_blank" rel="noreferrer"
+                      style={{ display:"block", padding:"10px", borderRadius:10, textAlign:"center", background:`${p.color}20`, color:p.color, fontWeight:700, fontSize:12, textDecoration:"none", border:`1px solid ${p.color}40` }}>
+                      💬 Order via WA
+                    </a>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {ihsgNews.map((n,i)=>(
-                      <TiltCard key={i}>
-                        <a href={n.url||"#"} target="_blank" className="card rounded-xl p-4 block group">
-                          <div className="text-xs text-cyan-400 mb-2 font-medium">{n.source} · {n.time}</div>
-                          <h4 className="text-white text-sm font-bold group-hover:text-cyan-400 transition-colors leading-snug">{n.title}</h4>
-                          {n.summary&&<p className="text-xs text-slate-500 mt-1 line-clamp-2">{n.summary}</p>}
-                        </a>
-                      </TiltCard>
-                    ))}
-                  </div>
-                )}
+                ))}
+              </div>
+              <div className="text-center">
+                <a href="/paket" className="text-blue-400 text-sm font-semibold hover:underline">Lihat detail semua paket →</a>
               </div>
             </div>
           )}
