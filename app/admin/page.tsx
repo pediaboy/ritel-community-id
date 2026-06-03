@@ -295,30 +295,24 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
   const [form, setForm] = useState<any>(emptyForm);
 
   useEffect(() => {
+    const settingsKey = isBagger ? "bagger_signals" : "bandar_signals";
     fetch("/api/admin/sync").then(r=>r.json()).then(d=>{
-      const all = d.signals || [];
-      setItems(all.filter((s:any) => isBagger
-        ? (s.isBagger || s.action==="BAGGER" || s.type==="bagger")
-        : (s.isBandar || s.action==="BANDAR" || s.type==="bandar")
-      ));
+      setItems(d[settingsKey] || []);
     }).catch(()=>{});
   },[type]);
 
   const save = async () => {
     if (!form.kode.trim()) { alert("Kode saham wajib diisi"); return; }
+    const settingsKey = isBagger ? "bagger_signals" : "bandar_signals";
     const item = { ...form, id: editId||Date.now().toString(), isBagger, isBandar:!isBagger, type, created_at: editId ? undefined : new Date().toISOString() };
-    let updated;
-    // Fetch all signals, merge
-    const r = await fetch("/api/admin/sync");
-    const d = await r.json();
-    const allSigs = d.signals || [];
+    let updated: any[];
     if (editId) {
-      updated = allSigs.map((s:any)=>s.id===editId ? {...s,...item} : s);
+      updated = items.map((s:any)=>s.id===editId ? {...s,...item} : s);
     } else {
-      updated = [...allSigs, item];
+      updated = [...items, item];
     }
-    await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({type:"signals",data:updated}) });
-    setItems(updated.filter((s:any)=>isBagger?(s.isBagger||s.action==="BAGGER"):(s.isBandar||s.action==="BANDAR")));
+    await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({type:settingsKey, data:updated}) });
+    setItems(updated);
     setMsg(`✅ ${isBagger?"Bagger":"Bandar"} ${editId?"diperbarui":"ditambahkan"}!`);
     setTimeout(()=>setMsg(""),2500);
     setForm(emptyForm); setEditId(null); setShowForm(false);
@@ -326,11 +320,10 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
 
   const del = async (id:string) => {
     if (!confirm("Hapus sinyal ini?")) return;
-    const r = await fetch("/api/admin/sync");
-    const d = await r.json();
-    const updated = (d.signals||[]).filter((s:any)=>s.id!==id);
-    await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"signals",data:updated})});
-    setItems(items.filter(x=>x.id!==id));
+    const settingsKey = isBagger ? "bagger_signals" : "bandar_signals";
+    const updated = items.filter((x:any)=>x.id!==id);
+    await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:settingsKey,data:updated})});
+    setItems(updated);
     setMsg("✅ Dihapus!"); setTimeout(()=>setMsg(""),2000);
   };
 
@@ -614,7 +607,14 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   // ===== SIGNALS =====
   const saveSig = async () => {
     if (!sigForm.kode.trim() || !sigForm.saham.trim()) { alert("Isi kode dan nama saham!"); return; }
-    const sigPayload = {...sigForm, tp2:sigForm.tp2||"", tp3:sigForm.tp3||"", is_tomorrow:sigForm.is_tomorrow||false, is_pinned:sigForm.is_pinned||false, is_bagger:sigForm.is_bagger||false, is_bandar:sigForm.is_bandar||false};
+    const sigPayload = {
+      saham: sigForm.saham||"", kode: sigForm.kode||"",
+      action: sigForm.action||"BUY", entry: sigForm.entry||"",
+      tp: sigForm.tp||"", sl: sigForm.sl||"",
+      tp2: sigForm.tp2||"", tp3: sigForm.tp3||"",
+      notes: sigForm.notes||"", package: sigForm.package||["gold","pro","platinum","elite"],
+      is_tomorrow: sigForm.is_tomorrow||false, is_pinned: sigForm.is_pinned||false,
+    };
     if (editSigId) {
       const res = await fetch("/api/admin/signals", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigPayload, id:editSigId})}).then(r=>r.json()).catch(()=>({}));
       if (res && res.success === false) { alert("Gagal update: " + (res.error||"unknown")); return; }
