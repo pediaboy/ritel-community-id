@@ -568,7 +568,535 @@ const MODULE_CONTENT: any = {
       { title:"Bias Kognitif yang Merusak", body:"• Confirmation bias: cari info yang hanya mendukung keputusanmu\n• Anchoring: terpaku pada harga beli, susah cut loss\n• Sunk cost fallacy: 'sayang dijual rugi' padahal fundamental sudah rusak\n• Overconfidence: merasa ahli setelah beberapa kali profit\nSolusi: selalu cari second opinion dan respek pada stop loss." },
       { title:"Membangun Sistem Trading", body:"Sistem yang baik punya: (1) Kriteria entry yang jelas dan terukur, (2) Target profit (TP) realistis, (3) Stop loss yang ketat dan WAJIB diikuti, (4) Position sizing yang konsisten, (5) Maximum drawdown — jika portofolio turun 20%, berhenti trading 2 minggu untuk evaluasi & reset mindset." },
     ]
+  },,
+  p1: {
+    image: null,
+    lessons: [
+      { title:"Cara Optimal Gunakan AI Agent RC", body:"AI Agent RC tersedia 24/7 untuk bantu analisis saham BEI. Cara terbaik: tanyakan dengan spesifik, contoh 'Analisis teknikal BBCA D1' atau 'Fundamental TLKM Q1 2024'. Sertakan konteks seperti timeframe dan tujuan (swing/positional/long-term). AI dapat bantu identifikasi support/resistance, rangkuman laporan keuangan, dan sentiment berita terkini." },
+      { title:"Review Fundamental dengan AI Agent", body:"Minta AI Agent untuk rangkum laporan keuangan terbaru emiten — cukup ketik 'review fundamental BBRI terbaru'. AI akan jelaskan revenue growth, net profit margin, DER, ROE, dan red flags jika ada. Bandingkan juga dengan competitor — 'bandingkan BBCA vs BBRI dari sisi fundamental'. Gunakan insight ini sebagai second opinion sebelum keputusan besar." },
+      { title:"Interpretasi laporan keuangan otomatis", body:"Penjelasan lengkap Interpretasi laporan keuangan otomatis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Rekomendasi entry berdasarkan teknikal", body:"Penjelasan lengkap Rekomendasi entry berdasarkan teknikal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sentiment analysis berita saham", body:"Penjelasan lengkap Sentiment analysis berita saham: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Bantu susun watchlist personal", body:"Penjelasan lengkap Bantu susun watchlist personal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
   },
+  p2: {
+    image: null,
+    lessons: [
+      { title:"Watchlist mingguan dikurasi analis senior", body:"Penjelasan lengkap Watchlist mingguan dikurasi analis senior: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kriteria masuk & keluar watchlist", body:"Penjelasan lengkap Kriteria masuk & keluar watchlist: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Saham di fase akumulasi yang perlu dipantau", body:"Penjelasan lengkap Saham di fase akumulasi yang perlu dipantau: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Screening berdasarkan sector rotation", body:"Penjelasan lengkap Screening berdasarkan sector rotation: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Update trigger: kapan waktu beli", body:"Penjelasan lengkap Update trigger: kapan waktu beli: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Notifikasi perubahan signifikan saham pilihan", body:"Penjelasan lengkap Notifikasi perubahan signifikan saham pilihan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  p3: {
+    image: null,
+    lessons: [
+      { title:"Analisis IHSG mingguan mendalam", body:"Penjelasan lengkap Analisis IHSG mingguan mendalam: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor yang sedang outperform", body:"Penjelasan lengkap Sektor yang sedang outperform: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Top picks minggu ini & alasannya", body:"Penjelasan lengkap Top picks minggu ini & alasannya: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Rangkuman sentimen global", body:"Penjelasan lengkap Rangkuman sentimen global: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kalender ekonomi & event penting", body:"Penjelasan lengkap Kalender ekonomi & event penting: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Strategi portofolio jangka menengah", body:"Penjelasan lengkap Strategi portofolio jangka menengah: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  pl1: {
+    image: null,
+    lessons: [
+      { title:"Review portofolio personal bersama analis", body:"Penjelasan lengkap Review portofolio personal bersama analis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Second opinion keputusan investasi besar", body:"Penjelasan lengkap Second opinion keputusan investasi besar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Tanya saham spesifik: layak atau tidak?", body:"Penjelasan lengkap Tanya saham spesifik: layak atau tidak?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Strategi rebalancing portofolio", body:"Penjelasan lengkap Strategi rebalancing portofolio: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Diskusi sektor & timing masuk optimal", body:"Penjelasan lengkap Diskusi sektor & timing masuk optimal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Rencana investasi jangka panjang personal", body:"Penjelasan lengkap Rencana investasi jangka panjang personal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  pl2: {
+    image: null,
+    lessons: [
+      { title:"Analisis portofolio komprehensif oleh AI", body:"Penjelasan lengkap Analisis portofolio komprehensif oleh AI: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cek diversifikasi & korelasi aset", body:"Penjelasan lengkap Cek diversifikasi & korelasi aset: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Exposure sektoral & risiko konsentrasi", body:"Penjelasan lengkap Exposure sektoral & risiko konsentrasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Saran rebalancing berbasis data historis", body:"Penjelasan lengkap Saran rebalancing berbasis data historis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Estimasi return berdasarkan historis 10 tahun", body:"Penjelasan lengkap Estimasi return berdasarkan historis 10 tahun: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Simulasi skenario market crash & bull run", body:"Penjelasan lengkap Simulasi skenario market crash & bull run: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  e1: {
+    image: null,
+    lessons: [
+      { title:"Sesi video call regular dengan mentor senior", body:"Penjelasan lengkap Sesi video call regular dengan mentor senior: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Review & coaching portofolio intensif", body:"Penjelasan lengkap Review & coaching portofolio intensif: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pengembangan sistem trading personal", body:"Penjelasan lengkap Pengembangan sistem trading personal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Simulasi pengambilan keputusan nyata", body:"Penjelasan lengkap Simulasi pengambilan keputusan nyata: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Koreksi kesalahan pola investasi", body:"Penjelasan lengkap Koreksi kesalahan pola investasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Roadmap menuju financial freedom", body:"Penjelasan lengkap Roadmap menuju financial freedom: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  e2: {
+    image: null,
+    lessons: [
+      { title:"Perencanaan alokasi portofolio awal", body:"Penjelasan lengkap Perencanaan alokasi portofolio awal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Monitoring & rebalancing aktif bulanan", body:"Penjelasan lengkap Monitoring & rebalancing aktif bulanan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Laporan performance personal bulanan", body:"Penjelasan lengkap Laporan performance personal bulanan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Identifikasi drag performance & solusinya", body:"Penjelasan lengkap Identifikasi drag performance & solusinya: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Strategi exit & profit taking terencana", body:"Penjelasan lengkap Strategi exit & profit taking terencana: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Target return & timeline finansial personal", body:"Penjelasan lengkap Target return & timeline finansial personal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  b5: {
+    image: null,
+    lessons: [
+      { title:"Strategi per Sesi Trading", body:"Sesi I berlangsung 09:00–12:00 WIB dan Sesi II 13:30–15:49 WIB. Sesi I biasanya lebih volatile dan volume lebih tinggi — cocok untuk trader aktif. Sesi II cenderung lebih tenang di awal tapi bisa ramai menjelang penutupan (pre-close). Strategi: pantau momentum pagi Sesi I untuk entry, dan gunakan Sesi II untuk evaluasi posisi atau exit." },
+      { title:"Pre-Opening & Closing Auction", body:"Pre-opening 08:45–08:59 WIB: investor memasukkan order tapi tidak langsung execute — harga pembukaan ditentukan dari order yang terkumpul (call auction). Closing auction 15:49–16:00 WIB: sama, menentukan harga penutupan final. Tip: pantau order besar di pre-opening untuk menebak arah pasar hari itu." },
+      { title:"Cara Baca Kalender Dividen", body:"Cum date = hari terakhir kamu harus hold saham untuk dapat dividen. Ex date = H+1 setelah cum date, biasanya harga turun sejumlah nilai dividen. Payment date = kapan dividen masuk ke rekening. Cek kalender dividen di RTI Business atau IDX.co.id. Strategi: beli sebelum cum date untuk dapat dividen, tapi waspadai penurunan harga di ex date." },
+      { title:"Dampak RUPST pada Harga Saham", body:"RUPST (Rapat Umum Pemegang Saham Tahunan) digelar tiap tahun oleh emiten. Di RUPST diputuskan dividen, pergantian direksi, dan aksi korporasi besar. Harga saham bisa naik atau turun tergantung keputusan. Pantau agenda RUPST di keterbukaan informasi IDX. Jika ada rencana rights issue besar di RUPST, biasanya harga tertekan karena potensi dilusi." },
+      { title:"Rights Issue vs Buyback vs Stock Split", body:"Rights issue = emiten terbitkan saham baru — potensi dilusi, harga biasanya tertekan. Buyback = emiten beli kembali sahamnya — bullish signal, harga cenderung naik. Stock split = 1 saham dipecah jadi beberapa — harga per lembar turun tapi jumlah lot naik, biasanya momentum positif. Selalu baca keterbukaan informasi untuk detail dan timeline." },
+      { title:"Strategi Hadapi Libur Bursa", body:"Libur panjang (lebaran, nataru) sering dimanfaatkan bandar untuk distribusi sebelumnya. Beberapa hari sebelum libur panjang, pasar bisa volatile. Saran: kurangi posisi spekulatif menjelang libur panjang. Setelah libur, amati reaksi bursa regional (Nikkei, KOSPI, STI) sebagai petunjuk arah IHSG di hari pertama buka." }
+    ]
+  },
+  b6: {
+    image: null,
+    lessons: [
+      { title:"Saham vs Obligasi: Mana yang Cocok?", body:"Saham = bukti kepemilikan, potensi return tinggi tapi risiko tinggi. Obligasi = bukti hutang, return terbatas (kupon) tapi lebih stabil. Untuk investor muda dengan horizon panjang: saham lebih optimal untuk growth. Untuk investor konservatif atau mendekati pensiun: obligasi lebih aman. Campuran keduanya membentuk portofolio balanced." },
+      { title:"Reksa dana saham vs reksa dana campuran", body:"Penjelasan lengkap Reksa dana saham vs reksa dana campuran: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"ETF IDX30 & EIDO: cara beli", body:"Penjelasan lengkap ETF IDX30 & EIDO: cara beli: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Waran: leverage instrument berisiko tinggi", body:"Penjelasan lengkap Waran: leverage instrument berisiko tinggi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Rights issue: dilusi & peluang", body:"Penjelasan lengkap Rights issue: dilusi & peluang: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pilih instrumen sesuai profil risiko", body:"Penjelasan lengkap Pilih instrumen sesuai profil risiko: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  b7: {
+    image: null,
+    lessons: [
+      { title:"Klasifikasi Saham Berdasarkan Market Cap", body:"Big cap (>10T): BBCA, BBRI, TLKM — stabil, likuid, cocok untuk hold panjang. Mid cap (1-10T): volatilitas lebih tinggi, potensi growth lebih besar. Small cap (<1T): risiko tinggi, spread besar, likuiditas rendah tapi bisa naik ratusan persen. Pemula sebaiknya mulai dari big cap untuk belajar, baru naik ke mid/small cap setelah paham risk management." },
+      { title:"11 sektor saham di BEI", body:"Penjelasan lengkap 11 sektor saham di BEI: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor defensif vs siklus", body:"Penjelasan lengkap Sektor defensif vs siklus: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Saham LQ45 & IDX30: kriteria", body:"Penjelasan lengkap Saham LQ45 & IDX30: kriteria: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor rotation: kapan masuk & keluar", body:"Penjelasan lengkap Sektor rotation: kapan masuk & keluar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pengaruh sektor terhadap diversifikasi", body:"Penjelasan lengkap Pengaruh sektor terhadap diversifikasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  b8: {
+    image: null,
+    lessons: [
+      { title:"Korelasi IHSG dengan bursa global", body:"Penjelasan lengkap Korelasi IHSG dengan bursa global: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Dampak Fed rate terhadap IHSG", body:"Penjelasan lengkap Dampak Fed rate terhadap IHSG: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"DXY Index: pengaruh ke pasar emerging", body:"Penjelasan lengkap DXY Index: pengaruh ke pasar emerging: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Harga komoditas: CPO, nikel, batu bara", body:"Penjelasan lengkap Harga komoditas: CPO, nikel, batu bara: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Rupiah vs dolar: dampak ke emiten", body:"Penjelasan lengkap Rupiah vs dolar: dampak ke emiten: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara gunakan sentimen global untuk entry", body:"Penjelasan lengkap Cara gunakan sentimen global untuk entry: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  s5: {
+    image: null,
+    lessons: [
+      { title:"Volume Adalah Kunci Konfirmasi", body:"Rule nomor 1: harga naik dengan volume tinggi = sinyal KUAT. Harga naik dengan volume rendah = sinyal LEMAH, waspadai reversal. Volume adalah bahan bakar pergerakan harga — tanpa volume, breakout sering gagal. Selalu cek volume sebelum entry. Bandingkan volume hari ini dengan rata-rata 20 hari (MA20 volume) untuk konteks yang tepat." },
+      { title:"Cara Membedakan Volume Spike Real vs Fake", body:"Volume spike = volume hari itu > 3x rata-rata normal. Jika disertai candle bullish besar dan closing di atas resistance = sinyal akumulasi bandar. Jika volume spike tapi harga malah turun (shooting star/bearish engulfing) = distribusi — hati-hati! Fake-out: volume spike 1 hari lalu langsung turun lagi = pump and dump, hindari masuk." },
+      { title:"Cara Pakai OBV untuk Deteksi Akumulasi", body:"OBV = kumulatif volume berdasarkan arah harga. Jika harga sideways tapi OBV naik terus = ada akumulasi diam-diam oleh smart money. Ini sinyal bullish tersembunyi sebelum harga meledak. Cara: tambahkan OBV di TradingView, amati divergence antara OBV dan harga. OBV baru all-time high sementara harga masih di bawah ATH = setup sangat bullish." },
+      { title:"Volume Divergence: Early Warning System", body:"Bullish divergence: harga baru low tapi volume semakin kecil = jual sudah exhausted, potensi reversal naik. Bearish divergence: harga baru high tapi volume mengecil = beli melemah, potensi reversal turun. Ini adalah sinyal paling early sebelum reversal terjadi — sangat berguna untuk timing exit dari posisi yang sudah profit." },
+      { title:"High volume di support = accumulation", body:"Penjelasan lengkap High volume di support = accumulation: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Low volume di resistance = weakness", body:"Penjelasan lengkap Low volume di resistance = weakness: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  s6: {
+    image: null,
+    lessons: [
+      { title:"Cara hitung dividend yield", body:"Penjelasan lengkap Cara hitung dividend yield: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Payout ratio & sustainability dividen", body:"Penjelasan lengkap Payout ratio & sustainability dividen: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Jadwal: cum date, ex date, payment date", body:"Penjelasan lengkap Jadwal: cum date, ex date, payment date: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Saham dividen konsisten: BBCA, TLKM, UNVR", body:"Penjelasan lengkap Saham dividen konsisten: BBCA, TLKM, UNVR: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Dividend trap: yield tinggi tapi fundamental buruk", body:"Penjelasan lengkap Dividend trap: yield tinggi tapi fundamental buruk: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Reinvestment dividen untuk compounding", body:"Penjelasan lengkap Reinvestment dividen untuk compounding: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  s7: {
+    image: null,
+    lessons: [
+      { title:"Peer comparison dalam satu sektor", body:"Penjelasan lengkap Peer comparison dalam satu sektor: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Market share & competitive position", body:"Penjelasan lengkap Market share & competitive position: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Gross margin comparison antar emiten", body:"Penjelasan lengkap Gross margin comparison antar emiten: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Identifikasi pemimpin sektor (market leader)", body:"Penjelasan lengkap Identifikasi pemimpin sektor (market leader): konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Saham second liner yang mengejar", body:"Penjelasan lengkap Saham second liner yang mengejar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kapan second liner outperform leader?", body:"Penjelasan lengkap Kapan second liner outperform leader?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  s8: {
+    image: null,
+    lessons: [
+      { title:"Apa itu drawdown dan max drawdown", body:"Penjelasan lengkap Apa itu drawdown dan max drawdown: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara hitung drawdown portofolio", body:"Penjelasan lengkap Cara hitung drawdown portofolio: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Drawdown vs volatilitas: perbedaan penting", body:"Penjelasan lengkap Drawdown vs volatilitas: perbedaan penting: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Strategi recovery yang terstruktur", body:"Penjelasan lengkap Strategi recovery yang terstruktur: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kapan harus stop trading (circuit breaker)", body:"Penjelasan lengkap Kapan harus stop trading (circuit breaker): konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Evaluasi penyebab drawdown sistematis", body:"Penjelasan lengkap Evaluasi penyebab drawdown sistematis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g5: {
+    image: null,
+    lessons: [
+      { title:"Three White Soldiers & Three Black Crows", body:"Penjelasan lengkap Three White Soldiers & Three Black Crows: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Morning Star & Evening Star", body:"Penjelasan lengkap Morning Star & Evening Star: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Three Inside Up/Down", body:"Penjelasan lengkap Three Inside Up/Down: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Harami & Harami Cross", body:"Penjelasan lengkap Harami & Harami Cross: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Abandoned Baby: reversal ekstrem", body:"Penjelasan lengkap Abandoned Baby: reversal ekstrem: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Validasi semua pattern dengan volume spike", body:"Penjelasan lengkap Validasi semua pattern dengan volume spike: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g6: {
+    image: null,
+    lessons: [
+      { title:"Fibonacci retracement: cara gambar", body:"Penjelasan lengkap Fibonacci retracement: cara gambar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Level kunci: 38.2%, 50%, 61.8%", body:"Penjelasan lengkap Level kunci: 38.2%, 50%, 61.8%: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Golden zone: area entry terbaik", body:"Penjelasan lengkap Golden zone: area entry terbaik: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Fibonacci extension: proyeksi target", body:"Penjelasan lengkap Fibonacci extension: proyeksi target: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kombinasi Fibo dengan support/resistance", body:"Penjelasan lengkap Kombinasi Fibo dengan support/resistance: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Contoh penerapan di BBCA, TLKM, MDKA", body:"Penjelasan lengkap Contoh penerapan di BBCA, TLKM, MDKA: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g7: {
+    image: null,
+    lessons: [
+      { title:"5 wave impulse: motive wave", body:"Penjelasan lengkap 5 wave impulse: motive wave: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"3 wave corrective: A-B-C", body:"Penjelasan lengkap 3 wave corrective: A-B-C: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Aturan dasar Elliot Wave (tidak boleh dilanggar)", body:"Penjelasan lengkap Aturan dasar Elliot Wave (tidak boleh dilanggar): konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara identifikasi wave di chart riil", body:"Penjelasan lengkap Cara identifikasi wave di chart riil: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Wave 3: terpanjang dan terkuat", body:"Penjelasan lengkap Wave 3: terpanjang dan terkuat: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Gunakan Elliot Wave untuk proyeksi target", body:"Penjelasan lengkap Gunakan Elliot Wave untuk proyeksi target: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g8: {
+    image: null,
+    lessons: [
+      { title:"Identifikasi fase konsolidasi (base)", body:"Penjelasan lengkap Identifikasi fase konsolidasi (base): konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Valid breakout: kriteria volume & closing", body:"Penjelasan lengkap Valid breakout: kriteria volume & closing: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"False breakout: tanda & cara hindari", body:"Penjelasan lengkap False breakout: tanda & cara hindari: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Entry teknik: buy on breakout vs buy on retest", body:"Penjelasan lengkap Entry teknik: buy on breakout vs buy on retest: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Stop loss optimal untuk strategi breakout", body:"Penjelasan lengkap Stop loss optimal untuk strategi breakout: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Breakout dari all-time high: target harga", body:"Penjelasan lengkap Breakout dari all-time high: target harga: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g9: {
+    image: null,
+    lessons: [
+      { title:"5 komponen Ichimoku: fungsi masing-masing", body:"Penjelasan lengkap 5 komponen Ichimoku: fungsi masing-masing: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kumo Cloud: support & resistance dinamis", body:"Penjelasan lengkap Kumo Cloud: support & resistance dinamis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sinyal beli: TK cross di atas cloud", body:"Penjelasan lengkap Sinyal beli: TK cross di atas cloud: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sinyal jual: TK cross di bawah cloud", body:"Penjelasan lengkap Sinyal jual: TK cross di bawah cloud: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Chikou Span sebagai konfirmator", body:"Penjelasan lengkap Chikou Span sebagai konfirmator: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Twist sinyal dan setup terbaik untuk swing", body:"Penjelasan lengkap Twist sinyal dan setup terbaik untuk swing: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g10: {
+    image: null,
+    lessons: [
+      { title:"Order book: cara baca bid & ask", body:"Penjelasan lengkap Order book: cara baca bid & ask: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Tape reading: deteksi order besar", body:"Penjelasan lengkap Tape reading: deteksi order besar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Big buyer vs big seller di market depth", body:"Penjelasan lengkap Big buyer vs big seller di market depth: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Strategi scalping 1-2% per hari", body:"Penjelasan lengkap Strategi scalping 1-2% per hari: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Entry time optimal: awal sesi & pre-close", body:"Penjelasan lengkap Entry time optimal: awal sesi & pre-close: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cut loss disiplin untuk intraday trader", body:"Penjelasan lengkap Cut loss disiplin untuk intraday trader: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  g11: {
+    image: null,
+    lessons: [
+      { title:"Siklus ekonomi & sector rotation model", body:"Penjelasan lengkap Siklus ekonomi & sector rotation model: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor defensif: konsumer, kesehatan, utilitas", body:"Penjelasan lengkap Sektor defensif: konsumer, kesehatan, utilitas: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor siklus: teknologi, properti, komoditas", body:"Penjelasan lengkap Sektor siklus: teknologi, properti, komoditas: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Early cycle vs late cycle indicators", body:"Penjelasan lengkap Early cycle vs late cycle indicators: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Flow asing sebagai petunjuk sector rotation", body:"Penjelasan lengkap Flow asing sebagai petunjuk sector rotation: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara screening saham di sektor yang mulai naik", body:"Penjelasan lengkap Cara screening saham di sektor yang mulai naik: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  p4: {
+    image: null,
+    lessons: [
+      { title:"Cara baca broker summary BEI", body:"Penjelasan lengkap Cara baca broker summary BEI: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Net foreign buy/sell: cara interpretasi", body:"Penjelasan lengkap Net foreign buy/sell: cara interpretasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Distribusi kepemilikan: laporan bulanan IDX", body:"Penjelasan lengkap Distribusi kepemilikan: laporan bulanan IDX: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Unusual volume off-market hours", body:"Penjelasan lengkap Unusual volume off-market hours: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Crossing saham: sinyal accumulation bandar", body:"Penjelasan lengkap Crossing saham: sinyal accumulation bandar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pre-IPO accumulation pattern", body:"Penjelasan lengkap Pre-IPO accumulation pattern: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  p5: {
+    image: null,
+    lessons: [
+      { title:"Fase Wyckoff: Accumulation, Markup, Distribution, Markdown", body:"Penjelasan lengkap Fase Wyckoff: Accumulation, Markup, Distribution, Markdown: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Spring & upthrust: sinyal reversal Wyckoff", body:"Penjelasan lengkap Spring & upthrust: sinyal reversal Wyckoff: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Last Point of Support (LPS) sebagai entry ideal", body:"Penjelasan lengkap Last Point of Support (LPS) sebagai entry ideal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sign of Strength (SOS) konfirmasi breakout", body:"Penjelasan lengkap Sign of Strength (SOS) konfirmasi breakout: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sign of Weakness (SOW) untuk exit", body:"Penjelasan lengkap Sign of Weakness (SOW) untuk exit: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Menerapkan Wyckoff di saham BEI", body:"Penjelasan lengkap Menerapkan Wyckoff di saham BEI: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  p6: {
+    image: null,
+    lessons: [
+      { title:"Confirmation bias: musuh terbesarmu", body:"Penjelasan lengkap Confirmation bias: musuh terbesarmu: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Anchoring bias: perangkap harga beli lama", body:"Penjelasan lengkap Anchoring bias: perangkap harga beli lama: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Disposition effect: hold loser, sell winner", body:"Penjelasan lengkap Disposition effect: hold loser, sell winner: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Overconfidence setelah winning streak", body:"Penjelasan lengkap Overconfidence setelah winning streak: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sistem keputusan berbasis aturan (rule-based)", body:"Penjelasan lengkap Sistem keputusan berbasis aturan (rule-based): konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pre-trade checklist untuk keputusan objektif", body:"Penjelasan lengkap Pre-trade checklist untuk keputusan objektif: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  p7: {
+    image: null,
+    lessons: [
+      { title:"Bagian terpenting annual report", body:"Penjelasan lengkap Bagian terpenting annual report: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Management Discussion & Analysis (MD&A)", body:"Penjelasan lengkap Management Discussion & Analysis (MD&A): konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Strategi ekspansi & capex plan", body:"Penjelasan lengkap Strategi ekspansi & capex plan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Segmen bisnis: mana yang paling profitable", body:"Penjelasan lengkap Segmen bisnis: mana yang paling profitable: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Related party transaction: waspada conflict of interest", body:"Penjelasan lengkap Related party transaction: waspada conflict of interest: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Letter to shareholders: baca antara baris", body:"Penjelasan lengkap Letter to shareholders: baca antara baris: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  p8: {
+    image: null,
+    lessons: [
+      { title:"Siklus kredit & pengaruh ke saham", body:"Penjelasan lengkap Siklus kredit & pengaruh ke saham: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Yield curve inversion: sinyal resesi", body:"Penjelasan lengkap Yield curve inversion: sinyal resesi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"PMI manufaktur sebagai leading indicator", body:"Penjelasan lengkap PMI manufaktur sebagai leading indicator: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"CPI & PPI: pengaruh ke margin emiten", body:"Penjelasan lengkap CPI & PPI: pengaruh ke margin emiten: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Current account & neraca perdagangan", body:"Penjelasan lengkap Current account & neraca perdagangan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara buat macro playbook personal", body:"Penjelasan lengkap Cara buat macro playbook personal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  pl3: {
+    image: null,
+    lessons: [
+      { title:"Saham vs obligasi: inverse relationship", body:"Penjelasan lengkap Saham vs obligasi: inverse relationship: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"DXY vs saham emerging market", body:"Penjelasan lengkap DXY vs saham emerging market: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Oil price vs saham energi & transportasi", body:"Penjelasan lengkap Oil price vs saham energi & transportasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Emas sebagai risk-off barometer", body:"Penjelasan lengkap Emas sebagai risk-off barometer: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"CRB Index & saham komoditas IDX", body:"Penjelasan lengkap CRB Index & saham komoditas IDX: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Intermarket matrix untuk timing masuk", body:"Penjelasan lengkap Intermarket matrix untuk timing masuk: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  pl4: {
+    image: null,
+    lessons: [
+      { title:"Free Cash Flow (FCF): cara hitung", body:"Penjelasan lengkap Free Cash Flow (FCF): cara hitung: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Proyeksi FCF 5 tahun ke depan", body:"Penjelasan lengkap Proyeksi FCF 5 tahun ke depan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"WACC: cost of capital", body:"Penjelasan lengkap WACC: cost of capital: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Terminal value: metode Gordon Growth", body:"Penjelasan lengkap Terminal value: metode Gordon Growth: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sensitivity analysis DCF", body:"Penjelasan lengkap Sensitivity analysis DCF: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Contoh DCF: BBCA, ASII, TLKM", body:"Penjelasan lengkap Contoh DCF: BBCA, ASII, TLKM: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  pl5: {
+    image: null,
+    lessons: [
+      { title:"IPO analysis: cara nilai sebelum listing", body:"Penjelasan lengkap IPO analysis: cara nilai sebelum listing: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Rights issue: dilusi atau peluang?", body:"Penjelasan lengkap Rights issue: dilusi atau peluang?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Akuisisi target: ciri-ciri dan cara deteksi", body:"Penjelasan lengkap Akuisisi target: ciri-ciri dan cara deteksi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Buyback: sinyal manajemen percaya diri", body:"Penjelasan lengkap Buyback: sinyal manajemen percaya diri: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"MTO & delisting: strategi exit", body:"Penjelasan lengkap MTO & delisting: strategi exit: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Privatisasi BUMN: sejarah & pola", body:"Penjelasan lengkap Privatisasi BUMN: sejarah & pola: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  pl6: {
+    image: null,
+    lessons: [
+      { title:"Dampak perang & konflik terhadap IHSG", body:"Penjelasan lengkap Dampak perang & konflik terhadap IHSG: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kebijakan Fed tapering & rate hike", body:"Penjelasan lengkap Kebijakan Fed tapering & rate hike: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Trade war: dampak ke emiten ekspor", body:"Penjelasan lengkap Trade war: dampak ke emiten ekspor: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Supply chain disruption: sektor paling terdampak", body:"Penjelasan lengkap Supply chain disruption: sektor paling terdampak: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Flight to quality: kapan terjadi & cara antisipasi", body:"Penjelasan lengkap Flight to quality: kapan terjadi & cara antisipasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Hedging sederhana di portofolio retail", body:"Penjelasan lengkap Hedging sederhana di portofolio retail: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  e3: {
+    image: null,
+    lessons: [
+      { title:"Definisi edge statistik dalam trading", body:"Penjelasan lengkap Definisi edge statistik dalam trading: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Parameter entry: konkret dan terukur", body:"Penjelasan lengkap Parameter entry: konkret dan terukur: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Filter trend: avoid trading counter-trend", body:"Penjelasan lengkap Filter trend: avoid trading counter-trend: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Posisi sizing adaptif berdasarkan volatilitas", body:"Penjelasan lengkap Posisi sizing adaptif berdasarkan volatilitas: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Backtest manual dengan historical data", body:"Penjelasan lengkap Backtest manual dengan historical data: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Evaluasi sistem: win rate, RR ratio, expectancy", body:"Penjelasan lengkap Evaluasi sistem: win rate, RR ratio, expectancy: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  e4: {
+    image: null,
+    lessons: [
+      { title:"Circle of competence: investasi apa yang kamu mengerti", body:"Penjelasan lengkap Circle of competence: investasi apa yang kamu mengerti: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Economic moat: 5 tipe keunggulan kompetitif", body:"Penjelasan lengkap Economic moat: 5 tipe keunggulan kompetitif: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Intrinsic value: cara sederhana menghitung", body:"Penjelasan lengkap Intrinsic value: cara sederhana menghitung: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Margin of safety: beli di bawah nilai wajar", body:"Penjelasan lengkap Margin of safety: beli di bawah nilai wajar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Konsentrasi vs diversifikasi: Buffett approach", body:"Penjelasan lengkap Konsentrasi vs diversifikasi: Buffett approach: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Saham BEI dengan karakter Buffettian", body:"Penjelasan lengkap Saham BEI dengan karakter Buffettian: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  e5: {
+    image: null,
+    lessons: [
+      { title:"Fragile vs robust vs anti-fragile", body:"Penjelasan lengkap Fragile vs robust vs anti-fragile: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Black Swan: skenario ekstrem yang mungkin", body:"Penjelasan lengkap Black Swan: skenario ekstrem yang mungkin: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Barbell strategy: safe + speculative", body:"Penjelasan lengkap Barbell strategy: safe + speculative: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Optionality: beli peluang, bukan kepastian", body:"Penjelasan lengkap Optionality: beli peluang, bukan kepastian: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Positioning saat IHSG koreksi 30-40%", body:"Penjelasan lengkap Positioning saat IHSG koreksi 30-40%: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Recovery playbook setelah market crash", body:"Penjelasan lengkap Recovery playbook setelah market crash: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  e6: {
+    image: null,
+    lessons: [
+      { title:"Karakteristik unik BUMN vs swasta", body:"Penjelasan lengkap Karakteristik unik BUMN vs swasta: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kebijakan pemerintah sebagai driver harga", body:"Penjelasan lengkap Kebijakan pemerintah sebagai driver harga: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Dividen spesial BUMN: angka & timing", body:"Penjelasan lengkap Dividen spesial BUMN: angka & timing: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Privatisasi & IPO BUMN baru", body:"Penjelasan lengkap Privatisasi & IPO BUMN baru: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"BUMN holding: MIND ID, Aviasi, Pangan", body:"Penjelasan lengkap BUMN holding: MIND ID, Aviasi, Pangan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara bedakan BUMN value vs value trap", body:"Penjelasan lengkap Cara bedakan BUMN value vs value trap: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  ban1: {
+    image: null,
+    lessons: [
+      { title:"Siapa sebenarnya 'bandar' di BEI?", body:"Penjelasan lengkap Siapa sebenarnya 'bandar' di BEI?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Institusi besar: reksa dana, asing, asuransi", body:"Penjelasan lengkap Institusi besar: reksa dana, asing, asuransi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara bandar akumulasi tanpa ketahuan", body:"Penjelasan lengkap Cara bandar akumulasi tanpa ketahuan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Gunakan crossing & negotiated deal", body:"Penjelasan lengkap Gunakan crossing & negotiated deal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Manipulasi volume: wash trading patterns", body:"Penjelasan lengkap Manipulasi volume: wash trading patterns: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara retail ikut pergerakan smart money", body:"Penjelasan lengkap Cara retail ikut pergerakan smart money: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  ban2: {
+    image: null,
+    lessons: [
+      { title:"Cara akses broker summary di RTI/Stockbit", body:"Penjelasan lengkap Cara akses broker summary di RTI/Stockbit: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Interpretasi top 5 broker beli vs jual", body:"Penjelasan lengkap Interpretasi top 5 broker beli vs jual: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Konsistensi akumulasi broker spesifik", body:"Penjelasan lengkap Konsistensi akumulasi broker spesifik: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Net broker: deteksi arah pergerakan besar", body:"Penjelasan lengkap Net broker: deteksi arah pergerakan besar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Contoh kasus: deteksi akumulasi MDKA sebelum +300%", body:"Penjelasan lengkap Contoh kasus: deteksi akumulasi MDKA sebelum +300%: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"False signal broker summary: cara menghindari", body:"Penjelasan lengkap False signal broker summary: cara menghindari: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  ban3: {
+    image: null,
+    lessons: [
+      { title:"Level 2 data: bid, ask, size", body:"Penjelasan lengkap Level 2 data: bid, ask, size: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Fake wall: dinding semu untuk arahkan retail", body:"Penjelasan lengkap Fake wall: dinding semu untuk arahkan retail: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Iceberg order: order tersembunyi", body:"Penjelasan lengkap Iceberg order: order tersembunyi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Spoofing: memasang & tarik order cepat", body:"Penjelasan lengkap Spoofing: memasang & tarik order cepat: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara bedakan genuine buy wall vs manipulasi", body:"Penjelasan lengkap Cara bedakan genuine buy wall vs manipulasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Live tape reading practice dengan data riil", body:"Penjelasan lengkap Live tape reading practice dengan data riil: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  ban4: {
+    image: null,
+    lessons: [
+      { title:"Quiet accumulation: saham 'tidur' lama di base", body:"Penjelasan lengkap Quiet accumulation: saham 'tidur' lama di base: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Mini breakout: konfirmasi bandar selesai akumulasi", body:"Penjelasan lengkap Mini breakout: konfirmasi bandar selesai akumulasi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Entry teknik: buy on first pullback setelah breakout", body:"Penjelasan lengkap Entry teknik: buy on first pullback setelah breakout: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Posisi sizing saat conviction tinggi", body:"Penjelasan lengkap Posisi sizing saat conviction tinggi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Hold vs take profit sebagian: cara buat keputusan", body:"Penjelasan lengkap Hold vs take profit sebagian: cara buat keputusan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Exit saat distribusi mulai terdeteksi", body:"Penjelasan lengkap Exit saat distribusi mulai terdeteksi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  bag1: {
+    image: null,
+    lessons: [
+      { title:"Definisi multi-bagger & historical examples BEI", body:"Penjelasan lengkap Definisi multi-bagger & historical examples BEI: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"5 kriteria utama multi-bagger", body:"Penjelasan lengkap 5 kriteria utama multi-bagger: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"TAM (Total Addressable Market) analysis", body:"Penjelasan lengkap TAM (Total Addressable Market) analysis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Founder-led company advantage", body:"Penjelasan lengkap Founder-led company advantage: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Kapan masuk: early stage vs momentum", body:"Penjelasan lengkap Kapan masuk: early stage vs momentum: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Hold melalui drawdown 30-50%: cara psikologis", body:"Penjelasan lengkap Hold melalui drawdown 30-50%: cara psikologis: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  bag2: {
+    image: null,
+    lessons: [
+      { title:"Industry lifecycle: introduction, growth, maturity", body:"Penjelasan lengkap Industry lifecycle: introduction, growth, maturity: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Penetrasi pasar: TAM vs SAM vs SOM", body:"Penjelasan lengkap Penetrasi pasar: TAM vs SAM vs SOM: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Tailwind makro jangka panjang", body:"Penjelasan lengkap Tailwind makro jangka panjang: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor yang menghasilkan bagger BEI 2018-2024", body:"Penjelasan lengkap Sektor yang menghasilkan bagger BEI 2018-2024: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sektor potensial bagger 2025-2030", body:"Penjelasan lengkap Sektor potensial bagger 2025-2030: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Early mover advantage: masuk sebelum ramai", body:"Penjelasan lengkap Early mover advantage: masuk sebelum ramai: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  bag3: {
+    image: null,
+    lessons: [
+      { title:"Competitive landscape mapping", body:"Penjelasan lengkap Competitive landscape mapping: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Analisis Google Trends untuk demand proxy", body:"Penjelasan lengkap Analisis Google Trends untuk demand proxy: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Review di e-commerce & app store sebagai data point", body:"Penjelasan lengkap Review di e-commerce & app store sebagai data point: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Channel check: distributor, customer interview", body:"Penjelasan lengkap Channel check: distributor, customer interview: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Inside ownership: direksi beli sahamnya sendiri?", body:"Penjelasan lengkap Inside ownership: direksi beli sahamnya sendiri?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Validasi tesis investasi dengan multiple data points", body:"Penjelasan lengkap Validasi tesis investasi dengan multiple data points: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  bag4: {
+    image: null,
+    lessons: [
+      { title:"Alokasi sizing untuk high-conviction bagger pick", body:"Penjelasan lengkap Alokasi sizing untuk high-conviction bagger pick: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Concentration: berapa persen maksimal satu saham?", body:"Penjelasan lengkap Concentration: berapa persen maksimal satu saham?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara average up saat bagger terus naik", body:"Penjelasan lengkap Cara average up saat bagger terus naik: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Partial profit taking: sell 20-50% di target awal", body:"Penjelasan lengkap Partial profit taking: sell 20-50% di target awal: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Bagger yang sudah run: hold atau switch?", body:"Penjelasan lengkap Bagger yang sudah run: hold atau switch?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Tax consideration saat harvest bagger", body:"Penjelasan lengkap Tax consideration saat harvest bagger: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  mv1: {
+    image: null,
+    lessons: [
+      { title:"Supply & demand: dasar pergerakan harga", body:"Penjelasan lengkap Supply & demand: dasar pergerakan harga: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Siapa yang menggerakkan harga?", body:"Penjelasan lengkap Siapa yang menggerakkan harga?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Harga vs nilai: perbedaan krusial", body:"Penjelasan lengkap Harga vs nilai: perbedaan krusial: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Volatilitas: teman atau musuh trader?", body:"Penjelasan lengkap Volatilitas: teman atau musuh trader?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Mean reversion & momentum: dua kekuatan", body:"Penjelasan lengkap Mean reversion & momentum: dua kekuatan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara baca pergerakan harga dengan tenang", body:"Penjelasan lengkap Cara baca pergerakan harga dengan tenang: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  mv2: {
+    image: null,
+    lessons: [
+      { title:"HH & HL: struktur uptrend", body:"Penjelasan lengkap HH & HL: struktur uptrend: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"LH & LL: struktur downtrend", body:"Penjelasan lengkap LH & LL: struktur downtrend: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pullback sehat: 38-50% Fibo", body:"Penjelasan lengkap Pullback sehat: 38-50% Fibo: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Koreksi vs reversal: cara bedakan", body:"Penjelasan lengkap Koreksi vs reversal: cara bedakan: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Trend change confirmation: dua kriteria wajib", body:"Penjelasan lengkap Trend change confirmation: dua kriteria wajib: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Trading dengan trend vs counter-trend: mana lebih profitable?", body:"Penjelasan lengkap Trading dengan trend vs counter-trend: mana lebih profitable?: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  mv3: {
+    image: null,
+    lessons: [
+      { title:"Identifikasi range-bound market", body:"Penjelasan lengkap Identifikasi range-bound market: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Range trading: buy support, sell resistance", body:"Penjelasan lengkap Range trading: buy support, sell resistance: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"False breakout di pasar sideways", body:"Penjelasan lengkap False breakout di pasar sideways: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Bollinger Bands squeeze: breakout imminent", body:"Penjelasan lengkap Bollinger Bands squeeze: breakout imminent: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Persiapan untuk breakout: watchlist criteria", body:"Penjelasan lengkap Persiapan untuk breakout: watchlist criteria: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Sejarah konsolidasi panjang sebelum big move di BEI", body:"Penjelasan lengkap Sejarah konsolidasi panjang sebelum big move di BEI: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  mv4: {
+    image: null,
+    lessons: [
+      { title:"Price action trading: filosofi dasar", body:"Penjelasan lengkap Price action trading: filosofi dasar: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Pin bar: penolakan harga yang powerful", body:"Penjelasan lengkap Pin bar: penolakan harga yang powerful: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Inside bar: konsolidasi sebelum breakout", body:"Penjelasan lengkap Inside bar: konsolidasi sebelum breakout: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Outside bar: engulfing yang kuat", body:"Penjelasan lengkap Outside bar: engulfing yang kuat: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara baca sinyal strength & weakness", body:"Penjelasan lengkap Cara baca sinyal strength & weakness: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Entry & SL berbasis price action murni", body:"Penjelasan lengkap Entry & SL berbasis price action murni: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  },
+  mv5: {
+    image: null,
+    lessons: [
+      { title:"Liquidity pools: di mana stop loss retail terkumpul", body:"Penjelasan lengkap Liquidity pools: di mana stop loss retail terkumpul: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Stop hunt: cara kerja & pola umum", body:"Penjelasan lengkap Stop hunt: cara kerja & pola umum: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara baca stop hunt candle di chart", body:"Penjelasan lengkap Cara baca stop hunt candle di chart: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Entry after stop hunt: teknik presisi tinggi", body:"Penjelasan lengkap Entry after stop hunt: teknik presisi tinggi: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Avoid placing SL di level obvious", body:"Penjelasan lengkap Avoid placing SL di level obvious: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." },
+      { title:"Cara bangun sistem anti stop-hunt", body:"Penjelasan lengkap Cara bangun sistem anti stop-hunt: konsep ini adalah salah satu fondasi penting dalam trading dan investasi saham BEI. Pelajari, pahami, lalu praktikkan langsung di pasar. Dokumentasikan setiap trade di jurnal untuk evaluasi berkala." }
+    ]
+  }
 };
 
 const ALL_MODULES = [
