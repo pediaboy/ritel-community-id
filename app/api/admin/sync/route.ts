@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   }
 
   // For ticker, pricing, premiumSignals, stocks_mode - save to settings table
-  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed"];
+  const settingsKeys = ["ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed", "owners", "partners", "wa_links"];
   if (settingsKeys.includes(type)) {
     await sb("POST", "/settings", 
       { key: type, value: data, updated_at: new Date().toISOString() },
@@ -75,5 +75,8 @@ export async function GET() {
     customStocks,
     motivasi: settings.motivasi || [],
     ticker_speed: settings.ticker_speed || 32,
+    owners: settings.owners || [{ name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"👑", tag:"Owner" }],
+    partners: settings.partners || [],
+    wa_links: settings.wa_links || { grup:"https://wa.me/6282218723401", channel:"https://wa.me/6282218723401" },
   });
 }

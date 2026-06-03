@@ -80,6 +80,192 @@ function Btn({ onClick, color, children, className = "" }: { onClick: () => void
 function isExpired(dt: string) { return dt ? new Date(dt) < new Date() : false; }
 function isNearExpiry(dt: string) { if (!dt) return false; const d = new Date(dt); const now = new Date(); return d > now && d.getTime() - now.getTime() < 3 * 24 * 60 * 60 * 1000; }
 
+
+// ===== OWNERS & PARTNERS TAB =====
+function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>void }) {
+  const [owners, setOwners] = useState<any[]>([
+    { id:"o1", name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"👑", tag:"Owner" }
+  ]);
+  const [partners, setPartners] = useState<any[]>([]);
+  const [waLinks, setWaLinks] = useState({ grup:"https://wa.me/6282218723401", channel:"https://wa.me/6282218723401" });
+  const [ownerForm, setOwnerForm] = useState({ name:"", role:"", badge:"👤", tag:"Owner" });
+  const [partnerForm, setPartnerForm] = useState({ name:"", role:"", badge:"🤝" });
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/sync").then(r=>r.json()).then(d=>{
+      if (d.owners?.length) setOwners(d.owners);
+      if (d.partners?.length) setPartners(d.partners);
+      if (d.wa_links) setWaLinks(d.wa_links);
+    }).catch(()=>{});
+  },[]);
+
+  const saveOwners = (updated: any[]) => {
+    setOwners(updated);
+    syncToAPI("owners", updated);
+    setMsg("✅ Owner disimpan!"); setTimeout(()=>setMsg(""),2500);
+  };
+  const savePartners = (updated: any[]) => {
+    setPartners(updated);
+    syncToAPI("partners", updated);
+    setMsg("✅ Partner disimpan!"); setTimeout(()=>setMsg(""),2500);
+  };
+  const saveWaLinks = () => {
+    syncToAPI("wa_links", waLinks);
+    setMsg("✅ Link WA disimpan!"); setTimeout(()=>setMsg(""),2500);
+  };
+
+  const addOwner = () => {
+    if (!ownerForm.name.trim()) return;
+    saveOwners([...owners, {...ownerForm, id:"o_"+Date.now()}]);
+    setOwnerForm({name:"",role:"",badge:"👤",tag:"Owner"});
+  };
+  const addPartner = () => {
+    if (!partnerForm.name.trim()) return;
+    savePartners([...partners, {...partnerForm, id:"p_"+Date.now()}]);
+    setPartnerForm({name:"",role:"",badge:"🤝"});
+  };
+
+  return (
+    <div>
+      <h2 className="text-white font-bold text-sm mb-1">Owner & Partner</h2>
+      <p className="text-slate-500 text-xs mb-4">Tampil di halaman Profil VIP member</p>
+      {msg && <div className="mb-3 text-xs p-2 rounded-lg bg-green-500/10 text-green-400">{msg}</div>}
+      <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
+        <h3 className="text-white font-bold text-xs mb-3">🔗 Link WA (Homepage & VIP)</h3>
+        <div className="space-y-2 mb-3">
+          <div><label className="text-slate-400 text-xs mb-1 block">Grup WA</label><input value={waLinks.grup} onChange={e=>setWaLinks({...waLinks,grup:e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="https://chat.whatsapp.com/..."/></div>
+          <div><label className="text-slate-400 text-xs mb-1 block">Channel WA</label><input value={waLinks.channel} onChange={e=>setWaLinks({...waLinks,channel:e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="https://whatsapp.com/channel/..."/></div>
+        </div>
+        <button onClick={saveWaLinks} className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-xl">Simpan Link WA</button>
+      </div>
+      <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
+        <h3 className="text-white font-bold text-xs mb-3">👑 Owner / Founder</h3>
+        <div className="space-y-2 mb-3">
+          {owners.map(o=>(
+            <div key={o.id} className="flex items-center gap-3 bg-white/5 rounded-xl p-3">
+              <span className="text-xl">{o.badge}</span>
+              <div className="flex-1"><p className="text-white font-bold text-sm">{o.name}</p><p className="text-slate-400 text-xs">{o.role}</p></div>
+              <button onClick={()=>saveOwners(owners.filter(x=>x.id!==o.id))} className="text-red-400 text-xs">Hapus</button>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <input value={ownerForm.name} onChange={e=>setOwnerForm({...ownerForm,name:e.target.value})} placeholder="Nama" className="col-span-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+          <input value={ownerForm.role} onChange={e=>setOwnerForm({...ownerForm,role:e.target.value})} placeholder="Jabatan" className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+          <input value={ownerForm.badge} onChange={e=>setOwnerForm({...ownerForm,badge:e.target.value})} placeholder="Emoji" className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+          <button onClick={addOwner} className="col-span-2 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl">+ Tambah Owner</button>
+        </div>
+      </div>
+      <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4">
+        <h3 className="text-white font-bold text-xs mb-3">🤝 Partner</h3>
+        <div className="space-y-2 mb-3">
+          {partners.length===0 && <p className="text-slate-600 text-xs text-center py-3">Belum ada partner</p>}
+          {partners.map(p=>(
+            <div key={p.id} className="flex items-center gap-3 bg-white/5 rounded-xl p-3">
+              <span className="text-xl">{p.badge}</span>
+              <div className="flex-1"><p className="text-white font-bold text-sm">{p.name}</p><p className="text-slate-400 text-xs">{p.role}</p></div>
+              <button onClick={()=>savePartners(partners.filter(x=>x.id!==p.id))} className="text-red-400 text-xs">Hapus</button>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <input value={partnerForm.name} onChange={e=>setPartnerForm({...partnerForm,name:e.target.value})} placeholder="Nama partner" className="col-span-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+          <input value={partnerForm.role} onChange={e=>setPartnerForm({...partnerForm,role:e.target.value})} placeholder="Peran" className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+          <input value={partnerForm.badge} onChange={e=>setPartnerForm({...partnerForm,badge:e.target.value})} placeholder="Emoji" className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
+          <button onClick={addPartner} className="col-span-2 py-2 bg-purple-600 text-white text-xs font-bold rounded-xl">+ Tambah Partner</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== ADMIN FEED TAB =====
+function AdminFeedTab() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [content_text, setContentText] = useState("");
+  const [tag, setTag] = useState("info");
+  const [pinned, setPinned] = useState(false);
+  const [showHome, setShowHome] = useState(true);
+  const [showVip, setShowVip] = useState(true);
+  const [posting, setPosting] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const loadFeed = async () => {
+    setLoading(true);
+    try { const res = await fetch("/api/admin/feed"); const data = await res.json(); if (data.success) setPosts(data.feed); } catch {}
+    setLoading(false);
+  };
+  useEffect(() => { loadFeed(); }, []);
+
+  const handlePost = async () => {
+    if (!content_text.trim() || posting) return;
+    setPosting(true);
+    try {
+      const res = await fetch("/api/admin/feed", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ action:"create", content:content_text, tag, pinned, show_home:showHome, show_vip:showVip }) });
+      const data = await res.json();
+      if (data.success) { setMsg("✅ Feed diposting!"); setContentText(""); await loadFeed(); }
+      else setMsg("❌ " + data.message);
+    } catch { setMsg("❌ Error."); }
+    setPosting(false); setTimeout(()=>setMsg(""),3000);
+  };
+
+  const tagColors: Record<string,string> = { info:"#3b82f6", sinyal:"#22c55e", berita:"#f59e0b", analisis:"#8b5cf6", penting:"#ef4444" };
+
+  return (
+    <div>
+      <h2 className="text-white font-bold text-sm mb-1">Admin Feed</h2>
+      <p className="text-slate-500 text-xs mb-4">Post sebagai "Admin RITEL COMMUNITY.ID" — tampil di homepage & VIP</p>
+      <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#00c8ff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>RC</div>
+          <div><div className="text-white font-bold text-sm">Admin RITEL COMMUNITY.ID</div><div className="text-slate-500 text-xs">Verified Admin</div></div>
+        </div>
+        <textarea value={content_text} onChange={e=>setContentText(e.target.value)} rows={4} maxLength={2000} placeholder="Tulis pengumuman, analisis, sinyal..." className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm resize-none outline-none focus:border-blue-500/50 mb-3"/>
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <div><label className="text-slate-400 text-xs mb-1 block">Tag</label>
+            <select value={tag} onChange={e=>setTag(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none">
+              {["info","sinyal","analisis","berita","penting"].map(t=><option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div><label className="text-slate-400 text-xs mb-1 block">Opsi</label>
+            <div className="space-y-1">
+              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={pinned} onChange={e=>setPinned(e.target.checked)}/><span className="text-white text-xs">📌 Pin</span></label>
+              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showHome} onChange={e=>setShowHome(e.target.checked)}/><span className="text-white text-xs">🏠 Homepage</span></label>
+              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showVip} onChange={e=>setShowVip(e.target.checked)}/><span className="text-white text-xs">💎 VIP</span></label>
+            </div>
+          </div>
+        </div>
+        {msg && <div className={`mb-3 text-xs p-2 rounded-lg ${msg.startsWith("✅")?"text-green-400 bg-green-500/10":"text-red-400 bg-red-500/10"}`}>{msg}</div>}
+        <button onClick={handlePost} disabled={!content_text.trim()||posting} className="w-full py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl disabled:opacity-40">
+          {posting?"Memposting...":"📢 Post Sekarang"}
+        </button>
+      </div>
+      {loading ? <div className="text-center py-8 text-slate-500 text-sm">Memuat...</div> : posts.length===0 ? <div className="text-center py-8 text-slate-600 text-sm">Belum ada feed.</div> : (
+        <div className="space-y-3">
+          {posts.map(p=>(
+            <div key={p.id} style={{background:p.pinned?"rgba(30,90,240,0.07)":"rgba(255,255,255,0.02)",border:p.pinned?"1px solid rgba(30,90,240,0.25)":"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 16px"}}>
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  {p.tag&&<span style={{fontSize:10,background:`${tagColors[p.tag]||"#6b7280"}22`,color:tagColors[p.tag]||"#9ca3af",padding:"2px 8px",borderRadius:4,fontWeight:600}}>{p.tag}</span>}
+                  {p.pinned&&<span className="text-[10px] text-yellow-400">📌</span>}
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={async()=>{await fetch("/api/admin/feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"pin",id:p.id})});loadFeed();}} className={`text-[10px] px-2 py-0.5 rounded border ${p.pinned?"text-yellow-400 border-yellow-500/30":"text-slate-500 border-white/10"}`}>{p.pinned?"Unpin":"Pin"}</button>
+                  <button onClick={async()=>{await fetch("/api/admin/feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"delete",id:p.id})});loadFeed();}} className="text-[10px] text-red-400 border border-red-500/20 px-2 py-0.5 rounded">Hapus</button>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{p.content}</p>
+              <p className="text-slate-600 text-[10px] mt-2">{new Date(p.created_at).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>("signals");
   const [loading, setLoading] = useState(true);
@@ -400,7 +586,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     if (!pricingForm.priceLabel.trim()) { alert("Isi harga!"); return; }
     const features = pricingForm.features.split("\n").map((f:string)=>f.trim()).filter(Boolean);
     const flashSale = pricingForm.hasFlashSale && pricingForm.flashSale.price ? pricingForm.flashSale : null;
-    const updated = pricing.map(p => p.id === editPricingId ? { ...p, priceLabel: pricingForm.priceLabel, period: pricingForm.period, description: pricingForm.description, features, flashSale } : p);
+    const updated = pricing.map(p => p.id === editPricingId ? { ...p, priceLabel: pricingForm.priceLabel, period: pricingForm.period, description: pricingForm.description, features, flashSale, price: p.price } : p);
     setPricing(updated);
     syncToAPI("pricing", updated);
     setEditPricingId(null); setShowPricingForm(false);
@@ -1129,6 +1315,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               )}
             </div>
           )}
+
+          {/* OWNERS & PARTNERS */}
+          {tab==="owners_partners" && <OwnersPartnersTab syncToAPI={syncToAPI} />}
+
+          {/* ADMIN FEED */}
+          {tab==="admin_feed" && <AdminFeedTab />}
       </div>
     </div>
   );

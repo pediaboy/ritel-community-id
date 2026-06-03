@@ -395,8 +395,9 @@ function Navbar() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/95 backdrop-blur-md border-b border-white/5" : "bg-black/70 backdrop-blur-sm"}`}>
-      <div><StockTicker /></div>
+    <>
+    <div className="fixed top-0 left-0 right-0 z-[60]"><StockTicker /></div>
+    <nav className={`fixed left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-black/95 backdrop-blur-md border-b border-white/5" : "bg-black/70 backdrop-blur-sm"}`} style={{top:"44px"}}>
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <RCLogo size={36} />
@@ -432,6 +433,7 @@ function Navbar() {
         </div>
       )}
     </nav>
+    </>
   );
 }
 
@@ -1479,7 +1481,7 @@ export default function HomePage() {
       <MotivasiTicker />
       <div className="relative z-10">
         <Navbar />
-        <div style={{ paddingTop: "80px" }}>
+        <div style={{ paddingTop: "112px" }}>
           <Hero />
           <MarketSection />
           <SignalsSection />
