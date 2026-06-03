@@ -88,8 +88,8 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
   ]);
   const [partners, setPartners] = useState<any[]>([]);
   const [waLinks, setWaLinks] = useState({ grup:"https://wa.me/6282218723401", channel:"https://wa.me/6282218723401" });
-  const [ownerForm, setOwnerForm] = useState({ name:"", role:"", badge:"👤", tag:"Owner" });
-  const [partnerForm, setPartnerForm] = useState({ name:"", role:"", badge:"🤝" });
+  const [ownerForm, setOwnerForm] = useState({ name:"", role:"", badge:"👤", tag:"Owner", verified:true });
+  const [partnerForm, setPartnerForm] = useState({ name:"", role:"", badge:"🤝", verified:false });
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
@@ -97,11 +97,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
       if (d.owners?.length) setOwners(d.owners);
       if (d.partners?.length) setPartners(d.partners);
       if (d.wa_links) setWaLinks(d.wa_links);
-      if (Array.isArray(d.bagger_signals) && d.bagger_signals.length > 0) setBaggerList(d.bagger_signals);
-      if (Array.isArray(d.bandar_signals) && d.bandar_signals.length > 0) setBandarList(d.bandar_signals);
-      if (Array.isArray(d.done_signal_ids)) setDoneSignalIds(d.done_signal_ids);
     }).catch(()=>{});
-    fetch("/api/posts?limit=100").then(r=>r.json()).then((d:any)=>setFeedPosts(d.posts||[])).catch(()=>{});
   },[]);
 
   const saveOwners = (updated: any[]) => {
@@ -149,8 +145,17 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
           {owners.map(o=>(
             <div key={o.id} className="flex items-center gap-3 bg-white/5 rounded-xl p-3">
               <span className="text-xl">{o.badge}</span>
-              <div className="flex-1"><p className="text-white font-bold text-sm">{o.name}</p><p className="text-slate-400 text-xs">{o.role}</p></div>
-              <button onClick={()=>saveOwners(owners.filter(x=>x.id!==o.id))} className="text-red-400 text-xs">Hapus</button>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-white font-bold text-sm">{o.name}</p>
+                  {o.verified && <span style={{background:"rgba(59,130,246,0.15)",color:"#3b82f6",border:"1px solid rgba(59,130,246,0.3)",fontSize:9,fontWeight:800,padding:"1px 6px",borderRadius:4}}>✔ verified</span>}
+                </div>
+                <p className="text-slate-400 text-xs">{o.role} · {o.tag}</p>
+              </div>
+              <div className="flex gap-1">
+                <button onClick={()=>saveOwners(owners.map(x=>x.id===o.id?{...x,verified:!x.verified}:x))} className="text-xs px-2 py-1 rounded-lg border border-white/10 text-blue-400">{o.verified?"✔":"○"}</button>
+                <button onClick={()=>saveOwners(owners.filter(x=>x.id!==o.id))} className="text-red-400 text-xs px-2 py-1">Hapus</button>
+              </div>
             </div>
           ))}
         </div>
@@ -468,7 +473,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [premiumSignals, setPremiumSignals] = useLocalStore<any[]>("premium_signals", defaultPremiumSignals);
 
   // Form states
-  const [sigForm, setSigForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", sl:"", notes:"", package:["gold","pro","platinum","elite"] });
+  const [sigForm, setSigForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", tp2:"", tp3:"", sl:"", notes:"", package:["gold","pro","platinum","elite"], is_tomorrow:false, is_pinned:false });
   const [editSigId, setEditSigId] = useState<string|null>(null);
   const [showSigForm, setShowSigForm] = useState(false);
   const [baggerList, setBaggerList] = useState<any[]>([]);
@@ -601,9 +606,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   // ===== SIGNALS =====
   const saveSig = async () => {
     if (!sigForm.kode.trim() || !sigForm.saham.trim()) { alert("Isi kode dan nama saham!"); return; }
+    const sigPayload = {...sigForm, tp2:sigForm.tp2||"", tp3:sigForm.tp3||"", is_tomorrow:sigForm.is_tomorrow||false, is_pinned:sigForm.is_pinned||false};
     if (editSigId) {
-      await fetch(`/api/admin/signals?id=${editSigId}`, {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigForm, id:editSigId})}).catch(()=>{});
-      setSignals(signals.map(s => s.id === editSigId ? { ...sigForm, id: editSigId } : s));
+      await fetch(`/api/admin/signals?id=${editSigId}`, {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigPayload, id:editSigId})}).catch(()=>{});
+      setSignals(signals.map(s => s.id === editSigId ? { ...sigPayload, id: editSigId } : s));
     } else {
       const newId = Date.now().toString();
       await fetch("/api/admin/signals", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...sigForm, id:newId})}).catch(()=>{});
@@ -823,6 +829,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
     { id:"bagger", label:"🚀 Bagger" },
+    { id:"sinyal_besok", label:"🌙 Besok" },
     { id:"bandar", label:"🔍 Bandar" },
     { id:"admin_feed", label:"📝 Post Feed" },
     { id:"tokens", label:"Token VIP" },
@@ -880,10 +887,29 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           {/* ======== SIGNALS ======== */}
           {tab==="signals" && (
             <div>
+              {/* SINYAL BESOK */}
+              {signals.filter((s:any)=>s.is_tomorrow).length>0 && (
+                <div className="mb-4 bg-yellow-500/5 border border-yellow-500/20 rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-yellow-400 font-black text-sm">🌙 Sinyal Besok</span>
+                    <span className="text-xs text-yellow-400/60">{signals.filter((s:any)=>s.is_tomorrow).length} sinyal</span>
+                  </div>
+                  <div className="space-y-2">
+                    {signals.filter((s:any)=>s.is_tomorrow).map((s:any)=>(
+                      <div key={s.id} className="flex items-center gap-2 bg-white/5 rounded-xl p-2.5">
+                        <span className="font-black text-white text-sm">{s.kode}</span>
+                        <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded">{s.action}</span>
+                        <span className="text-xs text-slate-400 flex-1">Entry: {s.entry} · TP: {s.tp}</span>
+                        <button onClick={async()=>{ const updated=signals.map((x:any)=>x.id===s.id?{...x,is_tomorrow:false}:x); setSignals(updated); await syncToAPI("signals_bulk",updated); }} className="text-xs text-yellow-400 border border-yellow-500/30 px-2 py-0.5 rounded">Hapus</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h2 className="text-white font-bold text-sm">Manajemen Sinyal Harian</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">{signals.length} sinyal aktif</p>
+                  <p className="text-slate-500 text-xs mt-0.5">{signals.filter((s:any)=>!s.is_tomorrow).length} sinyal aktif</p>
                 </div>
                 <button onClick={()=>{setSigForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});setEditSigId(null);setShowSigForm(!showSigForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
                   {showSigForm&&!editSigId?"Tutup":"Tambah Sinyal"}
@@ -900,8 +926,19 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         {["BUY","SELL","HOLD","ANTRI"].map(a=><option key={a} value={a} className="bg-black">{a}</option>)}
                       </select>
                     </div>
-                    <div><label className="text-xs text-slate-500 mb-1 block">Entry</label><input value={sigForm.entry} onChange={e=>setSigForm({...sigForm,entry:e.target.value})} placeholder="9.750–9.800" className="input-dark"/></div>
-                    <div><label className="text-xs text-slate-500 mb-1 block">Target (TP)</label><input value={sigForm.tp} onChange={e=>setSigForm({...sigForm,tp:e.target.value})} placeholder="10.200 | 10.500" className="input-dark"/></div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div><label className="text-xs text-slate-500 mb-1 block">Entry</label><input value={sigForm.entry} onChange={e=>setSigForm({...sigForm,entry:e.target.value})} placeholder="9.750–9.800" className="input-dark"/></div>
+                      <div><label className="text-xs text-slate-500 mb-1 block">Stop Loss</label><input value={sigForm.sl} onChange={e=>setSigForm({...sigForm,sl:e.target.value})} placeholder="9.100" className="input-dark"/></div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div><label className="text-xs text-slate-500 mb-1 block">TP1</label><input value={sigForm.tp} onChange={e=>setSigForm({...sigForm,tp:e.target.value})} placeholder="10.200" className="input-dark"/></div>
+                      <div><label className="text-xs text-slate-500 mb-1 block">TP2</label><input value={sigForm.tp2||""} onChange={e=>setSigForm({...sigForm,tp2:e.target.value})} placeholder="10.500" className="input-dark"/></div>
+                      <div><label className="text-xs text-slate-500 mb-1 block">TP3</label><input value={sigForm.tp3||""} onChange={e=>setSigForm({...sigForm,tp3:e.target.value})} placeholder="11.000" className="input-dark"/></div>
+                    </div>
+                    <div className="flex gap-2 mt-1">
+                      <button onClick={()=>setSigForm({...sigForm,is_tomorrow:!sigForm.is_tomorrow})} className={`flex-1 text-xs py-2 rounded-xl border font-bold transition-all ${sigForm.is_tomorrow?"bg-yellow-500/15 border-yellow-500/40 text-yellow-400":"border-white/10 text-slate-500"}`}>{sigForm.is_tomorrow?"🌙 Sinyal Besok":"📅 Set Besok"}</button>
+                      <button onClick={()=>setSigForm({...sigForm,is_pinned:!sigForm.is_pinned})} className={`flex-1 text-xs py-2 rounded-xl border font-bold transition-all ${sigForm.is_pinned?"bg-cyan-500/15 border-cyan-500/40 text-cyan-400":"border-white/10 text-slate-500"}`}>{sigForm.is_pinned?"📌 Disematkan":"📌 Sematkan"}</button>
+                    </div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Stop Loss</label><input value={sigForm.sl} onChange={e=>setSigForm({...sigForm,sl:e.target.value})} placeholder="9.500" className="input-dark"/></div>
                   </div>
                   <div className="mb-3"><label className="text-xs text-slate-500 mb-1 block">Catatan/Analisis</label><textarea value={sigForm.notes} onChange={e=>setSigForm({...sigForm,notes:e.target.value})} placeholder="Breakout resistance, volume tinggi..." rows={2} className="input-dark resize-none"/></div>
@@ -934,6 +971,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-black text-white text-base">{s.kode}</span>
                           {doneSignalIds.includes(s.id) && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}
+                          {s.is_tomorrow && <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-bold">🌙 Besok</span>}
+                          {s.is_pinned && <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">📌</span>}
                         </div>
                         <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
                       </div>
@@ -1125,7 +1164,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <h2 className="text-white font-bold text-sm">📝 Manajemen Post Feed</h2>
                   <p className="text-slate-500 text-xs mt-0.5">{feedPosts.length} post · moderasi konten komunitas</p>
                 </div>
-                <button onClick={()=>{ setFeedLoading(true); fetch("/api/posts?limit=100").then(r=>r.json()).then(d=>{setFeedPosts(d.posts||[]);setFeedLoading(false);}).catch(()=>setFeedLoading(false)); }} className="btn-primary text-xs px-4 py-2 rounded-xl">{feedLoading?"Loading...":"Refresh"}</button>
+                <button onClick={()=>{ setFeedLoading(true); fetch("/api/community/posts?limit=100").then(r=>r.json()).then(d=>{setFeedPosts(d.posts||[]);setFeedLoading(false);}).catch(()=>setFeedLoading(false)); }} className="btn-primary text-xs px-4 py-2 rounded-xl">{feedLoading?"Loading...":"Refresh"}</button>
               </div>
               <div className="space-y-3">
                 {feedPosts.length===0 ? (
@@ -1145,7 +1184,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                     </div>
                     <div className="flex gap-2 pt-2 border-t border-white/5">
-                      <Btn onClick={async()=>{ if(!confirm("Hapus post ini?"))return; await fetch(`/api/posts?id=${p.id}`,{method:"DELETE",headers:{"Authorization":"Bearer ADMIN_PANEL"}}).catch(()=>{}); setFeedPosts(feedPosts.filter(x=>x.id!==p.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus post ini?"))return; await fetch(`/api/community/posts`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"delete",post_id:p.id,user_id:"__ADMIN__"})}).catch(()=>{}); setFeedPosts(feedPosts.filter(x=>x.id!==p.id)); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
                   </div>
                 ))}
@@ -1161,7 +1200,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <h2 className="text-white font-bold text-sm">Manajemen Token VIP</h2>
                   <p className="text-slate-500 text-xs mt-0.5">{tokens.length} token · {tokens.filter(t=>t.isActive&&!isExpired(t.expiredAt)).length} aktif</p>
                 </div>
-                <button onClick={()=>{setTokForm({email:"",name:"",package:"gold",expiredAt:""});setEditTokId(null);setShowTokForm(!showTokForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                <button onClick={()=>{setTokForm({email:"",name:"",package:"gold",expiredAt:"",verified:false});setEditTokId(null);setShowTokForm(!showTokForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
                   {showTokForm&&!editTokId?"Tutup":"Tambah Token"}
                 </button>
               </div>
@@ -1177,6 +1216,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </select>
                     </div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Expired Tanggal</label><input type="datetime-local" value={tokForm.expiredAt} onChange={e=>setTokForm({...tokForm,expiredAt:e.target.value})} className="input-dark"/></div>
+                    <div className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2.5">
+                      <span className="text-xs text-slate-400 flex-1">✔ Verified Badge</span>
+                      <button onClick={()=>setTokForm({...tokForm,verified:!tokForm.verified})} className={`text-xs px-3 py-1 rounded-lg font-bold border ${tokForm.verified?"bg-blue-500/20 text-blue-400 border-blue-500/30":"text-slate-500 border-white/10"}`}>{tokForm.verified?"ON":"OFF"}</button>
+                    </div>
                     <div className="flex gap-2">
                       <button onClick={saveTok} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-bold">{editTokId?"Update Token":"Generate Token"}</button>
                       <button onClick={()=>{setShowTokForm(false);setEditTokId(null);}} className="px-4 py-2.5 rounded-xl text-sm text-slate-400 border border-white/10 hover:bg-white/5 transition-all">Batal</button>
@@ -1197,6 +1240,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                           <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-bold ${expired?"bg-red-400/10 text-red-400":t.isActive?"bg-green-400/10 text-green-400":"bg-slate-400/10 text-slate-400"}`}>
                             {expired?"EXPIRED":t.isActive?"AKTIF":"NONAKTIF"}
                           </span>
+                          {t.verified && <span style={{background:"rgba(59,130,246,0.15)",color:"#3b82f6",border:"1px solid rgba(59,130,246,0.3)",fontSize:9,fontWeight:800,padding:"1px 6px",borderRadius:4}}>✔ verified</span>}
                         </div>
                         <span className="text-xs text-cyan-400 font-bold capitalize">{t.package}</span>
                       </div>
@@ -1619,6 +1663,17 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   {showMotivasiForm&&!editMotivasiId?"Tutup":"Tambah Motivasi"}
                 </button>
               </div>
+              {/* Kecepatan ticker */}
+              <div className="card rounded-xl p-4 mb-4 border border-white/5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-400 font-bold">⚡ Kecepatan Ticker Motivasi</span>
+                  <span className="text-xs text-cyan-400 font-bold">{tickerSpeed}s</span>
+                </div>
+                <input type="range" min={10} max={80} step={5} value={tickerSpeed}
+                  onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); syncToAPI("ticker_speed",v); }}
+                  className="w-full accent-cyan-500"/>
+                <div className="flex justify-between text-xs text-slate-600 mt-1"><span>Cepat</span><span>Lambat</span></div>
+              </div>
               {showMotivasiForm && (
                 <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
                   <h3 className="text-white font-bold mb-3 text-sm">{editMotivasiId?"Edit Kata Motivasi":"Tambah Kata Motivasi"}</h3>
@@ -1636,6 +1691,24 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   </div>
                 </div>
               )}
+              {/* Greeting otomatis */}
+              <div className="card rounded-xl p-4 mb-4 border border-purple-500/10">
+                <h3 className="text-xs font-bold text-white mb-3">🌅 Greeting Otomatis</h3>
+                <div className="space-y-3 mb-2">
+                  {[{key:"greeting_pagi",label:"🌤 Selamat Pagi (05:00–10:00)",def:"Selamat pagi! Semangat trading hari ini 💪"},{key:"greeting_malam",label:"🌙 Selamat Malam (21:00–24:00)",def:"Selamat malam! Review portofolio hari ini 📊"}].map(g=>(
+                    <div key={g.key} className="bg-white/5 rounded-xl p-3">
+                      <label className="text-xs text-slate-400 mb-2 block">{g.label}</label>
+                      <div className="flex gap-2">
+                        <input defaultValue={typeof window!=="undefined"?localStorage.getItem(g.key)||g.def:g.def}
+                          onBlur={e=>{ localStorage.setItem(g.key,e.target.value); syncToAPI(g.key,e.target.value); }}
+                          className="flex-1 bg-transparent border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs outline-none focus:border-blue-500/30"/>
+                        <button onClick={()=>syncToAPI(g.key,typeof window!=="undefined"?localStorage.getItem(g.key)||g.def:g.def)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20">Simpan</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-600">Muncul otomatis sesuai jam WIB, menghilang setelah 5 detik.</p>
+              </div>
               <div className="space-y-3">
                 {motivasiList.length===0 ? (
                   <div className="card rounded-xl p-10 text-center text-slate-500 text-sm">Belum ada kata motivasi.</div>
@@ -1694,6 +1767,37 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           {/* OWNERS & PARTNERS */}
           {tab==="owners_partners" && <OwnersPartnersTab syncToAPI={syncToAPI} />}
 
+          {/* SINYAL BESOK TAB */}
+          {tab==="sinyal_besok" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div><h2 className="text-white font-bold text-sm">🌙 Sinyal Besok</h2><p className="text-slate-500 text-xs mt-0.5">Sinyal yang akan tampil besok — bisa disematkan</p></div>
+                <button onClick={()=>{ setSigForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",tp2:"",tp3:"",sl:"",notes:"",package:["gold","pro","platinum","elite"],is_tomorrow:true,is_pinned:false}); setEditSigId(null); setShowSigForm(true); setTab("signals"); }} className="btn-primary text-xs px-4 py-2 rounded-xl">+ Tambah Sinyal Besok</button>
+              </div>
+              <div className="space-y-3">
+                {signals.filter((s:any)=>s.is_tomorrow).length===0 ? (
+                  <div className="card rounded-xl p-8 text-center text-slate-500 text-sm">Belum ada sinyal untuk besok.</div>
+                ) : signals.filter((s:any)=>s.is_tomorrow).map((s:any)=>(
+                  <div key={s.id} className="card rounded-xl p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-black text-white">{s.kode}</span>
+                      <span className={`text-xs font-bold ${actionColor[s.action]||"text-slate-400"}`}>{s.action}</span>
+                      <span className="text-xs text-yellow-400 ml-auto">🌙 Sinyal Besok</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+                      <div><span className="text-slate-500">Entry</span><br/><span className="text-white font-bold">{s.entry}</span></div>
+                      <div><span className="text-slate-500">TP1</span><br/><span className="text-green-400 font-bold">{s.tp}</span></div>
+                      <div><span className="text-slate-500">SL</span><br/><span className="text-red-400 font-bold">{s.sl}</span></div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Btn onClick={async()=>{ const updated=signals.map((x:any)=>x.id===s.id?{...x,is_tomorrow:false}:x); setSignals(updated); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"signals_tomorrow",data:updated})}).catch(()=>{}); }} color="yellow" className="flex-1 text-center">Pindah ke Hari Ini</Btn>
+                      <Btn onClick={async()=>{ if(!confirm("Hapus?"))return; const updated=signals.filter((x:any)=>x.id!==s.id); setSignals(updated); await fetch("/api/admin/signals",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:s.id})}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {/* ADMIN FEED */}
           {tab==="admin_feed" && <AdminFeedTab />}
 
