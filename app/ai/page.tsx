@@ -14,7 +14,7 @@ type Message = {
 };
 
 // Packages that can access AI
-const AI_ALLOWED = ["pro", "platinum", "elite"];
+const AI_ALLOWED = ["silver", "gold", "pro", "platinum", "elite"];
 
 function formatMsg(text: string) {
   return text
