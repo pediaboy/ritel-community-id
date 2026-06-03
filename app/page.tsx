@@ -1563,8 +1563,8 @@ function BottomNav() {
   },[]);
 
   const scrollTo = (id:string, href?:string) => {
-    if (href) { window.location.href = href; return; }
-    const el = document.getElementById(id);
+    const targetId = href || id;
+    const el = document.getElementById(targetId);
     if (el) { el.scrollIntoView({behavior:"smooth", block:"start"}); setActive(id); }
   };
 
@@ -1579,7 +1579,7 @@ function BottomNav() {
   return (
     <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.08)", padding:"6px 0 env(safe-area-inset-bottom,16px)", display:"flex", alignItems:"center", justifyContent:"space-around" }}>
       {tabs.map(item=>(
-        <button key={item.id} onClick={()=>{ if(item.link){window.location.href=item.link;}else if(item.href){scrollTo("",item.href==="hero"?"":item.href);} }}
+        <button key={item.id} onClick={()=>{ if(item.link){window.location.href=item.link;}else{ const elId=item.href==="hero"?"hero":item.href||item.id; const el=document.getElementById(elId); if(el){el.scrollIntoView({behavior:"smooth",block:"start"});setActive(item.id);}else if(item.href){scrollTo(item.id,item.href);} } }}
           style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 10px", position:"relative", WebkitTapHighlightColor:"transparent" }}>
           {active===item.id && !item.link && <div style={{ position:"absolute", top:-6, left:"50%", transform:"translateX(-50%)", width:32, height:3, background:"#1e5af0", borderRadius:3 }}/>}
           <span style={{ color: (active===item.id&&!item.link) ? "#1e5af0" : item.id==="login" ? "#22c55e" : "rgba(255,255,255,0.35)", transition:"color 0.2s" }}>{item.icon}</span>
