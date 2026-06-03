@@ -88,6 +88,105 @@ function LiveInfoBox() {
 }
 
 // ── ADMIN FEED ──────────────────────────────────────────────────
+
+// ── FEED TAB VIP (Twitter/X style) ──────────────────────────────
+function FeedTabVIP() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const r = await fetch("/api/admin/feed");
+        const d = await r.json();
+        if (d.success) setPosts(d.feed.filter((p:any)=>p.show_vip!==false));
+      } catch {}
+      setLoading(false);
+    };
+    load();
+    const iv = setInterval(load, 60000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const tagColors: Record<string,string> = { info:"#3b82f6", sinyal:"#22c55e", berita:"#f59e0b", analisis:"#8b5cf6", penting:"#ef4444" };
+  const formatTime = (iso: string) => {
+    try {
+      const d = new Date(iso);
+      const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (diff < 60) return "Baru saja";
+      if (diff < 3600) return Math.floor(diff/60) + " menit lalu";
+      if (diff < 86400) return Math.floor(diff/3600) + " jam lalu";
+      return d.toLocaleDateString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"short",year:"numeric"});
+    } catch { return ""; }
+  };
+
+  if (loading) return (
+    <div style={{ textAlign:"center",padding:"60px 0" }}>
+      <div style={{ width:28,height:28,border:"3px solid rgba(30,90,240,0.2)",borderTopColor:"#1e5af0",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto" }}/>
+    </div>
+  );
+
+  if (!posts.length) return (
+    <div style={{ textAlign:"center",padding:"60px 16px" }}>
+      <p style={{ fontSize:36,marginBottom:12 }}>📭</p>
+      <p style={{ color:"rgba(255,255,255,0.4)",fontSize:14 }}>Belum ada post dari admin.</p>
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:16,paddingBottom:12,borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
+        <h2 style={{ fontWeight:900,fontSize:18,flex:1 }}>Feed</h2>
+        <span style={{ fontSize:11,color:"rgba(255,255,255,0.3)" }}>{posts.length} post</span>
+      </div>
+      <div style={{ display:"flex",flexDirection:"column" }}>
+        {posts.map((p,i) => {
+          const isRC = p.author !== "elthoriqqqq_";
+          const avatarBg = isRC ? "linear-gradient(135deg,#1e5af0,#00c8ff)" : "linear-gradient(135deg,#7c3aed,#a855f7)";
+          const avatarInitials = isRC ? "RC" : "EL";
+          const tagColor = tagColors[p.tag||"info"] || "#3b82f6";
+          return (
+            <div key={p.id} style={{ padding:"16px 0",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",gap:12 }}>
+              {/* Avatar */}
+              <div style={{ flexShrink:0 }}>
+                <div style={{ width:44,height:44,borderRadius:"50%",background:avatarBg,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:12,color:"#fff" }}>{avatarInitials}</div>
+              </div>
+              {/* Content */}
+              <div style={{ flex:1,minWidth:0 }}>
+                <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:4,flexWrap:"wrap" }}>
+                  <span style={{ fontWeight:800,fontSize:14,color:"#fff" }}>{p.author}</span>
+                  {/* Instagram/Twitter verified badge */}
+                  <span title="Verified" style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",width:16,height:16,borderRadius:"50%",background:"#1D9BF0",flexShrink:0 }}>
+                    <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8.5 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </span>
+                  <span style={{ color:"rgba(255,255,255,0.3)",fontSize:11 }}>·</span>
+                  <span style={{ color:"rgba(255,255,255,0.3)",fontSize:11 }}>{formatTime(p.created_at)}</span>
+                  {p.tag && <span style={{ fontSize:9,background:`${tagColor}20`,color:tagColor,padding:"1px 7px",borderRadius:4,fontWeight:700 }}>{p.tag}</span>}
+                  {p.pinned && <span style={{ fontSize:10,color:"#f59e0b" }}>📌</span>}
+                </div>
+                <p style={{ color:"rgba(255,255,255,0.85)",fontSize:14,lineHeight:1.65,whiteSpace:"pre-wrap",wordBreak:"break-word" }}>{p.content}</p>
+                {/* Twitter-style action buttons */}
+                <div style={{ display:"flex",gap:20,marginTop:12 }}>
+                  {[
+                    { icon:<svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>, label:"0" },
+                    { icon:<svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>, label:"" },
+                    { icon:<svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>, label:"" },
+                  ].map((btn,j) => (
+                    <div key={j} style={{ display:"flex",alignItems:"center",gap:5,color:"rgba(255,255,255,0.3)",cursor:"pointer" }}>
+                      {btn.icon}
+                      {btn.label && <span style={{ fontSize:11 }}>{btn.label}</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function AdminFeedVIP() {
   const [posts, setPosts] = useState<any[]>([]);
   useEffect(() => {
@@ -790,8 +889,8 @@ export default function VipPage() {
     return pkg.includes(user?.package) || pkg.includes("all");
   });
   const filteredSignals = (sigFilter==="Semua" ? mySignals : mySignals.filter((s:any)=>s.action===sigFilter)).filter((s:any)=>!s.is_tomorrow);
-  const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel);
-  const lockedModules = ALL_MODULES.filter(m=>m.level>pkgLevel);
+  const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel).sort((a,b)=>a.level-b.level);
+  const lockedModules = ALL_MODULES.filter(m=>m.level>pkgLevel).sort((a,b)=>a.level-b.level);
 
   const defaultNews = [
     {title:"IHSG Menguat Ditopang Sektor Perbankan dan Energi", source:"CNBC Indonesia", url:"#"},
@@ -878,7 +977,7 @@ export default function VipPage() {
                   <button onClick={()=>setTab("sinyal")} style={{ color:"#60a5fa", fontSize:12, background:"none", border:"none", cursor:"pointer" }}>Lihat semua →</button>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                  {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s}/>)}
+                  {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>)}
                 </div>
               </div>
             )}
@@ -924,7 +1023,7 @@ export default function VipPage() {
                   <span style={{ color:"rgba(6,182,212,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
                 </div>
                 <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-                  {signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).map((s:any,i:number)=><SignalCard key={i} s={s}/>)}
+                  {signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).map((s:any,i:number)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>)}
                 </div>
               </div>
             )}
@@ -980,7 +1079,7 @@ export default function VipPage() {
                     </div>
                   );
                 }
-                items.push(<SignalCard key={i} s={s}/>);
+                items.push(<SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>);
               });
               return <div style={{ display:"flex", flexDirection:"column", gap:12 }}>{items}</div>;
             })()}
@@ -1006,7 +1105,7 @@ export default function VipPage() {
               </div>
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                {bandarSignals.map((s,i)=><SignalCard key={i} s={s}/>)}
+                {bandarSignals.map((s,i)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>)}
               </div>
             )}
 
@@ -1025,13 +1124,30 @@ export default function VipPage() {
                   </div>
                   {expandedModul===m.id && (
                     <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid rgba(255,255,255,0.06)" }}>
-                      <ul style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                         {m.topics.map((t:string,i:number)=>(
-                          <li key={i} style={{ display:"flex", gap:8, fontSize:12, color:"rgba(255,255,255,0.65)" }}>
-                            <span style={{ color:"#22c55e", flexShrink:0 }}>✓</span>{t}
-                          </li>
+                          <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start", background:"rgba(34,197,94,0.04)", borderRadius:10, padding:"10px 12px", border:"1px solid rgba(34,197,94,0.1)" }}>
+                            <span style={{ color:"#22c55e", flexShrink:0, fontSize:15, marginTop:1 }}>✓</span>
+                            <div>
+                              <p style={{ color:"rgba(255,255,255,0.88)", fontSize:12, fontWeight:700, lineHeight:1.5 }}>{t.includes(":") ? t.split(":")[0] : t}</p>
+                              {t.includes(":") && <p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, marginTop:2, lineHeight:1.6 }}>{t.split(":").slice(1).join(":").trim()}</p>}
+                            </div>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
+                      {MODULE_CONTENT[m.id]?.lessons && (
+                        <div style={{ marginTop:14, borderTop:"1px solid rgba(255,255,255,0.06)", paddingTop:14 }}>
+                          <p style={{ fontWeight:800, fontSize:12, color:"rgba(255,255,255,0.5)", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}>
+                            <span>📖</span> Materi Lengkap ({MODULE_CONTENT[m.id].lessons.length} pelajaran)
+                          </p>
+                          {MODULE_CONTENT[m.id].lessons.map((lesson:any, li:number) => (
+                            <div key={li} style={{ marginBottom:10, background:"rgba(255,255,255,0.02)", borderRadius:10, padding:"12px 14px", border:"1px solid rgba(255,255,255,0.05)" }}>
+                              <p style={{ fontWeight:800, fontSize:12, color:"#fff", marginBottom:6 }}>{li+1}. {lesson.title}</p>
+                              <p style={{ color:"rgba(255,255,255,0.55)", fontSize:11, lineHeight:1.75, whiteSpace:"pre-wrap" }}>{lesson.body}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1119,6 +1235,11 @@ export default function VipPage() {
         )}
 
         {/* ── MODUL TAB ── */}
+        {tab==="feed" && (
+          <div style={{ padding:"16px" }}>
+            <FeedTabVIP />
+          </div>
+        )}
         {tab==="modul" && (
           <div style={{ padding:"16px" }}>
             <div style={{ marginBottom:20 }}>
@@ -1297,6 +1418,7 @@ export default function VipPage() {
       <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.08)", padding:"6px 0 20px", display:"flex", alignItems:"center", justifyContent:"space-around", overflowX:"auto" }}>
         {[
           { id:"home", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>, label:"Beranda" },
+          { id:"feed", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, label:"Feed" },
           { id:"sinyal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, label:"Sinyal" },
           { id:"bandar", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>, label:"Bandar" },
           { id:"bagger", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>, label:"Bagger" },
@@ -1313,4 +1435,5 @@ export default function VipPage() {
     </div>
   );
 }
+
 
