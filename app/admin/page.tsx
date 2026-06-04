@@ -437,6 +437,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tokens, setTokens] = useLocalStore<any[]>("tokens", []);
   const [testimonials, setTestimonials] = useLocalStore<any[]>("testimonials", []);
   const [liveMsg, setLiveMsgState] = useLocalStore<string>("liveinfo_msg", "");
+  const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
+  const [maintenanceSaved, setMaintenanceSaved] = useState(false);
   const [liveActive, setLiveActiveState] = useLocalStore<boolean>("liveinfo_active", false);
   const [customStocks, setCustomStocks] = useLocalStore<any[]>("custom_stocks", []);
   const [stockMode, setStockMode] = useLocalStore<"live"|"custom">("stock_mode", "live");
@@ -462,7 +464,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"t6", kode:"GOTO", price:"86", change:"+4.88%" },
   ];
   const [tickerStocks, setTickerStocks] = useLocalStore<any[]>("ticker_stocks", defaultTicker);
-  const [tickerSpeed, setTickerSpeed] = useLocalStore<number>("ticker_speed", 32);
+  const [tickerSpeed, setTickerSpeed] = useState<number>(32);
 
   // PREMIUM SIGNALS (halaman sinyal premium)
   const defaultPremiumSignals = [
@@ -476,6 +478,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [sigForm, setSigForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", tp2:"", tp3:"", sl:"", notes:"", package:["gold","pro","platinum","elite"], is_tomorrow:false, is_pinned:false });
   const [bsjpSignals, setBsjpSignals] = useState<any[]>([]);
   const [bpjsSignals, setBpjsSignals] = useState<any[]>([]);
+  const [bsjpMinPkg, setBsjpMinPkg] = useState<string>("silver");
+  const [bpjsMinPkg, setBpjsMinPkg] = useState<string>("silver");
   const [rekapList, setRekapList] = useState<any[]>([]);
   const [jurnalList, setJurnalList] = useState<any[]>([]);
   const [bsjpForm, setBsjpForm] = useState<any>({ kode:"", saham:"", action:"BUY", entry:"", tp:"", sl:"", description:"", notes:"", date:new Date().toISOString().slice(0,10) });
@@ -528,7 +532,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"m5", text:"Profit bukan keberuntungan — itu adalah hasil dari disiplin, ilmu, dan manajemen risiko yang benar." },
   ]);
   const [motivasiForm, setMotivasiForm] = useState<any>({ text:"", jam:"", durasi_menit:5 });
-  const [motivasiSpeed, setMotivasiSpeed] = useLocalStore<number>("ticker_speed", 32);
+  const [motivasiSpeed, setMotivasiSpeed] = useState<number>(32);
   const [editMotivasiId, setEditMotivasiId] = useState<string|null>(null);
   const [showMotivasiForm, setShowMotivasiForm] = useState(false);
 
@@ -600,8 +604,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         if (syncRes.premiumSignals && syncRes.premiumSignals.length > 0) setPremiumSignals(syncRes.premiumSignals);
         // Load extra states yang sebelumnya tidak di-load
         if (syncRes.done_signal_ids) setDoneSignalIds(syncRes.done_signal_ids || []);
+        if (syncRes.ticker_speed) { setTickerSpeed(syncRes.ticker_speed); setMotivasiSpeed(syncRes.ticker_speed); }
+        if (syncRes.maintenance_mode !== undefined) setMaintenanceMode(!!syncRes.maintenance_mode);
         if (syncRes.bsjp_signals) setBsjpSignals(syncRes.bsjp_signals || []);
         if (syncRes.bpjs_signals) setBpjsSignals(syncRes.bpjs_signals || []);
+        if (syncRes.bsjp_min_pkg) setBsjpMinPkg(syncRes.bsjp_min_pkg);
+        if (syncRes.bpjs_min_pkg) setBpjsMinPkg(syncRes.bpjs_min_pkg);
         if (syncRes.rekap_sinyal) setRekapList(syncRes.rekap_sinyal || []);
         if (syncRes.jurnal_global) setJurnalList(syncRes.jurnal_global || []);
         else if (syncRes.jurnal_trade) setJurnalList(syncRes.jurnal_trade || []);
@@ -1348,6 +1356,31 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   {liveSaved?"Tersimpan!":"Simpan Info"}
                 </button>
               </div>
+              {/* MAINTENANCE MODE */}
+              <div className="mt-6 card rounded-2xl p-5 border border-orange-500/25">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-white font-bold text-sm">🔧 Mode Maintenance</h3>
+                    <p className="text-slate-500 text-xs mt-0.5">Halaman VIP akan ditutup & tampilkan halaman maintenance</p>
+                  </div>
+                  <button onClick={()=>setMaintenanceMode(m=>!m)} className={`relative w-14 h-7 rounded-full transition-all flex-shrink-0 ${maintenanceMode?"bg-orange-500":"bg-slate-700"}`}>
+                    <span className={`absolute top-1.5 w-4 h-4 rounded-full bg-white transition-all ${maintenanceMode?"left-8":"left-1.5"}`}/>
+                  </button>
+                </div>
+                {maintenanceMode && (
+                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 mb-3">
+                    <p className="text-orange-400 text-xs font-bold">⚠ AKTIF — Halaman VIP sedang ditutup untuk semua user</p>
+                  </div>
+                )}
+                <button onClick={async()=>{
+                  await syncToAPI("maintenance_mode", maintenanceMode);
+                  setMaintenanceSaved(true);
+                  setTimeout(()=>setMaintenanceSaved(false), 2000);
+                }} className={`w-full py-2.5 rounded-xl text-sm font-bold border transition-all ${maintenanceMode?"bg-orange-500/15 text-orange-400 border-orange-500/30 hover:bg-orange-500/25":"btn-primary border-transparent"}`}>
+                  {maintenanceSaved ? "Tersimpan!" : maintenanceMode ? "🔧 Aktifkan Maintenance" : "Simpan (Maintenance Off)"}
+                </button>
+              </div>
+
               {/* Premium Signals Section */}
               <div className="mt-8">
                 <div className="flex justify-between items-center mb-4">
@@ -1606,12 +1639,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div className="flex items-center gap-3 ml-auto">
                     <span className="text-xs text-slate-500">Cepat (10s)</span>
                     <input type="range" min="10" max="80" step="5" value={tickerSpeed}
-                      onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); syncToAPI("ticker_speed", v); }}
+                      onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); setMotivasiSpeed(v); }}
                       className="w-32 accent-blue-500"/>
                     <span className="text-xs text-slate-500">Lambat (80s)</span>
                     <span className="text-blue-400 font-black text-sm w-12 text-center">{tickerSpeed}s</span>
                   </div>
-                  <button onClick={()=>{ setTickerSpeed(32); syncToAPI("ticker_speed", 32); }}
+                  <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan disimpan!"); }} className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-400 border border-cyan-500/20">Simpan</button>
+                  <button onClick={()=>{ setTickerSpeed(32); setMotivasiSpeed(32); syncToAPI("ticker_speed", 32); }}
                     className="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-slate-500 hover:text-white hover:bg-white/5">Reset</button>
                 </div>
               </div>
@@ -1674,9 +1708,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <span className="text-xs text-cyan-400 font-bold">{tickerSpeed}s</span>
                 </div>
                 <input type="range" min={10} max={80} step={5} value={tickerSpeed}
-                  onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); syncToAPI("ticker_speed",v); }}
+                  onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); setMotivasiSpeed(v); }}
                   className="w-full accent-cyan-500"/>
-                <div className="flex justify-between text-xs text-slate-600 mt-1"><span>Cepat</span><span>Lambat</span></div>
+                <div className="flex justify-between text-xs text-slate-600 mt-1 mb-3"><span>Cepat (10s)</span><span>Lambat (80s)</span></div>
+                <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan ticker disimpan!"); }} className="btn-primary w-full py-2 rounded-xl text-xs font-bold">Simpan Kecepatan</button>
               </div>
               {showMotivasiForm && (
                 <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
@@ -1718,9 +1753,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </div>
                 <div className="flex items-center gap-3 mb-2">
                   <label className="text-xs text-slate-400 flex-shrink-0">Kecepatan Ticker:</label>
-                  <input type="range" min={10} max={80} value={motivasiSpeed} onChange={e=>{ const v=parseInt(e.target.value); setMotivasiSpeed(v); syncToAPI("ticker_speed",v); }} className="flex-1"/>
-                  <span className="text-xs text-white w-8">{motivasiSpeed}s</span>
+                  <input type="range" min={10} max={80} value={tickerSpeed} onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); setMotivasiSpeed(v); }} className="flex-1"/>
+                  <span className="text-xs text-cyan-400 font-bold w-8">{tickerSpeed}s</span>
                 </div>
+                <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan ticker disimpan!"); }} className="text-xs px-4 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-400 border border-cyan-500/20 mb-2">Simpan Kecepatan</button>
                 <p className="text-xs text-slate-600">Jam kosong = tampil terus-menerus. Isi jam WIB untuk jadwal otomatis.</p>
               </div>
               <div className="space-y-3">
@@ -1820,12 +1856,22 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-white font-bold text-sm">Sinyal BSJP</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">Bandar Saham Jakarta — {bsjpSignals.length} sinyal</p>
+                  <h2 className="text-white font-bold text-sm">📡 Beli Sore Jual Pagi (BSJP)</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{bsjpSignals.length} sinyal · Min akses: <span className="text-cyan-400 font-bold capitalize">{bsjpMinPkg}</span></p>
                 </div>
                 <button onClick={()=>{setBsjpForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});setShowBsjpForm(!showBsjpForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
-                  {showBsjpForm?"Tutup":"+ Tambah BSJP"}
+                  {showBsjpForm?"Tutup":"+ Tambah"}
                 </button>
+              </div>
+              {/* Kontrol Role BSJP */}
+              <div className="card rounded-xl p-4 mb-4 border border-cyan-500/10">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-xs text-slate-400 font-bold">Min. Paket Akses BSJP:</span>
+                  {["basic","silver","gold","pro","platinum","elite"].map(p=>(
+                    <button key={p} onClick={async()=>{ setBsjpMinPkg(p); await syncToAPI("bsjp_min_pkg", p); }} className={`text-xs px-3 py-1.5 rounded-lg capitalize font-bold border transition-all ${bsjpMinPkg===p?"bg-cyan-500/20 text-cyan-400 border-cyan-500/30":"bg-white/5 text-slate-500 border-white/10"}`}>{p}</button>
+                  ))}
+                </div>
+                <p className="text-slate-600 text-xs mt-2">Pilih paket minimum — user di bawah paket ini tidak bisa akses tab BSJP</p>
               </div>
               {showBsjpForm && (
                 <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
@@ -1891,12 +1937,22 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-white font-bold text-sm">Sinyal BPJS</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">BPJS Kesehatan & Ketenagakerjaan — {bpjsSignals.length} sinyal</p>
+                  <h2 className="text-white font-bold text-sm">☀️ Beli Pagi Jual Sore (BPJS)</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{bpjsSignals.length} sinyal · Min akses: <span className="text-purple-400 font-bold capitalize">{bpjsMinPkg}</span></p>
                 </div>
                 <button onClick={()=>{setBpjsForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});setShowBpjsForm(!showBpjsForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
-                  {showBpjsForm?"Tutup":"+ Tambah BPJS"}
+                  {showBpjsForm?"Tutup":"+ Tambah"}
                 </button>
+              </div>
+              {/* Kontrol Role BPJS */}
+              <div className="card rounded-xl p-4 mb-4 border border-purple-500/10">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-xs text-slate-400 font-bold">Min. Paket Akses BPJS:</span>
+                  {["basic","silver","gold","pro","platinum","elite"].map(p=>(
+                    <button key={p} onClick={async()=>{ setBpjsMinPkg(p); await syncToAPI("bpjs_min_pkg", p); }} className={`text-xs px-3 py-1.5 rounded-lg capitalize font-bold border transition-all ${bpjsMinPkg===p?"bg-purple-500/20 text-purple-400 border-purple-500/30":"bg-white/5 text-slate-500 border-white/10"}`}>{p}</button>
+                  ))}
+                </div>
+                <p className="text-slate-600 text-xs mt-2">Pilih paket minimum — user di bawah paket ini tidak bisa akses tab BPJS</p>
               </div>
               {showBpjsForm && (
                 <div className="card rounded-2xl p-5 mb-5 border border-purple-500/20">
