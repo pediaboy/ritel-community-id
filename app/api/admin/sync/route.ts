@@ -67,9 +67,10 @@ export async function POST(req: Request) {
   }
 
   const settingsKeys = [
-    "ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed",
+    "ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed", "motivasi_speed",
     "owners", "partners", "wa_links", "bagger_signals", "bandar_signals", "done_signal_ids",
-    "greeting_pagi", "greeting_malam", "testimonials_data"
+    "greeting_pagi", "greeting_malam", "testimonials_data",
+    "bsjp_signals", "bpjs_signals", "rekap_sinyal", "jurnal_trade"
   ];
   if (settingsKeys.includes(type)) {
     await sb("POST", "/settings",
@@ -118,5 +119,10 @@ export async function GET() {
     greeting_pagi: settings.greeting_pagi || "",
     greeting_malam: settings.greeting_malam || "",
     testimonials_data: settings.testimonials_data || [],
+    bsjp_signals: settings.bsjp_signals || [],
+    bpjs_signals: settings.bpjs_signals || [],
+    rekap_sinyal: settings.rekap_sinyal || [],
+    jurnal_trade: settings.jurnal_trade || [],
+    motivasi_speed: settings.motivasi_speed || null,
   });
 }
