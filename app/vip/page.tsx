@@ -96,6 +96,7 @@ function LiveInfoBox() {
 function FeedTabVIP() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -1624,6 +1625,8 @@ export default function VipPage() {
   const [sigFilter, setSigFilter] = useState("Semua");
   const [bsjpSignals, setBsjpSignals] = useState<any[]>([]);
   const [bpjsSignals, setBpjsSignals] = useState<any[]>([]);
+  const [bsjpMinPkg, setBsjpMinPkg] = useState<string>("silver");
+  const [bpjsMinPkg, setBpjsMinPkg] = useState<string>("silver");
   const [jurnalGlobal, setJurnalGlobal] = useState<any[]>([]);
   const [jurnalPersonal, setJurnalPersonal] = useState<any[]>([]);
   const [rekapList, setRekapList] = useState<any[]>([]);
@@ -1642,6 +1645,7 @@ export default function VipPage() {
   };
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
   const [loading, setLoading] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
   const [greetingPagi, setGreetingPagi] = useState("");
   const [greetingMalam, setGreetingMalam] = useState("");
@@ -1664,6 +1668,9 @@ export default function VipPage() {
         if (data.bagger_signals) setBaggerSignals(data.bagger_signals);
         if (data.bandar_signals) setBandarSignals(data.bandar_signals);
         if (data.done_signal_ids) setDoneSignalIds(data.done_signal_ids || []);
+        if (data.maintenance_mode !== undefined) setMaintenanceMode(!!data.maintenance_mode);
+        if (data.bsjp_min_pkg) setBsjpMinPkg(data.bsjp_min_pkg);
+        if (data.bpjs_min_pkg) setBpjsMinPkg(data.bpjs_min_pkg);
         if (data.bsjp_signals) setBsjpSignals(data.bsjp_signals || []);
         if (data.bpjs_signals) setBpjsSignals(data.bpjs_signals || []);
         if (data.jurnal_global) setJurnalGlobal(data.jurnal_global || []);
@@ -1747,6 +1754,24 @@ export default function VipPage() {
     {title:"Saham Emiten Tambang Menguat Ikuti Harga Nikel Global", source:"IDX Channel", url:"#"},
   ];
   const newsList = ihsgNews.length > 0 ? ihsgNews : defaultNews;
+
+  // Maintenance check — show maintenance screen
+  if (maintenanceMode) return (
+    <div style={{ minHeight:"100vh", background:"#04060f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 24px", textAlign:"center" }}>
+      {/* Stars background */}
+      <div style={{ position:"fixed", inset:0, background:"radial-gradient(ellipse at 50% 20%, rgba(6,182,212,0.04) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(30,90,240,0.04) 0%, transparent 50%)", pointerEvents:"none" }}/>
+      <div style={{ position:"relative", zIndex:1 }}>
+        <div style={{ fontSize:72, marginBottom:24 }}>🔧</div>
+        <h1 style={{ fontWeight:900, fontSize:24, color:"#fff", marginBottom:12, letterSpacing:"-0.5px" }}>Sedang Maintenance</h1>
+        <p style={{ color:"rgba(255,255,255,0.45)", fontSize:14, lineHeight:1.8, maxWidth:300, marginBottom:24 }}>Platform sedang dalam proses pemeliharaan. Mohon tunggu sebentar, kami akan segera kembali.</p>
+        <div style={{ background:"rgba(234,179,8,0.08)", border:"1px solid rgba(234,179,8,0.2)", borderRadius:14, padding:"14px 20px", marginBottom:24 }}>
+          <p style={{ color:"rgba(234,179,8,0.9)", fontSize:13, fontWeight:700 }}>Estimasi selesai segera</p>
+          <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11, marginTop:4 }}>Hubungi admin jika butuh bantuan</p>
+        </div>
+        <a href="https://wa.me/6282218723401?text=Halo%20Admin%20maintenance%20kapan%20selesai?" target="_blank" style={{ display:"block", background:"rgba(37,211,102,0.1)", border:"1px solid rgba(37,211,102,0.25)", color:"#25d366", fontWeight:800, fontSize:14, padding:"12px 24px", borderRadius:14, textDecoration:"none" }}>Hubungi Admin WA</a>
+      </div>
+    </div>
+  );
 
   if (!user) return (
     <div className="min-h-screen bg-[#04060f] flex items-center justify-center">
@@ -2439,6 +2464,16 @@ export default function VipPage() {
         {/* ── BSJP TAB ── */}
         {tab==="bsjp" && (
           <div style={{ padding:"0 16px 100px" }}>
+            {PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bsjpMinPkg) ? (
+              <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
+                <div style={{ fontSize:56, marginBottom:16 }}>🔒</div>
+                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Akses Terbatas</h2>
+                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#06b6d4" }}>Beli Sore Jual Pagi</strong> membutuhkan paket <strong style={{ color:"#06b6d4", textTransform:"capitalize" }}>{bsjpMinPkg}</strong> ke atas.</p>
+                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:12, marginBottom:20 }}>Paket kamu saat ini: <span style={{ color:"rgba(255,255,255,0.6)", textTransform:"capitalize", fontWeight:700 }}>{userPkg}</span></p>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#1e5af0,#06b6d4)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
+              </div>
+            ) : (
+            <>
             <div style={{ padding:"16px 0 8px" }}>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📡 Beli Sore Jual Pagi</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BSJP — akumulasi sore hari, jual di pagi hari saat open pasar.</p>
@@ -2478,12 +2513,24 @@ export default function VipPage() {
                 ))}
               </div>
             )}
+            </>
+            )}
           </div>
         )}
 
         {/* ── BPJS TAB ── */}
         {tab==="bpjs" && (
           <div style={{ padding:"0 16px 100px" }}>
+            {PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bpjsMinPkg) ? (
+              <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
+                <div style={{ fontSize:56, marginBottom:16 }}>🔒</div>
+                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Akses Terbatas</h2>
+                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#a855f7" }}>Beli Pagi Jual Sore</strong> membutuhkan paket <strong style={{ color:"#a855f7", textTransform:"capitalize" }}>{bpjsMinPkg}</strong> ke atas.</p>
+                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:12, marginBottom:20 }}>Paket kamu saat ini: <span style={{ color:"rgba(255,255,255,0.6)", textTransform:"capitalize", fontWeight:700 }}>{userPkg}</span></p>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#7c3aed,#a855f7)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
+              </div>
+            ) : (
+            <>
             <div style={{ padding:"16px 0 8px" }}>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>☀️ Beli Pagi Jual Sore</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BPJS — entry di pagi hari, target keluar sebelum penutupan sore.</p>
@@ -2522,6 +2569,8 @@ export default function VipPage() {
                   </div>
                 ))}
               </div>
+            )}
+            </>
             )}
           </div>
         )}
