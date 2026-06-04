@@ -37,17 +37,20 @@ function MotivasiTickerVIP() {
     "Pasar tidak menghukum yang berani belajar. Pasar menghukum yang tidak mau bersiap.",
     "Cari mentor yang tepat — pengalaman mereka bisa memotong kurva belajarmu bertahun-tahun.",
   ]);
+  const [speed, setSpeed] = useState(55);
   useEffect(() => {
     try {
       fetch("/api/admin/sync").then(r=>r.json()).then(d => {
         if (d.motivasi?.length) setList(d.motivasi.map((m: any) => m.text));
+        if (d.motivasi_speed) setSpeed(d.motivasi_speed);
+        else if (d.ticker_speed) setSpeed(Math.max(20, Math.min(120, d.ticker_speed * 1.5)));
       }).catch(()=>{});
     } catch {}
   }, []);
   const doubled = [...list, ...list];
   return (
     <div style={{ background:"rgba(234,179,8,0.04)", borderBottom:"1px solid rgba(234,179,8,0.08)", padding:"7px 0", overflow:"hidden", flexShrink:0 }}>
-      <div style={{ display:"flex", animation:"motivasiMove 55s linear infinite", whiteSpace:"nowrap", alignItems:"center" }}>
+      <div style={{ display:"flex", animation:`motivasiMove ${speed}s linear infinite`, whiteSpace:"nowrap", alignItems:"center" }}>
         {doubled.map((text, i) => (
           <span key={i} className="inline-flex items-center gap-2 px-8 text-xs" style={{ color:"rgba(234,179,8,0.7)" }}>
             <span style={{ color:"rgba(234,179,8,0.4)" }}>✦</span>{text}
@@ -397,6 +400,7 @@ function SignalCard({ s, isDone }: { s: any; isDone?: boolean }) {
         <div style={{ margin:"0 16px 10px", background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.2)", borderRadius:10, padding:"6px 12px", display:"flex", alignItems:"center", gap:8 }}>
           <span style={{ color:"#22c55e", fontSize:16 }}>✅</span>
           <span style={{ color:"#22c55e", fontSize:11, fontWeight:700 }}>TARGET TERCAPAI</span>
+          {s.result_note && <span style={{ color:"rgba(34,197,94,0.6)", fontSize:10, marginLeft:"auto" }}>{s.result_note}</span>}
         </div>
       )}
       {/* Heartbeat chart */}
@@ -1609,6 +1613,12 @@ export default function VipPage() {
   const [ihsgNews, setIhsgNews] = useState<any[]>([]);
   const [tab, setTab] = useState("home");
   const [sigFilter, setSigFilter] = useState("Semua");
+  const [bsjpSignals, setBsjpSignals] = useState<any[]>([]);
+  const [bpjsSignals, setBpjsSignals] = useState<any[]>([]);
+  const [jurnalList, setJurnalList] = useState<any[]>([]);
+  const [rekapList, setRekapList] = useState<any[]>([]);
+  const [showJurnalModal, setShowJurnalModal] = useState(false);
+  const [jurnalForm, setJurnalForm] = useState<any>({});
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
   const [loading, setLoading] = useState(true);
   const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
@@ -1633,6 +1643,10 @@ export default function VipPage() {
         if (data.bagger_signals) setBaggerSignals(data.bagger_signals);
         if (data.bandar_signals) setBandarSignals(data.bandar_signals);
         if (data.done_signal_ids) setDoneSignalIds(data.done_signal_ids || []);
+        if (data.bsjp_signals) setBsjpSignals(data.bsjp_signals || []);
+        if (data.bpjs_signals) setBpjsSignals(data.bpjs_signals || []);
+        if (data.jurnal_trade) setJurnalList(data.jurnal_trade || []);
+        if (data.rekap_sinyal) setRekapList(data.rekap_sinyal || []);
         if (data.premiumSignals) setPremiumContent(data.premiumSignals);
         if (data.greeting_pagi) setGreetingPagi(data.greeting_pagi);
         if (data.greeting_malam) setGreetingMalam(data.greeting_malam);
@@ -1683,7 +1697,13 @@ export default function VipPage() {
     const pkg = (s.package || []).map((p:string)=>p.toLowerCase());
     return pkg.includes(userPkg) || pkg.includes("all") || pkg.length === 0;
   });
-  const filteredSignals = (sigFilter==="Semua" ? mySignals : mySignals.filter((s:any)=>s.action===sigFilter)).filter((s:any)=>!s.is_tomorrow);
+  const basicSignals = signals.filter((s:any) => {
+    const pkg = (s.package || []).map((p:string)=>p.toLowerCase());
+    return pkg.includes("basic") && !s.is_tomorrow;
+  });
+  const filteredSignals = sigFilter==="Basic"
+    ? basicSignals
+    : (sigFilter==="Semua" ? mySignals : mySignals.filter((s:any)=>s.action===sigFilter)).filter((s:any)=>!s.is_tomorrow);
   const myModules = ALL_MODULES.filter(m=>m.level<=pkgLevel).sort((a,b)=>a.level-b.level);
   const lockedModules = ALL_MODULES.filter(m=>m.level>pkgLevel).sort((a,b)=>a.level-b.level);
 
@@ -1840,6 +1860,13 @@ export default function VipPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+            {/* SINYAL BASIC — hanya tampil jika filter Basic aktif */}
+            {sigFilter==="Basic" && basicSignals.length===0 && (
+              <div style={{ textAlign:"center", padding:"40px 0" }}>
+                <div style={{ fontSize:40, marginBottom:10 }}>📊</div>
+                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13 }}>Belum ada sinyal Basic.</p>
               </div>
             )}
             {filteredSignals.filter((s:any)=>!s.is_tomorrow).length===0 && sigFilter==="Semua" ? (
@@ -2116,6 +2143,187 @@ export default function VipPage() {
           </div>
         )}
 
+        {/* ── REKAP SINYAL TAB ── */}
+        {tab==="rekap" && (
+          <div style={{ padding:"0 16px 100px" }}>
+            <div style={{ padding:"16px 0 8px" }}>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📋 Rekap Sinyal</h2>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Riwayat sinyal yang sudah selesai — kena TP atau SL.</p>
+            </div>
+            {rekapList.length === 0 ? (
+              <div style={{ textAlign:"center", padding:"48px 24px" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>📋</div>
+                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:14 }}>Belum ada rekap sinyal.</p>
+              </div>
+            ) : (
+              <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                {rekapList.map((r:any, i:number) => {
+                  const isTP = r.result === "TP" || r.result === "tp";
+                  const isSL = r.result === "SL" || r.result === "sl";
+                  return (
+                    <div key={i} style={{ background:"#0d1117", border:`1px solid ${isTP?"rgba(34,197,94,0.2)":isSL?"rgba(239,68,68,0.2)":"rgba(255,255,255,0.08)"}`, borderRadius:14, padding:"14px 16px" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+                        <div style={{ width:40, height:40, borderRadius:10, background:isTP?"rgba(34,197,94,0.08)":isSL?"rgba(239,68,68,0.08)":"rgba(255,255,255,0.04)", border:`1px solid ${isTP?"rgba(34,197,94,0.25)":isSL?"rgba(239,68,68,0.25)":"rgba(255,255,255,0.1)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:10, color:isTP?"#22c55e":isSL?"#ef4444":"#666", flexShrink:0 }}>{(r.kode||"--").slice(0,4)}</div>
+                        <div style={{ flex:1 }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                            <span style={{ color:"#fff", fontWeight:900, fontSize:15 }}>{r.kode}</span>
+                            <span style={{ background:isTP?"rgba(34,197,94,0.12)":isSL?"rgba(239,68,68,0.12)":"rgba(255,255,255,0.05)", color:isTP?"#22c55e":isSL?"#ef4444":"#888", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{r.result || "SELESAI"}</span>
+                            {r.gain && <span style={{ color:parseFloat(r.gain)>=0?"#22c55e":"#ef4444", fontSize:12, fontWeight:800 }}>{parseFloat(r.gain)>=0?"+":""}{r.gain}%</span>}
+                          </div>
+                          <p style={{ color:"rgba(255,255,255,0.35)", fontSize:10 }}>{r.saham} · {r.date||r.created_at?.slice(0,10)||""}</p>
+                        </div>
+                      </div>
+                      <div style={{ display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:6 }}>
+                        {[{l:"Entry",v:r.entry},{l:"TP",v:r.tp},{l:"SL",v:r.sl},{l:"Close",v:r.close_price||r.exit_price}].map(({l,v})=>(
+                          <div key={l} style={{ background:"rgba(255,255,255,0.03)", borderRadius:8, padding:"6px 8px" }}>
+                            <p style={{ color:"rgba(255,255,255,0.3)", fontSize:8, marginBottom:2 }}>{l}</p>
+                            <p style={{ color:"rgba(255,255,255,0.75)", fontWeight:700, fontSize:11 }}>{v||"-"}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {r.notes && <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11, marginTop:8, lineHeight:1.5 }}>{r.notes}</p>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── JURNAL TRADE TAB ── */}
+        {tab==="jurnal" && (
+          <div style={{ padding:"0 16px 100px" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0 8px" }}>
+              <div>
+                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📓 Jurnal Trade</h2>
+                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap keputusan trading kamu.</p>
+              </div>
+              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#1e5af0,#06b6d4)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
+            </div>
+
+            {/* Stats jurnal */}
+            {jurnalList.length > 0 && (
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:16 }}>
+                {[
+                  { l:"Total Trade", v:jurnalList.length, c:"#06b6d4" },
+                  { l:"Win Rate", v: Math.round(jurnalList.filter((j:any)=>j.result==="TP"||parseFloat(j.gain||0)>0).length/jurnalList.length*100)+"%", c:"#22c55e" },
+                  { l:"Avg Gain", v: (jurnalList.reduce((s:number,j:any)=>s+parseFloat(j.gain||0),0)/jurnalList.length).toFixed(1)+"%", c: jurnalList.reduce((s:number,j:any)=>s+parseFloat(j.gain||0),0)>=0?"#22c55e":"#ef4444" },
+                ].map(({l,v,c})=>(
+                  <div key={l} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, padding:"12px", textAlign:"center" }}>
+                    <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:4 }}>{l}</p>
+                    <p style={{ color:c, fontWeight:900, fontSize:18 }}>{v}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {jurnalList.length === 0 ? (
+              <div style={{ textAlign:"center", padding:"48px 24px" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>📓</div>
+                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:14 }}>Belum ada catatan jurnal.</p>
+                <p style={{ color:"rgba(255,255,255,0.2)", fontSize:12, marginTop:8 }}>Mulai catat trade pertamamu — ini adalah kebiasaan trader profitable.</p>
+              </div>
+            ) : (
+              <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                {jurnalList.slice().reverse().map((j:any, i:number) => {
+                  const gainNum = parseFloat(j.gain||0);
+                  const isProfit = gainNum > 0 || j.result === "TP";
+                  return (
+                    <div key={i} style={{ background:"#0d1117", border:`1px solid ${isProfit?"rgba(34,197,94,0.15)":"rgba(239,68,68,0.15)"}`, borderRadius:14, padding:"14px 16px" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+                        <div style={{ width:40, height:40, borderRadius:10, background:isProfit?"rgba(34,197,94,0.08)":"rgba(239,68,68,0.08)", border:`1px solid ${isProfit?"rgba(34,197,94,0.2)":"rgba(239,68,68,0.2)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:10, color:isProfit?"#22c55e":"#ef4444", flexShrink:0 }}>{(j.kode||"--").slice(0,4)}</div>
+                        <div style={{ flex:1 }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                            <span style={{ color:"#fff", fontWeight:900, fontSize:15 }}>{j.kode}</span>
+                            <span style={{ background:isProfit?"rgba(34,197,94,0.1)":"rgba(239,68,68,0.1)", color:isProfit?"#22c55e":"#ef4444", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{j.result || (gainNum>0?"PROFIT":"LOSS")}</span>
+                            {j.gain && <span style={{ color:isProfit?"#22c55e":"#ef4444", fontWeight:800, fontSize:13 }}>{gainNum>=0?"+":""}{j.gain}%</span>}
+                          </div>
+                          <p style={{ color:"rgba(255,255,255,0.35)", fontSize:10 }}>{j.saham} · {j.tanggal||""}</p>
+                        </div>
+                      </div>
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
+                        {[{l:"Entry",v:j.entry},{l:"Exit",v:j.exit}].map(({l,v})=>(
+                          <div key={l} style={{ background:"rgba(255,255,255,0.03)", borderRadius:8, padding:"6px 10px" }}>
+                            <p style={{ color:"rgba(255,255,255,0.3)", fontSize:9 }}>{l}</p>
+                            <p style={{ color:"rgba(255,255,255,0.75)", fontWeight:700, fontSize:12 }}>{v||"-"}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {j.alasan && <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:8, marginTop:4 }}><p style={{ color:"rgba(6,182,212,0.7)", fontSize:10, marginBottom:3 }}>Alasan Entry:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.alasan}</p></div>}
+                      {j.evaluasi && <div style={{ paddingTop:6 }}><p style={{ color:"rgba(245,158,11,0.7)", fontSize:10, marginBottom:3 }}>Evaluasi:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.evaluasi}</p></div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Modal Tambah Jurnal */}
+            {showJurnalModal && (
+              <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+                <div style={{ background:"#0d1117", border:"1px solid rgba(255,255,255,0.1)", borderRadius:"20px 20px 0 0", padding:"24px 20px 40px", width:"100%", maxWidth:480, maxHeight:"90vh", overflowY:"auto" }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
+                    <h3 style={{ fontWeight:900, fontSize:16 }}>Tambah Jurnal Trade</h3>
+                    <button onClick={()=>setShowJurnalModal(false)} style={{ background:"rgba(255,255,255,0.08)", border:"none", color:"#fff", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:16 }}>✕</button>
+                  </div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                      <div>
+                        <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Kode Saham</label>
+                        <input value={jurnalForm.kode||""} onChange={e=>setJurnalForm({...jurnalForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                      </div>
+                      <div>
+                        <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Tanggal</label>
+                        <input type="date" value={jurnalForm.tanggal||""} onChange={e=>setJurnalForm({...jurnalForm,tanggal:e.target.value})} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                      </div>
+                    </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10 }}>
+                      <div>
+                        <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Entry</label>
+                        <input value={jurnalForm.entry||""} onChange={e=>setJurnalForm({...jurnalForm,entry:e.target.value})} placeholder="9.750" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                      </div>
+                      <div>
+                        <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Exit</label>
+                        <input value={jurnalForm.exit||""} onChange={e=>setJurnalForm({...jurnalForm,exit:e.target.value})} placeholder="10.200" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                      </div>
+                      <div>
+                        <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Gain %</label>
+                        <input value={jurnalForm.gain||""} onChange={e=>setJurnalForm({...jurnalForm,gain:e.target.value})} placeholder="+5.3" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                      </div>
+                    </div>
+                    <div>
+                      <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Hasil</label>
+                      <div style={{ display:"flex", gap:8 }}>
+                        {["TP","SL","BE","MANUAL"].map(r=>(
+                          <button key={r} onClick={()=>setJurnalForm({...jurnalForm,result:r})} style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid", cursor:"pointer", fontWeight:700, fontSize:11, background:jurnalForm.result===r?"rgba(6,182,212,0.15)":"transparent", color:jurnalForm.result===r?"#06b6d4":"rgba(255,255,255,0.4)", borderColor:jurnalForm.result===r?"rgba(6,182,212,0.4)":"rgba(255,255,255,0.1)" }}>{r}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Alasan Entry</label>
+                      <textarea value={jurnalForm.alasan||""} onChange={e=>setJurnalForm({...jurnalForm,alasan:e.target.value})} placeholder="Setup teknikal, breakout resistance, volume tinggi..." rows={3} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:12, resize:"none", boxSizing:"border-box" as any }}/>
+                    </div>
+                    <div>
+                      <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Evaluasi & Pelajaran</label>
+                      <textarea value={jurnalForm.evaluasi||""} onChange={e=>setJurnalForm({...jurnalForm,evaluasi:e.target.value})} placeholder="Apa yang benar/salah? Apa yang bisa diperbaiki?" rows={3} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:12, resize:"none", boxSizing:"border-box" as any }}/>
+                    </div>
+                    <button onClick={async ()=>{
+                      if (!jurnalForm.kode) { alert("Isi kode saham!"); return; }
+                      const newJ = { ...jurnalForm, id: Date.now().toString(), saham: jurnalForm.saham||jurnalForm.kode };
+                      const updated = [...jurnalList, newJ];
+                      setJurnalList(updated);
+                      setShowJurnalModal(false);
+                      // Save ke API
+                      await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ type:"jurnal_trade", data: updated }) }).catch(()=>{});
+                    }} style={{ background:"linear-gradient(135deg,#1e5af0,#06b6d4)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
+                      Simpan Jurnal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ── AI ANALYST TAB ── */}
         {tab==="ai" && (
           <div style={{ padding:"0 16px 100px" }}>
@@ -2165,6 +2373,97 @@ export default function VipPage() {
                   ))}
                 </div>
               </>
+            )}
+          </div>
+        )}
+
+
+        {/* ── BSJP TAB ── */}
+        {tab==="bsjp" && (
+          <div style={{ padding:"0 16px 100px" }}>
+            <div style={{ padding:"16px 0 8px" }}>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📡 Sinyal BSJP</h2>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Sinyal Bandar Saham Jakarta — analisis khusus pergerakan bandar di saham-saham pilihan.</p>
+            </div>
+            {bsjpSignals.length === 0 ? (
+              <div style={{ textAlign:"center", padding:"48px 24px" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>📡</div>
+                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:14 }}>Belum ada sinyal BSJP.</p>
+                <p style={{ color:"rgba(255,255,255,0.2)", fontSize:12, marginTop:8 }}>Admin akan push sinyal BSJP terbaru segera.</p>
+              </div>
+            ) : (
+              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                {bsjpSignals.map((s:any, i:number) => (
+                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(6,182,212,0.2)", borderRadius:16, padding:"16px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+                      <div style={{ width:44, height:44, borderRadius:12, background:"rgba(6,182,212,0.08)", border:"1px solid rgba(6,182,212,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#06b6d4", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                          <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode}</span>
+                          <span style={{ background:"rgba(6,182,212,0.12)", color:"#06b6d4", border:"1px solid rgba(6,182,212,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action||"BSJP"}</span>
+                        </div>
+                        <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham||""}</p>
+                      </div>
+                      {s.date && <span style={{ color:"rgba(255,255,255,0.25)", fontSize:10 }}>{s.date}</span>}
+                    </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:8 }}>
+                      {[{l:"Entry",v:s.entry,c:"rgba(255,255,255,0.85)"},{l:"TP",v:s.tp,c:"#22c55e"},{l:"SL",v:s.sl,c:"#ef4444"}].map(({l,v,c})=>(
+                        <div key={l} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
+                          <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:2 }}>{l}</p>
+                          <p style={{ color:c, fontWeight:800, fontSize:13 }}>{v||"-"}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {s.description && <p style={{ color:"rgba(255,255,255,0.5)", fontSize:12, lineHeight:1.6, borderTop:"1px solid rgba(255,255,255,0.06)", paddingTop:8 }}>{s.description}</p>}
+                    {s.notes && <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11, lineHeight:1.5, marginTop:6 }}>{s.notes}</p>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── BPJS TAB ── */}
+        {tab==="bpjs" && (
+          <div style={{ padding:"0 16px 100px" }}>
+            <div style={{ padding:"16px 0 8px" }}>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>🏥 Sinyal BPJS</h2>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Saham BPJS Kesehatan & Ketenagakerjaan — analisis dan sinyal khusus untuk sektor ini.</p>
+            </div>
+            {bpjsSignals.length === 0 ? (
+              <div style={{ textAlign:"center", padding:"48px 24px" }}>
+                <div style={{ fontSize:48, marginBottom:12 }}>🏥</div>
+                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:14 }}>Belum ada sinyal BPJS.</p>
+                <p style={{ color:"rgba(255,255,255,0.2)", fontSize:12, marginTop:8 }}>Admin akan push sinyal BPJS terbaru segera.</p>
+              </div>
+            ) : (
+              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                {bpjsSignals.map((s:any, i:number) => (
+                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(168,85,247,0.2)", borderRadius:16, padding:"16px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+                      <div style={{ width:44, height:44, borderRadius:12, background:"rgba(168,85,247,0.08)", border:"1px solid rgba(168,85,247,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#a855f7", flexShrink:0 }}>{(s.kode||"BPJS").slice(0,4)}</div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                          <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode}</span>
+                          <span style={{ background:"rgba(168,85,247,0.12)", color:"#a855f7", border:"1px solid rgba(168,85,247,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action||"BPJS"}</span>
+                        </div>
+                        <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham||""}</p>
+                      </div>
+                      {s.date && <span style={{ color:"rgba(255,255,255,0.25)", fontSize:10 }}>{s.date}</span>}
+                    </div>
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:8 }}>
+                      {[{l:"Entry",v:s.entry,c:"rgba(255,255,255,0.85)"},{l:"TP",v:s.tp,c:"#22c55e"},{l:"SL",v:s.sl,c:"#ef4444"}].map(({l,v,c})=>(
+                        <div key={l} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
+                          <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:2 }}>{l}</p>
+                          <p style={{ color:c, fontWeight:800, fontSize:13 }}>{v||"-"}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {s.description && <p style={{ color:"rgba(255,255,255,0.5)", fontSize:12, lineHeight:1.6, borderTop:"1px solid rgba(255,255,255,0.06)", paddingTop:8 }}>{s.description}</p>}
+                    {s.notes && <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11, lineHeight:1.5, marginTop:6 }}>{s.notes}</p>}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}
@@ -2263,8 +2562,12 @@ export default function VipPage() {
           { id:"home", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>, label:"Beranda" },
           { id:"feed", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, label:"Feed" },
           { id:"sinyal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, label:"Sinyal" },
+          { id:"bsjp", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>, label:"BSJP" },
+          { id:"bpjs", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>, label:"BPJS" },
           { id:"bandar", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>, label:"Bandar" },
           { id:"bagger", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>, label:"Bagger" },
+          { id:"rekap", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>, label:"Rekap" },
+          { id:"jurnal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>, label:"Jurnal" },
           { id:"modul", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>, label:"Modul" },
           { id:"ai", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>, label:"RC-AI" },
           { id:"profile", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label:"Profil" },
