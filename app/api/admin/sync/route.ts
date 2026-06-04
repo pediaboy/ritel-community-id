@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     "ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed", "motivasi_speed",
     "owners", "partners", "wa_links", "bagger_signals", "bandar_signals", "done_signal_ids",
     "greeting_pagi", "greeting_malam", "testimonials_data",
-    "bsjp_signals", "bpjs_signals", "rekap_sinyal", "jurnal_trade"
+    "bsjp_signals", "bpjs_signals", "rekap_sinyal", "jurnal_trade", "jurnal_global"
   ];
   if (settingsKeys.includes(type)) {
     await sb("POST", "/settings",
@@ -123,6 +123,7 @@ export async function GET() {
     bpjs_signals: settings.bpjs_signals || [],
     rekap_sinyal: settings.rekap_sinyal || [],
     jurnal_trade: settings.jurnal_trade || [],
+    jurnal_global: settings.jurnal_global || [],
     motivasi_speed: settings.motivasi_speed || null,
   });
 }
