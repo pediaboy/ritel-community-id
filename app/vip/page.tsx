@@ -347,7 +347,7 @@ const ACTION_COLORS: any = {
 };
 
 // ── SIGNAL CARD ──────────────────────────────────────────────────
-function SignalCard({ s, isDone }: { s: any; isDone?: boolean }) {
+function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onToggleDone?: (id:string)=>void }) {
   const ac = ACTION_COLORS[s.action] || ACTION_COLORS.HOLD;
   const isSignalDone = isDone === true || s.is_done === true;
   const entryNum = parseFloat(String(s.entry).replace(/\./g,"").replace(",",".")) || 0;
@@ -395,14 +395,23 @@ function SignalCard({ s, isDone }: { s: any; isDone?: boolean }) {
           </div>}
         </div>
       )}
-      {/* Centang TP individual jika ada is_done tracking */}
-      {isSignalDone && (
-        <div style={{ margin:"0 16px 10px", background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.2)", borderRadius:10, padding:"6px 12px", display:"flex", alignItems:"center", gap:8 }}>
-          <span style={{ color:"#22c55e", fontSize:16 }}>✅</span>
-          <span style={{ color:"#22c55e", fontSize:11, fontWeight:700 }}>TARGET TERCAPAI</span>
-          {s.result_note && <span style={{ color:"rgba(34,197,94,0.6)", fontSize:10, marginLeft:"auto" }}>{s.result_note}</span>}
-        </div>
-      )}
+      {/* Tombol / badge TARGET TERCAPAI */}
+      <div style={{ margin:"0 16px 10px" }}>
+        {isSignalDone ? (
+          <div style={{ background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.2)", borderRadius:10, padding:"8px 12px", display:"flex", alignItems:"center", gap:8 }}>
+            <span style={{ color:"#22c55e", fontSize:16 }}>✅</span>
+            <span style={{ color:"#22c55e", fontSize:11, fontWeight:700 }}>TARGET TERCAPAI</span>
+            {s.result_note && <span style={{ color:"rgba(34,197,94,0.5)", fontSize:10, marginLeft:"auto" }}>{s.result_note}</span>}
+            {onToggleDone && <button onClick={()=>onToggleDone(s.id)} style={{ marginLeft:"auto", background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"rgba(239,68,68,0.7)", fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:6, cursor:"pointer" }}>Batal</button>}
+          </div>
+        ) : (
+          onToggleDone ? (
+            <button onClick={()=>onToggleDone(s.id)} style={{ width:"100%", background:"rgba(34,197,94,0.05)", border:"1px dashed rgba(34,197,94,0.2)", borderRadius:10, padding:"7px 12px", display:"flex", alignItems:"center", justifyContent:"center", gap:8, cursor:"pointer", color:"rgba(34,197,94,0.5)", fontSize:11, fontWeight:700 }}>
+              <span>☑</span> Tandai Target Tercapai
+            </button>
+          ) : null
+        )}
+      </div>
       {/* Heartbeat chart */}
       <div style={{ padding:"0 16px 10px" }}>
         <HeartbeatChart changePercent={pct} />
@@ -1615,10 +1624,22 @@ export default function VipPage() {
   const [sigFilter, setSigFilter] = useState("Semua");
   const [bsjpSignals, setBsjpSignals] = useState<any[]>([]);
   const [bpjsSignals, setBpjsSignals] = useState<any[]>([]);
-  const [jurnalList, setJurnalList] = useState<any[]>([]);
+  const [jurnalGlobal, setJurnalGlobal] = useState<any[]>([]);
+  const [jurnalPersonal, setJurnalPersonal] = useState<any[]>([]);
   const [rekapList, setRekapList] = useState<any[]>([]);
   const [showJurnalModal, setShowJurnalModal] = useState(false);
   const [jurnalForm, setJurnalForm] = useState<any>({});
+  // userDoneIds: personal mark (disimpan di localStorage per device)
+  const [userDoneIds, setUserDoneIds] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("user_done_signals")||"[]"); } catch { return []; }
+  });
+  const toggleUserDone = (sigId: string) => {
+    setUserDoneIds(prev => {
+      const next = prev.includes(sigId) ? prev.filter(x=>x!==sigId) : [...prev, sigId];
+      try { localStorage.setItem("user_done_signals", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
   const [expandedModul, setExpandedModul] = useState<string|null>(null);
   const [loading, setLoading] = useState(true);
   const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
@@ -1645,7 +1666,12 @@ export default function VipPage() {
         if (data.done_signal_ids) setDoneSignalIds(data.done_signal_ids || []);
         if (data.bsjp_signals) setBsjpSignals(data.bsjp_signals || []);
         if (data.bpjs_signals) setBpjsSignals(data.bpjs_signals || []);
-        if (data.jurnal_trade) setJurnalList(data.jurnal_trade || []);
+        if (data.jurnal_global) setJurnalGlobal(data.jurnal_global || []);
+        // Load jurnal personal token
+        const myTokenKey = localStorage.getItem("vip_token") || (localStorage.getItem("rc_user") ? JSON.parse(localStorage.getItem("rc_user")||"{}").auth_token : "");
+        if (myTokenKey) {
+          fetch(`/api/admin/settings?key=jurnal_${encodeURIComponent(myTokenKey.slice(-12))}`).then(r=>r.json()).then(d=>{ if(d && Array.isArray(d.value)) setJurnalPersonal(d.value||[]); }).catch(()=>{});
+        }
         if (data.rekap_sinyal) setRekapList(data.rekap_sinyal || []);
         if (data.premiumSignals) setPremiumContent(data.premiumSignals);
         if (data.greeting_pagi) setGreetingPagi(data.greeting_pagi);
@@ -1692,6 +1718,11 @@ export default function VipPage() {
   };
 
   const pkgLevel = PKG_LEVELS.indexOf(user?.package||"basic");
+  // Jurnal: gabungan global (dari admin) + personal (per-token), unique by id
+  const jurnalList = [...jurnalGlobal, ...jurnalPersonal].reduce((acc:any[], j:any) => {
+    if (!acc.find((x:any) => x.id === j.id)) acc.push(j);
+    return acc;
+  }, []).sort((a:any,b:any)=>new Date(b.tanggal||b.created_at||0).getTime()-new Date(a.tanggal||a.created_at||0).getTime());
   const userPkg = (user?.package || "basic").toLowerCase();
   const mySignals = signals.filter(s => {
     const pkg = (s.package || []).map((p:string)=>p.toLowerCase());
@@ -1792,7 +1823,7 @@ export default function VipPage() {
                   <button onClick={()=>setTab("sinyal")} style={{ color:"#60a5fa", fontSize:12, background:"none", border:"none", cursor:"pointer" }}>Lihat semua →</button>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                  {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>)}
+                  {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
                 </div>
               </div>
             )}
@@ -1838,7 +1869,7 @@ export default function VipPage() {
                   <span style={{ color:"rgba(6,182,212,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
                 </div>
                 <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-                  {signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).map((s:any,i:number)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>)}
+                  {signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).map((s:any,i:number)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
                 </div>
               </div>
             )}
@@ -1901,7 +1932,7 @@ export default function VipPage() {
                     </div>
                   );
                 }
-                items.push(<SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>);
+                items.push(<SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>);
               });
               return <div style={{ display:"flex", flexDirection:"column", gap:12 }}>{items}</div>;
             })()}
@@ -1927,7 +1958,7 @@ export default function VipPage() {
               </div>
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                {bandarSignals.map((s,i)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)}/>)}
+                {bandarSignals.map((s,i)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
               </div>
             )}
 
@@ -2148,7 +2179,7 @@ export default function VipPage() {
           <div style={{ padding:"0 16px 100px" }}>
             <div style={{ padding:"16px 0 8px" }}>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📋 Rekap Sinyal</h2>
-              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Riwayat sinyal yang sudah selesai — kena TP atau SL.</p>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Hasil sinyal yang sudah run — kena TP atau SL.</p>
             </div>
             {rekapList.length === 0 ? (
               <div style={{ textAlign:"center", padding:"48px 24px" }}>
@@ -2193,10 +2224,20 @@ export default function VipPage() {
         {/* ── JURNAL TRADE TAB ── */}
         {tab==="jurnal" && (
           <div style={{ padding:"0 16px 100px" }}>
+            {pkgLevel < 1 ? (
+              /* LOCKED untuk Basic */
+              <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
+                <div style={{ fontSize:56, marginBottom:16 }}>🔒</div>
+                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Jurnal Trade — Silver+</h2>
+                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:20 }}>Fitur Jurnal Trade tersedia untuk paket <strong style={{ color:"#94a3b8" }}>Silver</strong> ke atas. Upgrade untuk catat & evaluasi setiap trading kamu.</p>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Silver!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#64748b,#94a3b8)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade ke Silver</a>
+              </div>
+            ) : (
+              <>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0 8px" }}>
               <div>
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📓 Jurnal Trade</h2>
-                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap keputusan trading kamu.</p>
+                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap trade — data ini hanya milikmu.</p>
               </div>
               <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#1e5af0,#06b6d4)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
             </div>
@@ -2251,10 +2292,23 @@ export default function VipPage() {
                       </div>
                       {j.alasan && <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:8, marginTop:4 }}><p style={{ color:"rgba(6,182,212,0.7)", fontSize:10, marginBottom:3 }}>Alasan Entry:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.alasan}</p></div>}
                       {j.evaluasi && <div style={{ paddingTop:6 }}><p style={{ color:"rgba(245,158,11,0.7)", fontSize:10, marginBottom:3 }}>Evaluasi:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.evaluasi}</p></div>}
+                      {/* Tombol hapus untuk entry personal */}
+                      {j.source === "personal" && (
+                        <button onClick={async()=>{
+                          const updatedPersonal = jurnalPersonal.filter((x:any)=>x.id!==j.id);
+                          setJurnalPersonal(updatedPersonal);
+                          const myToken = localStorage.getItem("vip_token") || (localStorage.getItem("rc_user") ? JSON.parse(localStorage.getItem("rc_user")||"{}").auth_token : "");
+                          if (myToken) await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myToken.slice(-12)}`, value: updatedPersonal }) }).catch(()=>{});
+                        }} style={{ marginTop:8, background:"rgba(239,68,68,0.06)", border:"1px solid rgba(239,68,68,0.15)", color:"rgba(239,68,68,0.6)", fontSize:10, padding:"4px 10px", borderRadius:8, cursor:"pointer", width:"100%" }}>
+                          Hapus Catatan Ini
+                        </button>
+                      )}
                     </div>
                   );
                 })}
               </div>
+            )}
+            </>
             )}
 
             {/* Modal Tambah Jurnal */}
@@ -2308,12 +2362,16 @@ export default function VipPage() {
                     </div>
                     <button onClick={async ()=>{
                       if (!jurnalForm.kode) { alert("Isi kode saham!"); return; }
-                      const newJ = { ...jurnalForm, id: Date.now().toString(), saham: jurnalForm.saham||jurnalForm.kode };
-                      const updated = [...jurnalList, newJ];
-                      setJurnalList(updated);
+                      const newJ = { ...jurnalForm, id: Date.now().toString(), saham: jurnalForm.saham||jurnalForm.kode, created_at: new Date().toISOString(), source: "personal" };
+                      const updatedPersonal = [newJ, ...jurnalPersonal];
+                      setJurnalPersonal(updatedPersonal);
                       setShowJurnalModal(false);
-                      // Save ke API
-                      await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ type:"jurnal_trade", data: updated }) }).catch(()=>{});
+                      setJurnalForm({});
+                      // Save ke settings per-token
+                      const myToken = localStorage.getItem("vip_token") || (localStorage.getItem("rc_user") ? JSON.parse(localStorage.getItem("rc_user")||"{}").auth_token : "");
+                      if (myToken) {
+                        await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myToken.slice(-12)}`, value: updatedPersonal }) }).catch(()=>{});
+                      }
                     }} style={{ background:"linear-gradient(135deg,#1e5af0,#06b6d4)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
                       Simpan Jurnal
                     </button>
@@ -2382,8 +2440,8 @@ export default function VipPage() {
         {tab==="bsjp" && (
           <div style={{ padding:"0 16px 100px" }}>
             <div style={{ padding:"16px 0 8px" }}>
-              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📡 Sinyal BSJP</h2>
-              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Sinyal Bandar Saham Jakarta — analisis khusus pergerakan bandar di saham-saham pilihan.</p>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📡 Beli Sore Jual Pagi</h2>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BSJP — akumulasi sore hari, jual di pagi hari saat open pasar.</p>
             </div>
             {bsjpSignals.length === 0 ? (
               <div style={{ textAlign:"center", padding:"48px 24px" }}>
@@ -2427,8 +2485,8 @@ export default function VipPage() {
         {tab==="bpjs" && (
           <div style={{ padding:"0 16px 100px" }}>
             <div style={{ padding:"16px 0 8px" }}>
-              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>🏥 Sinyal BPJS</h2>
-              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Saham BPJS Kesehatan & Ketenagakerjaan — analisis dan sinyal khusus untuk sektor ini.</p>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>☀️ Beli Pagi Jual Sore</h2>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BPJS — entry di pagi hari, target keluar sebelum penutupan sore.</p>
             </div>
             {bpjsSignals.length === 0 ? (
               <div style={{ textAlign:"center", padding:"48px 24px" }}>
@@ -2562,8 +2620,8 @@ export default function VipPage() {
           { id:"home", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>, label:"Beranda" },
           { id:"feed", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, label:"Feed" },
           { id:"sinyal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, label:"Sinyal" },
-          { id:"bsjp", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>, label:"BSJP" },
-          { id:"bpjs", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>, label:"BPJS" },
+          { id:"bsjp", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>, label:"B.Sore" },
+          { id:"bpjs", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>, label:"B.Pagi" },
           { id:"bandar", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>, label:"Bandar" },
           { id:"bagger", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>, label:"Bagger" },
           { id:"rekap", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>, label:"Rekap" },
