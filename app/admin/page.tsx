@@ -593,11 +593,23 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           setStockMode("custom");
         }
 
-        // Ticker, pricing, premiumSignals
+        // Ticker, pricing, premiumSignals + extra data
         const syncRes = await fetch("/api/admin/sync").then(r => r.json()).catch(() => ({}));
         if (syncRes.ticker && syncRes.ticker.length > 0) setTickerStocks(syncRes.ticker);
         if (syncRes.pricing && syncRes.pricing.length > 0) setPricing(syncRes.pricing);
         if (syncRes.premiumSignals && syncRes.premiumSignals.length > 0) setPremiumSignals(syncRes.premiumSignals);
+        // Load extra states yang sebelumnya tidak di-load
+        if (syncRes.done_signal_ids) setDoneSignalIds(syncRes.done_signal_ids || []);
+        if (syncRes.bsjp_signals) setBsjpSignals(syncRes.bsjp_signals || []);
+        if (syncRes.bpjs_signals) setBpjsSignals(syncRes.bpjs_signals || []);
+        if (syncRes.rekap_sinyal) setRekapList(syncRes.rekap_sinyal || []);
+        if (syncRes.jurnal_global) setJurnalList(syncRes.jurnal_global || []);
+        else if (syncRes.jurnal_trade) setJurnalList(syncRes.jurnal_trade || []);
+        if (syncRes.motivasi && syncRes.motivasi.length > 0) setMotivasiList(syncRes.motivasi);
+        if (syncRes.owners && syncRes.owners.length > 0) setOwners(syncRes.owners);
+        if (syncRes.partners) setPartners(syncRes.partners || []);
+        if (syncRes.bagger_signals) setBaggerList(syncRes.bagger_signals || []);
+        if (syncRes.bandar_signals) setBandarList(syncRes.bandar_signals || []);
         // Login logs
         const logsRes = await fetch("/api/admin/loginlogs").then(r => r.json()).catch(() => ({}));
         if (logsRes.logs) setLoginLogs(logsRes.logs);
@@ -852,8 +864,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
     { id:"bagger", label:"🚀 Bagger" },
-    { id:"bsjp", label:"📡 BSJP" },
-    { id:"bpjs", label:"🏥 BPJS" },
+    { id:"bsjp", label:"📡 BSJP (Beli Sore Jual Pagi)" },
+    { id:"bpjs", label:"☀️ BPJS (Beli Pagi Jual Sore)" },
     { id:"rekap", label:"📋 Rekap TP/SL" },
     { id:"jurnal", label:"📓 Jurnal" },
     { id:"sinyal_besok", label:"🌙 Besok" },
@@ -2044,12 +2056,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div className="mb-4"><label className="text-xs text-slate-500 mb-1 block">Evaluasi</label><textarea value={jurnalFormAdmin.evaluasi} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,evaluasi:e.target.value})} rows={2} className="input-dark resize-none"/></div>
                   <button onClick={async()=>{
                     if (!jurnalFormAdmin.kode) { alert("Isi kode!"); return; }
-                    const newJ = { ...jurnalFormAdmin, id: Date.now().toString() };
+                    const newJ = { ...jurnalFormAdmin, id: Date.now().toString(), source: "global", created_at: new Date().toISOString() };
                     const updated = [newJ, ...jurnalList];
                     setJurnalList(updated); setShowJurnalFormAdmin(false);
                     setJurnalFormAdmin({kode:"",saham:"",action:"BUY",entry:"",exit:"",result:"TP",gain:"",tanggal:new Date().toISOString().slice(0,10),alasan:"",evaluasi:""});
-                    await syncToAPI("jurnal_trade", updated);
-                  }} className="btn-primary w-full py-3 rounded-xl text-sm font-bold">Simpan Jurnal</button>
+                    await syncToAPI("jurnal_global", updated);
+                  }} className="btn-primary w-full py-3 rounded-xl text-sm font-bold">Simpan Jurnal (Muncul Semua Token)</button>
                 </div>
               )}
               <div className="space-y-3">
@@ -2064,8 +2076,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <div className="flex items-center gap-2">
                         <span className="text-slate-500 text-xs">{j.tanggal}</span>
                         <button onClick={async()=>{
-                          const updated=jurnalList.filter(x=>x.id!==j.id);
-                          setJurnalList(updated); await syncToAPI("jurnal_trade",updated);
+                          const updated=jurnalList.filter((x:any)=>x.id!==j.id);
+                          setJurnalList(updated); await syncToAPI("jurnal_global",updated);
                         }} className="text-xs text-red-400 border border-red-500/20 px-2 py-1 rounded-lg">Hapus</button>
                       </div>
                     </div>
