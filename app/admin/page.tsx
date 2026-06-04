@@ -59,7 +59,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders" | "owners_partners" | "admin_feed" | "bagger" | "bandar";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders" | "owners_partners" | "admin_feed" | "bagger" | "bandar" | "bsjp" | "bpjs" | "rekap" | "jurnal";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -474,6 +474,18 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   // Form states
   const [sigForm, setSigForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", tp2:"", tp3:"", sl:"", notes:"", package:["gold","pro","platinum","elite"], is_tomorrow:false, is_pinned:false });
+  const [bsjpSignals, setBsjpSignals] = useState<any[]>([]);
+  const [bpjsSignals, setBpjsSignals] = useState<any[]>([]);
+  const [rekapList, setRekapList] = useState<any[]>([]);
+  const [jurnalList, setJurnalList] = useState<any[]>([]);
+  const [bsjpForm, setBsjpForm] = useState<any>({ kode:"", saham:"", action:"BUY", entry:"", tp:"", sl:"", description:"", notes:"", date:new Date().toISOString().slice(0,10) });
+  const [bpjsForm, setBpjsForm] = useState<any>({ kode:"", saham:"", action:"BUY", entry:"", tp:"", sl:"", description:"", notes:"", date:new Date().toISOString().slice(0,10) });
+  const [rekapForm, setRekapForm] = useState<any>({ kode:"", saham:"", result:"TP", entry:"", tp:"", sl:"", close_price:"", gain:"", date:new Date().toISOString().slice(0,10), notes:"" });
+  const [jurnalFormAdmin, setJurnalFormAdmin] = useState<any>({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"TP", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" });
+  const [showBsjpForm, setShowBsjpForm] = useState(false);
+  const [showBpjsForm, setShowBpjsForm] = useState(false);
+  const [showRekapForm, setShowRekapForm] = useState(false);
+  const [showJurnalFormAdmin, setShowJurnalFormAdmin] = useState(false);
   const [editSigId, setEditSigId] = useState<string|null>(null);
   const [showSigForm, setShowSigForm] = useState(false);
   const [baggerList, setBaggerList] = useState<any[]>([]);
@@ -840,6 +852,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
     { id:"bagger", label:"🚀 Bagger" },
+    { id:"bsjp", label:"📡 BSJP" },
+    { id:"bpjs", label:"🏥 BPJS" },
+    { id:"rekap", label:"📋 Rekap TP/SL" },
+    { id:"jurnal", label:"📓 Jurnal" },
     { id:"sinyal_besok", label:"🌙 Besok" },
     { id:"bandar", label:"🔍 Bandar" },
     { id:"admin_feed", label:"📝 Post Feed" },
@@ -1786,6 +1802,286 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           )}
           {/* ADMIN FEED */}
           {tab==="admin_feed" && <AdminFeedTab />}
+
+          {/* ===== BSJP TAB ===== */}
+          {tab==="bsjp" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Sinyal BSJP</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">Bandar Saham Jakarta — {bsjpSignals.length} sinyal</p>
+                </div>
+                <button onClick={()=>{setBsjpForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});setShowBsjpForm(!showBsjpForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                  {showBsjpForm?"Tutup":"+ Tambah BSJP"}
+                </button>
+              </div>
+              {showBsjpForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                  <h3 className="text-white font-bold mb-4 text-sm">Tambah Sinyal BSJP</h3>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div><label className="text-xs text-slate-500 mb-1 block">Kode Saham</label><input value={bsjpForm.kode} onChange={e=>setBsjpForm({...bsjpForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Nama Saham</label><input value={bsjpForm.saham} onChange={e=>setBsjpForm({...bsjpForm,saham:e.target.value})} placeholder="Bank Central Asia" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Aksi</label>
+                      <select value={bsjpForm.action} onChange={e=>setBsjpForm({...bsjpForm,action:e.target.value})} className="input-dark">
+                        {["BUY","SELL","HOLD","ANTRI"].map(a=><option key={a} value={a} className="bg-black">{a}</option>)}
+                      </select>
+                    </div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Tanggal</label><input type="date" value={bsjpForm.date} onChange={e=>setBsjpForm({...bsjpForm,date:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Entry</label><input value={bsjpForm.entry} onChange={e=>setBsjpForm({...bsjpForm,entry:e.target.value})} placeholder="9.750" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Stop Loss</label><input value={bsjpForm.sl} onChange={e=>setBsjpForm({...bsjpForm,sl:e.target.value})} placeholder="9.100" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">TP</label><input value={bsjpForm.tp} onChange={e=>setBsjpForm({...bsjpForm,tp:e.target.value})} placeholder="10.200" className="input-dark"/></div>
+                  </div>
+                  <div className="mb-3"><label className="text-xs text-slate-500 mb-1 block">Deskripsi Analisis</label><textarea value={bsjpForm.description} onChange={e=>setBsjpForm({...bsjpForm,description:e.target.value})} placeholder="Analisis teknikal & fundamental..." rows={3} className="input-dark resize-none"/></div>
+                  <div className="mb-4"><label className="text-xs text-slate-500 mb-1 block">Catatan</label><textarea value={bsjpForm.notes} onChange={e=>setBsjpForm({...bsjpForm,notes:e.target.value})} placeholder="Catatan tambahan..." rows={2} className="input-dark resize-none"/></div>
+                  <button onClick={async()=>{
+                    if (!bsjpForm.kode) { alert("Isi kode saham!"); return; }
+                    const newS = { ...bsjpForm, id: Date.now().toString() };
+                    const updated = [newS, ...bsjpSignals];
+                    setBsjpSignals(updated);
+                    setShowBsjpForm(false);
+                    setBsjpForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});
+                    await syncToAPI("bsjp_signals", updated);
+                  }} className="btn-primary w-full py-3 rounded-xl text-sm font-bold">Simpan Sinyal BSJP</button>
+                </div>
+              )}
+              <div className="space-y-3">
+                {bsjpSignals.map((s:any) => (
+                  <div key={s.id} className="card rounded-2xl p-4 border border-cyan-500/10">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center font-black text-xs text-cyan-400">{(s.kode||"--").slice(0,4)}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white font-black text-sm">{s.kode}</span>
+                          <span className="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded font-bold">{s.action}</span>
+                        </div>
+                        <p className="text-slate-500 text-xs">{s.saham} · {s.date}</p>
+                      </div>
+                      <button onClick={async()=>{
+                        const updated = bsjpSignals.filter(x=>x.id!==s.id);
+                        setBsjpSignals(updated); await syncToAPI("bsjp_signals", updated);
+                      }} className="text-xs text-red-400 border border-red-500/20 px-2 py-1 rounded-lg">Hapus</button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                      {[{l:"Entry",v:s.entry},{l:"TP",v:s.tp},{l:"SL",v:s.sl}].map(({l,v})=>(
+                        <div key={l} className="bg-white/5 rounded-lg p-2"><p className="text-slate-500 text-[10px]">{l}</p><p className="text-white font-bold">{v||"-"}</p></div>
+                      ))}
+                    </div>
+                    {s.description && <p className="text-slate-400 text-xs leading-relaxed">{s.description}</p>}
+                  </div>
+                ))}
+                {bsjpSignals.length === 0 && <p className="text-slate-500 text-sm text-center py-10">Belum ada sinyal BSJP</p>}
+              </div>
+            </div>
+          )}
+
+          {/* ===== BPJS TAB ===== */}
+          {tab==="bpjs" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Sinyal BPJS</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">BPJS Kesehatan & Ketenagakerjaan — {bpjsSignals.length} sinyal</p>
+                </div>
+                <button onClick={()=>{setBpjsForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});setShowBpjsForm(!showBpjsForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                  {showBpjsForm?"Tutup":"+ Tambah BPJS"}
+                </button>
+              </div>
+              {showBpjsForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-purple-500/20">
+                  <h3 className="text-white font-bold mb-4 text-sm">Tambah Sinyal BPJS</h3>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div><label className="text-xs text-slate-500 mb-1 block">Kode Saham</label><input value={bpjsForm.kode} onChange={e=>setBpjsForm({...bpjsForm,kode:e.target.value.toUpperCase()})} placeholder="BPJK" className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Nama</label><input value={bpjsForm.saham} onChange={e=>setBpjsForm({...bpjsForm,saham:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Aksi</label>
+                      <select value={bpjsForm.action} onChange={e=>setBpjsForm({...bpjsForm,action:e.target.value})} className="input-dark">
+                        {["BUY","SELL","HOLD","ANTRI"].map(a=><option key={a} value={a} className="bg-black">{a}</option>)}
+                      </select>
+                    </div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Tanggal</label><input type="date" value={bpjsForm.date} onChange={e=>setBpjsForm({...bpjsForm,date:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Entry</label><input value={bpjsForm.entry} onChange={e=>setBpjsForm({...bpjsForm,entry:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">TP</label><input value={bpjsForm.tp} onChange={e=>setBpjsForm({...bpjsForm,tp:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">SL</label><input value={bpjsForm.sl} onChange={e=>setBpjsForm({...bpjsForm,sl:e.target.value})} className="input-dark"/></div>
+                  </div>
+                  <div className="mb-4"><label className="text-xs text-slate-500 mb-1 block">Deskripsi</label><textarea value={bpjsForm.description} onChange={e=>setBpjsForm({...bpjsForm,description:e.target.value})} rows={3} className="input-dark resize-none"/></div>
+                  <button onClick={async()=>{
+                    if (!bpjsForm.kode) { alert("Isi kode!"); return; }
+                    const newS = { ...bpjsForm, id: Date.now().toString() };
+                    const updated = [newS, ...bpjsSignals];
+                    setBpjsSignals(updated); setShowBpjsForm(false);
+                    setBpjsForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});
+                    await syncToAPI("bpjs_signals", updated);
+                  }} className="btn-primary w-full py-3 rounded-xl text-sm font-bold">Simpan Sinyal BPJS</button>
+                </div>
+              )}
+              <div className="space-y-3">
+                {bpjsSignals.map((s:any) => (
+                  <div key={s.id} className="card rounded-2xl p-4 border border-purple-500/10">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center font-black text-xs text-purple-400">{(s.kode||"--").slice(0,4)}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white font-black text-sm">{s.kode}</span>
+                          <span className="text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded font-bold">{s.action}</span>
+                        </div>
+                        <p className="text-slate-500 text-xs">{s.saham} · {s.date}</p>
+                      </div>
+                      <button onClick={async()=>{
+                        const updated = bpjsSignals.filter(x=>x.id!==s.id);
+                        setBpjsSignals(updated); await syncToAPI("bpjs_signals", updated);
+                      }} className="text-xs text-red-400 border border-red-500/20 px-2 py-1 rounded-lg">Hapus</button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                      {[{l:"Entry",v:s.entry},{l:"TP",v:s.tp},{l:"SL",v:s.sl}].map(({l,v})=>(
+                        <div key={l} className="bg-white/5 rounded-lg p-2"><p className="text-slate-500 text-[10px]">{l}</p><p className="text-white font-bold">{v||"-"}</p></div>
+                      ))}
+                    </div>
+                    {s.description && <p className="text-slate-400 text-xs leading-relaxed">{s.description}</p>}
+                  </div>
+                ))}
+                {bpjsSignals.length === 0 && <p className="text-slate-500 text-sm text-center py-10">Belum ada sinyal BPJS</p>}
+              </div>
+            </div>
+          )}
+
+          {/* ===== REKAP TP/SL TAB ===== */}
+          {tab==="rekap" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Rekap Sinyal TP/SL</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{rekapList.length} rekap tersimpan</p>
+                </div>
+                <button onClick={()=>{setRekapForm({kode:"",saham:"",result:"TP",entry:"",tp:"",sl:"",close_price:"",gain:"",date:new Date().toISOString().slice(0,10),notes:""});setShowRekapForm(!showRekapForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                  {showRekapForm?"Tutup":"+ Tambah Rekap"}
+                </button>
+              </div>
+              {showRekapForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-green-500/20">
+                  <h3 className="text-white font-bold mb-4 text-sm">Tambah Rekap Sinyal</h3>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={rekapForm.kode} onChange={e=>setRekapForm({...rekapForm,kode:e.target.value.toUpperCase()})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Nama Saham</label><input value={rekapForm.saham} onChange={e=>setRekapForm({...rekapForm,saham:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Hasil</label>
+                      <select value={rekapForm.result} onChange={e=>setRekapForm({...rekapForm,result:e.target.value})} className="input-dark">
+                        {["TP","SL","TP1","TP2","TP3","BE"].map(r=><option key={r} value={r} className="bg-black">{r}</option>)}
+                      </select>
+                    </div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Tanggal</label><input type="date" value={rekapForm.date} onChange={e=>setRekapForm({...rekapForm,date:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Entry</label><input value={rekapForm.entry} onChange={e=>setRekapForm({...rekapForm,entry:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Close/Exit Price</label><input value={rekapForm.close_price} onChange={e=>setRekapForm({...rekapForm,close_price:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">TP Level</label><input value={rekapForm.tp} onChange={e=>setRekapForm({...rekapForm,tp:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Gain % (+ atau -)</label><input value={rekapForm.gain} onChange={e=>setRekapForm({...rekapForm,gain:e.target.value})} placeholder="+5.3" className="input-dark"/></div>
+                  </div>
+                  <div className="mb-4"><label className="text-xs text-slate-500 mb-1 block">Catatan</label><textarea value={rekapForm.notes} onChange={e=>setRekapForm({...rekapForm,notes:e.target.value})} rows={2} className="input-dark resize-none"/></div>
+                  <button onClick={async()=>{
+                    if (!rekapForm.kode) { alert("Isi kode!"); return; }
+                    const newR = { ...rekapForm, id: Date.now().toString() };
+                    const updated = [newR, ...rekapList];
+                    setRekapList(updated); setShowRekapForm(false);
+                    setRekapForm({kode:"",saham:"",result:"TP",entry:"",tp:"",sl:"",close_price:"",gain:"",date:new Date().toISOString().slice(0,10),notes:""});
+                    await syncToAPI("rekap_sinyal", updated);
+                  }} className="btn-primary w-full py-3 rounded-xl text-sm font-bold">Simpan Rekap</button>
+                </div>
+              )}
+              <div className="space-y-3">
+                {rekapList.map((r:any) => (
+                  <div key={r.id} className={`card rounded-2xl p-4 border ${r.result==="SL"?"border-red-500/15":"border-green-500/15"}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-black text-sm">{r.kode}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded font-bold border ${r.result==="SL"?"bg-red-500/10 text-red-400 border-red-500/20":"bg-green-500/10 text-green-400 border-green-500/20"}`}>{r.result}</span>
+                        {r.gain && <span className={`text-xs font-bold ${parseFloat(r.gain)>=0?"text-green-400":"text-red-400"}`}>{parseFloat(r.gain)>=0?"+":""}{r.gain}%</span>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-500 text-xs">{r.date}</span>
+                        <button onClick={async()=>{
+                          const updated=rekapList.filter(x=>x.id!==r.id);
+                          setRekapList(updated); await syncToAPI("rekap_sinyal",updated);
+                        }} className="text-xs text-red-400 border border-red-500/20 px-2 py-1 rounded-lg">Hapus</button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-xs">
+                      {[{l:"Entry",v:r.entry},{l:"Close",v:r.close_price},{l:"TP",v:r.tp},{l:"SL",v:r.sl}].map(({l,v})=>(
+                        <div key={l} className="bg-white/5 rounded-lg p-2"><p className="text-slate-500 text-[10px]">{l}</p><p className="text-white font-bold">{v||"-"}</p></div>
+                      ))}
+                    </div>
+                    {r.notes && <p className="text-slate-400 text-xs mt-2 leading-relaxed">{r.notes}</p>}
+                  </div>
+                ))}
+                {rekapList.length === 0 && <p className="text-slate-500 text-sm text-center py-10">Belum ada rekap sinyal</p>}
+              </div>
+            </div>
+          )}
+
+          {/* ===== JURNAL TRADE TAB ===== */}
+          {tab==="jurnal" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Jurnal Trade</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{jurnalList.length} entry · Win rate: {jurnalList.length>0?Math.round(jurnalList.filter((j:any)=>j.result==="TP"||parseFloat(j.gain||0)>0).length/jurnalList.length*100):0}%</p>
+                </div>
+                <button onClick={()=>{setJurnalFormAdmin({kode:"",saham:"",action:"BUY",entry:"",exit:"",result:"TP",gain:"",tanggal:new Date().toISOString().slice(0,10),alasan:"",evaluasi:""});setShowJurnalFormAdmin(!showJurnalFormAdmin);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                  {showJurnalFormAdmin?"Tutup":"+ Tambah Jurnal"}
+                </button>
+              </div>
+              {showJurnalFormAdmin && (
+                <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
+                  <h3 className="text-white font-bold mb-4 text-sm">Tambah Entry Jurnal</h3>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={jurnalFormAdmin.kode} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,kode:e.target.value.toUpperCase()})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Tanggal</label><input type="date" value={jurnalFormAdmin.tanggal} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,tanggal:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Entry</label><input value={jurnalFormAdmin.entry} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,entry:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Exit</label><input value={jurnalFormAdmin.exit} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,exit:e.target.value})} className="input-dark"/></div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Hasil</label>
+                      <select value={jurnalFormAdmin.result} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,result:e.target.value})} className="input-dark">
+                        {["TP","SL","BE","MANUAL"].map(r=><option key={r} value={r} className="bg-black">{r}</option>)}
+                      </select>
+                    </div>
+                    <div><label className="text-xs text-slate-500 mb-1 block">Gain %</label><input value={jurnalFormAdmin.gain} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,gain:e.target.value})} placeholder="+5.3" className="input-dark"/></div>
+                  </div>
+                  <div className="mb-3"><label className="text-xs text-slate-500 mb-1 block">Alasan Entry</label><textarea value={jurnalFormAdmin.alasan} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,alasan:e.target.value})} rows={2} className="input-dark resize-none"/></div>
+                  <div className="mb-4"><label className="text-xs text-slate-500 mb-1 block">Evaluasi</label><textarea value={jurnalFormAdmin.evaluasi} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,evaluasi:e.target.value})} rows={2} className="input-dark resize-none"/></div>
+                  <button onClick={async()=>{
+                    if (!jurnalFormAdmin.kode) { alert("Isi kode!"); return; }
+                    const newJ = { ...jurnalFormAdmin, id: Date.now().toString() };
+                    const updated = [newJ, ...jurnalList];
+                    setJurnalList(updated); setShowJurnalFormAdmin(false);
+                    setJurnalFormAdmin({kode:"",saham:"",action:"BUY",entry:"",exit:"",result:"TP",gain:"",tanggal:new Date().toISOString().slice(0,10),alasan:"",evaluasi:""});
+                    await syncToAPI("jurnal_trade", updated);
+                  }} className="btn-primary w-full py-3 rounded-xl text-sm font-bold">Simpan Jurnal</button>
+                </div>
+              )}
+              <div className="space-y-3">
+                {jurnalList.map((j:any) => (
+                  <div key={j.id} className={`card rounded-2xl p-4 border ${j.result==="SL"||parseFloat(j.gain||0)<0?"border-red-500/15":"border-green-500/15"}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-black text-sm">{j.kode}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded font-bold border ${j.result==="SL"?"bg-red-500/10 text-red-400 border-red-500/20":"bg-green-500/10 text-green-400 border-green-500/20"}`}>{j.result}</span>
+                        {j.gain && <span className={`text-xs font-bold ${parseFloat(j.gain)>=0?"text-green-400":"text-red-400"}`}>{parseFloat(j.gain)>=0?"+":""}{j.gain}%</span>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-500 text-xs">{j.tanggal}</span>
+                        <button onClick={async()=>{
+                          const updated=jurnalList.filter(x=>x.id!==j.id);
+                          setJurnalList(updated); await syncToAPI("jurnal_trade",updated);
+                        }} className="text-xs text-red-400 border border-red-500/20 px-2 py-1 rounded-lg">Hapus</button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                      {[{l:"Entry",v:j.entry},{l:"Exit",v:j.exit}].map(({l,v})=>(
+                        <div key={l} className="bg-white/5 rounded-lg p-2"><p className="text-slate-500 text-[10px]">{l}</p><p className="text-white font-bold">{v||"-"}</p></div>
+                      ))}
+                    </div>
+                    {j.alasan && <p className="text-cyan-400/60 text-xs mt-1">Alasan: <span className="text-slate-400">{j.alasan}</span></p>}
+                    {j.evaluasi && <p className="text-yellow-400/60 text-xs mt-1">Evaluasi: <span className="text-slate-400">{j.evaluasi}</span></p>}
+                  </div>
+                ))}
+                {jurnalList.length === 0 && <p className="text-slate-500 text-sm text-center py-10">Belum ada jurnal trade</p>}
+              </div>
+            </div>
+          )}
 
           {/* BAGGER */}
           {tab==="bagger" && <BaggerBandarTab type="bagger" syncToAPI={syncToAPI} />}
