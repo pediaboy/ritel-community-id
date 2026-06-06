@@ -16,9 +16,11 @@ const STATUS_COLORS: any = {
 };
 
 const PKG_COLORS: any = {
-  Basic: "text-blue-400", Silver: "text-cyan-400", Gold: "text-yellow-400",
-  Pro: "text-purple-400", Platinum: "text-slate-300", Elite: "text-yellow-300",
+  Basic:"text-blue-400", Silver:"text-cyan-400", Gold:"text-yellow-400",
+  Pro:"text-purple-400", Platinum:"text-slate-300", Elite:"text-yellow-300",
 };
+
+const METODE_LIST = ["DANA","OVO","GoPay","ShopeePay","SeaBank","BCA","Mandiri","BNI","BRI","Transfer Manual"];
 
 export default function OrdersTab() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -28,6 +30,8 @@ export default function OrdersTab() {
   const [editStatus, setEditStatus] = useState("");
   const [editMetode, setEditMetode] = useState("");
   const [filter, setFilter] = useState("all");
+  const [sourceFilter, setSourceFilter] = useState("all");
+  const [copiedToken, setCopiedToken] = useState<string|null>(null);
 
   async function fetchOrders() {
     setLoading(true);
@@ -42,12 +46,19 @@ export default function OrdersTab() {
   useEffect(() => { fetchOrders(); }, []);
 
   async function updateStatus(id: string, status: string, note?: string, metode?: string) {
-    await fetch("/api/orders", {
+    const res = await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "update_status", id, status, note, metode }),
+      body: JSON.stringify({ action:"update_status", id, status, note, metode }),
     });
-    fetchOrders();
+    const d = await res.json();
+    // Update local state langsung (termasuk token_generated)
+    if (d.success && d.order) {
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, ...d.order } : o));
+    } else {
+      fetchOrders();
+    }
+    setEditId(null);
   }
 
   async function deleteOrder(id: string) {
@@ -55,7 +66,7 @@ export default function OrdersTab() {
     await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "delete", id }),
+      body: JSON.stringify({ action:"delete", id }),
     });
     fetchOrders();
   }
@@ -70,18 +81,27 @@ export default function OrdersTab() {
   async function saveEdit() {
     if (!editId) return;
     await updateStatus(editId, editStatus, editNote, editMetode);
-    setEditId(null);
   }
 
-  const filtered = filter === "all" ? orders : orders.filter(o => o.status === filter);
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedToken(text);
+      setTimeout(() => setCopiedToken(null), 2000);
+    });
+  }
 
-  const totalPaid = orders.filter(o => o.status === "paid").reduce((s, o) => s + (o.harga||0), 0);
+  // Filter
+  let filtered = sourceFilter === "all" ? orders : orders.filter(o => (o.source||"ritel") === sourceFilter);
+  filtered = filter === "all" ? filtered : filtered.filter(o => o.status === filter);
+
+  const totalPaid = filtered.filter(o => o.status === "paid").reduce((s,o) => s+(o.harga||0), 0);
   const pendingCount = orders.filter(o => o.status === "pending").length;
+  const analisisCount = orders.filter(o => o.source === "analisis").length;
 
   return (
     <div className="space-y-5">
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="card-glass rounded-xl p-4 border border-green-500/30 text-center">
           <p className="text-xs text-slate-400 mb-1">Total Terkonfirmasi</p>
           <p className="text-lg font-black text-green-400">{formatRp(totalPaid)}</p>
@@ -90,23 +110,38 @@ export default function OrdersTab() {
           <p className="text-xs text-slate-400 mb-1">Pending</p>
           <p className="text-lg font-black text-yellow-400">{pendingCount} order</p>
         </div>
+        <div className="card-glass rounded-xl p-4 border border-cyan-500/30 text-center">
+          <p className="text-xs text-slate-400 mb-1">Dari Analisis.io</p>
+          <p className="text-lg font-black text-cyan-400">{analisisCount}</p>
+        </div>
         <div className="card-glass rounded-xl p-4 border border-slate-700 text-center">
           <p className="text-xs text-slate-400 mb-1">Total Order</p>
           <p className="text-lg font-black text-white">{orders.length}</p>
         </div>
       </div>
 
-      {/* Filter */}
+      {/* Source filter */}
       <div className="flex gap-2 flex-wrap">
-        {["all","pending","paid","cancelled"].map(f => (
-          <button key={f} onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize
-              ${filter === f ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
-            {f === "all" ? "Semua" : f === "pending" ? "Pending" : f === "paid" ? "Lunas" : "Batal"}
-            {f !== "all" && ` (${orders.filter(o => o.status === f).length})`}
+        {[
+          { id:"all", label:"Semua Sumber" },
+          { id:"analisis", label:"📊 Analisis.io" },
+          { id:"ritel", label:"🌐 Ritel Community" },
+        ].map(f => (
+          <button key={f.id} onClick={() => setSourceFilter(f.id)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${sourceFilter===f.id ? "bg-purple-500/20 border-purple-500/50 text-purple-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            {f.label}
           </button>
         ))}
-        <button onClick={fetchOrders} className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold border bg-white/5 border-white/10 text-slate-400 hover:border-white/20">
+        <div className="flex-1 min-w-4" />
+        {/* Status filter */}
+        {["all","pending","paid","cancelled"].map(f => (
+          <button key={f} onClick={() => setFilter(f)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            {f==="all"?"Semua":f==="pending"?"Pending":f==="paid"?"Lunas":"Batal"}
+            {f!=="all"&&` (${orders.filter(o=>o.status===f).length})`}
+          </button>
+        ))}
+        <button onClick={fetchOrders} className="px-3 py-1.5 rounded-lg text-xs font-bold border bg-white/5 border-white/10 text-slate-400 hover:border-white/20">
           🔄 Refresh
         </button>
       </div>
@@ -121,14 +156,19 @@ export default function OrdersTab() {
       ) : (
         <div className="space-y-3">
           {filtered.map(o => (
-            <div key={o.id} className="card-glass rounded-xl border border-white/10 overflow-hidden">
+            <div key={o.id} className={`card-glass rounded-xl border overflow-hidden ${o.source==="analisis" ? "border-cyan-500/20" : "border-white/10"}`}>
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-white/5">
-                <div>
+              <div className="flex items-center justify-between p-4 border-b border-white/5 flex-wrap gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono text-xs text-slate-400">{o.id}</span>
-                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_COLORS[o.status] || STATUS_COLORS.pending}`}>
-                    {o.status === "paid" ? "LUNAS" : o.status === "cancelled" ? "BATAL" : "PENDING"}
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_COLORS[o.status]||STATUS_COLORS.pending}`}>
+                    {o.status==="paid"?"LUNAS":o.status==="cancelled"?"BATAL":"PENDING"}
                   </span>
+                  {o.source === "analisis" && (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold border bg-cyan-500/10 text-cyan-400 border-cyan-500/20">
+                      📊 analisis.io
+                    </span>
+                  )}
                 </div>
                 <span className="text-xs text-slate-500">{formatDate(o.created_at)}</span>
               </div>
@@ -140,13 +180,13 @@ export default function OrdersTab() {
                   <p className="text-white font-semibold">{o.nama}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 mb-0.5">No. HP</p>
-                  <a href={`https://wa.me/${o.hp?.replace(/^0/, "62")}`} target="_blank"
+                  <p className="text-xs text-slate-500 mb-0.5">No. WA</p>
+                  <a href={`https://wa.me/${(o.hp||"").replace(/^0/,"62").replace(/\D/g,"")}`} target="_blank"
                     className="text-green-400 hover:underline font-semibold">{o.hp}</a>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Paket</p>
-                  <p className={`font-bold ${PKG_COLORS[o.paket] || "text-white"}`}>{o.paket}</p>
+                  <p className={`font-bold ${PKG_COLORS[o.paket]||"text-white"}`}>{o.paket}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Total</p>
@@ -154,12 +194,32 @@ export default function OrdersTab() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Metode</p>
-                  <p className="text-slate-300">{o.metode || "-"}</p>
+                  <p className="text-slate-300">{o.metode||"-"}</p>
                 </div>
+                {o.email && (
+                  <div>
+                    <p className="text-xs text-slate-500 mb-0.5">Email</p>
+                    <p className="text-slate-300 text-xs">{o.email}</p>
+                  </div>
+                )}
                 {o.note && (
                   <div className="col-span-2">
                     <p className="text-xs text-slate-500 mb-0.5">Catatan</p>
                     <p className="text-slate-300">{o.note}</p>
+                  </div>
+                )}
+                {/* Token generated */}
+                {o.token_generated && (
+                  <div className="col-span-2">
+                    <p className="text-xs text-slate-500 mb-1">Token VIP (Auto-Generated)</p>
+                    <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">
+                      <span className="font-mono text-sm font-black text-green-400 flex-1">{o.token_generated}</span>
+                      <button onClick={() => copyToClipboard(o.token_generated)}
+                        className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-all">
+                        {copiedToken === o.token_generated ? "✓ Copied" : "Copy"}
+                      </button>
+                    </div>
+                    {o.paid_at && <p className="text-xs text-slate-600 mt-1">Aktif sejak {formatDate(o.paid_at)}</p>}
                   </div>
                 )}
               </div>
@@ -179,9 +239,7 @@ export default function OrdersTab() {
                     <div>
                       <label className="text-xs text-slate-400 block mb-1">Metode</label>
                       <select value={editMetode} onChange={e => setEditMetode(e.target.value)} className="input-dark w-full text-sm">
-                        <option value="DANA">DANA</option>
-                        <option value="GoPay">GoPay</option>
-                        <option value="SeaBank">SeaBank</option>
+                        {METODE_LIST.map(m => <option key={m} value={m}>{m}</option>)}
                       </select>
                     </div>
                   </div>
@@ -198,12 +256,11 @@ export default function OrdersTab() {
                   </div>
                 </div>
               ) : (
-                /* Actions */
-                <div className="px-4 pb-4 flex gap-2">
+                <div className="px-4 pb-4 flex gap-2 flex-wrap">
                   {o.status === "pending" && (
                     <button onClick={() => updateStatus(o.id, "paid")}
-                      className="flex-1 py-2 rounded-lg text-xs bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 font-bold">
-                      ✓ Konfirmasi Lunas
+                      className="flex-1 py-2 rounded-lg text-xs bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 font-bold min-w-[120px]">
+                      ✓ Konfirmasi Lunas + Generate Token
                     </button>
                   )}
                   <button onClick={() => startEdit(o)}
