@@ -2224,13 +2224,13 @@ export default function VipPage() {
                       <span className="text-2xl flex-shrink-0 mt-0.5">{m.icon}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${PKG_COLORS[m.pkgLabel.toLowerCase()]||""}`}>{m.pkgLabel}</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full ${TAG_COLORS[m.tag]||"bg-white/10 text-slate-400"}`}>{m.tag}</span>
+                          <span className={"text-xs font-bold px-2 py-0.5 rounded-full border " + (PKG_COLORS[m.pkgLabel.toLowerCase()]||"")}>{m.pkgLabel}</span>
+                          <span className={"text-xs px-2 py-0.5 rounded-full " + (TAG_COLORS[m.tag]||"bg-white/10 text-slate-400")}>{m.tag}</span>
                         </div>
                         <h3 className="text-white text-sm font-bold leading-snug">{m.title}</h3>
                         {expandedModul!==m.id&&<p className="text-slate-500 text-xs mt-1 line-clamp-2">{m.desc}</p>}
                       </div>
-                      <svg className={`w-4 h-4 text-slate-500 flex-shrink-0 mt-1 transition-transform ${expandedModul===m.id?"rotate-180":""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
+                      <svg className={"w-4 h-4 text-slate-500 flex-shrink-0 mt-1 transition-transform " + (expandedModul===m.id?"rotate-180":"")} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     {expandedModul===m.id&&(
                       <div className="px-4 pb-6 border-t border-white/5">
@@ -2281,7 +2281,7 @@ export default function VipPage() {
                     <div key={m.id} className="card rounded-xl p-4 opacity-40 flex items-center gap-3">
                       <span className="text-xl">{m.icon}</span>
                       <div>
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${PKG_COLORS[m.pkgLabel.toLowerCase()]||""}`}>{m.pkgLabel}</span>
+                        <span className={"text-xs font-bold px-2 py-0.5 rounded-full border " + (PKG_COLORS[m.pkgLabel.toLowerCase()]||"")}>{m.pkgLabel}</span>
                         <h3 className="text-white text-sm font-bold mt-1">{m.title}</h3>
                       </div>
                       <span className="ml-auto text-slate-500 text-lg">🔒</span>
@@ -2760,54 +2760,70 @@ export default function VipPage() {
 
       </div>
 
-      {/* ── VISIONOS DOCK — 2-row floating nav ── */}
+      {/* ── VISIONOS DOCK 2-ROW ── */}
       <div className="vip-dock" style={{
         position:"fixed", bottom:16, left:"50%", transform:"translateX(-50%)",
         zIndex:200, width:"calc(100% - 24px)", maxWidth:456,
         background:"rgba(6,8,18,0.82)", backdropFilter:"blur(40px) saturate(200%)",
         WebkitBackdropFilter:"blur(40px) saturate(200%)",
         border:"1px solid rgba(255,255,255,0.09)", borderRadius:24,
-        boxShadow:"0 20px 60px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.07) inset, 0 0 0 1px rgba(6,182,212,.05)",
+        boxShadow:"0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(6,182,212,0.05)",
         padding:"6px 8px 10px", display:"flex", flexDirection:"column", gap:2,
       }}>
-        {/* Row 1 — primary tabs */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around" }}>
-          {[
-            { id:"home",   label:"Beranda", svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
-            { id:"feed",   label:"Feed",    svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
-            { id:"sinyal", label:"Sinyal",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
-            { id:"bandar", label:"Bandar",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> },
-            { id:"bagger", label:"Bagger",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> },
-            { id:"modul",  label:"Modul",   svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> },
-          ].map(item=>(
-            <button key={item.id} onClick={()=>setTab(item.id)} className={"dock-vip-item" + (tab===item.id ? " dav" : "")}>
-              <span className="dicon">{item.svg}</span>
-              <span className="dlabel">{item.label}</span>
-            </button>
-          ))}
+          <button onClick={()=>setTab("home")} className={"dock-vip-item" + (tab==="home" ? " dav" : "")}>
+            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            <span className="dlabel">Beranda</span>
+          </button>
+          <button onClick={()=>setTab("feed")} className={"dock-vip-item" + (tab==="feed" ? " dav" : "")}>
+            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+            <span className="dlabel">Feed</span>
+          </button>
+          <button onClick={()=>setTab("sinyal")} className={"dock-vip-item" + (tab==="sinyal" ? " dav" : "")}>
+            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            <span className="dlabel">Sinyal</span>
+          </button>
+          <button onClick={()=>setTab("bandar")} className={"dock-vip-item" + (tab==="bandar" ? " dav" : "")}>
+            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+            <span className="dlabel">Bandar</span>
+          </button>
+          <button onClick={()=>setTab("bagger")} className={"dock-vip-item" + (tab==="bagger" ? " dav" : "")}>
+            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+            <span className="dlabel">Bagger</span>
+          </button>
+          <button onClick={()=>setTab("modul")} className={"dock-vip-item" + (tab==="modul" ? " dav" : "")}>
+            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+            <span className="dlabel">Modul</span>
+          </button>
         </div>
-        {/* Divider */}
-        <div style={{ height:1, background:"rgba(255,255,255,0.05)", margin:"0 8px" }}/>
-        {/* Row 2 — secondary tabs */}
+        <div style={{ height:1, background:"rgba(255,255,255,0.05)", margin:"0 8px" }} />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around" }}>
-          {[
-            { id:"bsjp",    label:"B.Sore",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> },
-            { id:"bpjs",    label:"B.Pagi",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> },
-            { id:"rekap",   label:"Rekap",   svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
-            { id:"jurnal",  label:"Jurnal",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg> },
-            { id:"ai",      label:"RC-AI",   svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg> },
-            { id:"profile", label:"Profil",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-          ].map(item=>(
-            <button key={item.id} onClick={()=>setTab(item.id)} className={"dock-vip-item" + (tab===item.id ? " dav" : "")}>
-              <span className="dicon" style={{opacity:0.85}}>{item.svg}</span>
-              <span className="dlabel">{item.label}</span>
-            </button>
-          ))}
+          <button onClick={()=>setTab("bsjp")} className={"dock-vip-item" + (tab==="bsjp" ? " dav" : "")}>
+            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+            <span className="dlabel">B.Sore</span>
+          </button>
+          <button onClick={()=>setTab("bpjs")} className={"dock-vip-item" + (tab==="bpjs" ? " dav" : "")}>
+            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+            <span className="dlabel">B.Pagi</span>
+          </button>
+          <button onClick={()=>setTab("rekap")} className={"dock-vip-item" + (tab==="rekap" ? " dav" : "")}>
+            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></span>
+            <span className="dlabel">Rekap</span>
+          </button>
+          <button onClick={()=>setTab("jurnal")} className={"dock-vip-item" + (tab==="jurnal" ? " dav" : "")}>
+            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg></span>
+            <span className="dlabel">Jurnal</span>
+          </button>
+          <button onClick={()=>setTab("ai")} className={"dock-vip-item" + (tab==="ai" ? " dav" : "")}>
+            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></span>
+            <span className="dlabel">RC-AI</span>
+          </button>
+          <button onClick={()=>setTab("profile")} className={"dock-vip-item" + (tab==="profile" ? " dav" : "")}>
+            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <span className="dlabel">Profil</span>
+          </button>
         </div>
-      </div>
       </div>
     </div>
   );
 }
-
-
