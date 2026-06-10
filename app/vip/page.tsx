@@ -2761,19 +2761,6 @@ export default function VipPage() {
       </div>
 
       {/* ── VISIONOS DOCK — 2-row floating nav ── */}
-      <style>{`
-        @keyframes dockIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        .vip-dock{animation:dockIn .5s cubic-bezier(.34,1.56,.64,1) both}
-        .dock-vip-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 10px;border-radius:14px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);position:relative;min-width:48px;background:none;border:none;color:inherit;flex-shrink:0;}
-        .dock-vip-item:hover{background:rgba(255,255,255,0.06);transform:translateY(-4px) scale(1.08);}
-        .dock-vip-item.dav{background:rgba(6,182,212,0.1);}
-        .dock-vip-item.dav svg,.dock-vip-item.dav .dicon{color:#06b6d4!important;filter:drop-shadow(0 0 5px rgba(6,182,212,.8));}
-        .dock-vip-item.dav .dlabel{color:#06b6d4!important;}
-        .dock-vip-item.dav::after{content:'';position:absolute;bottom:6px;width:4px;height:4px;border-radius:50%;background:#06b6d4;box-shadow:0 0 8px rgba(6,182,212,.9);}
-        .dicon{color:rgba(255,255,255,.38);transition:color .2s,filter .2s;}
-        .dlabel{font-size:9px;font-weight:700;color:rgba(255,255,255,.28);letter-spacing:.3px;transition:color .2s;}
-        .dock-divider{width:1px;height:28px;background:rgba(255,255,255,0.07);margin:0 2px;flex-shrink:0;}
-      `}</style>
       <div className="vip-dock" style={{
         position:"fixed", bottom:16, left:"50%", transform:"translateX(-50%)",
         zIndex:200, width:"calc(100% - 24px)", maxWidth:456,
@@ -2793,7 +2780,7 @@ export default function VipPage() {
             { id:"bagger", label:"Bagger",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> },
             { id:"modul",  label:"Modul",   svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> },
           ].map(item=>(
-            <button key={item.id} onClick={()=>setTab(item.id)} className={`dock-vip-item${tab===item.id?" dav":""}`}>
+            <button key={item.id} onClick={()=>setTab(item.id)} className={"dock-vip-item" + (tab===item.id ? " dav" : "")}>
               <span className="dicon">{item.svg}</span>
               <span className="dlabel">{item.label}</span>
             </button>
@@ -2811,13 +2798,14 @@ export default function VipPage() {
             { id:"ai",      label:"RC-AI",   svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg> },
             { id:"profile", label:"Profil",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
           ].map(item=>(
-            <button key={item.id} onClick={()=>setTab(item.id)} className={`dock-vip-item${tab===item.id?" dav":""}`}>
-              <span className="dicon" style={{opacity:.85}}>{item.svg}</span>
+            <button key={item.id} onClick={()=>setTab(item.id)} className={"dock-vip-item" + (tab===item.id ? " dav" : "")}>
+              <span className="dicon" style={{opacity:0.85}}>{item.svg}</span>
               <span className="dlabel">{item.label}</span>
             </button>
           ))}
         </div>
-      </div>      </div>
+      </div>
+      </div>
     </div>
   );
 }
