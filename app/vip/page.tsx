@@ -228,92 +228,72 @@ function AdminFeedVIP() {
   );
 }
 
-// ── HEARTBEAT CHART ─────────────────────────────────────────────
-function HeartbeatChart({ changePercent }: { changePercent: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const frameRef = useRef(0);
-  const dataRef = useRef<number[]>([]);
-  const isPositive = changePercent >= 0;
-  const color = isPositive ? "#22c55e" : "#ef4444";
-  // Amplitude sesuai persentase: 1% = kecil, 10%+ = dramatis
-  const rawAmp = Math.abs(changePercent);
-  const amplitude = rawAmp < 1 ? 4 : rawAmp < 3 ? 7 : rawAmp < 6 ? 11 : rawAmp < 10 ? 15 : rawAmp < 20 ? 20 : 26;
-  const speed = rawAmp < 2 ? 50 : rawAmp < 8 ? 38 : 28; // lebih tinggi %= lebih cepat
+// ── STOCK SPARKLINE (lightweight SVG, replaces StockSparkline) ──
+function StockSparkline({ changePercent }: { changePercent: number }) {
+  const isUp = changePercent >= 0;
+  const color = isUp ? "#22c55e" : "#ef4444";
+  const W = 200, H = 40, pts = 26;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const W = canvas.width, H = canvas.height;
-    const mid = H / 2;
-    let t = 0;
-
-    if (dataRef.current.length === 0) {
-      dataRef.current = Array(W).fill(mid);
+  const points = useMemo(() => {
+    const seed = Math.abs(changePercent) || 5;
+    const vol = seed < 1 ? 1.5 : seed < 3 ? 3 : seed < 8 ? 5 : seed < 15 ? 8 : 12;
+    const arr: number[] = [];
+    let v = H * 0.5;
+    let rng = (seed * 9301 + 49297) % 233280;
+    for (let i = 0; i < pts; i++) {
+      rng = (rng * 9301 + 49297) % 233280;
+      v += (rng / 233280 - 0.5) * vol * 2.2;
+      v = Math.max(H * 0.1, Math.min(H * 0.88, v));
+      arr.push(v);
     }
+    const trendPush = isUp ? -3 : 3;
+    for (let i = 0; i < pts; i++) {
+      arr[i] = Math.max(H * 0.1, Math.min(H * 0.9, arr[i] + trendPush * (i / (pts - 1))));
+    }
+    return arr;
+  }, [changePercent, isUp, H, pts]);
 
-    const draw = () => {
-      t++;
-      const cycle = t % speed;
-      let newY = mid;
-      // Pola EKG: P-QRS-T wave
-      const pct3 = Math.floor(speed * 0.3);
-      const pct35 = Math.floor(speed * 0.35);
-      const pct42 = Math.floor(speed * 0.42);
-      const pct48 = Math.floor(speed * 0.48);
-      const pct55 = Math.floor(speed * 0.55);
-      const pct6 = Math.floor(speed * 0.6);
-      if (cycle === pct3) newY = mid - amplitude * 0.3;
-      else if (cycle === pct35) newY = mid + amplitude * 0.2;
-      else if (cycle === pct42) newY = mid - amplitude * (isPositive ? 2.5 : 1.2);
-      else if (cycle === pct48) newY = mid + amplitude * (isPositive ? 0.8 : 2.0);
-      else if (cycle === pct55) newY = mid - amplitude * 0.4;
-      else if (cycle === pct6) newY = mid + amplitude * 0.15;
-      else newY = mid + (Math.random() - 0.5) * 0.8;
+  const stepX = W / (pts - 1);
+  const lineParts: string[] = [];
+  const areaParts: string[] = [];
+  points.forEach((y, i) => {
+    const x = i * stepX;
+    if (i === 0) {
+      lineParts.push("M" + x.toFixed(1) + "," + y.toFixed(1));
+      areaParts.push("M0," + H + " L" + x.toFixed(1) + "," + y.toFixed(1));
+    } else {
+      const px = (i - 1) * stepX;
+      const py = points[i - 1];
+      const cp1x = (px + stepX * 0.5).toFixed(1);
+      const cp2x = (x - stepX * 0.5).toFixed(1);
+      const curve = " C" + cp1x + "," + py.toFixed(1) + " " + cp2x + "," + y.toFixed(1) + " " + x.toFixed(1) + "," + y.toFixed(1);
+      lineParts.push(curve);
+      areaParts.push(curve);
+    }
+  });
+  areaParts.push(" L" + W + "," + H + " Z");
 
-      dataRef.current.push(newY);
-      if (dataRef.current.length > W) dataRef.current.shift();
+  const lineD = lineParts.join("");
+  const areaD = areaParts.join("");
+  const gid = "sg" + Math.abs(Math.round(changePercent * 7));
+  const lastY = points[pts - 1];
 
-      ctx.clearRect(0, 0, W, H);
-
-      // Glow
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 4;
-
-      // Line
-      ctx.beginPath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.lineJoin = "round";
-      dataRef.current.forEach((y, x) => {
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-
-      // Fill gradient
-      ctx.shadowBlur = 0;
-      const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, color + "20");
-      grad.addColorStop(1, "transparent");
-      ctx.beginPath();
-      dataRef.current.forEach((y, x) => {
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      frameRef.current = requestAnimationFrame(draw);
-    };
-
-    frameRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(frameRef.current);
-  }, [changePercent]);
-
-  return <canvas ref={canvasRef} width={200} height={40} style={{ width:"100%", height:40, display:"block" }} />;
+  return (
+    <svg width="100%" height="40" viewBox={"0 0 " + W + " " + H} preserveAspectRatio="none"
+      style={{ display:"block", overflow:"visible" }}>
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill={"url(#" + gid + ")"} />
+      <path d={lineD} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        style={{ filter:"drop-shadow(0 0 3px " + color + "99)" }} />
+      <circle cx={W} cy={lastY} r="2.8" fill={color}
+        style={{ filter:"drop-shadow(0 0 5px " + color + ")" }} />
+    </svg>
+  );
 }
 
 // ── TILT CARD ────────────────────────────────────────────────────
@@ -415,7 +395,7 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
       </div>
       {/* Heartbeat chart */}
       <div style={{ padding:"0 16px 10px" }}>
-        <HeartbeatChart changePercent={pct} />
+        <StockSparkline changePercent={pct} />
       </div>
       {s.notes && <div style={{ padding:"8px 16px 14px", borderTop:"1px solid rgba(255,255,255,0.05)" }}><p style={{ color:"rgba(255,255,255,0.45)", fontSize:11, lineHeight:1.6 }}>{s.notes}</p></div>}
     </div>
@@ -453,7 +433,7 @@ function BaggerCard({ s }: { s: any }) {
         </div>
       )}
       <div style={{ padding:"0 16px 10px" }}>
-        <HeartbeatChart changePercent={pct > 0 ? pct : 15} />
+        <StockSparkline changePercent={pct > 0 ? pct : 15} />
       </div>
       {s.notes && <div style={{ padding:"8px 16px 14px", borderTop:"1px solid rgba(255,255,255,0.05)" }}><p style={{ color:"rgba(255,255,255,0.45)", fontSize:11, lineHeight:1.6 }}>{s.notes}</p></div>}
     </div>
