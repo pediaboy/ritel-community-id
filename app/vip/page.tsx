@@ -1613,6 +1613,65 @@ function GreetingBanner({ greetingPagi, greetingMalam }: { greetingPagi:string; 
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────
+/* ── GALAXY CANVAS (VIP) ── */
+function GalaxyBgVip() {
+  const ref = (typeof window !== "undefined") ? (() => {
+    const r = { current: null as HTMLCanvasElement | null };
+    if (typeof document !== "undefined") {
+      setTimeout(() => {
+        const c = document.getElementById("vip-galaxy") as HTMLCanvasElement;
+        if (!c) return;
+        const ctx = c.getContext("2d"); if (!ctx) return;
+        let W = c.width = window.innerWidth, H = c.height = window.innerHeight;
+        const onR = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
+        window.addEventListener("resize", onR);
+        const COLS = ["rgba(255,255,255,","rgba(6,182,212,","rgba(139,92,246,","rgba(59,130,246,"];
+        const stars = Array.from({length:280}, () => ({
+          orbit: 60 + Math.random() * Math.max(W,H) * 0.6,
+          angle: Math.random() * Math.PI * 2,
+          z: 0.2 + Math.random() * 0.8,
+          r: 0.4 + Math.random() * 1.6,
+          color: COLS[Math.floor(Math.random()*COLS.length)],
+          speed: 0.00013 + Math.random() * 0.00025,
+        }));
+        const neb = Array.from({length:14}, () => ({
+          x:Math.random()*W, y:Math.random()*H,
+          r:70+Math.random()*130,
+          color:["rgba(6,182,212,","rgba(139,92,246,","rgba(30,90,240,"][Math.floor(Math.random()*3)],
+          vx:(Math.random()-.5)*.1, vy:(Math.random()-.5)*.1,
+        }));
+        let raf: number;
+        const draw = () => {
+          ctx.clearRect(0,0,W,H);
+          neb.forEach(n => {
+            n.x+=n.vx; n.y+=n.vy;
+            if(n.x<-n.r)n.x=W+n.r; if(n.x>W+n.r)n.x=-n.r;
+            if(n.y<-n.r)n.y=H+n.r; if(n.y>H+n.r)n.y=-n.r;
+            const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
+            g.addColorStop(0,n.color+"0.04)"); g.addColorStop(1,"transparent");
+            ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+          });
+          const cx=W/2,cy=H*0.38;
+          const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,W*.42);
+          cg.addColorStop(0,"rgba(6,182,212,0.055)"); cg.addColorStop(.4,"rgba(30,58,138,0.04)"); cg.addColorStop(1,"transparent");
+          ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
+          stars.forEach(s => {
+            s.angle+=s.speed;
+            const ex=cx+Math.cos(s.angle)*s.orbit, ey=cy+Math.sin(s.angle)*s.orbit*.36;
+            const op=.25+s.z*.72, rv=s.r*(.5+s.z*.6);
+            ctx.beginPath(); ctx.arc(ex,ey,rv,0,Math.PI*2); ctx.fillStyle=s.color+op+")"; ctx.fill();
+            if(s.z>.65&&s.r>1.1){ const sg=ctx.createRadialGradient(ex,ey,0,ex,ey,rv*4.5); sg.addColorStop(0,s.color+(op*.32)+")"); sg.addColorStop(1,"transparent"); ctx.beginPath(); ctx.arc(ex,ey,rv*4.5,0,Math.PI*2); ctx.fillStyle=sg; ctx.fill(); }
+          });
+          raf=requestAnimationFrame(draw);
+        };
+        draw();
+      }, 50);
+    }
+    return r;
+  })() : { current: null };
+  return <canvas id="vip-galaxy" style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none" }}/>;
+}
+
 export default function VipPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -1785,36 +1844,39 @@ export default function VipPage() {
 
   // ── RENDER ──────────────────────────────────────────────────────
   return (
-    <div style={{ fontFamily:"'Inter','Helvetica Neue',sans-serif", background:"#04060f", color:"#fff", minHeight:"100vh", display:"flex", flexDirection:"column" }}>
+    <div style={{ fontFamily:"'Inter',sans-serif", background:"#030508", color:"#fff", minHeight:"100vh", display:"flex", flexDirection:"column", position:"relative" }}>
       <div className="galaxy-stars"/>
+      <GalaxyBgVip />
 
-      {/* STICKY HEADER */}
-      <div style={{ position:"sticky", top:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(16px)", borderBottom:"1px solid rgba(255,255,255,0.06)", flexShrink:0 }}>
+      {/* STICKY HEADER — premium glass */}
+      <div style={{ position:"sticky", top:0, zIndex:50, background:"rgba(3,5,8,0.88)", backdropFilter:"blur(28px) saturate(200%)", WebkitBackdropFilter:"blur(28px) saturate(200%)", borderBottom:"1px solid rgba(255,255,255,0.055)", flexShrink:0 }}>
         <JakartaClock />
         <MotivasiTickerVIP />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
-          <Link href="/" style={{ display:"flex", alignItems:"center", gap:8, textDecoration:"none" }}>
-            <img src="/logo.png" alt="RC" style={{ width:34, height:34, borderRadius:10, objectFit:"cover", flexShrink:0 }} />
+          <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
+            <div style={{ width:34, height:34, borderRadius:10, background:"linear-gradient(135deg,#0a1628,#1e5af0)", boxShadow:"0 0 16px rgba(6,182,212,0.25)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="18,5 22,5 22,9" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
             <div>
-              <div style={{ color:"#fff", fontWeight:900, fontSize:13 }}>RITEL COMMUNITY.ID</div>
-              <div style={{ color:"rgba(255,255,255,0.35)", fontSize:10 }}>Area VIP Member</div>
+              <div style={{ color:"#fff", fontWeight:900, fontSize:13, letterSpacing:"-.2px" }}>RITEL COMMUNITY<span style={{color:"#06b6d4"}}>.ID</span></div>
+              <div style={{ color:"rgba(255,255,255,0.28)", fontSize:9, letterSpacing:".5px" }}>AREA VIP MEMBER</div>
             </div>
           </Link>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#06b6d4)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, color:"#fff" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+            <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#06b6d4)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, color:"#fff", boxShadow:"0 0 12px rgba(6,182,212,0.3)" }}>
               {user.name?.charAt(0)||"V"}
             </div>
-            <button onClick={logout} style={{ color:"rgba(255,255,255,0.3)", fontSize:11, background:"none", border:"none", cursor:"pointer" }}>Keluar</button>
+            <button onClick={logout} style={{ color:"rgba(255,255,255,0.25)", fontSize:11, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"5px 10px", cursor:"pointer" }}>Keluar</button>
           </div>
         </div>
       </div>
 
-      {/* CONTENT AREA — scrollable, padding bottom for bottom nav */}
-      <div style={{ flex:1, overflowY:"auto", paddingBottom:80 }}>
+      {/* CONTENT AREA — scrollable, padding bottom for visionos dock */}
+      <div style={{ flex:1, overflowY:"auto", paddingBottom:110, position:"relative", zIndex:1 }}>
 
         {/* ── HOME TAB ── */}
         {tab==="home" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             <GreetingBanner greetingPagi={greetingPagi} greetingMalam={greetingMalam} />
             <LiveInfoBox />
             <AdminFeedVIP />
@@ -1832,10 +1894,10 @@ export default function VipPage() {
 
             {/* Quick stats */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:20 }}>
-              {[{label:"Sinyal Aktif",val:mySignals.length,color:"#22c55e"},{label:"Bagger Pick",val:baggerSignals.length,color:"#f59e0b"},{label:"Bandar Signal",val:bandarSignals.length,color:"#8b5cf6"}].map(s=>(
-                <div key={s.label} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, padding:"14px 12px", textAlign:"center" }}>
-                  <div style={{ fontSize:22, fontWeight:900, color:s.color }}>{s.val}</div>
-                  <div style={{ fontSize:10, color:"rgba(255,255,255,0.35)", marginTop:2 }}>{s.label}</div>
+              {[{label:"Sinyal Aktif",val:mySignals.length,color:"#22c55e",glow:"rgba(34,197,94,0.1)"},{label:"Bagger Pick",val:baggerSignals.length,color:"#f59e0b",glow:"rgba(245,158,11,0.1)"},{label:"Bandar Signal",val:bandarSignals.length,color:"#8b5cf6",glow:"rgba(139,92,246,0.1)"}].map(s=>(
+                <div key={s.label} className="glass-card float-2" style={{ background:`linear-gradient(145deg,${s.glow},transparent)`, padding:"14px 10px", textAlign:"center" }}>
+                  <div style={{ fontSize:24, fontWeight:900, color:s.color, textShadow:`0 0 12px ${s.glow}` }}>{s.val}</div>
+                  <div style={{ fontSize:9, color:"rgba(255,255,255,0.3)", marginTop:3, fontWeight:600 }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -1844,8 +1906,11 @@ export default function VipPage() {
             {mySignals.length > 0 && (
               <div style={{ marginBottom:20 }}>
                 <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-                  <h2 style={{ fontWeight:800, fontSize:14 }}>📡 Sinyal Terbaru</h2>
-                  <button onClick={()=>setTab("sinyal")} style={{ color:"#60a5fa", fontSize:12, background:"none", border:"none", cursor:"pointer" }}>Lihat semua →</button>
+                  <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                    <h2 style={{ fontWeight:800, fontSize:14 }}>Sinyal Terbaru</h2>
+                    <div className="eq-bars green">{[0,0,0,0].map((_,i)=><div key={i} className="eq-bar"/>)}</div>
+                  </div>
+                  <button onClick={()=>setTab("sinyal")} style={{ color:"#06b6d4", fontSize:12, background:"rgba(6,182,212,0.08)", border:"1px solid rgba(6,182,212,0.18)", borderRadius:8, padding:"4px 10px", cursor:"pointer", fontWeight:700 }}>Semua →</button>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                   {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
@@ -1855,10 +1920,13 @@ export default function VipPage() {
 
             {/* News preview */}
             <div>
-              <h2 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>📰 Berita Pasar</h2>
+              <h2 style={{ fontWeight:800, fontSize:14, marginBottom:12, display:"flex", alignItems:"center", gap:8 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2.5" strokeLinecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+                Berita Pasar
+              </h2>
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                 {newsList.slice(0,4).map((n:any,i:number)=>(
-                  <a key={i} href={n.url||"#"} target="_blank" rel="noreferrer" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:12, padding:"12px 14px", textDecoration:"none" }}>
+                  <a key={i} href={n.url||"#"} target="_blank" rel="noreferrer" className="glass-card" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12, padding:"12px 14px", textDecoration:"none", borderRadius:14 }}>
                     <div>
                       <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, lineHeight:1.4, marginBottom:4 }}>{n.title}</p>
                       <p style={{ color:"#06b6d4", fontSize:11 }}>{n.source}</p>
@@ -1873,10 +1941,13 @@ export default function VipPage() {
 
         {/* ── SINYAL TAB ── */}
         {tab==="sinyal" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-              <h2 style={{ fontWeight:900, fontSize:18 }}>Sinyal Trading</h2>
-              <span style={{ background:"rgba(30,90,240,0.15)", color:"#60a5fa", fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:8 }}>+Tambah</span>
+              <div style={{ display:"flex",alignItems:"center",gap:10 }}>
+                <h2 style={{ fontWeight:900, fontSize:18, letterSpacing:"-.3px" }}>Sinyal Trading</h2>
+                <div className="eq-bars green">{[0,0,0,0,0].map((_,i)=><div key={i} className="eq-bar"/>)}</div>
+              </div>
+              <span style={{ background:"rgba(6,182,212,0.08)", color:"#06b6d4", fontSize:11, fontWeight:700, padding:"5px 12px", borderRadius:100, border:"1px solid rgba(6,182,212,0.2)" }}>LIVE</span>
             </div>
             {/* Filter chips */}
             <div style={{ display:"flex", gap:8, marginBottom:16, overflowX:"auto", paddingBottom:4 }}>
@@ -1966,7 +2037,7 @@ export default function VipPage() {
 
         {/* ── BANDAR TAB ── */}
         {tab==="bandar" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>🔍 Bandarmologi</h2>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Deteksi pola bandar & pergerakan smart money</p>
             {pkgLevel < 2 ? (
@@ -2036,7 +2107,7 @@ export default function VipPage() {
 
         {/* ── BAGGER TAB ── */}
         {tab==="bagger" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
               <h2 style={{ fontWeight:900, fontSize:18 }}>🚀 Bagger Picks</h2>
               <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", fontSize:10, fontWeight:700, padding:"4px 10px", borderRadius:8 }}>Paket {user.package?.toUpperCase()}</span>
@@ -2109,12 +2180,12 @@ export default function VipPage() {
 
         {/* ── MODUL TAB ── */}
         {tab==="feed" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             <FeedTabVIP />
           </div>
         )}
         {tab==="modul" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             <div style={{ marginBottom:20 }}>
               <h2 style={{ color:"#fff", fontWeight:900, fontSize:18, marginBottom:4 }}>Modul Edukasi Trading Saham</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13 }}>Kamu punya akses ke <span style={{ color:"#fff", fontWeight:700 }}>{myModules.length} modul</span> dari total {ALL_MODULES.length} modul. {lockedModules.length>0&&`Upgrade untuk unlock ${lockedModules.length} modul lagi.`}</p>
@@ -2201,9 +2272,9 @@ export default function VipPage() {
 
         {/* ── REKAP SINYAL TAB ── */}
         {tab==="rekap" && (
-          <div style={{ padding:"0 16px 100px" }}>
+          <div className="fade-in-up" style={{ padding:"0 16px 16px" }}>
             <div style={{ padding:"16px 0 8px" }}>
-              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>📋 Rekap Sinyal</h2>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4, display:"flex",alignItems:"center",gap:8 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Rekap Sinyal</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Hasil sinyal yang sudah run — kena TP atau SL.</p>
             </div>
             {rekapList.length === 0 ? (
@@ -2248,7 +2319,7 @@ export default function VipPage() {
 
         {/* ── JURNAL TRADE TAB ── */}
         {tab==="jurnal" && (
-          <div style={{ padding:"0 16px 100px" }}>
+          <div className="fade-in-up" style={{ padding:"0 16px 16px" }}>
             {pkgLevel < 1 ? (
               /* LOCKED untuk Basic */
               <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
@@ -2463,7 +2534,7 @@ export default function VipPage() {
 
         {/* ── BSJP TAB ── */}
         {tab==="bsjp" && (
-          <div style={{ padding:"0 16px 100px" }}>
+          <div className="fade-in-up" style={{ padding:"0 16px 16px" }}>
             {PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bsjpMinPkg) ? (
               <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
                 <div style={{ fontSize:56, marginBottom:16 }}>🔒</div>
@@ -2520,7 +2591,7 @@ export default function VipPage() {
 
         {/* ── BPJS TAB ── */}
         {tab==="bpjs" && (
-          <div style={{ padding:"0 16px 100px" }}>
+          <div className="fade-in-up" style={{ padding:"0 16px 16px" }}>
             {PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bpjsMinPkg) ? (
               <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
                 <div style={{ fontSize:56, marginBottom:16 }}>🔒</div>
@@ -2577,7 +2648,7 @@ export default function VipPage() {
 
         {/* ── PROFILE TAB ── */}
         {tab==="profile" && (
-          <div style={{ padding:"16px" }}>
+          <div style={{ padding:"16px" }} className="fade-in-up">
             {/* User card */}
             <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.12),rgba(0,200,255,0.06))", border:"1px solid rgba(30,90,240,0.25)", borderRadius:20, padding:"24px 20px", marginBottom:20, textAlign:"center" }}>
               <div style={{ width:64, height:64, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#06b6d4)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:24, color:"#fff", margin:"0 auto 12px" }}>
@@ -2663,30 +2734,64 @@ export default function VipPage() {
 
       </div>
 
-      {/* ── BOTTOM NAV ── */}
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:50, background:"rgba(4,6,15,0.97)", backdropFilter:"blur(20px)", borderTop:"1px solid rgba(255,255,255,0.08)", padding:"6px 0 20px", display:"flex", alignItems:"center", justifyContent:"space-around", overflowX:"auto" }}>
-        {[
-          { id:"home", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>, label:"Beranda" },
-          { id:"feed", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, label:"Feed" },
-          { id:"sinyal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, label:"Sinyal" },
-          { id:"bsjp", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>, label:"B.Sore" },
-          { id:"bpjs", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>, label:"B.Pagi" },
-          { id:"bandar", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>, label:"Bandar" },
-          { id:"bagger", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>, label:"Bagger" },
-          { id:"rekap", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>, label:"Rekap" },
-          { id:"jurnal", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>, label:"Jurnal" },
-          { id:"modul", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>, label:"Modul" },
-          { id:"ai", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>, label:"RC-AI" },
-          { id:"profile", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label:"Profil" },
-        ].map(item => (
-          <button key={item.id} onClick={()=>setTab(item.id)} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, background:"none", border:"none", cursor:"pointer", padding:"4px 12px", position:"relative", transition:"all 0.2s" }}>
-            {tab===item.id && <div style={{ position:"absolute", top:-6, left:"50%", transform:"translateX(-50%)", width:36, height:3, background:"linear-gradient(90deg,transparent,#06b6d4,transparent)", borderRadius:3, boxShadow:"0 0 8px rgba(6,182,212,0.9), 0 0 16px rgba(6,182,212,0.5)" }}/>}
-            {tab===item.id && <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at center, rgba(6,182,212,0.08) 0%, transparent 70%)", borderRadius:10, pointerEvents:"none" }}/>}
-            <span style={{ color: tab===item.id ? "#06b6d4" : "rgba(255,255,255,0.35)", transition:"all 0.2s", filter: tab===item.id ? "drop-shadow(0 0 4px rgba(6,182,212,0.8))" : "none" }}>{item.icon}</span>
-            <span style={{ fontSize:9, fontWeight:700, color: tab===item.id ? "#06b6d4" : "rgba(255,255,255,0.3)", transition:"all 0.2s", textShadow: tab===item.id ? "0 0 8px rgba(6,182,212,0.8)" : "none" }}>{item.label}</span>
-          </button>
-        ))}
-      </div>
+      {/* ── VISIONOS DOCK — 2-row floating nav ── */}
+      <style>{`
+        @keyframes dockIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .vip-dock{animation:dockIn .5s cubic-bezier(.34,1.56,.64,1) both}
+        .dock-vip-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 10px;border-radius:14px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);position:relative;min-width:48px;background:none;border:none;color:inherit;flex-shrink:0;}
+        .dock-vip-item:hover{background:rgba(255,255,255,0.06);transform:translateY(-4px) scale(1.08);}
+        .dock-vip-item.dav{background:rgba(6,182,212,0.1);}
+        .dock-vip-item.dav svg,.dock-vip-item.dav .dicon{color:#06b6d4!important;filter:drop-shadow(0 0 5px rgba(6,182,212,.8));}
+        .dock-vip-item.dav .dlabel{color:#06b6d4!important;}
+        .dock-vip-item.dav::after{content:'';position:absolute;bottom:6px;width:4px;height:4px;border-radius:50%;background:#06b6d4;box-shadow:0 0 8px rgba(6,182,212,.9);}
+        .dicon{color:rgba(255,255,255,.38);transition:color .2s,filter .2s;}
+        .dlabel{font-size:9px;font-weight:700;color:rgba(255,255,255,.28);letter-spacing:.3px;transition:color .2s;}
+        .dock-divider{width:1px;height:28px;background:rgba(255,255,255,0.07);margin:0 2px;flex-shrink:0;}
+      `}</style>
+      <div className="vip-dock" style={{
+        position:"fixed", bottom:16, left:"50%", transform:"translateX(-50%)",
+        zIndex:200, width:"calc(100% - 24px)", maxWidth:456,
+        background:"rgba(6,8,18,0.82)", backdropFilter:"blur(40px) saturate(200%)",
+        WebkitBackdropFilter:"blur(40px) saturate(200%)",
+        border:"1px solid rgba(255,255,255,0.09)", borderRadius:24,
+        boxShadow:"0 20px 60px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.07) inset, 0 0 0 1px rgba(6,182,212,.05)",
+        padding:"6px 8px 10px", display:"flex", flexDirection:"column", gap:2,
+      }}>
+        {/* Row 1 — primary tabs */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around" }}>
+          {[
+            { id:"home",   label:"Beranda", svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
+            { id:"feed",   label:"Feed",    svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
+            { id:"sinyal", label:"Sinyal",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
+            { id:"bandar", label:"Bandar",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> },
+            { id:"bagger", label:"Bagger",  svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> },
+            { id:"modul",  label:"Modul",   svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> },
+          ].map(item=>(
+            <button key={item.id} onClick={()=>setTab(item.id)} className={`dock-vip-item${tab===item.id?" dav":""}`}>
+              <span className="dicon">{item.svg}</span>
+              <span className="dlabel">{item.label}</span>
+            </button>
+          ))}
+        </div>
+        {/* Divider */}
+        <div style={{ height:1, background:"rgba(255,255,255,0.05)", margin:"0 8px" }}/>
+        {/* Row 2 — secondary tabs */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around" }}>
+          {[
+            { id:"bsjp",    label:"B.Sore",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> },
+            { id:"bpjs",    label:"B.Pagi",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> },
+            { id:"rekap",   label:"Rekap",   svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
+            { id:"jurnal",  label:"Jurnal",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg> },
+            { id:"ai",      label:"RC-AI",   svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg> },
+            { id:"profile", label:"Profil",  svg:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+          ].map(item=>(
+            <button key={item.id} onClick={()=>setTab(item.id)} className={`dock-vip-item${tab===item.id?" dav":""}`}>
+              <span className="dicon" style={{opacity:.85}}>{item.svg}</span>
+              <span className="dlabel">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>      </div>
     </div>
   );
 }
