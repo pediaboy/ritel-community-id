@@ -73,8 +73,54 @@ function mainMenu() {
     [{ text: "💰 Harga/Paket", callback_data: "menu_pricing" }, { text: "📢 Live Info", callback_data: "menu_liveinfo" }],
     [{ text: "📈 Top Saham", callback_data: "menu_stocks" }, { text: "🎞️ Ticker", callback_data: "menu_ticker" }],
     [{ text: "💬 Testimoni", callback_data: "menu_testi" }, { text: "📦 Orders", callback_data: "menu_orders" }],
-    [{ text: "📊 Statistik", callback_data: "menu_stats" }],
+    [{ text: "📊 Statistik", callback_data: "menu_stats" }, { text: "📡 Channels", callback_data: "menu_channels" }],
   ];
+}
+
+// ===== BROADCAST CHANNELS (auto-forward) =====
+async function getChannels(): Promise<any[]> {
+  const rows = await sb("GET", "/settings?key=eq.broadcast_channels");
+  return rows[0]?.value || [];
+}
+
+async function saveChannels(list: any[]) {
+  await sb("POST", "/settings",
+    { key: "broadcast_channels", value: list, updated_at: new Date().toISOString() },
+    { "Prefer": "resolution=merge-duplicates,return=representation" }
+  );
+}
+
+async function broadcastToChannels(text: string) {
+  const channels = await getChannels();
+  for (const c of channels) {
+    try {
+      await sendMsg(c.id, text);
+    } catch (e) {
+      // ignore individual failures
+    }
+  }
+}
+
+async function handleChannels(chatId: number|string) {
+  const channels = await getChannels();
+  let txt = "📡 <b>CHANNELS / GRUP TERDAFTAR</b>\n\n";
+  if (!channels.length) {
+    txt += "Belum ada channel/grup terdaftar.\n\n";
+  } else {
+    channels.forEach((c:any, i:number) => {
+      txt += `${i+1}. ${c.type === "channel" ? "📢" : "👥"} <b>${c.title}</b>\n   ID: <code>${c.id}</code>\n\n`;
+    });
+  }
+  txt += "<b>Cara daftar channel/grup baru:</b>\n" +
+    "1. Buat channel/grup di Telegram\n" +
+    "2. Tambahkan bot ini sebagai <b>admin</b> di sana (lewat menu Add Member/Admin Telegram — bot tidak bisa join sendiri lewat link, ini batasan resmi Telegram Bot API)\n" +
+    "3. Begitu ditambahkan, bot otomatis terdaftar di sini dan sinyal baru akan auto-forward ke situ ⚡";
+
+  const delBtns = channels.map((c:any) => [{ text: `🗑️ Hapus ${c.title}`, callback_data: `chan_del_${c.id}` }]);
+  await sendKeyboard(chatId, txt, [
+    ...delBtns,
+    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+  ]);
 }
 
 // ===== SINYAL =====
@@ -431,6 +477,13 @@ async function handleAddSignal(chatId: number|string, text: string) {
       `✅ Sinyal <b>${state.kode}</b> berhasil ditambah!\n\n${state.action} | Entry: ${state.entry} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}`,
       [[{ text: "⚡ Lihat Sinyal", callback_data: "menu_signals" }, { text: "🏠 Menu", callback_data: "main_menu" }]]
     );
+    const bIcon = state.action === "BUY" ? "🟢" : state.action === "SELL" ? "🔴" : state.action === "ANTRI" ? "🔵" : "🟡";
+    await broadcastToChannels(
+      `${bIcon} <b>SINYAL BARU — ${state.kode}</b> (${state.action})\n\n` +
+      `Entry: ${state.entry||"—"} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}\n` +
+      (notes ? `📝 ${notes}\n\n` : "\n") +
+      `📊 Ritel Community — auto signal`
+    );
     return;
   }
 }
@@ -688,6 +741,31 @@ async function handleAddTesti_flow(chatId: number|string, text: string) {
 async function processUpdate(update: any) {
   const msg = update.message;
   const cb = update.callback_query;
+  const chatMemberUpdate = update.my_chat_member;
+
+  // ===== AUTO-DETECT: bot added/removed from a channel or group =====
+  if (chatMemberUpdate) {
+    const chat = chatMemberUpdate.chat;
+    const newStatus = chatMemberUpdate.new_chat_member?.status;
+    const channels = await getChannels();
+    const exists = channels.find((c:any) => String(c.id) === String(chat.id));
+
+    if (["administrator", "member"].includes(newStatus)) {
+      if (!exists) {
+        const entry = { id: chat.id, title: chat.title || chat.username || String(chat.id), type: chat.type };
+        await saveChannels([...channels, entry]);
+        // notify admins
+        for (const adminId of ADMIN_IDS) {
+          await sendMsg(adminId, `📡 Bot ditambahkan ke <b>${entry.title}</b> (${chat.type}).\n\nSinyal baru akan auto-forward ke sini. Kelola di menu 📡 Channels.`);
+        }
+      }
+    } else if (["left", "kicked"].includes(newStatus)) {
+      if (exists) {
+        await saveChannels(channels.filter((c:any) => String(c.id) !== String(chat.id)));
+      }
+    }
+    return;
+  }
 
   if (msg) {
     const chatId = msg.chat.id;
@@ -775,6 +853,14 @@ async function processUpdate(update: any) {
     if (data === "menu_testi") { await handleTestimonials(chatId); return; }
     if (data === "menu_orders") { await handleOrders(chatId); return; }
     if (data === "menu_stats") { await handleStats(chatId); return; }
+    if (data === "menu_channels") { await handleChannels(chatId); return; }
+    if (data.startsWith("chan_del_")) {
+      const id = data.replace("chan_del_", "");
+      const channels = await getChannels();
+      await saveChannels(channels.filter((c:any) => String(c.id) !== String(id)));
+      await handleChannels(chatId);
+      return;
+    }
 
     // ===== PAGINATION =====
     if (data.startsWith("sig_page_")) { await handleSignals(chatId, parseInt(data.replace("sig_page_",""))); return; }
