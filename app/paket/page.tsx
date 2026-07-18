@@ -200,6 +200,7 @@ export default function PaketPage() {
           const admin = d.pricing.find((p: any) => p.id === def.id);
           if (admin) return {
             ...def,
+            price: admin.price || def.price,
             priceLabel: admin.priceLabel || def.priceLabel,
             period: admin.period || def.period,
             description: admin.description || def.description,

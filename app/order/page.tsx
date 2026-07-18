@@ -89,7 +89,7 @@ function OrderPageInner() {
 
   const flashPrice   = flashPriceParam || apiFlash?.price || "";
   const flashDisc    = flashDiscParam  || apiFlash?.discount || "";
-  const normalPrice  = basePkg.price;
+  const normalPrice  = apiPkg?.price || basePkg.price;
   const finalRaw: number = isFlashActive
     ? (flashRawParam ? parseInt(flashRawParam) : (apiFlash?.rawPrice || normalPrice))
     : normalPrice;

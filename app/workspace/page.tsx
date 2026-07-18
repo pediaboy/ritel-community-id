@@ -1,289 +1,209 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
-function TiltCard({ children, className="" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const onMove = (e: React.MouseEvent) => {
-    const el = ref.current; if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX-r.left)/r.width-0.5; const y = (e.clientY-r.top)/r.height-0.5;
-    el.style.transform = `perspective(700px) rotateY(${x*7}deg) rotateX(${-y*7}deg)`;
-  };
-  const onLeave = () => { if (ref.current) ref.current.style.transform=""; };
-  return <div ref={ref} className={`tilt-card ${className}`} onMouseMove={onMove} onMouseLeave={onLeave}>{children}</div>;
-}
-
-function useFlashTimer(endTime: string | null) {
-  const [timeLeft, setTimeLeft] = useState<{ h:number;m:number;s:number }|null>(null);
-  const [expired, setExpired] = useState(false);
-  useEffect(() => {
-    if (!endTime) { setTimeLeft(null); setExpired(false); return; }
-    const calc = () => {
-      const diff = new Date(endTime).getTime() - Date.now();
-      if (diff <= 0) { setExpired(true); setTimeLeft(null); return; }
-      setTimeLeft({ h:Math.floor(diff/3600000), m:Math.floor((diff%3600000)/60000), s:Math.floor((diff%60000)/1000) });
-    };
-    calc(); const iv = setInterval(calc, 1000); return () => clearInterval(iv);
-  }, [endTime]);
-  return { timeLeft, expired };
-}
-
-const defaultPackages = [
-  { id:"basic", name:"Basic", price:100000, priceLabel:"Rp 100.000", period:"/bulan", color:"blue", popular:false, isElite:false, hasAI:false, flashSale:null,
-    description:"Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.",
-    features:["Sinyal saham harian","Berita pasar realtime","Chart IHSG live","Modul dasar investasi saham","Grup WA Basic"] },
-  { id:"silver", name:"Silver", price:250000, priceLabel:"Rp 250.000", period:"/bulan", color:"emerald", popular:false, isElite:false, hasAI:false, flashSale:null,
-    description:"Untuk investor yang ingin memahami fundamental dan mulai screening saham potensial secara mandiri.",
-    features:["Semua fitur Basic","Analisis fundamental mendalam","Screening saham bagger potensial","Risk & money management","Grup WA Silver"] },
-  { id:"gold", name:"Gold", price:500000, priceLabel:"Rp 500.000", period:"/bulan", color:"gold", popular:true, isElite:false, hasAI:false, flashSale:null,
-    description:"Paket terlaris! Lengkap dengan sinyal premium, analisis teknikal mendalam, dan panduan psikologi trading.",
-    features:["Semua fitur Silver","Sinyal entry, antri, TP, SL premium","Analisis teknikal & bandarmologi","Modul psikologi & emosi trading","Potensi saham multi-bagger pilihan","Grup WA Gold Eksklusif"] },
-  { id:"pro", name:"Pro", price:750000, priceLabel:"Rp 750.000", period:"/bulan", color:"purple", popular:false, isElite:false, hasAI:true, flashSale:null,
-    description:"Dilengkapi AI Agent personal untuk bantu analisis, watchlist, dan keputusan trading kapan saja.",
-    features:["Semua fitur Gold","AI Agent trading assistant 24/7","Watchlist saham personal","Laporan mingguan eksklusif Pro","Priority support","Grup WA Pro VIP"] },
-  { id:"platinum", name:"Platinum", price:900000, priceLabel:"Rp 900.000", period:"/bulan", color:"platinum", popular:false, isElite:false, hasAI:true, flashSale:null,
-    description:"Pengalaman investasi terdepan dengan AI Agent canggih, konsultasi personal, dan sinyal 24/7.",
-    features:["Semua fitur Pro","AI Agent + analisis portofolio","Konsultasi 1-on-1 dengan analis senior","Akses penuh semua modul VIP","Sinyal real-time 24/7 tanpa delay","Grup WA Platinum Elite"] },
-  { id:"elite", name:"Elite", price:1000000, priceLabel:"Rp 1.000.000", period:"/bulan", color:"elite", popular:false, isElite:true, hasAI:true, flashSale:null,
-    description:"Paket paling eksklusif. Mentoring langsung, AI Agent Elite, portofolio management, dan akses penuh semua fitur.",
-    features:["Semua fitur Platinum","AI Agent Elite terdepan","Portofolio management personal","Akses mentor langsung intensif","Event & webinar eksklusif Elite","Laporan harian personal","Grup WA Elite Master"] },
-];
-
-const colorMap: any = {
-  blue:    { border:"border-blue-500/40", glow:"shadow-blue-500/20", badge:"bg-blue-500", accent:"text-blue-400", bg:"from-blue-600 to-blue-800" },
-  emerald:    { border:"border-emerald-500/40", glow:"shadow-emerald-500/20", badge:"bg-emerald-500", accent:"text-emerald-400", bg:"from-emerald-600 to-blue-700" },
-  gold:    { border:"border-yellow-500/40", glow:"shadow-yellow-500/20", badge:"bg-yellow-500", accent:"text-yellow-400", bg:"from-yellow-500 to-orange-600" },
-  purple:  { border:"border-purple-500/40", glow:"shadow-purple-500/20", badge:"bg-purple-500", accent:"text-purple-400", bg:"from-purple-600 to-indigo-700" },
-  platinum:{ border:"border-slate-400/40", glow:"shadow-slate-400/20", badge:"bg-slate-400", accent:"text-slate-300", bg:"from-slate-400 to-slate-600" },
-  elite:   { border:"border-yellow-400/60", glow:"shadow-yellow-400/30", badge:"bg-yellow-400", accent:"text-yellow-400", bg:"from-yellow-400 via-yellow-500 to-orange-500" },
+/* ============================================================
+   ICONS
+   ============================================================ */
+const Icon = {
+  Back:     () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
+  Seed:     () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4 3-8 7-9 4 1 7 5 7 9a7 7 0 0 1-7 7z"/></svg>,
+  Book:     () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
+  Radar:    () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6l.01.01"/><path d="M2.05 11a10 10 0 0 0 2.02 8.93"/><path d="M12 2v4"/><path d="M12 12l6.24 3.12"/><circle cx="12" cy="12" r="10"/></svg>,
+  Shield:   () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.5 8.5-4-1-7.5-3.5-7.5-8.5V6l7.5-3 7.5 3v7Z"/></svg>,
+  Brain:    () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1-2.5-2.5v-.5a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2v-1a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2v-.5A2.5 2.5 0 0 1 7 3h.54A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.5H17a2.5 2.5 0 0 0 2.5-2.5v-.5a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2v-1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2v-.5A2.5 2.5 0 0 0 17 3h-.54A2.5 2.5 0 0 0 14.5 2z"/></svg>,
+  Trophy:   () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8M12 17v4M17 5V3H7v2M17 5a5 5 0 0 1-5 5 5 5 0 0 1-5-5M17 5h3a2 2 0 0 1-2 4M7 5H4a2 2 0 0 0 2 4"/></svg>,
+  Check:    () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  Lock:     () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+  TrendUp:  () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+  Globe:    () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>,
 };
 
+type Track = "saham" | "forex";
 
-// ===== MOTIVASI QUOTES =====
-const MOTIVASI_QUOTES = [
-  { text: "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.", icon: "01" },
-  { text: "Pasar modal adalah tempat paling adil — siapa yang paling siap, dia yang paling untung.", icon: "02" },
-  { text: "Cari mentor yang bisa membantu dirimu memahami bidang ini. Pengalaman mereka bisa memangkas kurva belajarmu bertahun-tahun.", icon: "03" },
-  { text: "Bukan soal seberapa besar modal yang kamu punya — tapi seberapa besar pengetahuan yang kamu miliki.", icon: "04" },
-  { text: "Konsistensi dalam belajar lebih berharga dari satu keberuntungan besar yang tidak bisa diulang.", icon: "05" },
-  { text: "Investor sukses bukan mereka yang tidak pernah rugi, tapi mereka yang belajar dari setiap kesalahan.", icon: "06" },
+/* ============================================================
+   JOURNEY DATA — Saham track
+   ============================================================ */
+const sahamStages = [
+  { id: "s1", title: "Dasar Pasar Modal", icon: <Icon.Seed />, desc: "Memahami cara kerja bursa, lot, fraksi harga, dan mekanisme jual-beli saham." },
+  { id: "s2", title: "Membaca Laporan Fundamental", icon: <Icon.Book />, desc: "Belajar membaca laporan keuangan, rasio valuasi, dan kesehatan emiten." },
+  { id: "s3", title: "Screening & Watchlist", icon: <Icon.Radar />, desc: "Menyaring saham potensial dari ribuan emiten menjadi watchlist personal." },
+  { id: "s4", title: "Analisis Teknikal", icon: <Icon.TrendUp />, desc: "Membaca pola candlestick, support-resistance, dan indikator momentum." },
+  { id: "s5", title: "Manajemen Risiko & Modal", icon: <Icon.Shield />, desc: "Menentukan ukuran posisi, stop-loss, dan rasio risk-reward setiap transaksi." },
+  { id: "s6", title: "Psikologi & Konsistensi", icon: <Icon.Brain />, desc: "Mengendalikan emosi, disiplin mengikuti rencana, dan bertahan jangka panjang." },
 ];
 
-function MotivQuotes() {
-  const [motivList, setMotivList] = useState(MOTIVASI_QUOTES);
+/* ============================================================
+   JOURNEY DATA — Forex track
+   ============================================================ */
+const forexStages = [
+  { id: "f1", title: "Mengenal Pasar Forex", icon: <Icon.Globe />, desc: "Memahami pair mata uang, pip, lot, leverage, dan jam sesi perdagangan dunia." },
+  { id: "f2", title: "Analisis Fundamental Makro", icon: <Icon.Book />, desc: "Membaca dampak suku bunga, inflasi, dan berita ekonomi terhadap nilai tukar." },
+  { id: "f3", title: "Price Action & Chart Pattern", icon: <Icon.Radar />, desc: "Mengidentifikasi struktur harga, order block, dan pola pembalikan tren." },
+  { id: "f4", title: "Strategi Entry & Exit", icon: <Icon.TrendUp />, desc: "Menyusun rencana entry, target profit, dan stop-loss berbasis data." },
+  { id: "f5", title: "Manajemen Risiko & Leverage", icon: <Icon.Shield />, desc: "Mengatur ukuran lot dan leverage agar akun bertahan dari volatilitas pasar." },
+  { id: "f6", title: "Disiplin Trading Plan", icon: <Icon.Brain />, desc: "Menjalankan trading plan secara konsisten tanpa terpengaruh emosi pasar." },
+];
+
+const STORAGE_KEY = "trading_journey_progress_v1";
+
+function Header() {
+  return (
+    <div className="max-w-4xl mx-auto mb-8 flex items-center justify-between">
+      <Link href="/" className="flex items-center gap-2 text-neutral-500 hover:text-blue-400 text-xs font-bold uppercase tracking-wider transition-colors">
+        <Icon.Back /> Beranda
+      </Link>
+      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-600">Workspace</span>
+    </div>
+  );
+}
+
+export default function WorkspacePage() {
+  const [track, setTrack] = useState<Track>("saham");
+  const [done, setDone] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     try {
-      const syncData = JSON.parse(localStorage.getItem("rc_sync") || "{}");
-      if (syncData.motivasi && syncData.motivasi.length > 0) {
-        setMotivList(syncData.motivasi.map((m: any, i: number) => ({
-          text: m.text,
-          icon: String((i % 6) + 1).padStart(2, "0")
-        })));
-      }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setDone(JSON.parse(raw));
     } catch {}
   }, []);
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {motivList.map((q, i) => (
-        <div key={i} className="card-glass rounded-xl p-5 border border-white/8 hover:border-yellow-500/20 transition-all">
-          <div className="index-badge mb-3">{q.icon}</div>
-          <p className="text-slate-300 text-sm leading-relaxed italic">"{q.text}"</p>
-        </div>
-      ))}
-    </div>
-  );
-}
 
-function PaketCard({ pkg }: { pkg: any }) {
-  const c = colorMap[pkg.color] || colorMap.blue;
-  const fs = pkg.flashSale;
-  const { timeLeft, expired } = useFlashTimer(fs?.endTime || null);
-  const activeFlash = fs && !expired;
+  const toggleStage = (id: string) => {
+    const updated = { ...done, [id]: !done[id] };
+    setDone(updated);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch {}
+  };
+
+  const stages = track === "saham" ? sahamStages : forexStages;
+  const completedCount = stages.filter(s => done[s.id]).length;
+  const progressPct = Math.round((completedCount / stages.length) * 100);
 
   return (
-    <TiltCard>
-      <div className={`relative card-glass rounded-2xl p-6 border-2 ${c.border} hover:shadow-xl ${c.glow} transition-all duration-300 ${pkg.popular ? "ring-2 ring-yellow-500/50" : ""} ${pkg.isElite ? "ring-2 ring-yellow-400/70" : ""} h-full flex flex-col`}>
-        {pkg.popular && !pkg.isElite && (
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-yellow-500 text-[#030712] text-xs font-black px-4 py-1 rounded-full">TERLARIS</span>
-          </div>
-        )}
-        {pkg.isElite && (
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-yellow-400 text-[#030712] text-xs font-black px-4 py-1 rounded-full">ELITE</span>
-          </div>
-        )}
-        {pkg.hasAI && (
-          <div className="absolute top-4 right-4">
-            <span className="text-xs bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-1 rounded-full">AI</span>
-          </div>
-        )}
-
-        <div className="flex-1">
-          <div className={`text-2xl font-black ${c.accent} mb-2`}>{pkg.name}</div>
-
-          {/* Flash sale */}
-          {activeFlash ? (
-            <div className="mb-3">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="flash-badge">FLASH SALE {fs.discount}</span>
-                {timeLeft && (
-                  <div className="flex items-center gap-0.5 text-xs">
-                    {[{v:timeLeft.h,l:"J"},{v:timeLeft.m,l:"M"},{v:timeLeft.s,l:"D"}].map(({v,l}) => (
-                      <div key={l} className="bg-red-500/20 border border-red-500/30 rounded px-1 py-0.5 text-center min-w-[22px]">
-                        <div className="text-red-300 font-black font-mono text-xs leading-none">{String(v).padStart(2,"0")}</div>
-                        <div className="text-red-400/60 text-[8px] leading-none">{l}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="text-slate-500 line-through text-sm">{pkg.priceLabel}</div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-white">{fs.price}</span>
-                <span className="text-slate-400 text-sm">{pkg.period}</span>
-              </div>
-              <div className="text-xs text-green-400 font-bold">Hemat {fs.discount}!</div>
-            </div>
-          ) : (
-            <div className="flex items-end gap-1 mb-3">
-              <span className="text-3xl font-black text-white">{pkg.priceLabel}</span>
-              <span className="text-slate-400 text-sm pb-1">{pkg.period}</span>
-            </div>
-          )}
-
-          <p className="text-slate-400 text-sm mb-4 leading-relaxed">{pkg.description}</p>
-
-          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-2 mb-4 text-xs text-green-300 flex items-center gap-2">
-            <span>Grup WA <strong>{pkg.name}</strong> — komunitas eksklusif</span>
-          </div>
-
-          <ul className="space-y-2 mb-6">
-            {pkg.features.map((f: string, i: number) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className={`${c.accent} mt-0.5 flex-shrink-0`}></span>
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <Link href={`/order?paket=${pkg.id}${activeFlash && fs?.price ? `&flash=${encodeURIComponent(fs.price)}&disc=${encodeURIComponent(fs.discount||"")}&raw=${fs.rawPrice||pkg.price}` : ""}`}
-          className={`w-full block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 active:scale-95 bg-gradient-to-r ${c.bg} text-white shadow-lg`}>
-          Order Paket {pkg.name} 
-        </Link>
-      </div>
-    </TiltCard>
-  );
-}
-
-export default function PaketPage() {
-  const [packages, setPackages] = useState(defaultPackages);
-
-  useEffect(() => {
-    // Load from API (Supabase) — same source as homepage
-    fetch("/api/admin/sync").then(r => r.json()).then(d => {
-      if (d.pricing && d.pricing.length > 0) {
-        const merged = defaultPackages.map(def => {
-          const admin = d.pricing.find((p: any) => p.id === def.id);
-          if (admin) return {
-            ...def,
-            priceLabel: admin.priceLabel || def.priceLabel,
-            period: admin.period || def.period,
-            description: admin.description || def.description,
-            features: admin.features?.length ? admin.features : def.features,
-            flashSale: admin.flashSale || null,
-          };
-          return def;
-        });
-        setPackages(merged);
-      }
-    }).catch(() => {});
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-[#030712] pt-6 pb-20 px-4">
-      <div className="galaxy-stars"/>
+    <div className="min-h-screen bg-[#030712] pt-8 pb-24 px-4">
+      <div className="galaxy-stars" />
       <div className="relative z-10">
-        <div className="max-w-7xl mx-auto mb-8">
-          <Link href="/" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2">
-             Kembali ke Beranda
-          </Link>
+        <Header />
+
+        {/* Hero */}
+        <div className="max-w-4xl mx-auto text-center mb-10">
+          <div className="index-badge w-14 h-14 mx-auto mb-4 bg-neutral-900 border border-blue-600/40 text-blue-400">
+            <Icon.TrendUp />
+          </div>
+          <h1 className="headline text-2xl md:text-3xl tracking-wider mb-3">
+            PERJALANAN <span className="accent">TRADING</span>
+          </h1>
+          <p className="text-neutral-500 text-sm max-w-xl mx-auto leading-relaxed">
+            Peta jalan belajar terstruktur — dari dasar pasar modal sampai konsistensi psikologi trading,
+            untuk Saham dan Forex.
+          </p>
         </div>
 
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="tag-chip mb-6">Semua Paket VIP</div>
-            <h1 className="headline text-4xl sm:text-5xl mb-3">
-              Pilih Paket <span className="accent">Terbaik</span> Anda
-            </h1>
-            <p className="text-slate-400 max-w-xl mx-auto text-sm">6 pilihan paket dari Rp 100.000 hingga Rp 1.000.000 — sesuai kebutuhan dan level investasi Anda</p>
+        {/* Track switch */}
+        <div className="max-w-4xl mx-auto mb-8 flex justify-center">
+          <div className="flex rounded-lg overflow-hidden border border-neutral-800">
+            <button
+              onClick={() => setTrack("saham")}
+              className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-colors ${track === "saham" ? "bg-blue-600 text-white" : "bg-transparent text-neutral-500 hover:text-neutral-300"}`}
+            >
+              Saham
+            </button>
+            <button
+              onClick={() => setTrack("forex")}
+              className={`px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-colors ${track === "forex" ? "bg-blue-600 text-white" : "bg-transparent text-neutral-500 hover:text-neutral-300"}`}
+            >
+              Forex
+            </button>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {packages.map((pkg) => <PaketCard key={pkg.id} pkg={pkg} />)}
-          </div>
-
-          {/* MOTIVASI QUOTES SECTION */}
-          <div className="mt-16 mb-8">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-white mb-2">Kenapa Harus Mulai <span className="gradient-text">Sekarang?</span></h2>
+        {/* Progress summary */}
+        <div className="max-w-4xl mx-auto mb-10">
+          <div className="glass-card p-5 flex items-center gap-5 flex-wrap">
+            <div className="w-14 h-14 rounded-xl bg-blue-600/10 border border-blue-600/30 flex items-center justify-center text-blue-400 flex-shrink-0">
+              <Icon.Trophy />
             </div>
-            <MotivQuotes />
-          </div>
-
-          {/* Comparison table */}
-          <div className="mt-4 card-glass rounded-2xl overflow-hidden">
-            <div className="p-6 border-b border-emerald-500/20">
-              <h2 className="text-xl font-black text-white">Perbandingan Fitur</h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-emerald-500/10">
-                    <th className="text-left px-6 py-3 text-slate-400 font-medium">Fitur</th>
-                    {packages.map(p => <th key={p.id} className="px-4 py-3 text-center text-slate-300 font-bold whitespace-nowrap">{p.name}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    ["Sinyal Harian","","","","","",""],
-                    ["Berita Realtime","","","","","",""],
-                    ["Chart IHSG Live","","","","","",""],
-                    ["Modul Fundamental","–","","","","",""],
-                    ["Saham Bagger","–","","","","",""],
-                    ["Sinyal Premium TP/SL","–","–","","","",""],
-                    ["Bandarmologi","–","–","","","",""],
-                    ["Psikologi Trading","–","–","","","",""],
-                    ["AI Agent","–","–","–","","",""],
-                    ["Konsultasi 1-on-1","–","–","–","–","",""],
-                    ["Sinyal 24/7 No Delay","–","–","–","–","",""],
-                    ["Mentor Langsung","–","–","–","–","–",""],
-                    ["Portfolio Management","–","–","–","–","–",""],
-                    ["Grup WA","","","","","",""],
-                  ].map(([feature,...vals]) => (
-                    <tr key={feature as string} className="border-b border-emerald-500/5 hover:bg-emerald-500/3 transition-colors">
-                      <td className="px-6 py-3 text-slate-300">{feature}</td>
-                      {vals.map((v,i) => (
-                        <td key={i} className={`px-4 py-3 text-center font-bold text-base ${v==="" ? "text-green-400" : "text-slate-700"}`}>{v}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex-1 min-w-[180px]">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-neutral-300 text-xs font-bold uppercase tracking-wider">Progres {track === "saham" ? "Saham" : "Forex"}</span>
+                <span className="text-blue-400 text-xs font-black">{completedCount}/{stages.length} Tahap</span>
+              </div>
+              <div className="risk-meter-track">
+                <div className="risk-meter-fill" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg,#2563EB,#3B82F6)" }} />
+              </div>
             </div>
           </div>
+        </div>
 
-          <div className="text-center mt-12">
-            <p className="text-slate-400 text-sm mb-4">Ada pertanyaan? Hubungi kami langsung!</p>
-            <a href="https://wa.me/6282218723401" target="_blank" className="btn-gold inline-block px-10 py-4 rounded-xl font-black text-base">
-              Chat dengan Admin
-            </a>
+        {/* Journey timeline */}
+        <div className="max-w-3xl mx-auto">
+          <div className="relative pl-8">
+            <div className="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-blue-600/60 via-blue-600/20 to-transparent" />
+            {stages.map((stage, i) => {
+              const isDone = !!done[stage.id];
+              const isNext = !isDone && stages.slice(0, i).every(s => done[s.id]);
+              const isLocked = !isDone && !isNext;
+              return (
+                <div key={stage.id} className="relative mb-5 last:mb-0">
+                  <div
+                    className={`absolute -left-8 top-5 w-8 h-8 rounded-full flex items-center justify-center border-2 z-10
+                      ${isDone ? "bg-blue-600 border-blue-600 text-white" : isNext ? "bg-[#08111F] border-blue-500 text-blue-400" : "bg-[#08111F] border-neutral-800 text-neutral-700"}`}
+                  >
+                    {isDone ? <Icon.Check /> : isLocked ? <Icon.Lock /> : <span className="text-[10px] font-black">{i + 1}</span>}
+                  </div>
+
+                  <div
+                    className={`glass-card p-5 transition-opacity ${isLocked ? "opacity-50" : "opacity-100"}`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-11 h-11 rounded-xl bg-blue-600/10 border border-blue-600/30 flex items-center justify-center text-blue-400 flex-shrink-0">
+                        {stage.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-3 flex-wrap">
+                          <h3 className="text-neutral-100 font-bold text-sm">{stage.title}</h3>
+                          <button
+                            onClick={() => toggleStage(stage.id)}
+                            disabled={isLocked}
+                            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors
+                              ${isDone ? "bg-blue-600/10 border border-blue-600/40 text-blue-400" : "bg-white/5 border border-neutral-800 text-neutral-400 hover:text-neutral-200"}
+                              ${isLocked ? "cursor-not-allowed opacity-50" : ""}`}
+                          >
+                            {isDone ? <><Icon.Check /> Selesai</> : "Tandai Selesai"}
+                          </button>
+                        </div>
+                        <p className="text-neutral-500 text-xs mt-1.5 leading-relaxed">{stage.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="max-w-3xl mx-auto mt-10">
+          <div className="glass-card p-6 text-center">
+            <p className="text-neutral-400 text-xs mb-4 leading-relaxed">
+              Ingin dampingan langsung, sinyal harian, dan modul lengkap di setiap tahap perjalananmu?
+            </p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <Link href="/paket" className="btn-primary px-6 py-3 rounded-lg text-xs font-black uppercase tracking-wider">
+                Lihat Paket VIP
+              </Link>
+              <a
+                href="https://wa.me/6289663874700"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-lg text-xs font-black uppercase tracking-wider border border-neutral-800 text-neutral-300 hover:border-blue-600/40 hover:text-blue-400 transition-colors"
+              >
+                WhatsApp Admin
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

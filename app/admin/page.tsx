@@ -512,7 +512,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [editTestiId, setEditTestiId] = useState<string|null>(null);
   const [showTestiForm, setShowTestiForm] = useState(false);
 
-  const [pricingForm, setPricingForm] = useState<any>({ id:"", name:"", priceLabel:"", period:"/bulan", description:"", features:"", flashSale:{ discount:"", price:"", rawPrice:0, endTime:"" }, hasFlashSale:false, discountPct:"", flashDuration:"" });
+  const [pricingForm, setPricingForm] = useState<any>({ id:"", name:"", price:0, priceLabel:"", period:"/bulan", description:"", features:"", flashSale:{ discount:"", price:"", rawPrice:0, endTime:"" }, hasFlashSale:false, discountPct:"", flashDuration:"" });
   const [editPricingId, setEditPricingId] = useState<string|null>(null);
   const [showPricingForm, setShowPricingForm] = useState(false);
 
@@ -750,7 +750,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     let discPct = "";
     if (fs.discount) discPct = fs.discount.replace("%","");
     setPricingForm({
-      id: p.id, name: p.name, priceLabel: p.priceLabel, period: p.period,
+      id: p.id, name: p.name, price: p.price || 0, priceLabel: p.priceLabel, period: p.period,
       description: p.description, features: (p.features||[]).join("\n"),
       flashSale: fs, hasFlashSale: !!p.flashSale,
       discountPct: discPct,
@@ -773,10 +773,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     });
   };
   const savePricing = () => {
-    if (!pricingForm.priceLabel.trim()) { alert("Isi harga!"); return; }
+    const priceNum = parseInt(String(pricingForm.price).replace(/\D/g,""), 10);
+    if (!priceNum || priceNum <= 0) { alert("Isi harga dengan angka yang valid!"); return; }
+    const priceLabel = "Rp " + priceNum.toLocaleString("id-ID");
     const features = pricingForm.features.split("\n").map((f:string)=>f.trim()).filter(Boolean);
     const flashSale = pricingForm.hasFlashSale && pricingForm.flashSale.price ? pricingForm.flashSale : null;
-    const updated = pricing.map(p => p.id === editPricingId ? { ...p, priceLabel: pricingForm.priceLabel, period: pricingForm.period, description: pricingForm.description, features, flashSale, price: p.price } : p);
+    const updated = pricing.map(p => p.id === editPricingId ? { ...p, price: priceNum, priceLabel, period: pricingForm.period, description: pricingForm.description, features, flashSale } : p);
     setPricing(updated);
     syncToAPI("pricing", updated);
     setEditPricingId(null); setShowPricingForm(false);
@@ -1464,7 +1466,21 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">Edit Paket: {pricing.find(p=>p.id===editPricingId)?.name}</h3>
                   <div className="space-y-3 mb-4">
-                    <div><label className="text-xs text-slate-500 mb-1 block">Label Harga Normal</label><input value={pricingForm.priceLabel} onChange={e=>setPricingForm({...pricingForm,priceLabel:e.target.value})} placeholder="Rp 100.000" className="input-dark"/></div>
+                    <div>
+                      <label className="text-xs text-slate-500 mb-1 block">Harga Paket (Rp) — angka asli yang dipakai saat checkout</label>
+                      <input
+                        type="number"
+                        value={pricingForm.price || ""}
+                        onChange={e=>setPricingForm({...pricingForm,price:e.target.value})}
+                        placeholder="100000"
+                        className="input-dark"
+                      />
+                      {!!pricingForm.price && (
+                        <p className="text-[11px] text-emerald-400 mt-1">
+                          Akan tampil sebagai: Rp {parseInt(String(pricingForm.price).replace(/\D/g,""))||0 ? (parseInt(String(pricingForm.price).replace(/\D/g,""))).toLocaleString("id-ID") : "0"}
+                        </p>
+                      )}
+                    </div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Periode</label><input value={pricingForm.period} onChange={e=>setPricingForm({...pricingForm,period:e.target.value})} placeholder="/bulan" className="input-dark"/></div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Deskripsi Paket</label><textarea value={pricingForm.description} onChange={e=>setPricingForm({...pricingForm,description:e.target.value})} rows={3} className="input-dark resize-none"/></div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Fitur (1 per baris)</label><textarea value={pricingForm.features} onChange={e=>setPricingForm({...pricingForm,features:e.target.value})} rows={5} placeholder="Sinyal saham harian&#10;Berita pasar realtime" className="input-dark resize-none"/></div>
