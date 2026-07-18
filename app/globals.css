@@ -43,37 +43,29 @@ body {
 }
 @keyframes scrollBarShine { 0%{background-position:0% center} 100%{background-position:200% center} }
 
-/* GLASSMORPHISM */
-.glass-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015)), #15161A;
+/* GLASSMORPHISM — single unified card system (glass + glow border + hover glow + floating shadow) */
+.glass-card, .card-glass, .card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015)), #14151A;
   border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 14px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: relative; overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
-.glass-card::before {
+.glass-card::before, .card-glass::before, .card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
   pointer-events: none;
 }
-/* torn-corner accent mark — signature poster-style detail, bottom-left */
-.glass-card::after {
-  content: ''; position: absolute; left: -6px; bottom: -6px; width: 26px; height: 26px;
-  background: #10b981;
-  clip-path: polygon(0% 40%, 20% 35%, 32% 48%, 46% 30%, 60% 46%, 74% 32%, 100% 45%, 100% 100%, 0% 100%);
-  opacity: 0.85; pointer-events: none;
-}
-.glass-card.mark-lg::after { left: -10px; bottom: -10px; width: 46px; height: 46px; }
-.glass-card:hover {
+.glass-card:hover, .card-glass:hover, .card:hover {
   border-color: rgba(16,185,129,0.38);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.12);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(16,185,129,0.14), 0 0 28px rgba(16,185,129,0.08);
   transform: translateY(-3px);
 }
-.glass-card:active { transform: scale(0.983) translateY(-1px); transition-duration: 0.1s; }
-/* opt-out utility for cards that shouldn't show the torn-corner mark (dense tables, forms, small chips) */
-.glass-card.no-mark::after { display: none; }
+.glass-card:active, .card-glass:active, .card:active { transform: scale(0.983) translateY(-1px); transition-duration: 0.1s; }
+/* legacy modifier classes kept as no-ops so existing markup stays valid */
+.glass-card.mark-lg, .glass-card.no-mark, .card-glass.no-mark { /* intentionally no extra decoration */ }
 
 /* FLOATING */
 .float-1 { animation: floatAnim 5s   ease-in-out         infinite; }
@@ -122,14 +114,6 @@ body {
 @keyframes orbitSpin    { from{transform:rotate(0deg)   rotateX(65deg)} to{transform:rotate(360deg)  rotateX(65deg)} }
 @keyframes orbitSpinRev { from{transform:rotate(360deg) rotateX(55deg)} to{transform:rotate(0deg)    rotateX(55deg)} }
 
-/* ANIMATED BORDER */
-.animated-border { position:relative; }
-.animated-border::after {
-  content:''; position:absolute; inset:-1px; border-radius:inherit;
-  background:conic-gradient(from 0deg, rgba(16,185,129,.6), rgba(139,92,246,.4), rgba(16,185,129,0), rgba(16,185,129,.6));
-  z-index:-1; animation:borderSpin 4s linear infinite; filter:blur(2px);
-}
-@keyframes borderSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
 /* TABS */
 .tab-neon-active { color:#10b981; position:relative; }
@@ -243,20 +227,7 @@ body {
 .text-glow-emerald  { text-shadow:0 0 12px rgba(16,185,129,.7), 0 0 24px rgba(16,185,129,.3); }
 .text-glow-green { text-shadow:0 0 12px rgba(34,197,94,.7), 0 0 24px rgba(34,197,94,.3); }
 
-.card { background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); border-radius:16px; backdrop-filter:blur(10px); transition:border-color .2s,box-shadow .2s,transform .2s; position:relative; z-index:1; }
-.card:hover { border-color:rgba(16,185,129,.3); box-shadow:0 0 0 1px rgba(16,185,129,.08),0 8px 32px rgba(0,0,0,.5); transform:translateY(-2px); }
-.card-glass {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)), #15161A;
-  border:1px solid rgba(255,255,255,.09); border-radius:14px; position:relative; z-index:1; overflow:hidden;
-}
-.card-glass::after {
-  content:''; position:absolute; left:-6px; bottom:-6px; width:22px; height:22px;
-  background:#10b981;
-  clip-path: polygon(0% 40%, 20% 35%, 32% 48%, 46% 30%, 60% 46%, 74% 32%, 100% 45%, 100% 100%, 0% 100%);
-  opacity:0.8; pointer-events:none;
-}
-.card-glass.no-mark::after { display:none; }
-.card-glass:hover { border-color:rgba(16,185,129,.35); }
+/* .card / .card-glass unified with .glass-card above */
 
 /* INPUT */
 .input-dark { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:12px; padding:11px 14px; color:#fff; font-size:.875rem; outline:none; transition:border-color .25s,box-shadow .25s; width:100%; }
@@ -323,26 +294,19 @@ body {
   background: #10b981; color: #06110c; border-color: transparent;
 }
 
+/* simple glow divider — thin gradient line, matches glassmorphism language (no geometric shapes) */
 .plus-divider {
-  width: 20px; height: 20px; position: relative; flex-shrink: 0; opacity: 0.85;
+  width: 100%; max-width: 64px; height: 2px; flex-shrink: 0;
+  background: linear-gradient(90deg, transparent, rgba(16,185,129,0.6), transparent);
+  border-radius: 2px;
 }
-.plus-divider::before, .plus-divider::after {
-  content: ''; position: absolute; background: #10b981;
-}
-.plus-divider::before { top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); }
-.plus-divider::after  { left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); }
 
 .poster-frame {
-  position: relative; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
-  overflow: hidden; background: #15161A;
+  position: relative; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px;
+  overflow: hidden; background: #14151A;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-.poster-frame::after {
-  content: ''; position: absolute; right: -10px; bottom: -10px; width: 46px; height: 46px;
-  background: #10b981;
-  clip-path: polygon(0% 40%, 20% 35%, 32% 48%, 46% 30%, 60% 46%, 74% 32%, 100% 45%, 100% 100%, 0% 100%);
-  transform: scaleX(-1);
-  opacity: 0.9; pointer-events: none;
-}
+.poster-frame:hover { border-color: rgba(16,185,129,0.35); box-shadow: 0 0 20px rgba(16,185,129,0.1); }
 
 /* Section index badge — e.g. "01" small monogram tile used instead of emoji icons */
 .index-badge {

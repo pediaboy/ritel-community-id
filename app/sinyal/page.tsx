@@ -166,7 +166,7 @@ export default function SinyalPage() {
       <div className="galaxy-stars"/>
 
       {/* HEADER */}
-      <div style={{ position:"sticky",top:0,zIndex:50,background:"rgba(10,11,13,0.88)",backdropFilter:"blur(28px) saturate(200%)",WebkitBackdropFilter:"blur(28px) saturate(200%)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+      <div style={{ position:"sticky",top:0,zIndex:50,background:"rgba(10,11,13,0.88)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
         <div style={{ display:"flex",alignItems:"center",gap:12 }}>
           <Link href="/" style={{ color:"rgba(255,255,255,0.4)",display:"flex",alignItems:"center",padding:"6px",borderRadius:8,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)" }}>
             <ArrowLeft/>

@@ -34,128 +34,7 @@ function EqBars({ color = "" }: { color?: string }) {
   );
 }
 
-/* ============================================================
-   3D GALAXY PARTICLE CANVAS
-   ============================================================ */
-function GalaxyCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current; if (!canvas) return;
-    const ctx = canvas.getContext("2d"); if (!ctx) return;
-    let W = (canvas.width  = window.innerWidth);
-    let H = (canvas.height = window.innerHeight);
-    const onResize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
-    window.addEventListener("resize", onResize);
 
-    // Mouse parallax
-    let mx = W/2, my = H/2;
-    const onMouse = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
-    window.addEventListener("mousemove", onMouse);
-
-    const COLORS = ["rgba(255,255,255,","rgba(16,185,129,","rgba(139,92,246,","rgba(59,130,246,","rgba(52,211,153,"];
-    type Star = { angle:number; orbit:number; z:number; r:number; color:string; speed:number; };
-    const stars: Star[] = Array.from({length:340}, () => ({
-      orbit:  60 + Math.random() * Math.max(W,H) * 0.65,
-      angle:  Math.random() * Math.PI * 2,
-      z:      0.2 + Math.random() * 0.8,
-      r:      0.4 + Math.random() * 1.7,
-      color:  COLORS[Math.floor(Math.random() * COLORS.length)],
-      speed:  0.00012 + Math.random() * 0.00028,
-    }));
-
-    // Nebula particles
-    type Nebula = { x:number; y:number; r:number; color:string; vx:number; vy:number; };
-    const nebula: Nebula[] = Array.from({length:18}, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      r: 60 + Math.random() * 140,
-      color: ["rgba(16,185,129,","rgba(139,92,246,","rgba(30,90,240,"][Math.floor(Math.random()*3)],
-      vx: (Math.random()-.5)*0.12, vy: (Math.random()-.5)*0.12,
-    }));
-
-    let raf: number;
-    const draw = () => {
-      ctx.clearRect(0,0,W,H);
-      const cx = W/2 + (mx-W/2)*0.04;
-      const cy = H*0.36 + (my-H/2)*0.03;
-
-      // Nebula glow clouds
-      nebula.forEach(n => {
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < -n.r) n.x = W+n.r;
-        if (n.x > W+n.r) n.x = -n.r;
-        if (n.y < -n.r) n.y = H+n.r;
-        if (n.y > H+n.r) n.y = -n.r;
-        const g = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
-        g.addColorStop(0,  n.color+"0.045)");
-        g.addColorStop(0.5,n.color+"0.02)");
-        g.addColorStop(1,  "transparent");
-        ctx.fillStyle = g; ctx.beginPath();
-        ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
-      });
-
-      // Core galaxy center glow
-      const cg = ctx.createRadialGradient(cx,cy,0,cx,cy,W*0.45);
-      cg.addColorStop(0,"rgba(16,185,129,0.06)");
-      cg.addColorStop(0.35,"rgba(30,58,138,0.05)");
-      cg.addColorStop(1,"transparent");
-      ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
-
-      // Orbital stars
-      stars.forEach(s => {
-        s.angle += s.speed;
-        const ex = cx + Math.cos(s.angle) * s.orbit;
-        const ey = cy + Math.sin(s.angle) * s.orbit * 0.35; // 3D tilt
-        const op = 0.25 + s.z * 0.75;
-        const r  = s.r * (0.5 + s.z * 0.6);
-        ctx.beginPath();
-        ctx.arc(ex,ey,r,0,Math.PI*2);
-        ctx.fillStyle = s.color+op+")"; ctx.fill();
-        // Sparkle glow for bright stars
-        if (s.z > 0.65 && s.r > 1.1) {
-          const sg = ctx.createRadialGradient(ex,ey,0,ex,ey,r*4.5);
-          sg.addColorStop(0, s.color+(op*.35)+")");
-          sg.addColorStop(1,"transparent");
-          ctx.beginPath(); ctx.arc(ex,ey,r*4.5,0,Math.PI*2);
-          ctx.fillStyle=sg; ctx.fill();
-        }
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize",onResize); window.removeEventListener("mousemove",onMouse); };
-  }, []);
-  return <canvas ref={canvasRef} id="galaxy-canvas" />;
-}
-
-/* ============================================================
-   LOADING SCREEN
-   ============================================================ */
-function LoadingScreen() {
-  const [visible, setVisible] = useState(true);
-  useEffect(() => { const t = setTimeout(() => setVisible(false), 3000); return () => clearTimeout(t); }, []);
-  if (!visible) return null;
-  return (
-    <div className="loading-screen" style={{ flexDirection:"column", gap:20 }}>
-      <div style={{ position:"relative", width:68, height:68 }}>
-        <div className="loading-ring" />
-        <div style={{ position:"absolute", inset:12, borderRadius:"50%", background:"linear-gradient(135deg,rgba(16,185,129,0.15),rgba(139,92,246,0.15))", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="18,5 22,5 22,9" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-      </div>
-      <div style={{ textAlign:"center" }}>
-        <div style={{ fontWeight:900, fontSize:15, letterSpacing:1, color:"#fff" }}>RITEL COMMUNITY<span style={{color:"#10b981"}}>.ID</span></div>
-        <div style={{ fontSize:10, color:"rgba(255,255,255,0.3)", marginTop:4, letterSpacing:2 }}>MARKET INTELLIGENCE PLATFORM</div>
-      </div>
-      <div style={{ display:"flex", gap:5, alignItems:"center" }}>
-        {[0,1,2].map(i => <div key={i} style={{ width:4, height:4, borderRadius:"50%", background:"rgba(16,185,129,0.5)", animation:`loadDot .9s ease-in-out ${i*0.2}s infinite alternate` }} />)}
-      </div>
-      <style>{`@keyframes loadDot{from{opacity:.2;transform:scale(.8)}to{opacity:1;transform:scale(1.3)}}`}</style>
-    </div>
-  );
-}
 
 /* ============================================================
    MOTIVASI TICKER
@@ -268,7 +147,6 @@ export default function HomePage() {
 
   return (
     <>
-      <LoadingScreen />
       <div style={{ minHeight:"100vh", background:"#030508", color:"#fff", display:"flex", flexDirection:"column", maxWidth:480, margin:"0 auto", position:"relative", fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif" }}>
         <style>{`
           @keyframes tickerMovePg{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -279,10 +157,9 @@ export default function HomePage() {
 
         {/* Galaxy BG */}
         <div className="galaxy-stars" />
-        <GalaxyCanvas />
 
         {/* HEADER */}
-        <header style={{ position:"sticky",top:0,zIndex:50,background:"rgba(3,5,8,0.82)",backdropFilter:"blur(28px) saturate(200%)",WebkitBackdropFilter:"blur(28px) saturate(200%)",borderBottom:"1px solid rgba(255,255,255,0.05)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0 }}>
+        <header style={{ position:"sticky",top:0,zIndex:50,background:"rgba(3,5,8,0.82)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.05)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:10 }}>
             <div style={{ width:34,height:34,borderRadius:10,background:"#10b981",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -407,7 +284,7 @@ export default function HomePage() {
 
           {/* ── CTA BANNER ── */}
           <section style={{ padding:"0 16px",marginBottom:18 }}>
-            <div className="glass-card animated-border float-3" style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.09),rgba(16,185,129,0.05))",border:"1px solid rgba(16,185,129,0.18)",padding:"26px 20px",textAlign:"center" }}>
+            <div className="glass-card" style={{ background:"linear-gradient(135deg,rgba(16,185,129,0.09),rgba(16,185,129,0.03))",border:"1px solid rgba(16,185,129,0.18)",padding:"26px 20px",textAlign:"center" }}>
               <div style={{ width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,rgba(16,185,129,0.15),rgba(139,92,246,0.1))",border:"1px solid rgba(16,185,129,0.2)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px" }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>

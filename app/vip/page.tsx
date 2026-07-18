@@ -1594,89 +1594,6 @@ function GreetingBanner({ greetingPagi, greetingMalam }: { greetingPagi:string; 
 
 // ── MAIN ──────────────────────────────────────────────────────────
 /* ── GALAXY CANVAS (VIP) — proper useRef/useEffect ── */
-function GalaxyBgVip() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    let W = (canvas.width  = window.innerWidth);
-    let H = (canvas.height = window.innerHeight);
-    const onResize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
-    window.addEventListener("resize", onResize);
-    const COLS = ["rgba(255,255,255,","rgba(16,185,129,","rgba(139,92,246,","rgba(59,130,246,"];
-    type Star = { orbit:number; angle:number; z:number; r:number; color:string; speed:number; };
-    const stars: Star[] = Array.from({length:280}, () => ({
-      orbit: 60 + Math.random() * Math.max(W,H) * 0.6,
-      angle: Math.random() * Math.PI * 2,
-      z:     0.2 + Math.random() * 0.8,
-      r:     0.4 + Math.random() * 1.6,
-      color: COLS[Math.floor(Math.random() * COLS.length)],
-      speed: 0.00013 + Math.random() * 0.00025,
-    }));
-    type Neb = { x:number; y:number; r:number; color:string; vx:number; vy:number; };
-    const neb: Neb[] = Array.from({length:14}, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      r: 70 + Math.random() * 130,
-      color: ["rgba(16,185,129,","rgba(139,92,246,","rgba(30,90,240,"][Math.floor(Math.random() * 3)],
-      vx: (Math.random() - 0.5) * 0.1,
-      vy: (Math.random() - 0.5) * 0.1,
-    }));
-    let raf: number;
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      neb.forEach(n => {
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < -n.r) n.x = W + n.r;
-        if (n.x > W + n.r) n.x = -n.r;
-        if (n.y < -n.r) n.y = H + n.r;
-        if (n.y > H + n.r) n.y = -n.r;
-        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-        g.addColorStop(0, n.color + "0.04)");
-        g.addColorStop(1, "transparent");
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      const cx = W / 2, cy = H * 0.38;
-      const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.42);
-      cg.addColorStop(0,   "rgba(16,185,129,0.055)");
-      cg.addColorStop(0.4, "rgba(30,58,138,0.04)");
-      cg.addColorStop(1,   "transparent");
-      ctx.fillStyle = cg;
-      ctx.fillRect(0, 0, W, H);
-      stars.forEach(s => {
-        s.angle += s.speed;
-        const ex = cx + Math.cos(s.angle) * s.orbit;
-        const ey = cy + Math.sin(s.angle) * s.orbit * 0.36;
-        const op = 0.25 + s.z * 0.72;
-        const rv = s.r * (0.5 + s.z * 0.6);
-        ctx.beginPath();
-        ctx.arc(ex, ey, rv, 0, Math.PI * 2);
-        ctx.fillStyle = s.color + op + ")";
-        ctx.fill();
-        if (s.z > 0.65 && s.r > 1.1) {
-          const sg = ctx.createRadialGradient(ex, ey, 0, ex, ey, rv * 4.5);
-          sg.addColorStop(0, s.color + (op * 0.32) + ")");
-          sg.addColorStop(1, "transparent");
-          ctx.beginPath();
-          ctx.arc(ex, ey, rv * 4.5, 0, Math.PI * 2);
-          ctx.fillStyle = sg;
-          ctx.fill();
-        }
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-  return <canvas ref={canvasRef} style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }} />;
-}
 
 export default function VipPage() {
   const router = useRouter();
@@ -1854,7 +1771,7 @@ export default function VipPage() {
       <div className="galaxy-stars"/>
 
       {/* STICKY HEADER — premium glass */}
-      <div style={{ position:"sticky", top:0, zIndex:50, background:"rgba(3,5,8,0.88)", backdropFilter:"blur(28px) saturate(200%)", WebkitBackdropFilter:"blur(28px) saturate(200%)", borderBottom:"1px solid rgba(255,255,255,0.055)", flexShrink:0 }}>
+      <div style={{ position:"sticky", top:0, zIndex:50, background:"rgba(3,5,8,0.88)", backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)", borderBottom:"1px solid rgba(255,255,255,0.055)", flexShrink:0 }}>
         <JakartaClock />
         <MotivasiTickerVIP />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
