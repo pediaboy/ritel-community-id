@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sb } from "@/lib/supabase";
+import { sb, getVipUsers, saveVipUsers } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -69,7 +69,7 @@ const userState: Map<string, any> = new Map();
 // ===== MAIN MENU =====
 function mainMenu() {
   return [
-    [{ text: " Sinyal", callback_data: "menu_signals" }, { text: " Token VIP", callback_data: "menu_tokens" }],
+    [{ text: " Sinyal", callback_data: "menu_signals" }, { text: "User VIP", callback_data: "menu_tokens" }],
     [{ text: " Harga/Paket", callback_data: "menu_pricing" }, { text: " Live Info", callback_data: "menu_liveinfo" }],
     [{ text: " Top Saham", callback_data: "menu_stocks" }, { text: " Ticker", callback_data: "menu_ticker" }],
     [{ text: " Testimoni", callback_data: "menu_testi" }, { text: " Orders", callback_data: "menu_orders" }],
@@ -165,36 +165,43 @@ async function handleSignals(chatId: number|string, page = 0) {
 
 // ===== TOKEN =====
 async function handleTokens(chatId: number|string, page = 0) {
-  const tokens = await sb("GET", "/tokens?order=created_at.desc&limit=200");
-  const aktif = tokens.filter((t:any) => t.is_active && !isExpired(t.expired_at || ""));
-  const expired = tokens.filter((t:any) => isExpired(t.expired_at || ""));
-  const nearExp = tokens.filter((t:any) => expiresSoon(t.expired_at || "") && !isExpired(t.expired_at||""));
-
-  const perPage = 5;
-  const totalPages = Math.ceil(tokens.length / perPage) || 1;
-  const pageToks = tokens.slice(page * perPage, (page+1) * perPage);
-
-  let txt = ` <b>TOKEN VIP</b> — Hal ${page+1}/${totalPages}\n ${aktif.length} Aktif |  ${nearExp.length} Segera Exp |  ${expired.length} Expired\n\n`;
-  pageToks.forEach((t:any) => {
-    const status = isExpired(t.expired_at||"") ? "" : t.is_active ? "" : "⏸";
-    txt += `${status} <b>${t.name||"—"}</b> (${t.package})\n ${t.email||"—"}\n <code>${t.token}</code>\n Exp: ${t.expired_at ? fmtDate(t.expired_at) : "—"}\n\n`;
+  const users = await getVipUsers();
+  // Sort by created_at desc
+  users.sort((a: any, b: any) => {
+    const da = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const db = b.created_at ? new Date(b.created_at).getTime() : 0;
+    return db - da;
   });
 
-  const actionBtns = pageToks.map((t:any) => [
-    { text: `⏸ ${t.name?.slice(0,10)||t.token?.slice(0,8)}`, callback_data: `tok_toggle_${t.id}` },
-    { text: ` Hapus`, callback_data: `tok_del_${t.id}` },
+  const aktif = users.filter((u: any) => u.role === "vip" && !isExpired(u.expired_at || ""));
+  const expired = users.filter((u: any) => isExpired(u.expired_at || ""));
+  const nearExp = users.filter((u: any) => expiresSoon(u.expired_at || "") && !isExpired(u.expired_at || ""));
+
+  const perPage = 5;
+  const totalPages = Math.ceil(users.length / perPage) || 1;
+  const pageUsers = users.slice(page * perPage, (page + 1) * perPage);
+
+  let txt = `<b>USER VIP</b> — Hal ${page+1}/${totalPages}\n${aktif.length} Aktif | ${nearExp.length} Segera Exp | ${expired.length} Expired\n\n`;
+  pageUsers.forEach((u: any) => {
+    const status = isExpired(u.expired_at || "") ? "[EXPIRED]" : u.role === "vip" ? "[VIP]" : "[FREE]";
+    txt += `${status} <b>${u.name || "—"}</b> (${u.subscription || "basic"})\nEmail: ${u.email || "—"}\nExp: ${u.expired_at ? fmtDate(u.expired_at) : "—"}\n\n`;
+  });
+
+  const actionBtns = pageUsers.map((u: any) => [
+    { text: u.role === "vip" ? `Suspend ${u.name?.slice(0, 10) || u.email?.slice(0, 10)}` : `Activate ${u.name?.slice(0, 10) || u.email?.slice(0, 10)}`, callback_data: `tok_toggle_${u.email}` },
+    { text: "Hapus", callback_data: `tok_del_${u.email}` },
   ]);
 
   const navBtns = [];
-  if (page > 0) navBtns.push({ text: "◀ Prev", callback_data: `tok_page_${page-1}` });
-  if (page < totalPages-1) navBtns.push({ text: "Next ▶", callback_data: `tok_page_${page+1}` });
+  if (page > 0) navBtns.push({ text: "Prev", callback_data: `tok_page_${page-1}` });
+  if (page < totalPages-1) navBtns.push({ text: "Next", callback_data: `tok_page_${page+1}` });
 
   const keyboard: any[][] = [
     ...actionBtns,
     ...(navBtns.length ? [navBtns] : []),
-    [{ text: " Buat Token", callback_data: "tok_create" }, { text: " Cari", callback_data: "tok_search" }],
-    [{ text: " Hapus Expired", callback_data: "tok_del_expired_confirm" }],
-    [{ text: " Menu", callback_data: "main_menu" }],
+    [{ text: "Buat User VIP", callback_data: "tok_create" }, { text: "Cari", callback_data: "tok_search" }],
+    [{ text: "Downgrade Expired", callback_data: "tok_del_expired_confirm" }],
+    [{ text: "Menu", callback_data: "main_menu" }],
   ];
   await sendKeyboard(chatId, txt, keyboard);
 }
@@ -314,24 +321,25 @@ async function handleOrders(chatId: number|string, page = 0) {
 
 // ===== STATS =====
 async function handleStats(chatId: number|string) {
-  const [signals, tokens, orders] = await Promise.all([
+  const [signals, users, orders] = await Promise.all([
     sb("GET", "/signals?select=id"),
-    sb("GET", "/tokens?select=id,is_active,expired_at"),
+    getVipUsers(),
     sb("GET", "/orders?select=id,status,harga,created_at"),
   ]);
-  const aktifTok = tokens.filter((t:any) => t.is_active && !isExpired(t.expired_at||"")).length;
+  const totalUsers = users.length;
+  const activeVip = users.filter((u: any) => u.role === "vip" && !isExpired(u.expired_at || "")).length;
   const pendingOrders = orders.filter((o:any) => o.status === "pending").length;
   const totalRevenue = orders.filter((o:any) => o.status === "confirmed").reduce((sum:number, o:any) => sum + (o.harga||0), 0);
   const today = orders.filter((o:any) => o.created_at && new Date(o.created_at).toDateString() === new Date().toDateString()).length;
 
-  const txt = ` <b>STATISTIK RC</b>\n\n` +
-    ` Sinyal aktif: <b>${signals.length}</b>\n` +
-    ` Token: <b>${tokens.length}</b> (aktif: ${aktifTok})\n` +
-    ` Order hari ini: <b>${today}</b>\n` +
-    ` Order pending: <b>${pendingOrders}</b>\n` +
-    ` Revenue confirmed: <b>${fmtRp(totalRevenue)}</b>`;
+  const txt = `<b>STATISTIK RC</b>\n\n` +
+    `Sinyal aktif: <b>${signals.length}</b>\n` +
+    `VIP Users: <b>${totalUsers}</b> (aktif: ${activeVip})\n` +
+    `Order hari ini: <b>${today}</b>\n` +
+    `Order pending: <b>${pendingOrders}</b>\n` +
+    `Revenue confirmed: <b>${fmtRp(totalRevenue)}</b>`;
 
-  await sendKeyboard(chatId, txt, [[{ text: " Menu", callback_data: "main_menu" }]]);
+  await sendKeyboard(chatId, txt, [[{ text: "Menu", callback_data: "main_menu" }]]);
 }
 
 // ===== TESTIMONI =====
@@ -493,31 +501,17 @@ async function handleTokenCreate(chatId: number|string, text: string) {
   if (!state) return;
 
   if (state.step === "tok_email") {
-    userState.set(String(chatId), { ...state, email: text, step: "tok_name" });
-    await sendMsg(chatId, " Nama user?");
+    userState.set(String(chatId), { ...state, email: text.trim(), step: "tok_name" });
+    await sendMsg(chatId, "Nama user?");
     return;
   }
   if (state.step === "tok_name") {
-    userState.set(String(chatId), { ...state, name: text, step: "tok_package" });
-    await sendKeyboard(chatId, " Pilih paket:", [
+    userState.set(String(chatId), { ...state, name: text.trim(), step: "tok_package" });
+    await sendKeyboard(chatId, "Pilih paket:", [
       [{ text: "Basic", callback_data: "tokpkg_basic" }, { text: "Silver", callback_data: "tokpkg_silver" }],
       [{ text: "Gold", callback_data: "tokpkg_gold" }, { text: "Pro", callback_data: "tokpkg_pro" }],
       [{ text: "Platinum", callback_data: "tokpkg_platinum" }, { text: "Elite", callback_data: "tokpkg_elite" }],
     ]);
-    return;
-  }
-  if (state.step === "tok_days") {
-    const days = parseInt(text);
-    if (isNaN(days) || days <= 0) { await sendMsg(chatId, " Masukkan jumlah hari yang valid"); return; }
-    const token = Math.random().toString(36).substring(2, 10).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
-    const expiredAt = new Date(Date.now() + days * 86400000).toISOString();
-    const newToken = { token, email: state.email, name: state.name, package: state.package, is_active: true, expired_at: expiredAt };
-    await sb("POST", "/tokens", [newToken]);
-    userState.delete(String(chatId));
-    await sendKeyboard(chatId,
-      ` Token VIP dibuat!\n\n ${state.name}\n ${state.email}\n ${state.package}\n <code>${token}</code>\n Exp: ${fmtDate(expiredAt)}`,
-      [[{ text: " Lihat Token", callback_data: "menu_tokens" }, { text: " Menu", callback_data: "main_menu" }]]
-    );
     return;
   }
 }
@@ -554,16 +548,23 @@ async function handleTokenSearch(chatId: number|string, text: string) {
   const state = userState.get(String(chatId));
   if (!state || state.step !== "tok_search") return;
   userState.delete(String(chatId));
-  const results = await sb("GET", `/tokens?or=(token.ilike.%25${text}%25,email.ilike.%25${text}%25,name.ilike.%25${text}%25)`);
-  if (!results.length) { await sendMsg(chatId, " Token tidak ditemukan"); return; }
-  let txt = ` <b>Hasil: "${text}"</b>\n\n`;
-  results.forEach((t:any) => {
-    const status = isExpired(t.expired_at||"") ? "" : t.is_active ? "" : "⏸";
-    txt += `${status} <b>${t.name}</b> (${t.package})\n ${t.email}\n <code>${t.token}</code>\n Exp: ${t.expired_at ? fmtDate(t.expired_at) : "—"}\n\n`;
+  
+  const users = await getVipUsers();
+  const query = text.toLowerCase();
+  const results = users.filter((u: any) => 
+    (u.email && u.email.toLowerCase().includes(query)) || 
+    (u.name && u.name.toLowerCase().includes(query))
+  );
+
+  if (!results.length) { await sendMsg(chatId, "User tidak ditemukan"); return; }
+  let txt = `<b>Hasil: "${text}"</b>\n\n`;
+  results.forEach((u: any) => {
+    const status = isExpired(u.expired_at || "") ? "[EXPIRED]" : u.role === "vip" ? "[VIP]" : "[FREE]";
+    txt += `${status} <b>${u.name || "—"}</b> (${u.subscription || "basic"})\nEmail: ${u.email || "—"}\nExp: ${u.expired_at ? fmtDate(u.expired_at) : "—"}\n\n`;
   });
   await sendKeyboard(chatId, txt, [
-    [{ text: " Semua Token", callback_data: "menu_tokens" }],
-    [{ text: " Menu", callback_data: "main_menu" }],
+    [{ text: "Semua User", callback_data: "menu_tokens" }],
+    [{ text: "Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -812,12 +813,12 @@ async function processUpdate(update: any) {
       await handleAddTicker(chatId, text.slice("/addticker".length).trim().split(/\s+/));
       return;
     }
-    if (text.startsWith("/tokens")) { await handleTokens(chatId); return; }
+    if (text.startsWith("/tokens") || text.startsWith("/users")) { await handleTokens(chatId); return; }
     if (text.startsWith("/stats")) { await handleStats(chatId); return; }
     if (text.startsWith("/help")) {
       await sendMsg(chatId,
         ` <b>PERINTAH BOT RC ADMIN</b>\n\n` +
-        `/menu — Menu utama\n/stats — Statistik\n/tokens — List token VIP\n` +
+        `/menu — Menu utama\n/stats — Statistik\n/users — List user VIP\n` +
         `/flashsale [paket] [%] [jam] — Set flash sale\n/removefs [paket] — Hapus flash sale\n` +
         `/addticker [KODE] [HARGA] [%] — Tambah ticker\n\n` +
         `Semua fitur bisa juga via menu interaktif `
@@ -939,59 +940,110 @@ async function processUpdate(update: any) {
     // ===== TOKEN =====
     if (data === "tok_create") {
       userState.set(String(chatId), { flow: "tok", step: "tok_email" });
-      await sendMsg(chatId, " <b>Buat Token VIP</b>\n\nEmail user?");
+      await sendMsg(chatId, "<b>Buat User VIP</b>\n\nEmail user?");
       return;
     }
     if (data === "tok_search") {
       userState.set(String(chatId), { flow: "search", step: "tok_search" });
-      await sendMsg(chatId, " Cari token — ketik nama, email, atau kode:");
+      await sendMsg(chatId, "Cari user — ketik nama atau email:");
       return;
     }
     if (data.startsWith("tokpkg_")) {
       const pkg = data.replace("tokpkg_", "");
       const state = userState.get(String(chatId));
       if (state) {
-        userState.set(String(chatId), { ...state, package: pkg, step: "tok_days" });
-        await sendMsg(chatId, ` Berapa hari aktif? (contoh: 30)`);
+        const email = state.email?.trim();
+        const name = state.name?.trim() || "";
+        const expiredAt = new Date(Date.now() + 30 * 86400000).toISOString();
+        
+        const users = await getVipUsers();
+        const userIndex = users.findIndex((u: any) => u.email?.toLowerCase() === email.toLowerCase());
+        
+        if (userIndex !== -1) {
+          users[userIndex].role = "vip";
+          users[userIndex].subscription = pkg;
+          users[userIndex].expired_at = expiredAt;
+          if (name) users[userIndex].name = name;
+        } else {
+          users.push({
+            auth_user_id: null,
+            email,
+            name: name || null,
+            role: "vip",
+            subscription: pkg,
+            expired_at: expiredAt,
+            created_at: new Date().toISOString(),
+            last_login_at: null,
+          });
+        }
+        await saveVipUsers(users);
+        userState.delete(String(chatId));
+        await sendKeyboard(chatId,
+          `User VIP berhasil diupdate/dibuat!\n\nNama: ${name || "—"}\nEmail: ${email}\nPaket: ${pkg}\nExp: ${fmtDate(expiredAt)}`,
+          [[{ text: "Lihat User", callback_data: "menu_tokens" }, { text: "Menu", callback_data: "main_menu" }]]
+        );
       }
       return;
     }
     if (data.startsWith("tok_toggle_")) {
-      const tokId = data.replace("tok_toggle_", "");
-      const tokens = await sb("GET", `/tokens?id=eq.${tokId}`);
-      const tok = tokens[0];
-      if (!tok) return;
-      await sb("PATCH", `/tokens?id=eq.${tokId}`, { is_active: !tok.is_active });
-      await sendMsg(chatId, ` Token ${tok.name||tok.token} ${!tok.is_active ? "diaktifkan" : "dinonaktifkan"}.`);
+      const email = data.replace("tok_toggle_", "");
+      const users = await getVipUsers();
+      const userIndex = users.findIndex((u: any) => u.email === email);
+      if (userIndex === -1) {
+        await sendMsg(chatId, "User tidak ditemukan.");
+        return;
+      }
+      const u = users[userIndex];
+      if (u.role === "vip") {
+        u.role = "free";
+        u.subscription = "basic";
+      } else {
+        u.role = "vip";
+        u.subscription = "gold";
+        if (!u.expired_at || isExpired(u.expired_at)) {
+          u.expired_at = new Date(Date.now() + 30 * 86400000).toISOString();
+        }
+      }
+      await saveVipUsers(users);
+      await sendMsg(chatId, `User ${u.email} diubah menjadi ${u.role?.toUpperCase()} (${u.subscription}).`);
       return;
     }
     if (data.startsWith("tok_del_") && !data.includes("expired")) {
-      const tokId = data.replace("tok_del_", "");
-      const tokens = await sb("GET", `/tokens?id=eq.${tokId}`);
-      const tok = tokens[0];
-      await sendKeyboard(chatId, ` Hapus token <b>${tok?.name||tok?.token}</b>?`, [
-        [{ text: " Ya", callback_data: `tok_del_do_${tokId}` }, { text: " Batal", callback_data: "menu_tokens" }]
+      const email = data.replace("tok_del_", "");
+      await sendKeyboard(chatId, `Hapus user <b>${email}</b> dari VIP?`, [
+        [{ text: "Ya", callback_data: `tok_del_do_${email}` }, { text: "Batal", callback_data: "menu_tokens" }]
       ]);
       return;
     }
     if (data.startsWith("tok_del_do_")) {
-      const tokId = data.replace("tok_del_do_", "");
-      await sb("DELETE", `/tokens?id=eq.${tokId}`);
-      await sendKeyboard(chatId, " Token dihapus.", [[{ text: " Token", callback_data: "menu_tokens" }, { text: " Menu", callback_data: "main_menu" }]]);
+      const email = data.replace("tok_del_do_", "");
+      const users = await getVipUsers();
+      const updated = users.filter((u: any) => u.email !== email);
+      await saveVipUsers(updated);
+      await sendKeyboard(chatId, "User dihapus.", [[{ text: "User", callback_data: "menu_tokens" }, { text: "Menu", callback_data: "main_menu" }]]);
       return;
     }
     if (data === "tok_del_expired_confirm") {
-      await sendKeyboard(chatId, " Hapus semua token expired?", [
-        [{ text: " Ya", callback_data: "tok_del_expired_do" }],
-        [{ text: " Batal", callback_data: "menu_tokens" }],
+      await sendKeyboard(chatId, "Downgrade semua user expired ke Free?", [
+        [{ text: "Ya, Downgrade", callback_data: "tok_del_expired_do" }],
+        [{ text: "Batal", callback_data: "menu_tokens" }]
       ]);
       return;
     }
     if (data === "tok_del_expired_do") {
-      const tokens = await sb("GET", "/tokens?select=id,expired_at");
-      const expiredIds = tokens.filter((t:any) => isExpired(t.expired_at||"")).map((t:any) => t.id);
-      for (const id of expiredIds) await sb("DELETE", `/tokens?id=eq.${id}`);
-      await sendKeyboard(chatId, ` ${expiredIds.length} token expired dihapus.`, [[{ text: " Token", callback_data: "menu_tokens" }]]);
+      const users = await getVipUsers();
+      let count = 0;
+      users.forEach((u: any) => {
+        if (u.role === "vip" && isExpired(u.expired_at || "")) {
+          u.role = "free";
+          u.subscription = "basic";
+          count++;
+        }
+      });
+      if (count > 0) {
+        await saveVipUsers(users);
+      }
+      await sendKeyboard(chatId, `${count} user expired didowngrade ke Free.`, [[{ text: "User", callback_data: "menu_tokens" }]]);
       return;
     }
 

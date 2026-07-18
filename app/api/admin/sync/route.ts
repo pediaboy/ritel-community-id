@@ -48,24 +48,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  if (type === "tokens") {
-    await sb("DELETE", "/tokens?id=neq.NONE");
-    if (data && data.length > 0) {
-      const rows = data.map((t: any) => ({
-        id: t.id || Date.now().toString(),
-        email: t.email || "",
-        name: t.name || "",
-        package: t.package || "gold",
-        token: t.token || "RC-TOKEN",
-        expired_at: t.expiredAt || t.expired_at || null,
-        is_active: t.isActive !== undefined ? t.isActive : true,
-        verified: t.verified || false,
-      }));
-      await sb("POST", "/tokens", rows);
-    }
-    return NextResponse.json({ success: true });
-  }
-
   const settingsKeys = [
     "ticker", "pricing", "premiumSignals", "stocks_mode", "motivasi", "ticker_speed", "motivasi_speed",
     "owners", "partners", "wa_links", "bagger_signals", "bandar_signals", "done_signal_ids",
@@ -85,9 +67,8 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  const [signals, tokens, settingsRows, liveRows, customStocks] = await Promise.all([
+  const [signals, settingsRows, liveRows, customStocks] = await Promise.all([
     sb("GET", "/signals?order=created_at.desc"),
-    sb("GET", "/tokens?order=created_at.desc"),
     sb("GET", "/settings"),
     sb("GET", "/liveinfo?id=eq.1"),
     sb("GET", "/custom_stocks?order=kode.asc"),
@@ -102,7 +83,6 @@ export async function GET() {
 
   return NextResponse.json({
     signals: decodedSignals,
-    tokens,
     ticker: settings.ticker || [],
     pricing: settings.pricing || [],
     premiumSignals: settings.premiumSignals || [],

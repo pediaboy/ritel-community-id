@@ -1,14 +1,7 @@
 import { NextResponse } from "next/server";
-import { sb } from "@/lib/supabase";
+import { sb, getVipUsers, saveVipUsers } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
-
-function generateToken(pkg: string): string {
-  const prefix = pkg.toUpperCase().slice(0, 2);
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join("");
-  return `RC-${prefix}${seg()}-${seg()}-${seg()}`;
-}
 
 async function getOrders(): Promise<any[]> {
   const rows = await sb("GET", "/settings?key=eq.orders_data&limit=1");
@@ -62,35 +55,45 @@ async function removeMutasi(orderId: string) {
   } catch {}
 }
 
-// Auto-create token di Supabase /tokens tabel
-async function createVIPToken(order: any): Promise<string> {
-  const token = generateToken(order.paket);
+// Aktivasi VIP untuk user (keyed by email) di settings key "vip_users"
+async function activateVipForOrder(order: any): Promise<boolean> {
+  const email = (order.email || "").trim().toLowerCase();
+  if (!email) return false; // butuh email untuk login OTP - tidak bisa auto-aktivasi tanpa email
+
   const now = new Date();
   const expiredAt = new Date(now);
   expiredAt.setMonth(expiredAt.getMonth() + 1); // default 1 bulan
 
-  await sb("POST", "/tokens", [{
-    id: `tok-${order.id}`,
-    email: order.email || "",
+  const users = await getVipUsers();
+  const idx = users.findIndex((u: any) => u.email === email);
+  const record = {
+    auth_user_id: idx >= 0 ? users[idx].auth_user_id || null : null,
+    email,
     name: order.nama,
-    package: (order.paket || "basic").toLowerCase(),
-    token,
+    role: "vip",
+    subscription: (order.paket || "basic").toLowerCase(),
     expired_at: expiredAt.toISOString(),
-    is_active: true,
-    verified: false,
     hp: order.hp || "",
     source: order.source || "ritel",
     order_id: order.id,
-    created_at: now.toISOString(),
-  }]);
-
-  return token;
+    created_at: idx >= 0 ? users[idx].created_at : now.toISOString(),
+    last_login_at: idx >= 0 ? users[idx].last_login_at : null,
+  };
+  if (idx >= 0) users[idx] = { ...users[idx], ...record };
+  else users.push(record);
+  await saveVipUsers(users);
+  return true;
 }
 
-async function deactivateToken(tokenStr: string) {
+async function deactivateVipForOrder(orderId: string) {
   try {
-    await sb("PATCH", `/tokens?token=eq.${encodeURIComponent(tokenStr)}`,
-      { is_active:false }, { Prefer:"return=minimal" });
+    const users = await getVipUsers();
+    const idx = users.findIndex((u: any) => u.order_id === orderId);
+    if (idx >= 0) {
+      users[idx].role = "free";
+      users[idx].subscription = "basic";
+      await saveVipUsers(users);
+    }
   } catch {}
 }
 
@@ -121,7 +124,7 @@ export async function POST(req: Request) {
       source: "ritel",
       created_at: new Date().toISOString(),
       paid_at: null,
-      token_generated: null,
+      vip_activated: false,
     };
     orders.unshift(newOrder);
     await saveOrders(orders);
@@ -144,11 +147,11 @@ export async function POST(req: Request) {
       orders[idx].paid_at = new Date().toISOString();
       await addMutasi(orders[idx]);
 
-      // Auto-generate token jika belum ada
-      if (!orders[idx].token_generated) {
+      // Auto-aktivasi VIP (role=vip) jika belum
+      if (!orders[idx].vip_activated) {
         try {
-          const token = await createVIPToken(orders[idx]);
-          orders[idx].token_generated = token;
+          const activated = await activateVipForOrder(orders[idx]);
+          orders[idx].vip_activated = activated;
 
           // Notif Telegram ke admin
           const chatRows = await sb("GET", "/settings?key=eq.telegram_admin_chat_id&limit=1");
@@ -156,22 +159,25 @@ export async function POST(req: Request) {
           const botToken = process.env.TELEGRAM_BOT_TOKEN;
           if (chatId && botToken) {
             const src = orders[idx].source === "analisis" ? "[analisis.io] " : "";
-            const msg = ` <b>${src}PEMBAYARAN DIKONFIRMASI</b>\n\n ${orders[idx].nama}\n Paket: <b>${orders[idx].paket}</b>\n Token VIP: <code>${token}</code>\n WA: ${orders[idx].hp}\n ${orders[idx].harga?.toLocaleString("id-ID")}\n\n<i>Token aktif — bisa login di ritelcommunity.web.id/vip</i>`;
+            const emailNote = activated
+              ? `Akun VIP aktif untuk email: <code>${orders[idx].email}</code>\n<i>User tinggal login pakai email + kode OTP di /login</i>`
+              : `<b>PERHATIAN:</b> order ini tidak punya email — VIP belum bisa diaktivasi otomatis, hubungi customer untuk minta email lalu aktivasi manual di Admin &gt; User VIP.`;
+            const msg = ` <b>${src}PEMBAYARAN DIKONFIRMASI</b>\n\n ${orders[idx].nama}\n Paket: <b>${orders[idx].paket}</b>\n WA: ${orders[idx].hp}\n ${orders[idx].harga?.toLocaleString("id-ID")}\n\n${emailNote}`;
             await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
               method:"POST", headers:{"Content-Type":"application/json"},
               body: JSON.stringify({ chat_id:chatId, text:msg, parse_mode:"HTML" }),
             }).catch(()=>{});
           }
         } catch (e) {
-          console.error("Token generation error:", e);
+          console.error("VIP activation error:", e);
         }
       }
     }
 
     if (status === "cancelled" && prev === "paid") {
       await removeMutasi(id);
-      if (orders[idx].token_generated) {
-        await deactivateToken(orders[idx].token_generated);
+      if (orders[idx].vip_activated) {
+        await deactivateVipForOrder(id);
       }
     }
 

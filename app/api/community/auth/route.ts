@@ -38,11 +38,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Username sudah digunakan." });
     }
 
-    // Ambil role dari token yang aktif (jika ada)
-    let subscription = "free";
-    let expired_at = null;
-    const tokenRows = await sb("GET", `/tokens?email=eq.&limit=1`);
-
     const newUser = {
       id: "u_" + Date.now(),
       username: username.toLowerCase(),
@@ -84,29 +79,6 @@ export async function POST(req: Request) {
     }
 
     const { password_hash: _, ...safeUser } = found;
-    return NextResponse.json({ success: true, user: safeUser });
-  }
-
-  if (action === "link_token") {
-    // Link token ke user untuk sync subscription
-    const { user_id, token } = body;
-    if (!user_id || !token) return NextResponse.json({ success: false, message: "Missing params." });
-
-    const tokenRows = await sb("GET", `/tokens?token=eq.${encodeURIComponent(token)}&limit=1`);
-    const tk = tokenRows[0];
-    if (!tk) return NextResponse.json({ success: false, message: "Token tidak valid." });
-    if (!tk.is_active) return NextResponse.json({ success: false, message: "Token tidak aktif." });
-
-    const users = await getUsers();
-    const userIdx = users.findIndex((u: any) => u.id === user_id);
-    if (userIdx < 0) return NextResponse.json({ success: false, message: "User tidak ditemukan." });
-
-    users[userIdx].subscription = tk.package || "basic";
-    users[userIdx].expired_at = tk.expired_at || null;
-    users[userIdx].linked_token = token;
-    await saveUsers(users);
-
-    const { password_hash: _, ...safeUser } = users[userIdx];
     return NextResponse.json({ success: true, user: safeUser });
   }
 

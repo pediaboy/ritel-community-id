@@ -78,8 +78,6 @@ function Btn({ onClick, color, children, className = "" }: { onClick: () => void
   );
 }
 
-function isExpired(dt: string) { return dt ? new Date(dt) < new Date() : false; }
-function isNearExpiry(dt: string) { if (!dt) return false; const d = new Date(dt); const now = new Date(); return d > now && d.getTime() - now.getTime() < 3 * 24 * 60 * 60 * 1000; }
 
 
 // ===== OWNERS & PARTNERS TAB =====
@@ -435,7 +433,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [loading, setLoading] = useState(true);
 
   const [signals, setSignals] = useLocalStore<any[]>("signals", []);
-  const [tokens, setTokens] = useLocalStore<any[]>("tokens", []);
+  const [vipUsers, setVipUsers] = useLocalStore<any[]>("vip_users_admin", []);
+  const [userFilter, setUserFilter] = useState("");
   const [testimonials, setTestimonials] = useLocalStore<any[]>("testimonials", []);
   const [liveMsg, setLiveMsgState] = useLocalStore<string>("liveinfo_msg", "");
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
@@ -504,9 +503,6 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [feedPosts, setFeedPosts] = useState<any[]>([]);
   const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
 
-  const [tokForm, setTokForm] = useState<any>({ email:"", name:"", package:"gold", expiredAt:"" });
-  const [editTokId, setEditTokId] = useState<string|null>(null);
-  const [showTokForm, setShowTokForm] = useState(false);
 
   const [stockForm, setStockForm] = useState<any>({ kode:"", name:"", price:"", changePercent:"" });
   const [editStockId, setEditStockId] = useState<string|null>(null);
@@ -566,13 +562,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           package: s.package || ["gold"],
         })));
 
-        // Tokens - normalize snake_case from DB to camelCase
-        const tokRes = await fetch("/api/admin/tokens").then(r => r.json()).catch(() => ({}));
-        if (tokRes.tokens) setTokens(tokRes.tokens.map((t: any) => ({
-          ...t,
-          isActive: t.is_active !== undefined ? t.is_active : t.isActive,
-          expiredAt: t.expired_at || t.expiredAt,
-        })));
+        // VIP users (email OTP accounts)
+        const usersRes = await fetch("/api/admin/users").then(r => r.json()).catch(() => ({}));
+        if (usersRes.users) setVipUsers(usersRes.users);
 
         // Testimonials - normalize
         const testiRes = await fetch("/api/testimonials").then(r => r.json()).catch(() => ({}));
@@ -670,40 +662,20 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   // ===== TOKENS =====
-  const genToken = (pkg: string) => "RC-" + pkg.toUpperCase() + "-" + Math.random().toString(36).slice(2,8).toUpperCase();
-  const saveTok = async () => {
-    if (!tokForm.email.trim() || !tokForm.expiredAt) { alert("Isi email dan tanggal expired!"); return; }
-    if (editTokId) {
-      await fetch("/api/admin/tokens", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:editTokId, ...tokForm})}).catch(()=>{});
-      setTokens(tokens.map(t => t.id === editTokId ? { ...t, ...tokForm } : t));
-    } else {
-      const res = await fetch("/api/admin/tokens", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(tokForm)}).then(r=>r.json()).catch(()=>({}));
-      const newTok = res.token || { ...tokForm, id: Date.now().toString(), token: genToken(tokForm.package), isActive:true };
-      // Normalize field names from DB
-      const normalized = { ...newTok, isActive: newTok.is_active ?? newTok.isActive ?? true, expiredAt: newTok.expired_at || newTok.expiredAt };
-      setTokens([normalized, ...tokens]);
-    }
-    setTokForm({ email:"", name:"", package:"gold", expiredAt:"" });
-    setEditTokId(null); setShowTokForm(false);
+  const toggleUserRole = async (u: any) => {
+    const newRole = u.role === "vip" ? "free" : "vip";
+    const newSub = newRole === "vip" ? "gold" : "basic";
+    await fetch("/api/admin/users", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:u.email, role:newRole, subscription:newSub})}).catch(()=>{});
+    setVipUsers(vipUsers.map(x=>x.email===u.email?{...x,role:newRole,subscription:newSub}:x));
   };
-  const editTok = (t: any) => { setTokForm({ email:t.email, name:t.name, package:t.package, expiredAt:(t.expiredAt||t.expired_at||"")?.slice(0,16) }); setEditTokId(t.id); setShowTokForm(true); window.scrollTo(0,0); };
-  const delTok = async (id: string) => {
-    if (!confirm("Hapus token?")) return;
-    await fetch(`/api/admin/tokens?id=${id}`, {method:"DELETE"}).catch(()=>{});
-    setTokens(tokens.filter(t=>t.id!==id));
+  const setUserSubscription = async (u: any, pkg: string) => {
+    await fetch("/api/admin/users", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:u.email, subscription:pkg})}).catch(()=>{});
+    setVipUsers(vipUsers.map(x=>x.email===u.email?{...x,subscription:pkg}:x));
   };
-  const toggleTok = async (t: any) => {
-    const newActive = !(t.isActive !== undefined ? t.isActive : t.is_active);
-    await fetch("/api/admin/tokens", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:t.id, isActive:newActive})}).catch(()=>{});
-    setTokens(tokens.map(x=>x.id===t.id?{...x,isActive:newActive,is_active:newActive}:x));
-  };
-  const extendTok = async (t: any) => {
-    const days = prompt("Tambah berapa hari?"); if (!days || isNaN(parseInt(days))) return;
-    const baseDate = new Date(t.expiredAt || t.expired_at || Date.now());
-    baseDate.setDate(baseDate.getDate()+parseInt(days));
-    const newExp = baseDate.toISOString();
-    await fetch("/api/admin/tokens", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:t.id, expiredAt:newExp})}).catch(()=>{});
-    setTokens(tokens.map(x=>x.id===t.id?{...x,expiredAt:newExp,expired_at:newExp}:x));
+  const delVipUser = async (email: string) => {
+    if (!confirm("Hapus user ini?")) return;
+    await fetch(`/api/admin/users?email=${encodeURIComponent(email)}`, {method:"DELETE"}).catch(()=>{});
+    setVipUsers(vipUsers.filter(x=>x.email!==email));
   };
 
   // ===== TOP STOCKS =====
@@ -880,7 +852,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"sinyal_besok", label:"Besok" },
     { id:"bandar", label:"Bandar" },
     { id:"admin_feed", label:"Post Feed" },
-    { id:"tokens", label:"Token VIP" },
+    { id:"tokens", label:"User VIP" },
     { id:"topstocks", label:"Top Saham" },
     { id:"liveinfo", label:"Live Info" },
     { id:"testimonials", label:"Testimoni" },
@@ -1205,72 +1177,50 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           )}
 
 
-                    {/* ======== TOKENS ======== */}
+          {/* ======== VIP USERS (Email OTP accounts) ======== */}
           {tab==="tokens" && (
             <div>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4 gap-3 flex-wrap">
                 <div>
-                  <h2 className="text-white font-bold text-sm">Manajemen Token VIP</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">{tokens.length} token · {tokens.filter(t=>t.isActive&&!isExpired(t.expiredAt)).length} aktif</p>
+                  <h2 className="text-white font-bold text-sm">Manajemen User VIP</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{vipUsers.length} akun terdaftar · {vipUsers.filter(u=>u.role==="vip").length} VIP aktif</p>
                 </div>
-                <button onClick={()=>{setTokForm({email:"",name:"",package:"gold",expiredAt:"",verified:false});setEditTokId(null);setShowTokForm(!showTokForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
-                  {showTokForm&&!editTokId?"Tutup":"Tambah Token"}
-                </button>
+                <input
+                  value={userFilter}
+                  onChange={e=>setUserFilter(e.target.value)}
+                  placeholder="Cari email..."
+                  className="input-dark max-w-[220px]"
+                />
               </div>
-              {showTokForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
-                  <h3 className="text-white font-bold mb-4 text-sm">{editTokId?"Edit Token":"Generate Token Baru"}</h3>
-                  <div className="space-y-3">
-                    <div><label className="text-xs text-slate-500 mb-1 block">Nama User</label><input value={tokForm.name} onChange={e=>setTokForm({...tokForm,name:e.target.value})} placeholder="Nama lengkap" className="input-dark"/></div>
-                    <div><label className="text-xs text-slate-500 mb-1 block">Email</label><input value={tokForm.email} onChange={e=>setTokForm({...tokForm,email:e.target.value})} placeholder="user@email.com" className="input-dark" type="email"/></div>
-                    <div><label className="text-xs text-slate-500 mb-1 block">Paket</label>
-                      <select value={tokForm.package} onChange={e=>setTokForm({...tokForm,package:e.target.value})} className="input-dark">
-                        {pkgOpts.map(p=><option key={p} value={p} className="bg-black capitalize">{p.charAt(0).toUpperCase()+p.slice(1)}</option>)}
-                      </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {vipUsers.filter(u=>!userFilter || u.email?.toLowerCase().includes(userFilter.toLowerCase())).length===0 ? (
+                  <div className="col-span-2 card rounded-2xl p-12 text-center"><p className="text-slate-500 text-sm">Belum ada user terdaftar.</p></div>
+                ) : vipUsers.filter(u=>!userFilter || u.email?.toLowerCase().includes(userFilter.toLowerCase())).map((u:any)=>(
+                  <div key={u.email} className="card rounded-xl p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <span className="font-bold text-white break-all">{u.email}</span>
+                        <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-bold ${u.role==="vip"?"bg-blue-400/10 text-blue-400":"bg-slate-400/10 text-slate-400"}`}>
+                          {u.role==="vip"?"VIP":"FREE"}
+                        </span>
+                      </div>
                     </div>
-                    <div><label className="text-xs text-slate-500 mb-1 block">Expired Tanggal</label><input type="datetime-local" value={tokForm.expiredAt} onChange={e=>setTokForm({...tokForm,expiredAt:e.target.value})} className="input-dark"/></div>
-                    <div className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2.5">
-                      <span className="text-xs text-slate-400 flex-1">Verified Badge</span>
-                      <button onClick={()=>setTokForm({...tokForm,verified:!tokForm.verified})} className={`text-xs px-3 py-1 rounded-lg font-bold border ${tokForm.verified?"bg-emerald-500/20 text-emerald-400 border-emerald-500/30":"text-slate-500 border-white/10"}`}>{tokForm.verified?"ON":"OFF"}</button>
-                    </div>
-                    <div className="flex gap-2">
-                      <button onClick={saveTok} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-bold">{editTokId?"Update Token":"Generate Token"}</button>
-                      <button onClick={()=>{setShowTokForm(false);setEditTokId(null);}} className="px-4 py-2.5 rounded-xl text-sm text-slate-400 border border-white/10 hover:bg-white/5 transition-all">Batal</button>
+                    <div className="text-xs text-slate-500 mb-1.5">Terdaftar: {u.created_at ? new Date(u.created_at).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}) : "-"}</div>
+                    <div className="text-xs text-slate-500 mb-3">Login terakhir: {u.last_login_at ? new Date(u.last_login_at).toLocaleString("id-ID",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) : "-"}</div>
+                    {u.role==="vip" && (
+                      <div className="mb-3">
+                        <label className="text-xs text-slate-500 mb-1 block">Tier Paket</label>
+                        <select value={u.subscription||"gold"} onChange={e=>setUserSubscription(u, e.target.value)} className="input-dark">
+                          {pkgOpts.map(p=><option key={p} value={p} className="bg-black capitalize">{p.charAt(0).toUpperCase()+p.slice(1)}</option>)}
+                        </select>
+                      </div>
+                    )}
+                    <div className="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+                      <Btn onClick={()=>toggleUserRole(u)} color={u.role==="vip"?"yellow":"green"}>{u.role==="vip"?"Set ke Free":"Set ke VIP"}</Btn>
+                      <Btn onClick={()=>delVipUser(u.email)} color="red">Hapus</Btn>
                     </div>
                   </div>
-                </div>
-              )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {tokens.length===0 ? (
-                  <div className="col-span-2 card rounded-2xl p-12 text-center"><p className="text-slate-500 text-sm">Belum ada token.</p></div>
-                ) : tokens.map(t=>{
-                  const expired=isExpired(t.expiredAt); const near=isNearExpiry(t.expiredAt);
-                  return (
-                    <div key={t.id} className={`card rounded-xl p-4 ${expired?"border-red-500/20":near?"border-yellow-500/15":""}`}>
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <span className="font-bold text-white">{t.name||"—"}</span>
-                          <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-bold ${expired?"bg-red-400/10 text-red-400":t.isActive?"bg-green-400/10 text-green-400":"bg-slate-400/10 text-slate-400"}`}>
-                            {expired?"EXPIRED":t.isActive?"AKTIF":"NONAKTIF"}
-                          </span>
-                          {t.verified && <span style={{background:"rgba(59,130,246,0.15)",color:"#3b82f6",border:"1px solid rgba(59,130,246,0.3)",fontSize:9,fontWeight:800,padding:"1px 6px",borderRadius:4}}> verified</span>}
-                        </div>
-                        <span className="text-xs text-emerald-400 font-bold capitalize">{t.package}</span>
-                      </div>
-                      <div className="text-xs text-slate-500 mb-1.5">{t.email}</div>
-                      <div className="font-mono text-xs bg-white/5 rounded-lg px-3 py-2 text-slate-300 mb-2 break-all select-all">{t.token}</div>
-                      <div className={`text-xs mb-3 ${expired?"text-red-400":near?"text-yellow-400":"text-slate-600"}`}>
-                        Expired: {new Date(t.expiredAt).toLocaleString("id-ID",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"})}
-                      </div>
-                      <div className="flex flex-wrap gap-2 border-t border-white/5 pt-3">
-                        <Btn onClick={()=>editTok(t)} color="blue">Edit</Btn>
-                        <Btn onClick={()=>toggleTok(t)} color={(t.isActive??t.is_active)?"yellow":"green"}>{(t.isActive??t.is_active)?"Nonaktif":"Aktifkan"}</Btn>
-                        <Btn onClick={()=>extendTok(t)} color="purple">+Hari</Btn>
-                        <Btn onClick={()=>delTok(t.id)} color="red">Hapus</Btn>
-                      </div>
-                    </div>
-                  );
-                })}
+                ))}
               </div>
             </div>
           )}

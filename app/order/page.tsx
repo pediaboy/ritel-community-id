@@ -98,6 +98,7 @@ function OrderPageInner() {
   const [step, setStep]         = useState<"form"|"invoice"|"confirm">("form");
   const [nama, setNama]         = useState("");
   const [hp,   setHp]           = useState("");
+  const [email, setEmail]       = useState("");
   const [metodePay, setMetode]  = useState("dana");
   const [loading, setLoading]   = useState(false);
   const [order, setOrder]       = useState<any>(null);
@@ -110,6 +111,7 @@ function OrderPageInner() {
     setErr("");
     if (!nama.trim()) { setErr("Nama tidak boleh kosong"); return; }
     if (!hp.trim() || hp.trim().length < 9) { setErr("Nomor HP tidak valid"); return; }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setErr("Masukkan alamat email yang valid (dipakai untuk login VIP)"); return; }
     setLoading(true);
     try {
       const res = await fetch("/api/orders", {
@@ -119,6 +121,7 @@ function OrderPageInner() {
           action: "create",
           nama: nama.trim(),
           hp: hp.trim(),
+          email: email.trim().toLowerCase(),
           paket: basePkg.name,
           harga: finalRaw,
           metode: selMethod.label,
@@ -147,6 +150,7 @@ function OrderPageInner() {
 ━━━━━━━━━━━━━━━━━━━━━━━━
  Nama        : ${order.nama}
  No. HP      : ${order.hp}
+ Email       : ${order.email}
  Paket       : ${order.paket}${isFlashActive ? ` *(Flash Sale ${flashDisc})*` : ""}
  Total       : *${finalPriceLabel}/bulan*${isFlashActive ? `\n Harga Normal: ~~${formatRp(normalPrice)}~~` : ""}
 ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -155,7 +159,7 @@ function OrderPageInner() {
  a.n          : ${m.an}
 ━━━━━━━━━━━━━━━━━━━━━━━━
 _Mohon lampirkan bukti transfer._
-_Token VIP aktif setelah pembayaran dikonfirmasi._`;
+_Akun VIP aktif setelah pembayaran dikonfirmasi. Login pakai email + kode OTP di halaman Login._`;
     window.open(`https://wa.me/6282218723401?text=${encodeURIComponent(msg)}`, "_blank");
     setStep("confirm");
   }
@@ -216,6 +220,14 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                     placeholder="08xxxxxxxxxx" type="tel"
                     style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
                     className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#2563EB] rounded-lg px-3 py-2.5 text-sm" />
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 block">Alamat Email</label>
+                  <input value={email} onChange={e => setEmail(e.target.value)}
+                    placeholder="nama@email.com" type="email"
+                    style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
+                    className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#2563EB] rounded-lg px-3 py-2.5 text-sm" />
+                  <p className="text-[10px] text-slate-600 mt-1.5">Email ini dipakai untuk login akun VIP kamu (kode OTP dikirim ke sini).</p>
                 </div>
               </div>
 
@@ -281,6 +293,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                   {[
                     {l:"Nama Pemesan", v:order.nama},
                     {l:"No. WhatsApp", v:order.hp},
+                    {l:"Email", v:order.email},
                     {l:"Paket Layanan", v:order.paket},
                     {l:"Metode Bayar", v:selMethod.label},
                   ].map(row=>(

@@ -102,9 +102,6 @@ export default function ProfilPage() {
   const [user, setUser] = useState<any>(null);
   const [editBio, setEditBio] = useState(false);
   const [bio, setBio] = useState("");
-  const [linkToken, setLinkToken] = useState("");
-  const [linkLoading, setLinkLoading] = useState(false);
-  const [linkMsg, setLinkMsg] = useState("");
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
@@ -141,32 +138,6 @@ export default function ProfilPage() {
       }
     } catch {}
     setSaving(false);
-  };
-
-  const handleLinkToken = async () => {
-    if (!linkToken.trim() || linkLoading) return;
-    setLinkLoading(true);
-    setLinkMsg("");
-    try {
-      const res = await fetch("/api/community/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "link_token", user_id: user.id, token: linkToken.trim() }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        const updated = { ...user, ...data.user };
-        setUser(updated);
-        localStorage.setItem("rc_community_user", JSON.stringify(updated));
-        setLinkMsg("Langganan berhasil disinkronkan!");
-        setLinkToken("");
-      } else {
-        setLinkMsg(data.message);
-      }
-    } catch {
-      setLinkMsg("Koneksi error.");
-    }
-    setLinkLoading(false);
   };
 
   if (!user) return (
@@ -251,31 +222,18 @@ export default function ProfilPage() {
           </div>
         </div>
 
-        {/* Link Token (untuk upgrade subscription) */}
         {user.subscription === "free" && (
-          <div className="glass-card no-mark p-5 mb-4 border border-emerald-500/20">
-            <h3 className="headline text-sm tracking-wider mb-1"><span className="accent">PUNYA</span> TOKEN VIP?</h3>
-            <p className="text-neutral-500 text-xs font-semibold uppercase tracking-wider mb-4">Hubungkan token VIP untuk unlock premium</p>
-            <div className="flex gap-2">
-              <input
-                value={linkToken}
-                onChange={e => setLinkToken(e.target.value)}
-                placeholder="RC-GOLD-XXXXXXXX"
-                className="flex-1 bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-wider text-sm outline-none focus:border-emerald-500 transition-colors"
-              />
-              <button
-                onClick={handleLinkToken}
-                disabled={linkLoading || !linkToken.trim()}
-                className="px-6 bg-emerald-500 text-neutral-950 text-xs font-black uppercase tracking-wider disabled:opacity-40 hover:bg-emerald-400 transition-colors"
-              >
-                {linkLoading ? "..." : "LINK"}
-              </button>
-            </div>
-            {linkMsg && (
-              <p className={`text-xs mt-3 uppercase tracking-wider font-bold ${linkMsg.includes("berhasil") ? "text-emerald-400" : "text-red-400"}`}>
-                {linkMsg}
-              </p>
-            )}
+          <div className="glass-card no-mark p-5 mb-4 border border-blue-500/20">
+            <h3 className="headline text-sm tracking-wider mb-1"><span className="accent">UPGRADE</span> KE VIP</h3>
+            <p className="text-neutral-500 text-xs font-semibold uppercase tracking-wider mb-4">Hubungi admin untuk aktivasi langganan VIP</p>
+            <a
+              href="https://wa.me/6282218723401?text=Halo%20min%20mau%20upgrade%20ke%20VIP!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary w-full block text-center py-3 text-xs font-black uppercase tracking-wider"
+            >
+              Hubungi Admin WA
+            </a>
           </div>
         )}
 

@@ -31,7 +31,6 @@ export default function OrdersTab() {
   const [editMetode, setEditMetode] = useState("");
   const [filter, setFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
-  const [copiedToken, setCopiedToken] = useState<string|null>(null);
 
   async function fetchOrders() {
     setLoading(true);
@@ -52,7 +51,7 @@ export default function OrdersTab() {
       body: JSON.stringify({ action:"update_status", id, status, note, metode }),
     });
     const d = await res.json();
-    // Update local state langsung (termasuk token_generated)
+    // Update local state langsung
     if (d.success && d.order) {
       setOrders(prev => prev.map(o => o.id === id ? { ...o, ...d.order } : o));
     } else {
@@ -81,13 +80,6 @@ export default function OrdersTab() {
   async function saveEdit() {
     if (!editId) return;
     await updateStatus(editId, editStatus, editNote, editMetode);
-  }
-
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedToken(text);
-      setTimeout(() => setCopiedToken(null), 2000);
-    });
   }
 
   // Filter
@@ -208,20 +200,22 @@ export default function OrdersTab() {
                     <p className="text-slate-300">{o.note}</p>
                   </div>
                 )}
-                {/* Token generated */}
-                {o.token_generated && (
+                {/* VIP activation status */}
+                {o.vip_activated ? (
                   <div className="col-span-2">
-                    <p className="text-xs text-slate-500 mb-1">Token VIP (Auto-Generated)</p>
-                    <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2">
-                      <span className="font-mono text-sm font-black text-emerald-400 flex-1">{o.token_generated}</span>
-                      <button onClick={() => copyToClipboard(o.token_generated)}
-                        className="text-xs px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold transition-all">
-                        {copiedToken === o.token_generated ? "Copied" : "Copy"}
-                      </button>
+                    <p className="text-xs text-slate-500 mb-1">Status Akun VIP</p>
+                    <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2">
+                      <span className="text-sm font-bold text-blue-400 flex-1">VIP aktif untuk {o.email}</span>
                     </div>
                     {o.paid_at && <p className="text-xs text-slate-600 mt-1">Aktif sejak {formatDate(o.paid_at)}</p>}
                   </div>
-                )}
+                ) : o.status === "paid" && !o.email ? (
+                  <div className="col-span-2">
+                    <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                      <span className="text-xs font-bold text-red-400">Belum ada email — aktivasi VIP manual di tab User VIP</span>
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               {/* Edit Mode */}
@@ -260,7 +254,7 @@ export default function OrdersTab() {
                   {o.status === "pending" && (
                     <button onClick={() => updateStatus(o.id, "paid")}
                       className="flex-1 py-2 rounded-lg text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 font-extrabold min-w-[120px] transition-all">
-                      Konfirmasi Lunas + Generate Token
+                      Konfirmasi Lunas + Aktivasi VIP
                     </button>
                   )}
                   <button onClick={() => startEdit(o)}

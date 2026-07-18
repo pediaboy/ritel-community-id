@@ -1638,10 +1638,6 @@ export default function VipPage() {
   const [partners, setPartners] = useState<any[]>([]);
 
   useEffect(() => {
-    // Support new username/password login
-    const rcUser = localStorage.getItem("rc_user");
-    let tokenAuth = localStorage.getItem("vip_token");
-    
     const loadData = (userData: any) => {
       setUser(userData);
       setLoading(false);
@@ -1657,10 +1653,10 @@ export default function VipPage() {
         if (data.bsjp_signals) setBsjpSignals(data.bsjp_signals || []);
         if (data.bpjs_signals) setBpjsSignals(data.bpjs_signals || []);
         if (data.jurnal_global) setJurnalGlobal(data.jurnal_global || []);
-        // Load jurnal personal token
-        const myTokenKey = localStorage.getItem("vip_token") || (localStorage.getItem("rc_user") ? JSON.parse(localStorage.getItem("rc_user")||"{}").auth_token : "");
-        if (myTokenKey) {
-          fetch(`/api/admin/settings?key=jurnal_${encodeURIComponent(myTokenKey.slice(-12))}`).then(r=>r.json()).then(d=>{ if(d && Array.isArray(d.value)) setJurnalPersonal(d.value||[]); }).catch(()=>{});
+        // Load jurnal personal (keyed by user email)
+        const myEmailKey = userData?.email || "";
+        if (myEmailKey) {
+          fetch(`/api/admin/settings?key=jurnal_${encodeURIComponent(myEmailKey)}`).then(r=>r.json()).then(d=>{ if(d && Array.isArray(d.value)) setJurnalPersonal(d.value||[]); }).catch(()=>{});
         }
         if (data.rekap_sinyal) setRekapList(data.rekap_sinyal || []);
         if (data.premiumSignals) setPremiumContent(data.premiumSignals);
@@ -1676,34 +1672,20 @@ export default function VipPage() {
       fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
     };
 
-    if (rcUser) {
-      try {
-        const u = JSON.parse(rcUser);
-        if (u && u.auth_token) {
-          const mapped = { name: u.username, package: u.role||"free", expiredAt: u.vip_expired_at, username: u.username, is_verified: u.is_verified, role: u.role, auth_token: u.auth_token };
-          loadData(mapped);
-          return;
-        }
-      } catch {}
+    const session = localStorage.getItem("vip_session");
+    const savedUser = localStorage.getItem("vip_user");
+    if (!session || !savedUser) { router.push("/login"); return; }
+    try {
+      const u = JSON.parse(savedUser);
+      loadData(u);
+    } catch {
+      router.push("/login");
     }
-    if (!tokenAuth) { router.push("/login"); return; }
-    fetch("/api/auth", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({token:tokenAuth}) })
-      .then(r=>r.json())
-      .then(d => {
-        if (!d.success) {
-          localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user");
-          router.push("/login?error=" + encodeURIComponent(d.message||"Token tidak valid"));
-        } else {
-          localStorage.setItem("vip_user", JSON.stringify(d.user));
-          loadData(d.user);
-        }
-      })
-      .catch(()=>setLoading(false));
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("vip_token"); localStorage.removeItem("vip_user");
-    localStorage.removeItem("rc_user");
+    localStorage.removeItem("vip_session");
+    localStorage.removeItem("vip_user");
     router.push("/login");
   };
 
@@ -2332,8 +2314,8 @@ export default function VipPage() {
                         <button onClick={async()=>{
                           const updatedPersonal = jurnalPersonal.filter((x:any)=>x.id!==j.id);
                           setJurnalPersonal(updatedPersonal);
-                          const myToken = localStorage.getItem("vip_token") || (localStorage.getItem("rc_user") ? JSON.parse(localStorage.getItem("rc_user")||"{}").auth_token : "");
-                          if (myToken) await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myToken.slice(-12)}`, value: updatedPersonal }) }).catch(()=>{});
+                          const myEmail = user?.email || "";
+                          if (myEmail) await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myEmail}`, value: updatedPersonal }) }).catch(()=>{});
                         }} style={{ marginTop:8, background:"rgba(239,68,68,0.06)", border:"1px solid rgba(239,68,68,0.15)", color:"rgba(239,68,68,0.6)", fontSize:10, padding:"4px 10px", borderRadius:8, cursor:"pointer", width:"100%" }}>
                           Hapus Catatan Ini
                         </button>
@@ -2402,10 +2384,10 @@ export default function VipPage() {
                       setJurnalPersonal(updatedPersonal);
                       setShowJurnalModal(false);
                       setJurnalForm({});
-                      // Save ke settings per-token
-                      const myToken = localStorage.getItem("vip_token") || (localStorage.getItem("rc_user") ? JSON.parse(localStorage.getItem("rc_user")||"{}").auth_token : "");
-                      if (myToken) {
-                        await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myToken.slice(-12)}`, value: updatedPersonal }) }).catch(()=>{});
+                      // Save ke settings per-email
+                      const myEmail = user?.email || "";
+                      if (myEmail) {
+                        await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myEmail}`, value: updatedPersonal }) }).catch(()=>{});
                       }
                     }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
                       Simpan Jurnal

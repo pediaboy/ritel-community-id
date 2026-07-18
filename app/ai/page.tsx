@@ -50,37 +50,20 @@ export default function AIAgentPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Auth check - pro/platinum/elite only
+  // Auth check - session (email OTP) required
   useEffect(() => {
-    const token = localStorage.getItem("vip_token");
-    if (!token) {
+    const session = localStorage.getItem("vip_session");
+    const cached = localStorage.getItem("vip_user");
+    if (!session || !cached) {
       router.push("/login?error=" + encodeURIComponent("Login dulu untuk akses RC-AI"));
       return;
     }
-    fetch("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    })
-      .then(r => r.json())
-      .then(d => {
-        if (!d.success) {
-          localStorage.removeItem("vip_token");
-          localStorage.removeItem("vip_user");
-          router.push("/login?error=" + encodeURIComponent("Session tidak valid"));
-        } else {
-          setUser(d.user);
-          setAuthChecked(true);
-        }
-      })
-      .catch(() => {
-        // fallback ke cached user
-        try {
-          const cached = localStorage.getItem("vip_user");
-          if (cached) { setUser(JSON.parse(cached)); setAuthChecked(true); }
-          else router.push("/login");
-        } catch { router.push("/login"); }
-      });
+    try {
+      setUser(JSON.parse(cached));
+      setAuthChecked(true);
+    } catch {
+      router.push("/login");
+    }
   }, []);
 
   useEffect(() => {
