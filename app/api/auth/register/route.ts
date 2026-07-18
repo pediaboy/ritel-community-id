@@ -27,6 +27,7 @@ export async function POST(req: Request) {
 
   if (!ok) {
     const msg = data?.msg || data?.error_description || data?.message || "";
+
     if (/already registered|already exists/i.test(msg)) {
       return NextResponse.json({
         success: false,
@@ -34,6 +35,28 @@ export async function POST(req: Request) {
         alreadyRegistered: true,
       });
     }
+
+    // Supabase's built-in per-email resend cooldown (default ~60s) — surfaces as
+    // "For security purposes, you can only request this after N seconds."
+    // Translate it into a friendly, human Indonesian message instead of raw English.
+    const cooldownMatch = msg.match(/after (\d+) seconds?/i);
+    if (cooldownMatch) {
+      const secs = Math.max(parseInt(cooldownMatch[1], 10), 1);
+      return NextResponse.json({
+        success: false,
+        message: `Kode OTP baru saja dikirim ke email ini. Tunggu ${secs} detik lagi sebelum minta kode baru ya.`,
+        cooldownSeconds: secs,
+      });
+    }
+
+    // Global sending rate limit hit (too many emails sent across the whole project).
+    if (/rate limit exceeded/i.test(msg)) {
+      return NextResponse.json({
+        success: false,
+        message: "Terlalu banyak permintaan kode OTP saat ini. Coba lagi dalam beberapa menit ya.",
+      });
+    }
+
     return NextResponse.json({ success: false, message: msg || "Gagal mendaftar. Coba lagi." });
   }
 

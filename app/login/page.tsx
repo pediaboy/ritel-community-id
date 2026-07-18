@@ -135,6 +135,7 @@ export default function LoginPage() {
         setResendIn(30);
       } else {
         setErr(data.message || "Gagal mengirim ulang kode.");
+        if (data.cooldownSeconds) setResendIn(data.cooldownSeconds);
       }
     } catch {
       setErr("Gagal terhubung ke server.");
