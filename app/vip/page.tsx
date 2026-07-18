@@ -7,6 +7,7 @@ import { readSession, ensureFreshSession, clearSession } from "@/lib/session";
 import {
   Home, Rss, Activity, Landmark, Gem, BookOpen, Sunrise, Sunset,
   Trophy, ClipboardList, NotebookPen, Bot, User, LogOut, Lock, TrendingUp,
+  LineChart, ArrowUpRight,
 } from "lucide-react";
 
 // ── JAKARTA REALTIME CLOCK ──────────────────────────────────────
@@ -1867,6 +1868,48 @@ export default function VipPage() {
                 </div>
               ))}
             </div>
+
+            {/* Cross-promo: LASTQUESTION FOREX partner platform */}
+            <a
+              href="https://lastquestion.store"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cyber-card cyber-card-scan"
+              style={{
+                display:"block", position:"relative", padding:"18px 16px", marginBottom:20,
+                textDecoration:"none", overflow:"hidden",
+                background:"linear-gradient(135deg, rgba(37,99,235,0.14), rgba(8,17,31,0.9) 55%)",
+              }}
+            >
+              <span className="cyber-corner-tl" />
+              <span className="cyber-corner-br" />
+              <div style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
+                <div style={{
+                  width:44, height:44, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
+                  background:"rgba(37,99,235,0.14)", border:"1px solid rgba(37,99,235,0.35)",
+                  clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)",
+                }}>
+                  <LineChart size={22} color="#60a5fa" strokeWidth={2.2} />
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
+                    <span style={{ fontSize:9, fontWeight:800, letterSpacing:1, color:"#60a5fa", background:"rgba(37,99,235,0.12)", border:"1px solid rgba(37,99,235,0.3)", padding:"2px 7px", clipPath:"polygon(0 5px,5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%)" }}>
+                      PARTNER PLATFORM
+                    </span>
+                  </div>
+                  <h3 style={{ fontSize:14, fontWeight:900, color:"#fff", marginBottom:4, letterSpacing:0.2 }}>
+                    LASTQUESTION FOREX
+                  </h3>
+                  <p style={{ fontSize:11.5, lineHeight:1.5, color:"rgba(255,255,255,0.55)" }}>
+                    Web Forex — sinyal trading, edukasi, dan komunitas trader forex &amp; crypto profesional. Platform saudara dari RITEL COMMUNITY.
+                  </p>
+                  <div style={{ display:"flex", alignItems:"center", gap:5, marginTop:10, fontSize:11, fontWeight:700, color:"#2563EB" }}>
+                    Kunjungi lastquestion.store
+                    <ArrowUpRight size={14} strokeWidth={2.5} />
+                  </div>
+                </div>
+              </div>
+            </a>
 
             {/* Recent signals preview */}
             {mySignals.length > 0 && (
