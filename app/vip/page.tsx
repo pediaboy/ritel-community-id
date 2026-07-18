@@ -388,7 +388,7 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
         ) : (
           onToggleDone ? (
             <button onClick={()=>onToggleDone(s.id)} style={{ width:"100%", background:"rgba(34,197,94,0.05)", border:"1px dashed rgba(34,197,94,0.2)", borderRadius:10, padding:"7px 12px", display:"flex", alignItems:"center", justifyContent:"center", gap:8, cursor:"pointer", color:"rgba(34,197,94,0.5)", fontSize:11, fontWeight:700 }}>
-              <span></span> Tandai Target Tercapai
+              Tandai Target Tercapai
             </button>
           ) : null
         )}
@@ -1850,9 +1850,8 @@ export default function VipPage() {
 
   // ── RENDER ──────────────────────────────────────────────────────
   return (
-    <div style={{ fontFamily:"'Inter',sans-serif", background:"#030508", color:"#fff", minHeight:"100vh", display:"flex", flexDirection:"column", position:"relative" }}>
+    <div style={{ fontFamily:"'Inter',sans-serif", background:"#0A0B0D", color:"#fff", minHeight:"100vh", display:"flex", flexDirection:"column", position:"relative" }}>
       <div className="galaxy-stars"/>
-      <GalaxyBgVip />
 
       {/* STICKY HEADER — premium glass */}
       <div style={{ position:"sticky", top:0, zIndex:50, background:"rgba(3,5,8,0.88)", backdropFilter:"blur(28px) saturate(200%)", WebkitBackdropFilter:"blur(28px) saturate(200%)", borderBottom:"1px solid rgba(255,255,255,0.055)", flexShrink:0 }}>
@@ -1967,7 +1966,7 @@ export default function VipPage() {
             {sigFilter==="Semua" && signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length>0 && (
               <div style={{ background:"rgba(16,185,129,0.04)",border:"1px solid rgba(16,185,129,0.15)",borderRadius:16,padding:"14px 16px",marginBottom:16 }}>
                 <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:10 }}>
-                  <span style={{ color:"#10b981",fontWeight:900,fontSize:14 }}> Sinyal Disematkan</span>
+                  <span style={{ color:"#10b981",fontWeight:900,fontSize:14 }}>Sinyal Disematkan</span>
                   <span style={{ color:"rgba(16,185,129,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
                 </div>
                 <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
@@ -1978,7 +1977,7 @@ export default function VipPage() {
             {sigFilter==="Semua" && signals.filter((s:any)=>s.is_tomorrow).length>0 && (
               <div style={{ background:"rgba(234,179,8,0.04)", border:"1px solid rgba(234,179,8,0.15)", borderRadius:16, padding:"14px 16px", marginBottom:16 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
-                  <span style={{ color:"#fbbf24", fontWeight:900, fontSize:14 }}> Sinyal Besok</span>
+                  <span style={{ color:"#fbbf24", fontWeight:900, fontSize:14 }}>Sinyal Besok</span>
                   <span style={{ color:"rgba(251,191,36,0.5)", fontSize:11 }}>{signals.filter((s:any)=>s.is_tomorrow).length} sinyal</span>
                 </div>
                 {signals.filter((s:any)=>s.is_tomorrow).map((s:any)=>(
@@ -2044,7 +2043,7 @@ export default function VipPage() {
         {/* ── BANDAR TAB ── */}
         {tab==="bandar" && (
           <div style={{ padding:"16px" }} className="fade-in-up">
-            <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}> Bandarmologi</h2>
+            <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Bandarmologi</h2>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Deteksi pola bandar & pergerakan smart money</p>
             {pkgLevel < 2 ? (
               <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", borderRadius:16, padding:"32px 20px", textAlign:"center" }}>
@@ -2066,11 +2065,11 @@ export default function VipPage() {
 
             {/* Modul bandarmologi */}
             <div style={{ marginTop:24 }}>
-              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}> Modul Bandarmologi</h3>
+              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Modul Bandarmologi</h3>
               {ALL_MODULES.filter(m=>m.tag==="Bandarmologi").map(m=>(
                 <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, padding:"14px 16px", marginBottom:10, cursor:"pointer" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                    <span style={{ fontSize:20 }}>{m.icon}</span>
+                    <span className="index-badge" style={{ width:32,height:32,fontSize:11 }}>{m.icon}</span>
                     <div style={{ flex:1 }}>
                       <p style={{ fontWeight:700, fontSize:13, marginBottom:2 }}>{m.title}</p>
                       <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{m.desc.slice(0,60)}...</p>
@@ -2093,7 +2092,7 @@ export default function VipPage() {
                       {MODULE_CONTENT[m.id]?.lessons && (
                         <div style={{ marginTop:14, borderTop:"1px solid rgba(255,255,255,0.06)", paddingTop:14 }}>
                           <p style={{ fontWeight:800, fontSize:12, color:"rgba(255,255,255,0.5)", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}>
-                            <span></span> Materi Lengkap ({MODULE_CONTENT[m.id].lessons.length} pelajaran)
+                            Materi Lengkap ({MODULE_CONTENT[m.id].lessons.length} pelajaran)
                           </p>
                           {MODULE_CONTENT[m.id].lessons.map((lesson:any, li:number) => (
                             <div key={li} style={{ marginBottom:10, background:"rgba(255,255,255,0.02)", borderRadius:10, padding:"12px 14px", border:"1px solid rgba(255,255,255,0.05)" }}>
@@ -2115,7 +2114,7 @@ export default function VipPage() {
         {tab==="bagger" && (
           <div style={{ padding:"16px" }} className="fade-in-up">
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
-              <h2 style={{ fontWeight:900, fontSize:18 }}> Bagger Picks</h2>
+              <h2 style={{ fontWeight:900, fontSize:18 }}>Bagger Picks</h2>
               <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", fontSize:10, fontWeight:700, padding:"4px 10px", borderRadius:8 }}>Paket {user.package?.toUpperCase()}</span>
             </div>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Saham berpotensi naik 2x–10x lipat</p>
@@ -2151,11 +2150,11 @@ export default function VipPage() {
             {/* Modul bagger (untuk semua, tapi konten locked jika < gold) */}
             {pkgLevel >= 1 && (
               <div style={{ marginTop:24 }}>
-                <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}> Modul Multi-Bagger</h3>
+                <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Modul Multi-Bagger</h3>
                 {ALL_MODULES.filter(m=>m.tag==="Fundamental"||m.title.toLowerCase().includes("bagger")).map(m=>(
                   <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:expandedModul===m.id?"rgba(245,158,11,0.06)":"rgba(255,255,255,0.03)", border:`1px solid ${expandedModul===m.id?"rgba(245,158,11,0.25)":"rgba(255,255,255,0.07)"}`, borderRadius:14, padding:"14px 16px", marginBottom:10, cursor:"pointer", transition:"all 0.2s" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                      <span style={{ fontSize:22, flexShrink:0 }}>{m.icon}</span>
+                      <span className="index-badge" style={{ width:34,height:34,fontSize:11 }}>{m.icon}</span>
                       <div style={{ flex:1 }}>
                         <p style={{ fontWeight:700, fontSize:13, marginBottom:2 }}>{m.title}</p>
                         <div style={{ display:"flex", gap:6 }}>
@@ -2201,7 +2200,7 @@ export default function VipPage() {
                 <TiltCard key={m.id}>
                   <div className="card rounded-xl overflow-hidden">
                     <button onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} className="w-full p-4 flex items-start gap-3 text-left">
-                      <span className="text-2xl flex-shrink-0 mt-0.5">{m.icon}</span>
+                      <span className="index-badge" style={{ width:32,height:32,fontSize:11 }}>{m.icon}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
                           <span className={"text-xs font-bold px-2 py-0.5 rounded-full border " + (PKG_COLORS[m.pkgLabel.toLowerCase()]||"")}>{m.pkgLabel}</span>
@@ -2216,7 +2215,7 @@ export default function VipPage() {
                       <div className="px-4 pb-6 border-t border-white/5">
                         <p className="text-slate-300 text-sm leading-relaxed mt-4 mb-4">{m.desc}</p>
                         <div className="mb-5">
-                          <p className="text-xs text-emerald-400 font-bold mb-2 uppercase tracking-wider"> Yang akan kamu pelajari:</p>
+                          <p className="text-xs text-emerald-400 font-bold mb-2 uppercase tracking-wider">Yang akan kamu pelajari:</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                             {m.topics.map((t:string,i:number)=>(
                               <div key={i} className="flex items-center gap-2 text-xs text-slate-300 bg-white/3 rounded-lg px-3 py-2 border border-white/5">
@@ -2259,7 +2258,7 @@ export default function VipPage() {
                 <div className="space-y-2">
                   {lockedModules.map((m:any)=>(
                     <div key={m.id} className="card rounded-xl p-4 opacity-40 flex items-center gap-3">
-                      <span className="text-xl">{m.icon}</span>
+                      <span className="index-badge" style={{ width:30,height:30,fontSize:10 }}>{m.icon}</span>
                       <div>
                         <span className={"text-xs font-bold px-2 py-0.5 rounded-full border " + (PKG_COLORS[m.pkgLabel.toLowerCase()]||"")}>{m.pkgLabel}</span>
                         <h3 className="text-white text-sm font-bold mt-1">{m.title}</h3>
@@ -2338,7 +2337,7 @@ export default function VipPage() {
               <>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0 8px" }}>
               <div>
-                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}> Jurnal Trade</h2>
+                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Jurnal Trade</h2>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap trade — data ini hanya milikmu.</p>
               </div>
               <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#1e5af0,#10b981)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
@@ -2519,14 +2518,14 @@ export default function VipPage() {
                 <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16 }}>
                   {[
                     {icon:"",t:"Analisis Teknikal",d:"Support, resistance, pola chart"},
-                    {icon:"",t:"Analisis Fundamental",d:"Laporan keuangan & valuasi"},
-                    {icon:"",t:"Rekomendasi TP/SL",d:"Entry, target, stop loss optimal"},
-                    {icon:"",t:"Analisis Chart",d:"Upload screenshot chart kamu"},
-                    {icon:"",t:"Bandarmologi",d:"Deteksi akumulasi smart money"},
-                    {icon:"",t:"Psikologi Trading",d:"Kelola emosi & bias kognitif"},
+                    {icon:"01",t:"Analisis Fundamental",d:"Laporan keuangan & valuasi"},
+                    {icon:"02",t:"Rekomendasi TP/SL",d:"Entry, target, stop loss optimal"},
+                    {icon:"03",t:"Analisis Chart",d:"Upload screenshot chart kamu"},
+                    {icon:"04",t:"Bandarmologi",d:"Deteksi akumulasi smart money"},
+                    {icon:"05",t:"Psikologi Trading",d:"Kelola emosi & bias kognitif"},
                   ].map((f,i)=>(
-                    <a key={i} href="/ai" style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"14px 12px",textDecoration:"none",display:"block" }}>
-                      <div style={{ fontSize:22,marginBottom:6 }}>{f.icon}</div>
+                    <a key={i} href="/ai" className="glass-card no-mark" style={{ padding:"14px 12px",textDecoration:"none",display:"block" }}>
+                      <div className="index-badge" style={{ width:30,height:30,fontSize:10,marginBottom:8 }}>{f.icon}</div>
                       <div style={{ color:"#fff",fontWeight:800,fontSize:12,marginBottom:3 }}>{f.t}</div>
                       <div style={{ color:"rgba(255,255,255,0.35)",fontSize:10,lineHeight:1.4 }}>{f.d}</div>
                     </a>
@@ -2552,7 +2551,7 @@ export default function VipPage() {
             ) : (
             <>
             <div style={{ padding:"16px 0 8px" }}>
-              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}> Beli Sore Jual Pagi</h2>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Beli Sore Jual Pagi</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BSJP — akumulasi sore hari, jual di pagi hari saat open pasar.</p>
             </div>
             {bsjpSignals.length === 0 ? (
@@ -2609,7 +2608,7 @@ export default function VipPage() {
             ) : (
             <>
             <div style={{ padding:"16px 0 8px" }}>
-              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}> Beli Pagi Jual Sore</h2>
+              <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Beli Pagi Jual Sore</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BPJS — entry di pagi hari, target keluar sebelum penutupan sore.</p>
             </div>
             {bpjsSignals.length === 0 ? (
@@ -2670,7 +2669,7 @@ export default function VipPage() {
 
             {/* Owner & Partner section */}
             <div style={{ marginBottom:20 }}>
-              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}> Owner & Partner</h3>
+              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Owner & Partner</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {owners.map((o,i)=>(
                   <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(30,90,240,0.2)", borderRadius:14, padding:"14px 16px" }}>
@@ -2702,7 +2701,7 @@ export default function VipPage() {
 
             {/* Paket upgrade */}
             <div style={{ marginBottom:20 }}>
-              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}> Paket VIP</h3>
+              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Paket VIP</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {PAKET_VIP.map(p=>(
                   <div key={p.id} style={{ background: p.id===user.package ? `${p.color}10` : "rgba(255,255,255,0.02)", border:`1px solid ${p.id===user.package ? p.color+"40" : "rgba(255,255,255,0.06)"}`, borderRadius:14, padding:"14px 16px", display:"flex", alignItems:"center", gap:12 }}>
@@ -2725,7 +2724,7 @@ export default function VipPage() {
             <button onClick={logout} style={{ width:"100%", padding:"14px", borderRadius:14, background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#ef4444", fontWeight:700, fontSize:14, cursor:"pointer" }}>Keluar dari Akun</button>
             {/* Contact Admin */}
             <div style={{ marginTop:12 }}>
-              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}> Kontak Admin</h3>
+              <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Kontak Admin</h3>
               <a href="https://wa.me/6282218723401?text=Halo%20Admin%20RITEL%20COMMUNITY.ID" target="_blank" rel="noreferrer"
                 style={{ display:"flex",alignItems:"center",gap:12,background:"rgba(37,211,102,0.08)",border:"1px solid rgba(37,211,102,0.2)",borderRadius:14,padding:"14px 16px",textDecoration:"none" }}>
                 <div style={{ width:40,height:40,borderRadius:"50%",background:"rgba(37,211,102,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}></div>

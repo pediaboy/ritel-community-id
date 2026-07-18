@@ -60,11 +60,12 @@ body {
 }
 /* torn-corner accent mark — signature poster-style detail, bottom-left */
 .glass-card::after {
-  content: ''; position: absolute; left: -10px; bottom: -10px; width: 46px; height: 46px;
+  content: ''; position: absolute; left: -6px; bottom: -6px; width: 26px; height: 26px;
   background: #10b981;
   clip-path: polygon(0% 40%, 20% 35%, 32% 48%, 46% 30%, 60% 46%, 74% 32%, 100% 45%, 100% 100%, 0% 100%);
-  opacity: 0.9; pointer-events: none;
+  opacity: 0.85; pointer-events: none;
 }
+.glass-card.mark-lg::after { left: -10px; bottom: -10px; width: 46px; height: 46px; }
 .glass-card:hover {
   border-color: rgba(16,185,129,0.38);
   box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.12);
@@ -110,8 +111,8 @@ body {
 
 /* GRADIENT TEXT */
 .gradient-text {
-  background: linear-gradient(135deg, #10b981 0%, #6366F1 40%, #8B5CF6 70%, #38BDF8 100%);
-  background-size: 300% auto;
+  background: linear-gradient(135deg, #10b981 0%, #6EE7B7 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   animation: gradShift 6s linear infinite;
 }
@@ -244,8 +245,18 @@ body {
 
 .card { background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); border-radius:16px; backdrop-filter:blur(10px); transition:border-color .2s,box-shadow .2s,transform .2s; position:relative; z-index:1; }
 .card:hover { border-color:rgba(16,185,129,.3); box-shadow:0 0 0 1px rgba(16,185,129,.08),0 8px 32px rgba(0,0,0,.5); transform:translateY(-2px); }
-.card-glass { background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); border-radius:16px; backdrop-filter:blur(12px); position:relative; z-index:1; }
-.card-glass:hover { border-color:rgba(16,185,129,.2); }
+.card-glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)), #15161A;
+  border:1px solid rgba(255,255,255,.09); border-radius:14px; position:relative; z-index:1; overflow:hidden;
+}
+.card-glass::after {
+  content:''; position:absolute; left:-6px; bottom:-6px; width:22px; height:22px;
+  background:#10b981;
+  clip-path: polygon(0% 40%, 20% 35%, 32% 48%, 46% 30%, 60% 46%, 74% 32%, 100% 45%, 100% 100%, 0% 100%);
+  opacity:0.8; pointer-events:none;
+}
+.card-glass.no-mark::after { display:none; }
+.card-glass:hover { border-color:rgba(16,185,129,.35); }
 
 /* INPUT */
 .input-dark { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:12px; padding:11px 14px; color:#fff; font-size:.875rem; outline:none; transition:border-color .25s,box-shadow .25s; width:100%; }

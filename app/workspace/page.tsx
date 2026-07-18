@@ -62,12 +62,12 @@ const colorMap: any = {
 
 // ===== MOTIVASI QUOTES =====
 const MOTIVASI_QUOTES = [
-  { text: "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.", icon: "" },
-  { text: "Pasar modal adalah tempat paling adil — siapa yang paling siap, dia yang paling untung.", icon: "" },
-  { text: "Cari mentor yang bisa membantu dirimu memahami bidang ini. Pengalaman mereka bisa memangkas kurva belajarmu bertahun-tahun.", icon: "" },
-  { text: "Bukan soal seberapa besar modal yang kamu punya — tapi seberapa besar pengetahuan yang kamu miliki.", icon: "" },
-  { text: "Konsistensi dalam belajar lebih berharga dari satu keberuntungan besar yang tidak bisa diulang.", icon: "" },
-  { text: "Investor sukses bukan mereka yang tidak pernah rugi, tapi mereka yang belajar dari setiap kesalahan.", icon: "" },
+  { text: "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.", icon: "01" },
+  { text: "Pasar modal adalah tempat paling adil — siapa yang paling siap, dia yang paling untung.", icon: "02" },
+  { text: "Cari mentor yang bisa membantu dirimu memahami bidang ini. Pengalaman mereka bisa memangkas kurva belajarmu bertahun-tahun.", icon: "03" },
+  { text: "Bukan soal seberapa besar modal yang kamu punya — tapi seberapa besar pengetahuan yang kamu miliki.", icon: "04" },
+  { text: "Konsistensi dalam belajar lebih berharga dari satu keberuntungan besar yang tidak bisa diulang.", icon: "05" },
+  { text: "Investor sukses bukan mereka yang tidak pernah rugi, tapi mereka yang belajar dari setiap kesalahan.", icon: "06" },
 ];
 
 function MotivQuotes() {
@@ -78,7 +78,7 @@ function MotivQuotes() {
       if (syncData.motivasi && syncData.motivasi.length > 0) {
         setMotivList(syncData.motivasi.map((m: any, i: number) => ({
           text: m.text,
-          icon: ["","","","","","","",""][i % 8]
+          icon: String((i % 6) + 1).padStart(2, "0")
         })));
       }
     } catch {}
@@ -87,7 +87,7 @@ function MotivQuotes() {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {motivList.map((q, i) => (
         <div key={i} className="card-glass rounded-xl p-5 border border-white/8 hover:border-yellow-500/20 transition-all">
-          <div className="text-2xl mb-3">{q.icon}</div>
+          <div className="index-badge mb-3">{q.icon}</div>
           <p className="text-slate-300 text-sm leading-relaxed italic">"{q.text}"</p>
         </div>
       ))}
@@ -214,11 +214,9 @@ export default function PaketPage() {
 
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-4 py-2 mb-6 text-sm text-emerald-300">
-              Semua Paket VIP
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
-              Pilih Paket <span className="gradient-text">Terbaik</span> Anda
+            <div className="tag-chip mb-6">Semua Paket VIP</div>
+            <h1 className="headline text-4xl sm:text-5xl mb-3">
+              Pilih Paket <span className="accent">Terbaik</span> Anda
             </h1>
             <p className="text-slate-400 max-w-xl mx-auto text-sm">6 pilihan paket dari Rp 100.000 hingga Rp 1.000.000 — sesuai kebutuhan dan level investasi Anda</p>
           </div>

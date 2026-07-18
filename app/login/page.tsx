@@ -45,22 +45,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-white text-xs mb-8 transition-colors">
-           Kembali ke Beranda
+        <Link href="/" className="flex items-center gap-2 text-neutral-500 hover:text-neutral-200 text-xs font-bold uppercase tracking-wider mb-8 transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Kembali ke Beranda
         </Link>
 
-        <div className="card-glass rounded-2xl p-8 border border-white/10">
+        <div className="glass-card mark-lg p-8">
           <div className="text-center mb-8">
-            <img src="/logo.png" alt="RITEL" className="w-14 h-14 mx-auto rounded-2xl object-cover mb-4" onError={(e:any)=>{e.target.style.display='none'}} />
-            <h1 className="text-xl font-black text-white">Login VIP</h1>
-            <p className="text-slate-500 text-xs mt-1">Masukkan token VIP kamu untuk akses eksklusif</p>
+            <div className="index-badge w-14 h-14 mx-auto mb-4 bg-neutral-900 border border-emerald-500/30 text-emerald-400">
+              VIP
+            </div>
+            <h1 className="headline text-2xl tracking-wider mb-2">LOGIN <span className="accent">VIP</span></h1>
+            <p className="text-neutral-500 text-[11px] uppercase tracking-wider font-semibold">Masukkan token VIP untuk akses eksklusif</p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="text-xs text-slate-400 mb-1.5 block">Token VIP</label>
+              <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Token VIP</label>
               <input
                 value={token}
                 onChange={e => setToken(e.target.value)}
@@ -68,52 +74,47 @@ export default function LoginPage() {
                 placeholder="RC-GOLD-XXXXXXXX"
                 autoComplete="off"
                 spellCheck={false}
-                className="input-dark font-mono tracking-widest w-full"
+                className="w-full bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
 
             {err && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-red-400 text-xs">
-                 {err}
+              <div className="bg-red-500/10 border border-red-500/20 rounded-none px-4 py-3 text-red-400 text-xs font-bold uppercase tracking-wider">
+                {err}
               </div>
             )}
 
             <button
               onClick={doLogin}
               disabled={loading}
-              className="btn-primary w-full py-3 rounded-xl font-bold text-sm disabled:opacity-50"
+              className="btn-primary w-full py-3.5 rounded-none font-black text-xs tracking-wider uppercase disabled:opacity-50"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-                  </svg>
-                  Memverifikasi...
-                </span>
-              ) : " Masuk VIP"}
+              {loading ? "MEMVERIFIKASI..." : "MASUK VIP"}
             </button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-white/5 text-center">
-            <p className="text-xs text-slate-600 mb-3">Belum punya token?</p>
-            <a
-              href="https://wa.me/6282218723401?text=Halo%20min%20mau%20daftar%20VIP!"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-green text-xs px-5 py-2.5 rounded-lg inline-block"
-            >
-               WA Admin untuk Bergabung
-            </a>
-            <div className="mt-2">
-              <Link href="/paket" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-500/20 hover:border-blue-400/40 px-5 py-2.5 rounded-lg inline-block transition-all">
-                Lihat Semua Paket VIP 
+          <div className="mt-6 pt-6 border-t border-neutral-800/80 text-center">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-3">Belum punya token?</p>
+            <div className="space-y-2">
+              <a
+                href="https://wa.me/6282218723401?text=Halo%20min%20mau%20daftar%20VIP!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full block py-3 border border-emerald-500/30 bg-emerald-950/20 text-emerald-400 hover:bg-emerald-950/40 text-xs font-black uppercase tracking-wider transition-all"
+              >
+                Hubungi Admin WA
+              </a>
+              <Link
+                href="/paket"
+                className="w-full block py-3 border border-neutral-800 bg-neutral-900/40 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 text-xs font-black uppercase tracking-wider transition-all"
+              >
+                Lihat Paket VIP
               </Link>
             </div>
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-700 mt-6">
+        <p className="text-center text-[10px] uppercase font-semibold tracking-wider text-neutral-600 mt-6">
           Token VIP diberikan setelah pembayaran dikonfirmasi admin.
         </p>
       </div>

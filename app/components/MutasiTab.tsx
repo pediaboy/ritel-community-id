@@ -102,14 +102,14 @@ function MutasiTab() {
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="card-glass rounded-xl p-6 border border-green-500/30">
+        <div className="glass-card rounded-xl p-6 border border-emerald-500/20">
           <p className="text-sm text-slate-400 mb-1">Total Pemasukan</p>
-          <p className="text-3xl font-black text-green-400">
+          <p className="text-3xl font-black text-emerald-400">
             Rp {data.totalIncome.toLocaleString("id-ID")}
           </p>
           <p className="text-xs text-slate-500 mt-2">Bulan ini (reset otomatis)</p>
         </div>
-        <div className="card-glass rounded-xl p-6 border border-red-500/30">
+        <div className="glass-card rounded-xl p-6 border border-red-500/20">
           <p className="text-sm text-slate-400 mb-1">Total Pengeluaran</p>
           <p className="text-3xl font-black text-red-400">
             Rp {data.totalExpense.toLocaleString("id-ID")}
@@ -119,7 +119,7 @@ function MutasiTab() {
       </div>
 
       {/* Net Income */}
-      <div className="card-glass rounded-xl p-6 border border-emerald-500/30">
+      <div className="glass-card rounded-xl p-6 border border-emerald-500/20">
         <p className="text-sm text-slate-400 mb-1">Net (Pemasukan - Pengeluaran)</p>
         <p className={`text-3xl font-black ${data.totalIncome - data.totalExpense >= 0 ? "text-emerald-400" : "text-red-400"}`}>
           Rp {(data.totalIncome - data.totalExpense).toLocaleString("id-ID")}
@@ -129,13 +129,13 @@ function MutasiTab() {
       {/* Add Mutasi */}
       <button
         onClick={() => setShowAdd(!showAdd)}
-        className="w-full py-3 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold text-sm hover:bg-blue-500/20 transition-all"
+        className="w-full py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm hover:bg-emerald-500/20 transition-all"
       >
         + Tambah Mutasi
       </button>
 
       {showAdd && (
-        <div className="card-glass rounded-xl p-6 border border-blue-500/30 space-y-4">
+        <div className="glass-card no-mark rounded-xl p-6 border border-emerald-500/20 space-y-4">
           <div>
             <label className="text-sm text-slate-400 block mb-2">Tanggal</label>
             <input
@@ -181,13 +181,13 @@ function MutasiTab() {
           <div className="flex gap-2">
             <button
               onClick={() => setShowAdd(false)}
-              className="flex-1 py-2 rounded-lg bg-slate-700 text-slate-300 font-bold text-sm hover:bg-slate-600 transition-all"
+              className="flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold text-sm hover:bg-slate-700 transition-all"
             >
               Batal
             </button>
             <button
               onClick={handleAddMutasi}
-              className="flex-1 py-2 rounded-lg bg-blue-500 text-white font-bold text-sm hover:opacity-90 transition-all"
+              className="flex-1 py-2 rounded-lg bg-emerald-500 text-[#06110c] font-extrabold text-sm hover:bg-emerald-400 transition-all"
             >
               Tambah
             </button>
@@ -196,8 +196,8 @@ function MutasiTab() {
       )}
 
       {/* Mutasi List */}
-      <div className="card-glass rounded-xl border border-slate-700 overflow-hidden">
-        <div className="p-6 border-b border-slate-700">
+      <div className="glass-card no-mark rounded-xl border border-white/10 overflow-hidden">
+        <div className="p-6 border-b border-white/10">
           <h3 className="text-lg font-bold text-white">Riwayat Mutasi</h3>
           <p className="text-xs text-slate-400 mt-1">Klik untuk edit atau hapus</p>
         </div>
@@ -208,7 +208,7 @@ function MutasiTab() {
         ) : (
           <div className="space-y-2 p-6">
             {data.mutations.map((m) => (
-              <div key={m.id} className="flex items-center justify-between p-4 rounded-lg bg-slate-800/50 hover:bg-slate-800/80 transition-all">
+              <div key={m.id} className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-transparent hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all">
                 {editingId === m.id ? (
                   <div className="w-full space-y-2">
                     <input
@@ -242,13 +242,13 @@ function MutasiTab() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => setEditingId(null)}
-                        className="flex-1 py-2 rounded text-xs bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all"
+                        className="flex-1 py-2 rounded text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all"
                       >
                         Batal
                       </button>
                       <button
                         onClick={handleSaveEdit}
-                        className="flex-1 py-2 rounded text-xs bg-green-600 text-white hover:bg-green-500 transition-all"
+                        className="flex-1 py-2 rounded text-xs bg-emerald-500 text-[#06110c] hover:bg-emerald-400 transition-all font-bold"
                       >
                         Simpan
                       </button>
@@ -261,20 +261,20 @@ function MutasiTab() {
                       <p className="text-xs text-slate-400">{m.date}</p>
                     </div>
                     <div className="text-right mr-4">
-                      <p className={`text-sm font-bold ${m.type === "income" ? "text-green-400" : "text-red-400"}`}>
+                      <p className={`text-sm font-bold ${m.type === "income" ? "text-emerald-400" : "text-red-400"}`}>
                         {m.type === "income" ? "+" : "-"} Rp {m.amount.toLocaleString("id-ID")}
                       </p>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(m)}
-                        className="px-3 py-1 rounded text-xs bg-yellow-600 text-white hover:bg-yellow-500 transition-all"
+                        className="px-3 py-1 rounded text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 font-bold transition-all"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(m.id)}
-                        className="px-3 py-1 rounded text-xs bg-red-600 text-white hover:bg-red-500 transition-all"
+                        className="px-3 py-1 rounded text-xs bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 font-bold transition-all"
                       >
                         Hapus
                       </button>

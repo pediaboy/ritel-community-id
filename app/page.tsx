@@ -284,10 +284,10 @@ export default function HomePage() {
         {/* HEADER */}
         <header style={{ position:"sticky",top:0,zIndex:50,background:"rgba(3,5,8,0.82)",backdropFilter:"blur(28px) saturate(200%)",WebkitBackdropFilter:"blur(28px) saturate(200%)",borderBottom:"1px solid rgba(255,255,255,0.05)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-            <div className="glow-pulse-emerald" style={{ width:34,height:34,borderRadius:10,background:"linear-gradient(135deg,#0a1628,#1e5af0)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
+            <div style={{ width:34,height:34,borderRadius:10,background:"#10b981",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <polyline points="18,5 22,5 22,9" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#06110c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <polyline points="18,5 22,5 22,9" stroke="#06110c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <div>
@@ -295,7 +295,7 @@ export default function HomePage() {
               <div style={{ fontSize:9,color:"rgba(255,255,255,0.28)",letterSpacing:"0.6px" }}>MARKET INTELLIGENCE PLATFORM</div>
             </div>
           </div>
-          <Link href="/login" style={{ background:"linear-gradient(135deg,#1e5af0,#0ea5e9)",color:"#fff",fontWeight:800,fontSize:11,padding:"7px 18px",borderRadius:100,textDecoration:"none",boxShadow:"0 0 18px rgba(14,165,233,0.3)" }}>Login VIP</Link>
+          <Link href="/login" style={{ background:"#10b981",color:"#06110c",fontWeight:800,fontSize:11,padding:"7px 18px",borderRadius:10,textDecoration:"none" }}>Login VIP</Link>
         </header>
 
         <MotivasiTicker />
@@ -308,8 +308,8 @@ export default function HomePage() {
             <div style={{ position:"absolute",left:"50%",top:55,transform:"translateX(-50%)",width:230,height:80,borderRadius:"50%",border:"1px solid rgba(16,185,129,0.07)",pointerEvents:"none",animation:"orbitSpin 16s linear infinite" }} />
             <div style={{ position:"absolute",left:"50%",top:42,transform:"translateX(-50%)",width:300,height:105,borderRadius:"50%",border:"1px solid rgba(139,92,246,0.05)",pointerEvents:"none",animation:"orbitSpinRev 22s linear infinite" }} />
 
-            <div className="float-1 fade-in-up" style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(16,185,129,0.07)",border:"1px solid rgba(16,185,129,0.18)",borderRadius:100,padding:"5px 16px",marginBottom:20,fontSize:11,color:"#10b981",fontWeight:700,backdropFilter:"blur(8px)" }}>
-              <span style={{ width:6,height:6,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 8px #10b981",display:"inline-block" }}/>
+            <div className="tag-chip float-1 fade-in-up" style={{ marginBottom:20 }}>
+              <span style={{ width:6,height:6,borderRadius:"50%",background:"#10b981",display:"inline-block" }}/>
               Platform Sinyal Saham Indonesia
             </div>
 
@@ -322,7 +322,7 @@ export default function HomePage() {
               Sinyal trading premium, analisis mendalam, dan komunitas investor aktif Indonesia.
             </p>
             <div className="fade-in-up-3" style={{ display:"flex",gap:10,justifyContent:"center",maxWidth:320,margin:"0 auto" }}>
-              <Link href="/paket" style={{ flex:1,display:"block",textAlign:"center",background:"linear-gradient(135deg,#1e5af0,#0ea5e9)",color:"#fff",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:14,textDecoration:"none",boxShadow:"0 0 28px rgba(14,165,233,0.28)" }}>Mulai Sekarang</Link>
+              <Link href="/paket" style={{ flex:1,display:"block",textAlign:"center",background:"#10b981",color:"#06110c",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:10,textDecoration:"none" }}>Mulai Sekarang</Link>
               <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" style={{ flex:1,display:"block",textAlign:"center",background:"rgba(34,197,94,0.09)",border:"1px solid rgba(34,197,94,0.22)",color:"#22c55e",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:14,textDecoration:"none" }}>WA Admin</a>
             </div>
           </section>
@@ -330,9 +330,9 @@ export default function HomePage() {
           {/* ── STATS ── */}
           <section style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,padding:"0 16px",marginBottom:18 }}>
             {[
-              {v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#22c55e",glow:"rgba(34,197,94,0.1)",  Icon:Icon.Signal,   delay:"0s"},
-              {v:"1.000+",l:"Member Aktif",           c:"#60a5fa",glow:"rgba(96,165,250,0.08)",Icon:Icon.Users,    delay:"0.1s"},
-              {v:"95%",   l:"Win Rate",               c:"#f59e0b",glow:"rgba(245,158,11,0.1)", Icon:Icon.TrendUp,  delay:"0.2s"},
+              {v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#10b981",glow:"rgba(16,185,129,0.1)",  Icon:Icon.Signal,   delay:"0s"},
+              {v:"1.000+",l:"Member Aktif",           c:"#10b981",glow:"rgba(16,185,129,0.1)",Icon:Icon.Users,    delay:"0.1s"},
+              {v:"95%",   l:"Win Rate",               c:"#10b981",glow:"rgba(16,185,129,0.1)", Icon:Icon.TrendUp,  delay:"0.2s"},
             ].map((s,i)=>(
               <div key={i} className="glass-card float-2" style={{ background:`linear-gradient(145deg,${s.glow},rgba(0,0,0,0))`,padding:"14px 8px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:86,animationDelay:s.delay }}>
                 <span style={{ color:s.c, marginBottom:4, display:"block" }}><s.Icon/></span>

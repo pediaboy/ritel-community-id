@@ -10,14 +10,14 @@ function formatDate(iso: string) {
 }
 
 const STATUS_COLORS: any = {
-  pending:   "bg-yellow-400/20 text-yellow-400 border-yellow-400/30",
-  paid:      "bg-green-400/20 text-green-400 border-green-400/30",
-  cancelled: "bg-red-400/20 text-red-400 border-red-400/30",
+  pending:   "bg-yellow-400/10 text-yellow-400 border-yellow-400/20",
+  paid:      "bg-emerald-400/10 text-emerald-400 border-emerald-500/20",
+  cancelled: "bg-red-400/10 text-red-400 border-red-500/20",
 };
 
 const PKG_COLORS: any = {
-  Basic:"text-blue-400", Silver:"text-emerald-400", Gold:"text-yellow-400",
-  Pro:"text-purple-400", Platinum:"text-slate-300", Elite:"text-yellow-300",
+  Basic:"text-emerald-400", Silver:"text-emerald-400", Gold:"text-emerald-400",
+  Pro:"text-emerald-400", Platinum:"text-slate-300", Elite:"text-emerald-400",
 };
 
 const METODE_LIST = ["DANA","OVO","GoPay","ShopeePay","SeaBank","BCA","Mandiri","BNI","BRI","Transfer Manual"];
@@ -102,19 +102,19 @@ export default function OrdersTab() {
     <div className="space-y-5">
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="card-glass rounded-xl p-4 border border-green-500/30 text-center">
+        <div className="glass-card rounded-xl p-4 border border-emerald-500/20 text-center">
           <p className="text-xs text-slate-400 mb-1">Total Terkonfirmasi</p>
-          <p className="text-lg font-black text-green-400">{formatRp(totalPaid)}</p>
+          <p className="text-lg font-black text-emerald-400">{formatRp(totalPaid)}</p>
         </div>
-        <div className="card-glass rounded-xl p-4 border border-yellow-500/30 text-center">
+        <div className="glass-card rounded-xl p-4 border border-yellow-500/20 text-center">
           <p className="text-xs text-slate-400 mb-1">Pending</p>
           <p className="text-lg font-black text-yellow-400">{pendingCount} order</p>
         </div>
-        <div className="card-glass rounded-xl p-4 border border-emerald-500/30 text-center">
+        <div className="glass-card rounded-xl p-4 border border-emerald-500/20 text-center">
           <p className="text-xs text-slate-400 mb-1">Dari Analisis.io</p>
           <p className="text-lg font-black text-emerald-400">{analisisCount}</p>
         </div>
-        <div className="card-glass rounded-xl p-4 border border-slate-700 text-center">
+        <div className="glass-card rounded-xl p-4 border border-white/10 text-center">
           <p className="text-xs text-slate-400 mb-1">Total Order</p>
           <p className="text-lg font-black text-white">{orders.length}</p>
         </div>
@@ -124,11 +124,11 @@ export default function OrdersTab() {
       <div className="flex gap-2 flex-wrap">
         {[
           { id:"all", label:"Semua Sumber" },
-          { id:"analisis", label:" Analisis.io" },
-          { id:"ritel", label:" Ritel Community" },
+          { id:"analisis", label:"Analisis.io" },
+          { id:"ritel", label:"Ritel Community" },
         ].map(f => (
           <button key={f.id} onClick={() => setSourceFilter(f.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${sourceFilter===f.id ? "bg-purple-500/20 border-purple-500/50 text-purple-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${sourceFilter===f.id ? "bg-emerald-500 text-[#06110c] border-transparent" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
             {f.label}
           </button>
         ))}
@@ -136,13 +136,13 @@ export default function OrdersTab() {
         {/* Status filter */}
         {["all","pending","paid","cancelled"].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-emerald-500 text-[#06110c] border-transparent" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
             {f==="all"?"Semua":f==="pending"?"Pending":f==="paid"?"Lunas":"Batal"}
             {f!=="all"&&` (${orders.filter(o=>o.status===f).length})`}
           </button>
         ))}
-        <button onClick={fetchOrders} className="px-3 py-1.5 rounded-lg text-xs font-bold border bg-white/5 border-white/10 text-slate-400 hover:border-white/20">
-           Refresh
+        <button onClick={fetchOrders} className="px-3 py-1.5 rounded-lg text-xs font-bold border bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-emerald-400 transition-colors">
+          Refresh
         </button>
       </div>
 
@@ -150,23 +150,23 @@ export default function OrdersTab() {
       {loading ? (
         <div className="text-center text-slate-400 py-8">Memuat...</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center text-slate-500 py-8 card-glass rounded-xl border border-white/10">
+        <div className="text-center text-slate-500 py-8 glass-card no-mark rounded-xl border border-white/10">
           Tidak ada order
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map(o => (
-            <div key={o.id} className={`card-glass rounded-xl border overflow-hidden ${o.source==="analisis" ? "border-emerald-500/20" : "border-white/10"}`}>
+            <div key={o.id} className={`glass-card no-mark rounded-xl border overflow-hidden ${o.source==="analisis" ? "border-emerald-500/20" : "border-white/10"}`}>
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-white/5 flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono text-xs text-slate-400">{o.id}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_COLORS[o.status]||STATUS_COLORS.pending}`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-black border ${STATUS_COLORS[o.status]||STATUS_COLORS.pending}`}>
                     {o.status==="paid"?"LUNAS":o.status==="cancelled"?"BATAL":"PENDING"}
                   </span>
                   {o.source === "analisis" && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                       analisis.io
+                    <span className="px-2 py-0.5 rounded text-xs font-black border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                      analisis.io
                     </span>
                   )}
                 </div>
@@ -182,7 +182,7 @@ export default function OrdersTab() {
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">No. WA</p>
                   <a href={`https://wa.me/${(o.hp||"").replace(/^0/,"62").replace(/\D/g,"")}`} target="_blank"
-                    className="text-green-400 hover:underline font-semibold">{o.hp}</a>
+                    className="text-emerald-400 hover:text-emerald-300 hover:underline font-semibold">{o.hp}</a>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">Paket</p>
@@ -212,11 +212,11 @@ export default function OrdersTab() {
                 {o.token_generated && (
                   <div className="col-span-2">
                     <p className="text-xs text-slate-500 mb-1">Token VIP (Auto-Generated)</p>
-                    <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">
-                      <span className="font-mono text-sm font-black text-green-400 flex-1">{o.token_generated}</span>
+                    <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2">
+                      <span className="font-mono text-sm font-black text-emerald-400 flex-1">{o.token_generated}</span>
                       <button onClick={() => copyToClipboard(o.token_generated)}
-                        className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-all">
-                        {copiedToken === o.token_generated ? " Copied" : "Copy"}
+                        className="text-xs px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-bold transition-all">
+                        {copiedToken === o.token_generated ? "Copied" : "Copy"}
                       </button>
                     </div>
                     {o.paid_at && <p className="text-xs text-slate-600 mt-1">Aktif sejak {formatDate(o.paid_at)}</p>}
@@ -232,7 +232,7 @@ export default function OrdersTab() {
                       <label className="text-xs text-slate-400 block mb-1">Status</label>
                       <select value={editStatus} onChange={e => setEditStatus(e.target.value)} className="input-dark w-full text-sm">
                         <option value="pending">Pending</option>
-                        <option value="paid">Lunas </option>
+                        <option value="paid">Lunas</option>
                         <option value="cancelled">Batal</option>
                       </select>
                     </div>
@@ -250,25 +250,25 @@ export default function OrdersTab() {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => setEditId(null)}
-                      className="flex-1 py-2 rounded-lg text-xs bg-slate-700 text-slate-300 hover:bg-slate-600">Batal</button>
+                      className="flex-1 py-2 rounded-lg text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Batal</button>
                     <button onClick={saveEdit}
-                      className="flex-1 py-2 rounded-lg text-xs bg-green-600 text-white hover:bg-green-500 font-bold">Simpan</button>
+                      className="flex-1 py-2 rounded-lg text-xs bg-emerald-500 text-[#06110c] hover:bg-emerald-400 font-extrabold">Simpan</button>
                   </div>
                 </div>
               ) : (
                 <div className="px-4 pb-4 flex gap-2 flex-wrap">
                   {o.status === "pending" && (
                     <button onClick={() => updateStatus(o.id, "paid")}
-                      className="flex-1 py-2 rounded-lg text-xs bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 font-bold min-w-[120px]">
-                       Konfirmasi Lunas + Generate Token
+                      className="flex-1 py-2 rounded-lg text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 font-extrabold min-w-[120px] transition-all">
+                      Konfirmasi Lunas + Generate Token
                     </button>
                   )}
                   <button onClick={() => startEdit(o)}
-                    className="py-2 px-3 rounded-lg text-xs bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20">
+                    className="py-2 px-3 rounded-lg text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 font-bold transition-all">
                     Edit
                   </button>
                   <button onClick={() => deleteOrder(o.id)}
-                    className="py-2 px-3 rounded-lg text-xs bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20">
+                    className="py-2 px-3 rounded-lg text-xs bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 font-bold transition-all">
                     Hapus
                   </button>
                 </div>
