@@ -55,9 +55,9 @@ export default function LoginPage() {
           Kembali ke Beranda
         </Link>
 
-        <div className="glass-card mark-lg p-8">
+        <div className="glass-card p-8">
           <div className="text-center mb-8">
-            <div className="index-badge w-14 h-14 mx-auto mb-4 bg-neutral-900 border border-emerald-500/30 text-emerald-400">
+            <div className="index-badge w-14 h-14 mx-auto mb-4 bg-neutral-900 border border-blue-600/40 text-blue-400">
               VIP
             </div>
             <h1 className="headline text-2xl tracking-wider mb-2">LOGIN <span className="accent">VIP</span></h1>
@@ -75,7 +75,7 @@ export default function LoginPage() {
                   placeholder="RC-GOLD-XXXXXXXX"
                   autoComplete="off"
                   spellCheck={false}
-                  className="flex-1 min-w-0 bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
+                  className="flex-1 min-w-0 bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-blue-500 transition-colors"
                 />
                 <button
                   type="button"
@@ -87,7 +87,7 @@ export default function LoginPage() {
                       setErr("Gagal akses clipboard. Paste manual (long-press) di kolom token.");
                     }
                   }}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold uppercase tracking-wider hover:bg-emerald-500/20 transition-colors"
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3.5 bg-blue-600/10 border border-blue-600/40 text-blue-400 text-[11px] font-bold uppercase tracking-wider hover:bg-blue-600/20 transition-colors"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4"/></svg>
                   Tempel
@@ -118,7 +118,7 @@ export default function LoginPage() {
                 href="https://wa.me/6282218723401?text=Halo%20min%20mau%20daftar%20VIP!"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full block py-3 border border-emerald-500/30 bg-emerald-950/20 text-emerald-400 hover:bg-emerald-950/40 text-xs font-black uppercase tracking-wider transition-all"
+                className="w-full block py-3 border border-blue-600/40 bg-blue-950/20 text-blue-400 hover:bg-blue-950/40 text-xs font-black uppercase tracking-wider transition-all"
               >
                 Hubungi Admin WA
               </a>
