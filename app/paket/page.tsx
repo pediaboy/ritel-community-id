@@ -106,12 +106,12 @@ function PaketCard({ pkg }: { pkg: any }) {
       <div className={`relative card-glass rounded-2xl p-6 border-2 ${c.border} hover:shadow-xl ${c.glow} transition-all duration-300 ${pkg.popular ? "ring-2 ring-yellow-500/50" : ""} ${pkg.isElite ? "ring-2 ring-yellow-400/70" : ""} h-full flex flex-col`}>
         {pkg.popular && !pkg.isElite && (
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-yellow-500 text-[#04060f] text-xs font-black px-4 py-1 rounded-full">TERLARIS</span>
+            <span className="bg-yellow-500 text-[#030712] text-xs font-black px-4 py-1 rounded-full">TERLARIS</span>
           </div>
         )}
         {pkg.isElite && (
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="bg-yellow-400 text-[#04060f] text-xs font-black px-4 py-1 rounded-full">ELITE</span>
+            <span className="bg-yellow-400 text-[#030712] text-xs font-black px-4 py-1 rounded-full">ELITE</span>
           </div>
         )}
         {pkg.hasAI && (
@@ -215,7 +215,7 @@ export default function PaketPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#04060f] pt-6 pb-20 px-4">
+    <div className="min-h-screen bg-[#030712] pt-6 pb-20 px-4">
       <div className="galaxy-stars"/>
       <div className="relative z-10">
         <div className="max-w-7xl mx-auto mb-8">

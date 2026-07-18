@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import MoreMenu from "../components/MoreMenu";
 
 // ── JAKARTA REALTIME CLOCK ──────────────────────────────────────
 function JakartaClock() {
@@ -126,7 +127,7 @@ function FeedTabVIP() {
 
   if (loading) return (
     <div style={{ textAlign:"center",padding:"60px 0" }}>
-      <div style={{ width:28,height:28,border:"3px solid rgba(16,185,129,0.2)",borderTopColor:"#10b981",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto" }}/>
+      <div style={{ width:28,height:28,border:"3px solid rgba(37,99,235,0.2)",borderTopColor:"#2563EB",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto" }}/>
     </div>
   );
 
@@ -146,7 +147,7 @@ function FeedTabVIP() {
       <div style={{ display:"flex",flexDirection:"column" }}>
         {posts.map((p,i) => {
           const isRC = p.author !== "elthoriqqqq_";
-          const avatarBg = isRC ? "linear-gradient(135deg,#10b981,#6ee7b7)" : "linear-gradient(135deg,#7c3aed,#a855f7)";
+          const avatarBg = isRC ? "linear-gradient(135deg,#2563EB,#6ee7b7)" : "linear-gradient(135deg,#7c3aed,#a855f7)";
           const avatarInitials = isRC ? "RC" : "EL";
           const tagColor = tagColors[p.tag||"info"] || "#3b82f6";
           return (
@@ -208,7 +209,7 @@ function AdminFeedVIP() {
       {posts.map(p => (
         <div key={p.id} style={{ background: p.pinned ? "rgba(30,90,240,0.08)" : "rgba(255,255,255,0.03)", border: p.pinned ? "1px solid rgba(30,90,240,0.25)" : "1px solid rgba(255,255,255,0.06)", borderRadius:14, padding:"14px 16px", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-            <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#6ee7b7)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#fff", flexShrink:0 }}>RC</div>
+            <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#6ee7b7)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#fff", flexShrink:0 }}>RC</div>
             <div style={{ flex:1 }}>
               <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ color:"#fff", fontWeight:700, fontSize:12 }}>Admin RITEL COMMUNITY.ID</span>
@@ -323,7 +324,7 @@ const ACTION_COLORS: any = {
   BUY:{ bg:"#22c55e22", text:"#22c55e", border:"rgba(34,197,94,0.3)" },
   SELL:{ bg:"#ef444422", text:"#ef4444", border:"rgba(239,68,68,0.3)" },
   HOLD:{ bg:"#f59e0b22", text:"#f59e0b", border:"rgba(245,158,11,0.3)" },
-  ANTRI:{ bg:"#10b98122", text:"#10b981", border:"rgba(16,185,129,0.3)" },
+  ANTRI:{ bg:"#2563EB22", text:"#2563EB", border:"rgba(37,99,235,0.3)" },
   WATCH:{ bg:"#8b5cf622", text:"#8b5cf6", border:"rgba(139,92,246,0.3)" },
 };
 
@@ -1564,7 +1565,7 @@ const TAG_COLORS: any = {
 // ── PAKET DATA ───────────────────────────────────────────────────
 const PAKET_VIP = [
   { id:"basic", name:"VIP STARTER", price:"Rp 100.000", color:"#3b82f6", badge:"", features:["Analisa Teknikal Lengkap","Fundamental Emiten","Stock Screening Harian","Sinyal Saham Harian"] },
-  { id:"silver", name:"VIP SILVER", price:"Rp 250.000", color:"#10b981", badge:"", features:["Semua fitur Starter","Bandarmologi Dasar","Screening Bagger","Risk Management"] },
+  { id:"silver", name:"VIP SILVER", price:"Rp 250.000", color:"#2563EB", badge:"", features:["Semua fitur Starter","Bandarmologi Dasar","Screening Bagger","Risk Management"] },
   { id:"gold", name:"VIP GOLD", price:"Rp 500.000", color:"#f59e0b", badge:"", popular:true, features:["Semua fitur Silver","Sinyal Premium Entry/TP/SL","Tape Reading Intraday","Bagger Watchlist"] },
   { id:"pro", name:"VIP PRO", price:"Rp 750.000", color:"#8b5cf6", badge:"", features:["Semua fitur Gold","AI Agent 24/7","Konsultasi Portofolio","Priority Support"] },
   { id:"platinum", name:"VIP PLATINUM", price:"Rp 900.000", color:"#e2e8f0", badge:"", features:["Semua fitur Pro","Live Session 1on1","Sinyal Real-time 24/7","Akses Semua Modul"] },
@@ -1584,7 +1585,7 @@ function GreetingBanner({ greetingPagi, greetingMalam }: { greetingPagi:string; 
   }, [greetingPagi, greetingMalam]);
   if (!show) return null;
   return (
-    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(16,185,129,0.08))", border:"1px solid rgba(16,185,129,0.2)", borderRadius:14, padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
+    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(37,99,235,0.08))", border:"1px solid rgba(37,99,235,0.2)", borderRadius:14, padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
       <span style={{ fontSize:22 }}>{text.includes("pagi")?"":""}</span>
       <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, flex:1 }}>{text}</p>
       <span style={{ color:"rgba(255,255,255,0.3)", fontSize:18 }}>×</span>
@@ -1739,9 +1740,9 @@ export default function VipPage() {
 
   // Maintenance check — show maintenance screen
   if (maintenanceMode) return (
-    <div style={{ minHeight:"100vh", background:"#04060f", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 24px", textAlign:"center" }}>
+    <div style={{ minHeight:"100vh", background:"#030712", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 24px", textAlign:"center" }}>
       {/* Stars background */}
-      <div style={{ position:"fixed", inset:0, background:"radial-gradient(ellipse at 50% 20%, rgba(16,185,129,0.04) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(30,90,240,0.04) 0%, transparent 50%)", pointerEvents:"none" }}/>
+      <div style={{ position:"fixed", inset:0, background:"radial-gradient(ellipse at 50% 20%, rgba(37,99,235,0.04) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(30,90,240,0.04) 0%, transparent 50%)", pointerEvents:"none" }}/>
       <div style={{ position:"relative", zIndex:1 }}>
         <div style={{ fontSize:72, marginBottom:24 }}></div>
         <h1 style={{ fontWeight:900, fontSize:24, color:"#fff", marginBottom:12, letterSpacing:"-0.5px" }}>Sedang Maintenance</h1>
@@ -1756,7 +1757,7 @@ export default function VipPage() {
   );
 
   if (!user) return (
-    <div className="min-h-screen bg-[#04060f] flex items-center justify-center">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center">
       <div className="galaxy-stars"/>
       <div className="relative z-10 text-center">
         <img src="/logo.png" alt="RC" style={{ width:48, height:48, borderRadius:14, objectFit:"cover", display:"block", margin:"0 auto 16px" }} />
@@ -1767,7 +1768,7 @@ export default function VipPage() {
 
   // ── RENDER ──────────────────────────────────────────────────────
   return (
-    <div style={{ fontFamily:"'Inter',sans-serif", background:"#0A0B0D", color:"#fff", minHeight:"100vh", display:"flex", flexDirection:"column", position:"relative" }}>
+    <div style={{ fontFamily:"'Inter',sans-serif", background:"#030712", color:"#fff", minHeight:"100vh", display:"flex", flexDirection:"column", position:"relative" }}>
       <div className="galaxy-stars"/>
 
       {/* STICKY HEADER — premium glass */}
@@ -1776,25 +1777,41 @@ export default function VipPage() {
         <MotivasiTickerVIP />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
-            <div style={{ width:34, height:34, borderRadius:10, background:"#10b981", boxShadow:"0 0 16px rgba(16,185,129,0.25)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
+            <div style={{ width:34, height:34, borderRadius:10, background:"#2563EB", boxShadow:"0 0 16px rgba(37,99,235,0.25)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="18,5 22,5 22,9" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
-              <div style={{ color:"#fff", fontWeight:900, fontSize:13, letterSpacing:"-.2px" }}>RITEL COMMUNITY<span style={{color:"#10b981"}}>.ID</span></div>
+              <div style={{ color:"#fff", fontWeight:900, fontSize:13, letterSpacing:"-.2px" }}>RITEL COMMUNITY<span style={{color:"#2563EB"}}>.ID</span></div>
               <div style={{ color:"rgba(255,255,255,0.28)", fontSize:9, letterSpacing:".5px" }}>AREA VIP MEMBER</div>
             </div>
           </Link>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, color:"#fff", boxShadow:"0 0 12px rgba(16,185,129,0.3)" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8, position:"relative", zIndex:50 }}>
+            <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#3B82F6)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, color:"#fff", boxShadow:"0 0 12px rgba(37,99,235,0.35)" }}>
               {user.name?.charAt(0)||"V"}
             </div>
-            <button onClick={logout} style={{ color:"rgba(255,255,255,0.25)", fontSize:11, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"5px 10px", cursor:"pointer" }}>Keluar</button>
+            <MoreMenu
+              items={[
+                { id:"home",    label:"Beranda",     onSelect:()=>setTab("home"),    active: tab==="home" },
+                { id:"feed",    label:"Feed",         onSelect:()=>setTab("feed"),    active: tab==="feed" },
+                { id:"sinyal",  label:"Sinyal",       onSelect:()=>setTab("sinyal"),  active: tab==="sinyal" },
+                { id:"bandar",  label:"Bandar",       onSelect:()=>setTab("bandar"),  active: tab==="bandar" },
+                { id:"bagger",  label:"Bagger",       onSelect:()=>setTab("bagger"),  active: tab==="bagger" },
+                { id:"modul",   label:"Modul",        onSelect:()=>setTab("modul"),   active: tab==="modul" },
+                { id:"bsjp",    label:"Bincang Sore", onSelect:()=>setTab("bsjp"),    active: tab==="bsjp" },
+                { id:"bpjs",    label:"Bincang Pagi", onSelect:()=>setTab("bpjs"),    active: tab==="bpjs" },
+                { id:"rekap",   label:"Rekap",        onSelect:()=>setTab("rekap"),   active: tab==="rekap" },
+                { id:"jurnal",  label:"Jurnal",       onSelect:()=>setTab("jurnal"),  active: tab==="jurnal" },
+                { id:"ai",      label:"RC-AI",        onSelect:()=>setTab("ai"),      active: tab==="ai" },
+                { id:"profile", label:"Profil",       onSelect:()=>setTab("profile"), active: tab==="profile" },
+                { id:"logout",  label:"Keluar",       onSelect:logout },
+              ]}
+            />
           </div>
         </div>
       </div>
 
-      {/* CONTENT AREA — scrollable, padding bottom for visionos dock */}
-      <div style={{ flex:1, overflowY:"auto", paddingBottom:110, position:"relative", zIndex:1 }}>
+      {/* CONTENT AREA — scrollable, clean full-height (no bottom nav) */}
+      <div style={{ flex:1, overflowY:"auto", paddingBottom:28, position:"relative", zIndex:1 }}>
 
         {/* ── HOME TAB ── */}
         {tab==="home" && (
@@ -1832,7 +1849,7 @@ export default function VipPage() {
                     <h2 style={{ fontWeight:800, fontSize:14 }}>Sinyal Terbaru</h2>
                     <div className="eq-bars green">{[0,0,0,0].map((_,i)=><div key={i} className="eq-bar"/>)}</div>
                   </div>
-                  <button onClick={()=>setTab("sinyal")} style={{ color:"#10b981", fontSize:12, background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.18)", borderRadius:8, padding:"4px 10px", cursor:"pointer", fontWeight:700 }}>Semua </button>
+                  <button onClick={()=>setTab("sinyal")} style={{ color:"#2563EB", fontSize:12, background:"rgba(37,99,235,0.08)", border:"1px solid rgba(37,99,235,0.18)", borderRadius:8, padding:"4px 10px", cursor:"pointer", fontWeight:700 }}>Semua </button>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                   {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
@@ -1851,7 +1868,7 @@ export default function VipPage() {
                   <a key={i} href={n.url||"#"} target="_blank" rel="noreferrer" className="glass-card" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12, padding:"12px 14px", textDecoration:"none", borderRadius:14 }}>
                     <div>
                       <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, lineHeight:1.4, marginBottom:4 }}>{n.title}</p>
-                      <p style={{ color:"#10b981", fontSize:11 }}>{n.source}</p>
+                      <p style={{ color:"#2563EB", fontSize:11 }}>{n.source}</p>
                     </div>
                     <span style={{ color:"rgba(255,255,255,0.2)", flexShrink:0, marginTop:2 }}></span>
                   </a>
@@ -1869,22 +1886,22 @@ export default function VipPage() {
                 <h2 style={{ fontWeight:900, fontSize:18, letterSpacing:"-.3px" }}>Sinyal Trading</h2>
                 <div className="eq-bars green">{[0,0,0,0,0].map((_,i)=><div key={i} className="eq-bar"/>)}</div>
               </div>
-              <span style={{ background:"rgba(16,185,129,0.08)", color:"#10b981", fontSize:11, fontWeight:700, padding:"5px 12px", borderRadius:100, border:"1px solid rgba(16,185,129,0.2)" }}>LIVE</span>
+              <span style={{ background:"rgba(37,99,235,0.08)", color:"#2563EB", fontSize:11, fontWeight:700, padding:"5px 12px", borderRadius:100, border:"1px solid rgba(37,99,235,0.2)" }}>LIVE</span>
             </div>
             {/* Filter chips */}
             <div style={{ display:"flex", gap:8, marginBottom:16, overflowX:"auto", paddingBottom:4 }}>
               {["Semua","BUY","SELL","HOLD","WATCH","ANTRI"].map(f=>(
-                <button key={f} onClick={()=>setSigFilter(f)} style={{ flexShrink:0, padding:"6px 16px", borderRadius:100, fontWeight:700, fontSize:12, border:"1px solid", cursor:"pointer", background:sigFilter===f?"#10b981":"transparent", color:sigFilter===f?"#fff":"rgba(255,255,255,0.5)", borderColor:sigFilter===f?"#10b981":"rgba(255,255,255,0.1)" }}>{f}</button>
+                <button key={f} onClick={()=>setSigFilter(f)} style={{ flexShrink:0, padding:"6px 16px", borderRadius:100, fontWeight:700, fontSize:12, border:"1px solid", cursor:"pointer", background:sigFilter===f?"#2563EB":"transparent", color:sigFilter===f?"#fff":"rgba(255,255,255,0.5)", borderColor:sigFilter===f?"#2563EB":"rgba(255,255,255,0.1)" }}>{f}</button>
               ))}
             </div>
 
             {/* SINYAL BESOK */}
             {/* SINYAL DISEMATKAN */}
             {sigFilter==="Semua" && signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length>0 && (
-              <div style={{ background:"rgba(16,185,129,0.04)",border:"1px solid rgba(16,185,129,0.15)",borderRadius:16,padding:"14px 16px",marginBottom:16 }}>
+              <div style={{ background:"rgba(37,99,235,0.04)",border:"1px solid rgba(37,99,235,0.15)",borderRadius:16,padding:"14px 16px",marginBottom:16 }}>
                 <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:10 }}>
-                  <span style={{ color:"#10b981",fontWeight:900,fontSize:14 }}>Sinyal Disematkan</span>
-                  <span style={{ color:"rgba(16,185,129,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
+                  <span style={{ color:"#2563EB",fontWeight:900,fontSize:14 }}>Sinyal Disematkan</span>
+                  <span style={{ color:"rgba(37,99,235,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
                 </div>
                 <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
                   {signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).map((s:any,i:number)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
@@ -2257,14 +2274,14 @@ export default function VipPage() {
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Jurnal Trade</h2>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap trade — data ini hanya milikmu.</p>
               </div>
-              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#10b981,#10b981)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
+              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
             </div>
 
             {/* Stats jurnal */}
             {jurnalList.length > 0 && (
               <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:16 }}>
                 {[
-                  { l:"Total Trade", v:jurnalList.length, c:"#10b981" },
+                  { l:"Total Trade", v:jurnalList.length, c:"#2563EB" },
                   { l:"Win Rate", v: Math.round(jurnalList.filter((j:any)=>j.result==="TP"||parseFloat(j.gain||0)>0).length/jurnalList.length*100)+"%", c:"#22c55e" },
                   { l:"Avg Gain", v: (jurnalList.reduce((s:number,j:any)=>s+parseFloat(j.gain||0),0)/jurnalList.length).toFixed(1)+"%", c: jurnalList.reduce((s:number,j:any)=>s+parseFloat(j.gain||0),0)>=0?"#22c55e":"#ef4444" },
                 ].map(({l,v,c})=>(
@@ -2308,7 +2325,7 @@ export default function VipPage() {
                           </div>
                         ))}
                       </div>
-                      {j.alasan && <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:8, marginTop:4 }}><p style={{ color:"rgba(16,185,129,0.7)", fontSize:10, marginBottom:3 }}>Alasan Entry:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.alasan}</p></div>}
+                      {j.alasan && <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:8, marginTop:4 }}><p style={{ color:"rgba(37,99,235,0.7)", fontSize:10, marginBottom:3 }}>Alasan Entry:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.alasan}</p></div>}
                       {j.evaluasi && <div style={{ paddingTop:6 }}><p style={{ color:"rgba(245,158,11,0.7)", fontSize:10, marginBottom:3 }}>Evaluasi:</p><p style={{ color:"rgba(255,255,255,0.5)", fontSize:11, lineHeight:1.5 }}>{j.evaluasi}</p></div>}
                       {/* Tombol hapus untuk entry personal */}
                       {j.source === "personal" && (
@@ -2366,7 +2383,7 @@ export default function VipPage() {
                       <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Hasil</label>
                       <div style={{ display:"flex", gap:8 }}>
                         {["TP","SL","BE","MANUAL"].map(r=>(
-                          <button key={r} onClick={()=>setJurnalForm({...jurnalForm,result:r})} style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid", cursor:"pointer", fontWeight:700, fontSize:11, background:jurnalForm.result===r?"rgba(16,185,129,0.15)":"transparent", color:jurnalForm.result===r?"#10b981":"rgba(255,255,255,0.4)", borderColor:jurnalForm.result===r?"rgba(16,185,129,0.4)":"rgba(255,255,255,0.1)" }}>{r}</button>
+                          <button key={r} onClick={()=>setJurnalForm({...jurnalForm,result:r})} style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid", cursor:"pointer", fontWeight:700, fontSize:11, background:jurnalForm.result===r?"rgba(37,99,235,0.15)":"transparent", color:jurnalForm.result===r?"#2563EB":"rgba(255,255,255,0.4)", borderColor:jurnalForm.result===r?"rgba(37,99,235,0.4)":"rgba(255,255,255,0.1)" }}>{r}</button>
                         ))}
                       </div>
                     </div>
@@ -2390,7 +2407,7 @@ export default function VipPage() {
                       if (myToken) {
                         await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myToken.slice(-12)}`, value: updatedPersonal }) }).catch(()=>{});
                       }
-                    }} style={{ background:"linear-gradient(135deg,#10b981,#10b981)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
+                    }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
                       Simpan Jurnal
                     </button>
                   </div>
@@ -2424,11 +2441,11 @@ export default function VipPage() {
               </div>
             ) : (
               <>
-                <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.1),rgba(16,185,129,0.08))",border:"1px solid rgba(16,185,129,0.2)",borderRadius:20,padding:"20px",textAlign:"center",marginBottom:16,marginTop:8 }}>
+                <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.1),rgba(37,99,235,0.08))",border:"1px solid rgba(37,99,235,0.2)",borderRadius:20,padding:"20px",textAlign:"center",marginBottom:16,marginTop:8 }}>
                   <div style={{ fontSize:36,marginBottom:8 }}></div>
                   <h2 style={{ fontWeight:900,fontSize:18,marginBottom:6 }}>RC-AI Analyst</h2>
                   <p style={{ color:"rgba(255,255,255,0.45)",fontSize:13,lineHeight:1.6,marginBottom:16 }}>Analisis saham BEI dengan AI — teknikal, fundamental, bandarmologi. Kirim chart untuk analisis visual!</p>
-                  <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#10b981,#10b981)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",borderRadius:14,textDecoration:"none" }}>
+                  <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#2563EB,#2563EB)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",borderRadius:14,textDecoration:"none" }}>
                      Buka RC-AI Chat
                   </a>
                 </div>
@@ -2461,9 +2478,9 @@ export default function VipPage() {
               <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
                 <div style={{ fontSize:56, marginBottom:16 }}></div>
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Akses Terbatas</h2>
-                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#10b981" }}>Beli Sore Jual Pagi</strong> membutuhkan paket <strong style={{ color:"#10b981", textTransform:"capitalize" }}>{bsjpMinPkg}</strong> ke atas.</p>
+                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#2563EB" }}>Beli Sore Jual Pagi</strong> membutuhkan paket <strong style={{ color:"#2563EB", textTransform:"capitalize" }}>{bsjpMinPkg}</strong> ke atas.</p>
                 <p style={{ color:"rgba(255,255,255,0.3)", fontSize:12, marginBottom:20 }}>Paket kamu saat ini: <span style={{ color:"rgba(255,255,255,0.6)", textTransform:"capitalize", fontWeight:700 }}>{userPkg}</span></p>
-                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#10b981,#10b981)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
               </div>
             ) : (
             <>
@@ -2480,13 +2497,13 @@ export default function VipPage() {
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                 {bsjpSignals.map((s:any, i:number) => (
-                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(16,185,129,0.2)", borderRadius:16, padding:"16px" }}>
+                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(37,99,235,0.2)", borderRadius:16, padding:"16px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-                      <div style={{ width:44, height:44, borderRadius:12, background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#10b981", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
+                      <div style={{ width:44, height:44, borderRadius:12, background:"rgba(37,99,235,0.08)", border:"1px solid rgba(37,99,235,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#2563EB", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                           <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode}</span>
-                          <span style={{ background:"rgba(16,185,129,0.12)", color:"#10b981", border:"1px solid rgba(16,185,129,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action||"BSJP"}</span>
+                          <span style={{ background:"rgba(37,99,235,0.12)", color:"#2563EB", border:"1px solid rgba(37,99,235,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action||"BSJP"}</span>
                         </div>
                         <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham||""}</p>
                       </div>
@@ -2573,7 +2590,7 @@ export default function VipPage() {
           <div style={{ padding:"16px" }} className="fade-in-up">
             {/* User card */}
             <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.12),rgba(0,200,255,0.06))", border:"1px solid rgba(30,90,240,0.25)", borderRadius:20, padding:"24px 20px", marginBottom:20, textAlign:"center" }}>
-              <div style={{ width:64, height:64, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:24, color:"#fff", margin:"0 auto 12px" }}>
+              <div style={{ width:64, height:64, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#2563EB)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:24, color:"#fff", margin:"0 auto 12px" }}>
                 {user.name?.charAt(0)||"V"}
               </div>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>{user.name}</h2>
@@ -2589,8 +2606,8 @@ export default function VipPage() {
               <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Owner & Partner</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {owners.map((o,i)=>(
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(16,185,129,0.2)", borderRadius:14, padding:"14px 16px" }}>
-                    <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{o.badge||""}</div>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(37,99,235,0.2)", borderRadius:14, padding:"14px 16px" }}>
+                    <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#2563EB)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{o.badge||""}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                         <span style={{ fontWeight:800, fontSize:14 }}>{o.name}</span>
@@ -2654,71 +2671,6 @@ export default function VipPage() {
           </div>
         )}
 
-      </div>
-
-      {/* ── VISIONOS DOCK 2-ROW ── */}
-      <div className="vip-dock" style={{
-        position:"fixed", bottom:16, left:"50%", transform:"translateX(-50%)",
-        zIndex:200, width:"calc(100% - 24px)", maxWidth:456,
-        background:"rgba(6,8,18,0.82)", backdropFilter:"blur(40px) saturate(200%)",
-        WebkitBackdropFilter:"blur(40px) saturate(200%)",
-        border:"1px solid rgba(255,255,255,0.09)", borderRadius:24,
-        boxShadow:"0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(16,185,129,0.05)",
-        padding:"6px 8px 10px", display:"flex", flexDirection:"column", gap:2,
-      }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around" }}>
-          <button onClick={()=>setTab("home")} className={"dock-vip-item" + (tab==="home" ? " dav" : "")}>
-            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
-            <span className="dlabel">Beranda</span>
-          </button>
-          <button onClick={()=>setTab("feed")} className={"dock-vip-item" + (tab==="feed" ? " dav" : "")}>
-            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-            <span className="dlabel">Feed</span>
-          </button>
-          <button onClick={()=>setTab("sinyal")} className={"dock-vip-item" + (tab==="sinyal" ? " dav" : "")}>
-            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-            <span className="dlabel">Sinyal</span>
-          </button>
-          <button onClick={()=>setTab("bandar")} className={"dock-vip-item" + (tab==="bandar" ? " dav" : "")}>
-            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-            <span className="dlabel">Bandar</span>
-          </button>
-          <button onClick={()=>setTab("bagger")} className={"dock-vip-item" + (tab==="bagger" ? " dav" : "")}>
-            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
-            <span className="dlabel">Bagger</span>
-          </button>
-          <button onClick={()=>setTab("modul")} className={"dock-vip-item" + (tab==="modul" ? " dav" : "")}>
-            <span className="dicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
-            <span className="dlabel">Modul</span>
-          </button>
-        </div>
-        <div style={{ height:1, background:"rgba(255,255,255,0.05)", margin:"0 8px" }} />
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around" }}>
-          <button onClick={()=>setTab("bsjp")} className={"dock-vip-item" + (tab==="bsjp" ? " dav" : "")}>
-            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
-            <span className="dlabel">B.Sore</span>
-          </button>
-          <button onClick={()=>setTab("bpjs")} className={"dock-vip-item" + (tab==="bpjs" ? " dav" : "")}>
-            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
-            <span className="dlabel">B.Pagi</span>
-          </button>
-          <button onClick={()=>setTab("rekap")} className={"dock-vip-item" + (tab==="rekap" ? " dav" : "")}>
-            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></span>
-            <span className="dlabel">Rekap</span>
-          </button>
-          <button onClick={()=>setTab("jurnal")} className={"dock-vip-item" + (tab==="jurnal" ? " dav" : "")}>
-            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg></span>
-            <span className="dlabel">Jurnal</span>
-          </button>
-          <button onClick={()=>setTab("ai")} className={"dock-vip-item" + (tab==="ai" ? " dav" : "")}>
-            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></span>
-            <span className="dlabel">RC-AI</span>
-          </button>
-          <button onClick={()=>setTab("profile")} className={"dock-vip-item" + (tab==="profile" ? " dav" : "")}>
-            <span className="dicon" style={{opacity:0.85}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-            <span className="dlabel">Profil</span>
-          </button>
-        </div>
       </div>
     </div>
   );

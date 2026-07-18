@@ -36,12 +36,12 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
     }, 400);
   };
   return (
-    <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4">
       <div className="galaxy-stars" />
       <div className="relative z-10 w-full max-w-sm">
         <div className="card-glass rounded-xl p-8 border border-white/10">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto rounded-xl bg-emerald-500 flex items-center justify-center text-[#06110c] font-black text-xl mb-4">RC</div>
+            <div className="w-14 h-14 mx-auto rounded-xl bg-emerald-500 flex items-center justify-center text-[#FFFFFF] font-black text-xl mb-4">RC</div>
             <h1 className="headline text-xl">Admin Panel</h1>
             <p className="text-slate-500 text-xs mt-1 tracking-wide">RITEL COMMUNITY.ID</p>
           </div>
@@ -230,7 +230,7 @@ function AdminFeedTab() {
       <p className="text-slate-500 text-xs mb-4">Post sebagai "Admin RITEL COMMUNITY.ID" — tampil di homepage & VIP</p>
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
         <div className="flex items-center gap-3 mb-3">
-          <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#10b981,#6ee7b7)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>RC</div>
+          <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#2563EB,#6ee7b7)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>RC</div>
           <div className="flex-1">
             <select value={authorName} onChange={e=>setAuthorName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none font-bold mb-0.5">
               <option value="Admin RITEL COMMUNITY.ID">Admin RITEL COMMUNITY.ID</option>
@@ -894,7 +894,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#04060f] text-white">
+    <div className="min-h-screen bg-[#030712] text-white">
       <div className="galaxy-stars" />
       {loading && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80">
@@ -909,7 +909,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         <div className="border-b border-white/5 bg-black/85 backdrop-blur-md sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center font-black text-[#06110c] text-xs flex-shrink-0">RC</div>
+              <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center font-black text-[#FFFFFF] text-xs flex-shrink-0">RC</div>
               <div className="min-w-0">
                 <p className="font-black text-white text-sm leading-tight truncate">Admin Panel</p>
                 <p className="text-[11px] text-slate-500 leading-tight truncate">{tabs.find(t => t.id === tab)?.label}</p>
@@ -2169,7 +2169,7 @@ export default function AdminPage() {
     setAuthed(localStorage.getItem("admin_auth") === "1");
     setLoading(false);
   }, []);
-  if (loading) return <div className="min-h-screen bg-[#04060f] flex items-center justify-center"><div className="text-slate-500 text-sm">Memuat...</div></div>;
+  if (loading) return <div className="min-h-screen bg-[#030712] flex items-center justify-center"><div className="text-slate-500 text-sm">Memuat...</div></div>;
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
   return <AdminDashboard onLogout={() => { localStorage.removeItem("admin_auth"); setAuthed(false); }} />;
 }

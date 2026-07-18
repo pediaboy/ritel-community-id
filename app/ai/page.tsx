@@ -154,7 +154,7 @@ export default function AIAgentPage() {
   // Loading state - verifying auth
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center">
+      <div className="min-h-screen bg-[#030712] flex items-center justify-center">
         <GalaxyBg />
         <div className="relative z-10 text-slate-500 text-sm">Memverifikasi akses...</div>
       </div>
@@ -164,11 +164,11 @@ export default function AIAgentPage() {
   // Access denied - not pro/platinum/elite
   if (!AI_ALLOWED.includes(user?.package?.toLowerCase())) {
     return (
-      <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4">
         <GalaxyBg />
         <div className="relative z-10 text-center max-w-sm glass-card mark-lg p-6">
           <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6">
-            <span className="text-xl font-bold text-[#10b981]">LOCK</span>
+            <span className="text-xl font-bold text-[#2563EB]">LOCK</span>
           </div>
           <h1 className="headline text-xl mb-4">FITUR <span className="accent">TERKUNCI</span></h1>
           <p className="text-slate-400 text-xs mb-3">RC-AI Analyst hanya tersedia untuk paket:</p>
@@ -193,26 +193,26 @@ export default function AIAgentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] flex flex-col">
+    <div className="min-h-screen bg-[#030712] flex flex-col">
       <GalaxyBg />
 
       {/* Header */}
-      <header className="relative z-10 bg-[#0A0B0D]/80 backdrop-blur-md border-b border-white/8 px-4 h-14 flex items-center justify-between sticky top-0">
+      <header className="relative z-10 bg-[#030712]/80 backdrop-blur-md border-b border-white/8 px-4 h-14 flex items-center justify-between sticky top-0">
         <div className="flex items-center gap-3">
-          <Link href="/vip" className="text-slate-400 hover:text-[#10b981] transition-colors">
+          <Link href="/vip" className="text-slate-400 hover:text-[#2563EB] transition-colors">
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7"/>
             </svg>
           </Link>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-              <span className="text-[#10b981] text-xs font-black">AI</span>
+              <span className="text-[#2563EB] text-xs font-black">AI</span>
             </div>
             <div>
               <div className="headline text-xs leading-none">RC-AI <span className="accent">ANALYST</span></div>
               <div className="flex items-center gap-1 mt-0.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse"/>
-                <span className="text-[10px] text-[#10b981] font-bold">ONLINE · PAKET {user?.package?.toUpperCase()}</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2563EB] animate-pulse"/>
+                <span className="text-[10px] text-[#2563EB] font-bold">ONLINE · PAKET {user?.package?.toUpperCase()}</span>
               </div>
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function AIAgentPage() {
       <div className="relative z-10 px-4 py-2.5 flex gap-2 overflow-x-auto scrollbar-none bg-black/30 border-b border-white/8">
         {QUICK_PROMPTS.map((p, i) => (
           <button key={i} onClick={() => send(p)}
-            className="text-[10px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-emerald-500/25 text-slate-400 hover:text-[#10b981] hover:border-[#10b981] hover:bg-emerald-500/5 whitespace-nowrap transition-all">
+            className="text-[10px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-emerald-500/25 text-slate-400 hover:text-[#2563EB] hover:border-[#2563EB] hover:bg-emerald-500/5 whitespace-nowrap transition-all">
             {p}
           </button>
         ))}
@@ -238,7 +238,7 @@ export default function AIAgentPage() {
           <div key={i} className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
             <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black ${
               m.role === "assistant"
-                ? "bg-[#10b981]/10 border border-[#10b981]/30 text-[#10b981]"
+                ? "bg-[#2563EB]/10 border border-[#2563EB]/30 text-[#2563EB]"
                 : "bg-white/5 border border-white/10 text-white"
             }`}>
               {m.role === "assistant" ? "AI" : (user?.name?.charAt(0) || "U")}
@@ -246,7 +246,7 @@ export default function AIAgentPage() {
             <div className={`max-w-[85%] rounded-lg px-4 py-3 ${
               m.role === "assistant"
                 ? "glass-card no-mark text-slate-200"
-                : "bg-emerald-950/20 border border-[#10b981]/30 text-[#EDEEF0]"
+                : "bg-emerald-950/20 border border-[#2563EB]/30 text-[#EDEEF0]"
             }`}>
               {m.image && (
                 <img src={m.image} alt="chart" className="rounded border border-white/10 mb-2 max-h-48 object-contain"/>
@@ -258,12 +258,12 @@ export default function AIAgentPage() {
 
         {loading && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#10b981]/10 border border-[#10b981]/30 flex items-center justify-center text-[#10b981] text-xs font-black flex-shrink-0">AI</div>
+            <div className="w-8 h-8 rounded-lg bg-[#2563EB]/10 border border-[#2563EB]/30 flex items-center justify-center text-[#2563EB] text-xs font-black flex-shrink-0">AI</div>
             <div className="glass-card no-mark rounded-lg px-4 py-3">
               <div className="flex gap-1 items-center h-5">
-                <div className="w-2 h-2 rounded-full bg-[#10b981] animate-bounce" style={{animationDelay:"0ms"}}/>
-                <div className="w-2 h-2 rounded-full bg-[#10b981] animate-bounce" style={{animationDelay:"150ms"}}/>
-                <div className="w-2 h-2 rounded-full bg-[#10b981] animate-bounce" style={{animationDelay:"300ms"}}/>
+                <div className="w-2 h-2 rounded-full bg-[#2563EB] animate-bounce" style={{animationDelay:"0ms"}}/>
+                <div className="w-2 h-2 rounded-full bg-[#2563EB] animate-bounce" style={{animationDelay:"150ms"}}/>
+                <div className="w-2 h-2 rounded-full bg-[#2563EB] animate-bounce" style={{animationDelay:"300ms"}}/>
               </div>
             </div>
           </div>
@@ -283,11 +283,11 @@ export default function AIAgentPage() {
       )}
 
       {/* Input */}
-      <div className="relative z-10 bg-[#0A0B0D]/80 backdrop-blur-md border-t border-white/8 px-4 py-3">
+      <div className="relative z-10 bg-[#030712]/80 backdrop-blur-md border-t border-white/8 px-4 py-3">
         <div className="max-w-2xl mx-auto">
           <div className="flex gap-2 items-end">
             <button onClick={() => fileRef.current?.click()}
-              className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#10b981] hover:border-[#10b981] transition-all">
+              className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-[#2563EB] hover:border-[#2563EB] transition-all">
               <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="3" y="3" width="18" height="18" rx="3"/>
                 <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -305,13 +305,13 @@ export default function AIAgentPage() {
                 placeholder="Tanya analisis saham... atau paste screenshot chart "
                 rows={1}
                 style={{resize:"none",minHeight:"40px",maxHeight:"120px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)"}}
-                className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#10b981] rounded-lg px-3 py-2.5 text-sm"
+                className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#2563EB] rounded-lg px-3 py-2.5 text-sm"
               />
             </div>
             <button
               onClick={() => send()}
               disabled={loading || (!input.trim() && !image)}
-              className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#10b981] flex items-center justify-center text-[#06110c] transition-all disabled:opacity-40">
+              className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#2563EB] flex items-center justify-center text-[#FFFFFF] transition-all disabled:opacity-40">
               <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <line x1="22" y1="2" x2="11" y2="13"/>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"/>

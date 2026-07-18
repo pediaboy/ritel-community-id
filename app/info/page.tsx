@@ -96,11 +96,11 @@ export default function InfoPage() {
   const activeSourceName = SOURCES.find(s => s.key === activeSource)?.name || activeSource;
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] text-[#EDEEF0] max-w-[480px] mx-auto font-sans relative">
+    <div className="min-h-screen bg-[#030712] text-[#EDEEF0] max-w-[480px] mx-auto font-sans relative">
       <div className="galaxy-stars"/>
 
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-[#0A0B0D]/95 backdrop-blur-md border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-[#030712]/95 backdrop-blur-md border-b border-white/10">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="text-neutral-400 hover:text-emerald-400 transition-colors">

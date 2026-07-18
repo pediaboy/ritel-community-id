@@ -85,11 +85,11 @@ export default function CariPage() {
   const fmt = (n: number) => n.toLocaleString("id-ID");
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] text-[#EDEEF0] max-w-[480px] mx-auto font-sans relative pb-24">
+    <div className="min-h-screen bg-[#030712] text-[#EDEEF0] max-w-[480px] mx-auto font-sans relative pb-24">
       <div className="galaxy-stars" />
 
       {/* Header + Search Input */}
-      <header className="sticky top-0 z-40 bg-[#0A0B0D]/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
+      <header className="sticky top-0 z-40 bg-[#030712]/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
         <div className="relative mb-3">
           <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

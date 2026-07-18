@@ -45,7 +45,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <Link href="/" className="flex items-center gap-2 text-neutral-500 hover:text-neutral-200 text-xs font-bold uppercase tracking-wider mb-8 transition-colors">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -75,7 +75,7 @@ export default function LoginPage() {
                   placeholder="RC-GOLD-XXXXXXXX"
                   autoComplete="off"
                   spellCheck={false}
-                  className="flex-1 min-w-0 bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
+                  className="flex-1 min-w-0 bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
                 />
                 <button
                   type="button"

@@ -187,7 +187,7 @@ function MutasiTab() {
             </button>
             <button
               onClick={handleAddMutasi}
-              className="flex-1 py-2 rounded-lg bg-emerald-500 text-[#06110c] font-extrabold text-sm hover:bg-emerald-400 transition-all"
+              className="flex-1 py-2 rounded-lg bg-emerald-500 text-[#FFFFFF] font-extrabold text-sm hover:bg-emerald-400 transition-all"
             >
               Tambah
             </button>
@@ -248,7 +248,7 @@ function MutasiTab() {
                       </button>
                       <button
                         onClick={handleSaveEdit}
-                        className="flex-1 py-2 rounded text-xs bg-emerald-500 text-[#06110c] hover:bg-emerald-400 transition-all font-bold"
+                        className="flex-1 py-2 rounded text-xs bg-emerald-500 text-[#FFFFFF] hover:bg-emerald-400 transition-all font-bold"
                       >
                         Simpan
                       </button>

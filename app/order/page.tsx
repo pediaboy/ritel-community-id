@@ -4,12 +4,12 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const PACKAGES: any = {
-  basic:    { name:"Basic",    price:100000,  accent:"#10b981", bg:"linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02))", tier:"blue" },
-  silver:   { name:"Silver",   price:250000,  accent:"#10b981", bg:"linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02))", tier:"emerald" },
-  gold:     { name:"Gold",     price:500000,  accent:"#10b981", bg:"linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02))", tier:"gold" },
-  pro:      { name:"Pro",      price:750000,  accent:"#10b981", bg:"linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02))", tier:"purple" },
-  platinum: { name:"Platinum", price:900000,  accent:"#10b981", bg:"linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02))", tier:"slate" },
-  elite:    { name:"Elite",    price:1000000, accent:"#10b981", bg:"linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02))", tier:"elite" },
+  basic:    { name:"Basic",    price:100000,  accent:"#2563EB", bg:"linear-gradient(135deg,rgba(37,99,235,0.1),rgba(37,99,235,0.02))", tier:"blue" },
+  silver:   { name:"Silver",   price:250000,  accent:"#2563EB", bg:"linear-gradient(135deg,rgba(37,99,235,0.1),rgba(37,99,235,0.02))", tier:"emerald" },
+  gold:     { name:"Gold",     price:500000,  accent:"#2563EB", bg:"linear-gradient(135deg,rgba(37,99,235,0.1),rgba(37,99,235,0.02))", tier:"gold" },
+  pro:      { name:"Pro",      price:750000,  accent:"#2563EB", bg:"linear-gradient(135deg,rgba(37,99,235,0.1),rgba(37,99,235,0.02))", tier:"purple" },
+  platinum: { name:"Platinum", price:900000,  accent:"#2563EB", bg:"linear-gradient(135deg,rgba(37,99,235,0.1),rgba(37,99,235,0.02))", tier:"slate" },
+  elite:    { name:"Elite",    price:1000000, accent:"#2563EB", bg:"linear-gradient(135deg,rgba(37,99,235,0.1),rgba(37,99,235,0.02))", tier:"elite" },
 };
 
 const PAYMENT_METHODS = [
@@ -42,17 +42,17 @@ function StepBar({ step }: { step: "form"|"invoice"|"confirm" }) {
         <div key={s.key} className="flex items-center flex-1 last:flex-none">
           <div className="flex flex-col items-center">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black transition-all
-              ${i < idx ? "bg-[#10b981] text-[#06110c]" : i === idx ? "bg-[#10b981] text-[#06110c] ring-4 ring-[#10b981]/20" : "bg-white/5 border border-white/10 text-slate-500"}`}>
+              ${i < idx ? "bg-[#2563EB] text-[#FFFFFF]" : i === idx ? "bg-[#2563EB] text-[#FFFFFF] ring-4 ring-[#2563EB]/20" : "bg-white/5 border border-white/10 text-slate-500"}`}>
               {i < idx ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
               ) : s.icon}
             </div>
-            <span className={`text-[9px] mt-1 font-bold tracking-wider ${i === idx ? "text-[#10b981]" : i < idx ? "text-[#10b981]/70" : "text-slate-600"}`}>{s.label}</span>
+            <span className={`text-[9px] mt-1 font-bold tracking-wider ${i === idx ? "text-[#2563EB]" : i < idx ? "text-[#2563EB]/70" : "text-slate-600"}`}>{s.label}</span>
           </div>
           {i < steps.length - 1 && (
-            <div className={`flex-1 h-[2px] mx-2 mb-4 ${i < idx ? "bg-[#10b981]" : "bg-white/10"}`} />
+            <div className={`flex-1 h-[2px] mx-2 mb-4 ${i < idx ? "bg-[#2563EB]" : "bg-white/10"}`} />
           )}
         </div>
       ))}
@@ -161,12 +161,12 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] px-4 py-10">
+    <div className="min-h-screen bg-[#030712] px-4 py-10">
       <div className="galaxy-stars" />
       <div className="relative z-10 max-w-md mx-auto">
 
         {/* Back */}
-        <Link href="/paket" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-[#10b981] transition-colors mb-6">
+        <Link href="/paket" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-[#2563EB] transition-colors mb-6">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Kembali ke Paket
         </Link>
@@ -177,23 +177,23 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
         {step === "form" && (
           <div className="glass-card mark-lg overflow-hidden">
             {/* Header paket */}
-            <div style={{background: "rgba(16,185,129,0.06)", borderBottom: "1px solid rgba(16,185,129,0.15)", padding:"20px 24px"}}>
+            <div style={{background: "rgba(37,99,235,0.06)", borderBottom: "1px solid rgba(37,99,235,0.15)", padding:"20px 24px"}}>
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-[10px] text-[#10b981] uppercase font-bold tracking-wider mb-0.5">PAKET PILIHAN</p>
+                  <p className="text-[10px] text-[#2563EB] uppercase font-bold tracking-wider mb-0.5">PAKET PILIHAN</p>
                   <p className="text-xl font-black text-white">{basePkg.name.toUpperCase()}</p>
                 </div>
                 <div className="text-right">
                   {isFlashActive ? (
                     <>
                       <p className="text-[10px] text-slate-500 line-through font-bold">{formatRp(normalPrice)}</p>
-                      <p className="text-xl font-black text-[#10b981]">{flashPrice}</p>
-                      <span className="inline-block bg-[#10b981] text-[#06110c] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">FLASH {flashDisc}</span>
+                      <p className="text-xl font-black text-[#2563EB]">{flashPrice}</p>
+                      <span className="inline-block bg-[#2563EB] text-[#FFFFFF] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">FLASH {flashDisc}</span>
                     </>
                   ) : (
                     <>
                       <p className="text-[10px] text-slate-500 mb-0.5 font-bold">TOTAL/BULAN</p>
-                      <p className="text-xl font-black text-[#10b981]">{formatRp(normalPrice)}</p>
+                      <p className="text-xl font-black text-[#2563EB]">{formatRp(normalPrice)}</p>
                     </>
                   )}
                 </div>
@@ -208,14 +208,14 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                   <input value={nama} onChange={e => setNama(e.target.value)}
                     placeholder="Masukkan nama lengkap"
                     style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#10b981] rounded-lg px-3 py-2.5 text-sm" />
+                    className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#2563EB] rounded-lg px-3 py-2.5 text-sm" />
                 </div>
                 <div>
                   <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5 block">No. WhatsApp / HP</label>
                   <input value={hp} onChange={e => setHp(e.target.value)}
                     placeholder="08xxxxxxxxxx" type="tel"
                     style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#10b981] rounded-lg px-3 py-2.5 text-sm" />
+                    className="w-full text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#2563EB] rounded-lg px-3 py-2.5 text-sm" />
                 </div>
               </div>
 
@@ -230,13 +230,13 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                     return (
                       <button key={m.id} onClick={() => setMetode(m.id)}
                         className={`flex items-center justify-between p-4 rounded-lg border text-left transition-all ${
-                          isSel ? "bg-[#10b981]/5 border-[#10b981] text-[#10b981]" : "bg-white/20 border-white/5 text-slate-300 hover:border-white/10"
+                          isSel ? "bg-[#2563EB]/5 border-[#2563EB] text-[#2563EB]" : "bg-white/20 border-white/5 text-slate-300 hover:border-white/10"
                         }`}>
                         <div className="flex items-center gap-3">
                           <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                            isSel ? "border-[#10b981]" : "border-slate-500"
+                            isSel ? "border-[#2563EB]" : "border-slate-500"
                           }`}>
-                            {isSel && <div className="w-2 h-2 rounded-full bg-[#10b981]" />}
+                            {isSel && <div className="w-2 h-2 rounded-full bg-[#2563EB]" />}
                           </div>
                           <div>
                             <p className="text-white font-black text-sm uppercase tracking-wider">{m.label}</p>
@@ -293,13 +293,13 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
               </div>
 
               {/* Total box */}
-              <div className="glass-card no-mark p-4 mb-6 border-[#10b981]/30 bg-[#10b981]/5">
+              <div className="glass-card no-mark p-4 mb-6 border-[#2563EB]/30 bg-[#2563EB]/5">
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">TOTAL PEMBAYARAN</p>
                     <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Periode: 1 Bulan</p>
                   </div>
-                  <p className="text-[#10b981] font-black text-2xl">{finalPriceLabel}</p>
+                  <p className="text-[#2563EB] font-black text-2xl">{finalPriceLabel}</p>
                 </div>
               </div>
 
@@ -319,7 +319,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                 <div className="flex justify-between items-center p-3 rounded-lg border border-dashed border-emerald-500/20 bg-emerald-950/5 mb-3">
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Nomor Rekening</p>
-                    <p className="text-[#10b981] font-black text-lg tracking-widest">{selMethod.number}</p>
+                    <p className="text-[#2563EB] font-black text-lg tracking-widest">{selMethod.number}</p>
                   </div>
                   <button onClick={() => copy(selMethod.number, "rek")}
                     className="tag-chip solid text-[10px] py-1.5 px-3">
@@ -330,7 +330,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                 <div className="flex justify-between items-center p-3 rounded-lg border border-dashed border-emerald-500/20 bg-emerald-950/5">
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Jumlah Transfer</p>
-                    <p className="text-[#10b981] font-black text-lg">{finalPriceLabel}</p>
+                    <p className="text-[#2563EB] font-black text-lg">{finalPriceLabel}</p>
                   </div>
                   <button onClick={() => copy(String(finalRaw), "nominal")}
                     className="tag-chip solid text-[10px] py-1.5 px-3">
@@ -362,7 +362,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
             {/* Success animation area */}
             <div className="py-6">
               <div className="w-16 h-16 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6">
-                <svg width="32" height="36" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="32" height="36" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                   <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
@@ -383,14 +383,14 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                 ].map(row=>(
                   <div key={row.l} className="flex justify-between items-center border-b border-white/5 pb-2 last:border-0 last:pb-0">
                     <span className="text-slate-500 font-bold uppercase tracking-wider">{row.l}</span>
-                    <span className={`${row.mono?"font-mono text-xs":""} ${row.bold?"text-[#10b981] font-black text-sm":"text-white font-medium"}`}>{row.v}</span>
+                    <span className={`${row.mono?"font-mono text-xs":""} ${row.bold?"text-[#2563EB] font-black text-sm":"text-white font-medium"}`}>{row.v}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="p-3 rounded-lg border border-dashed border-emerald-500/20 bg-emerald-950/5 text-left">
-              <p className="text-[#10b981] text-[10px] font-bold uppercase tracking-wider mb-1">LANGKAH SELANJUTNYA</p>
+              <p className="text-[#2563EB] text-[10px] font-bold uppercase tracking-wider mb-1">LANGKAH SELANJUTNYA</p>
               <p className="text-slate-400 text-[11px] leading-relaxed">Tunggu konfirmasi dari admin. Token VIP akan aktif otomatis setelah pembayaran diverifikasi.</p>
             </div>
 
@@ -408,7 +408,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
 export default function OrderPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center">
+      <div className="min-h-screen bg-[#030712] flex items-center justify-center">
         <div className="text-slate-500 text-sm">Memuat...</div>
       </div>
     }>

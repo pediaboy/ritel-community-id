@@ -13,11 +13,11 @@ const ChevRight = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="no
 /* ── CONSTANTS ── */
 const PKG_RANK: Record<string,number> = { free:0, basic:1, silver:2, gold:3, pro:4, platinum:5, elite:6, admin:99 };
 const ACTION_META: Record<string,any> = {
-  BUY:   { bg:"rgba(16,185,129,0.06)", border:"rgba(16,185,129,0.35)", text:"#10b981", glow:"rgba(16,185,129,0.15)",  eq:"green"  },
+  BUY:   { bg:"rgba(37,99,235,0.06)", border:"rgba(37,99,235,0.35)", text:"#2563EB", glow:"rgba(37,99,235,0.15)",  eq:"green"  },
   SELL:  { bg:"rgba(239,68,68,0.06)",  border:"rgba(239,68,68,0.3)",   text:"#ef4444", glow:"rgba(239,68,68,0.15)",   eq:"red"    },
   HOLD:  { bg:"rgba(245,158,11,0.06)",  border:"rgba(245,158,11,0.3)",  text:"#f59e0b", glow:"rgba(245,158,11,0.12)",  eq:"amber"  },
   WATCH: { bg:"rgba(255,255,255,0.03)", border:"rgba(255,255,255,0.15)",text:"#EDEEF0", glow:"rgba(255,255,255,0.05)",  eq:""       },
-  ANTRI: { bg:"rgba(16,185,129,0.06)", border:"rgba(16,185,129,0.2)",  text:"#10b981", glow:"rgba(16,185,129,0.08)",  eq:"green"  },
+  ANTRI: { bg:"rgba(37,99,235,0.06)", border:"rgba(37,99,235,0.2)",  text:"#2563EB", glow:"rgba(37,99,235,0.08)",  eq:"green"  },
 };
 
 /* ── TRADING EQ BARS ── */
@@ -31,7 +31,7 @@ function EqBars({ color="" }: { color?:string }) {
 
 /* ── SPARKLINE SVG (trend indicator) ── */
 function Sparkline({ up=true }: { up?:boolean }) {
-  const color = up ? "#10b981" : "#ef4444";
+  const color = up ? "#2563EB" : "#ef4444";
   const d = up
     ? "M0,18 C4,16 7,14 10,11 C13,8 15,10 18,7 C21,4 24,6 28,3"
     : "M0,4  C4,6  7,8  10,11 C13,14 15,12 18,15 C21,18 24,16 28,19";
@@ -71,13 +71,13 @@ function SignalCard({ s, canView, userRank }: { s:any; canView:boolean; userRank
               {s.action==="BUY"?<ZapIcon/>:s.action==="SELL"?<span style={{fontSize:9}}>▼</span>:null}
               {s.action}
             </span>
-            {s.is_pinned && <span className="tag-chip" style={{ borderColor:"rgba(16,185,129,0.5)" }}><PinIcon/>Pin</span>}
+            {s.is_pinned && <span className="tag-chip" style={{ borderColor:"rgba(37,99,235,0.5)" }}><PinIcon/>Pin</span>}
           </div>
           <p style={{ color:"rgba(255,255,255,0.35)",fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>{s.saham}</p>
         </div>
         {/* Potential + sparkline */}
         <div style={{ textAlign:"right",display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4 }}>
-          <span style={{ color:pct>=0?"#10b981":"#ef4444",fontWeight:900,fontSize:14 }}>{pct>=0?"+":""}{pct.toFixed(1)}%</span>
+          <span style={{ color:pct>=0?"#2563EB":"#ef4444",fontWeight:900,fontSize:14 }}>{pct>=0?"+":""}{pct.toFixed(1)}%</span>
           <Sparkline up={isUp}/>
           <p style={{ color:"rgba(255,255,255,0.25)",fontSize:9 }}>potensi</p>
         </div>
@@ -88,23 +88,23 @@ function SignalCard({ s, canView, userRank }: { s:any; canView:boolean; userRank
         <>
           {/* Price levels */}
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",padding:"0 14px",gap:6,marginBottom:s.notes?0:12 }}>
-            {[{l:"Entry",v:s.entry,c:"rgba(255,255,255,0.85)"},{l:"Stop Loss",v:s.sl,c:"#ef4444"},{l:"Target",v:s.tp,c:"#10b981"}].map(({l,v,c})=>(
+            {[{l:"Entry",v:s.entry,c:"rgba(255,255,255,0.85)"},{l:"Stop Loss",v:s.sl,c:"#ef4444"},{l:"Target",v:s.tp,c:"#2563EB"}].map(({l,v,c})=>(
               <div key={l} style={{ background:"rgba(255,255,255,0.035)",borderRadius:8,padding:"8px 10px",backdropFilter:"blur(8px)" }}>
                 <p style={{ color:"rgba(255,255,255,0.3)",fontSize:9,marginBottom:3,fontWeight:600,textTransform:"uppercase",letterSpacing:".5px" }}>{l}</p>
                 <p style={{ color:c,fontWeight:800,fontSize:14 }}>{v||"-"}</p>
               </div>
             ))}
-            {s.tp2 && <div style={{ background:"rgba(16,185,129,0.04)",borderRadius:8,padding:"8px 10px" }}><p style={{ color:"rgba(255,255,255,0.3)",fontSize:9,marginBottom:3 }}>Target 2</p><p style={{ color:"#10b981",fontWeight:800,fontSize:13 }}>{s.tp2}</p></div>}
-            {s.tp3 && <div style={{ background:"rgba(16,185,129,0.04)",borderRadius:8,padding:"8px 10px" }}><p style={{ color:"rgba(255,255,255,0.3)",fontSize:9,marginBottom:3 }}>Target 3</p><p style={{ color:"#10b981",fontWeight:800,fontSize:13 }}>{s.tp3}</p></div>}
+            {s.tp2 && <div style={{ background:"rgba(37,99,235,0.04)",borderRadius:8,padding:"8px 10px" }}><p style={{ color:"rgba(255,255,255,0.3)",fontSize:9,marginBottom:3 }}>Target 2</p><p style={{ color:"#2563EB",fontWeight:800,fontSize:13 }}>{s.tp2}</p></div>}
+            {s.tp3 && <div style={{ background:"rgba(37,99,235,0.04)",borderRadius:8,padding:"8px 10px" }}><p style={{ color:"rgba(255,255,255,0.3)",fontSize:9,marginBottom:3 }}>Target 3</p><p style={{ color:"#2563EB",fontWeight:800,fontSize:13 }}>{s.tp3}</p></div>}
           </div>
           {/* Risk meter */}
           <div style={{ padding:"8px 14px",marginBottom:4 }}>
             <div style={{ display:"flex",justifyContent:"space-between",marginBottom:5 }}>
               <span style={{ fontSize:9,color:"rgba(255,255,255,0.25)",fontWeight:600,letterSpacing:".5px" }}>RISK METER</span>
-              <span style={{ fontSize:9,color:pct>10?"#10b981":pct>5?"#f59e0b":"#ef4444",fontWeight:700 }}>{pct>10?"Rendah":pct>5?"Sedang":"Tinggi"}</span>
+              <span style={{ fontSize:9,color:pct>10?"#2563EB":pct>5?"#f59e0b":"#ef4444",fontWeight:700 }}>{pct>10?"Rendah":pct>5?"Sedang":"Tinggi"}</span>
             </div>
             <div className="risk-meter-track">
-              <div className="risk-meter-fill" style={{ width:`${Math.min(Math.abs(pct)*6,100)}%`,background:pct>10?"linear-gradient(90deg,#10b981,#10b981)":pct>5?"linear-gradient(90deg,#f59e0b,#f59e0b)":"linear-gradient(90deg,#dc2626,#ef4444)" }}/>
+              <div className="risk-meter-fill" style={{ width:`${Math.min(Math.abs(pct)*6,100)}%`,background:pct>10?"linear-gradient(90deg,#2563EB,#2563EB)":pct>5?"linear-gradient(90deg,#f59e0b,#f59e0b)":"linear-gradient(90deg,#dc2626,#ef4444)" }}/>
             </div>
           </div>
           {s.notes && <div style={{ margin:"0 14px 12px",background:"rgba(255,255,255,0.025)",borderRadius:8,padding:"8px 10px",borderLeft:`2px solid ${am.text}` }}><p style={{ color:"rgba(255,255,255,0.5)",fontSize:11,lineHeight:1.6 }}>{s.notes}</p></div>}
@@ -161,7 +161,7 @@ export default function SinyalPage() {
   }));
 
   return (
-    <div style={{ minHeight:"100vh",background:"#0A0B0D",color:"#EDEEF0",maxWidth:480,margin:"0 auto",fontFamily:"'Inter',-apple-system,sans-serif" }}>
+    <div style={{ minHeight:"100vh",background:"#030712",color:"#EDEEF0",maxWidth:480,margin:"0 auto",fontFamily:"'Inter',-apple-system,sans-serif" }}>
       {/* galaxy bg */}
       <div className="galaxy-stars"/>
 
@@ -182,7 +182,7 @@ export default function SinyalPage() {
           </div>
         </div>
         {user ? (
-          <div style={{ width:34,height:34,borderRadius:"50%",background:"linear-gradient(135deg,#10b981,#047857)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#06110c" }}>{(user.username||"U")[0].toUpperCase()}</div>
+          <div style={{ width:34,height:34,borderRadius:"50%",background:"linear-gradient(135deg,#2563EB,#047857)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#FFFFFF" }}>{(user.username||"U")[0].toUpperCase()}</div>
         ) : (
           <Link href="/login" className="btn-primary" style={{ padding:"6px 14px",fontSize:11,borderRadius:8 }}>Login</Link>
         )}
@@ -195,7 +195,7 @@ export default function SinyalPage() {
             <div className="index-badge">F</div>
             <div>
               <p style={{ fontSize:10,color:"rgba(255,255,255,0.35)",fontWeight:700,textTransform:"uppercase" }}>Filter Sinyal</p>
-              <p style={{ fontSize:13,fontWeight:900,color:"#10b981" }}>{filter.toUpperCase()}</p>
+              <p style={{ fontSize:13,fontWeight:900,color:"#2563EB" }}>{filter.toUpperCase()}</p>
             </div>
           </div>
           <MoreMenu items={menuItems} />
@@ -203,7 +203,7 @@ export default function SinyalPage() {
 
         {loading ? (
           <div style={{ textAlign:"center",padding:"70px 0" }}>
-            <div style={{ width:36,height:36,border:"3px solid rgba(16,185,129,0.15)",borderTopColor:"#10b981",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 12px" }}/>
+            <div style={{ width:36,height:36,border:"3px solid rgba(37,99,235,0.15)",borderTopColor:"#2563EB",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 12px" }}/>
             <p style={{ color:"rgba(255,255,255,0.25)",fontSize:12 }}>Memuat sinyal...</p>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
           </div>
@@ -214,7 +214,7 @@ export default function SinyalPage() {
               <div style={{ marginBottom:20 }}>
                 <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:10 }}>
                   <span className="tag-chip solid">Disematkan</span>
-                  <div style={{ flex:1,height:1,background:"linear-gradient(90deg,rgba(16,185,129,0.3),transparent)" }}/>
+                  <div style={{ flex:1,height:1,background:"linear-gradient(90deg,rgba(37,99,235,0.3),transparent)" }}/>
                   <div className="plus-divider" />
                 </div>
                 {pinned.map((s,i)=><SignalCard key={i} s={s} canView={canView(s)} userRank={userRank}/>)}
@@ -256,12 +256,12 @@ export default function SinyalPage() {
             </div>
 
             {!user && (
-              <div className="glass-card" style={{ marginTop:20,background:"rgba(16,185,129,0.02)",border:"1px solid rgba(16,185,129,0.15)",padding:"20px",textAlign:"center" }}>
+              <div className="glass-card" style={{ marginTop:20,background:"rgba(37,99,235,0.02)",border:"1px solid rgba(37,99,235,0.15)",padding:"20px",textAlign:"center" }}>
                 <p style={{ fontWeight:800,marginBottom:6,fontSize:14 }}>Login untuk akses sinyal lengkap</p>
                 <p style={{ color:"rgba(255,255,255,0.35)",fontSize:12,marginBottom:16 }}>Member VIP mendapat akses penuh sinyal premium.</p>
                 <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
                   <Link href="/login" className="btn-primary" style={{ padding:"8px 16px",fontSize:12,borderRadius:8 }}>Login</Link>
-                  <Link href="/paket" className="btn-primary" style={{ background:"rgba(16,185,129,0.1)",border:"1px solid rgba(16,185,129,0.22)",color:"#10b981",padding:"8px 16px",fontSize:12,borderRadius:8 }}>Lihat Paket</Link>
+                  <Link href="/paket" className="btn-primary" style={{ background:"rgba(37,99,235,0.1)",border:"1px solid rgba(37,99,235,0.22)",color:"#2563EB",padding:"8px 16px",fontSize:12,borderRadius:8 }}>Lihat Paket</Link>
                 </div>
               </div>
             )}

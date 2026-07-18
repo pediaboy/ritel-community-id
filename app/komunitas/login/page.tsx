@@ -44,7 +44,7 @@ export default function CommunityLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -57,7 +57,7 @@ export default function CommunityLogin() {
 
         <div className="glass-card mark-lg p-8">
           {/* Tab Switch */}
-          <div className="flex bg-[#15161A] border border-neutral-800 rounded-none p-1 mb-6">
+          <div className="flex bg-[#08111F] border border-neutral-800 rounded-none p-1 mb-6">
             <button
               onClick={() => { setMode("login"); setError(""); }}
               className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider transition-all ${mode === "login" ? "bg-emerald-500 text-neutral-950" : "text-neutral-500 hover:text-neutral-300"}`}
@@ -81,7 +81,7 @@ export default function CommunityLogin() {
                   value={displayName}
                   onChange={e => setDisplayName(e.target.value)}
                   placeholder="Nama Lengkap Anda"
-                  className="w-full bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
                 />
               </div>
             )}
@@ -91,7 +91,7 @@ export default function CommunityLogin() {
                 value={username}
                 onChange={e => setUsername(e.target.value.toLowerCase())}
                 placeholder="username"
-                className="w-full bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
+                className="w-full bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
             <div>
@@ -102,7 +102,7 @@ export default function CommunityLogin() {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••"
                 onKeyDown={e => e.key === "Enter" && handle()}
-                className="w-full bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
+                className="w-full bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
           </div>

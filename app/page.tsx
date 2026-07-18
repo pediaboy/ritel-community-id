@@ -85,7 +85,7 @@ function HomeFeed() {
       {posts.map(p=>(
         <div key={p.id} className="glass-card fade-in-up-2" style={{ padding:"12px 14px", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-            <div style={{ width:28,height:28,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#10b981)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"#fff",flexShrink:0 }}>RC</div>
+            <div style={{ width:28,height:28,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#2563EB)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"#fff",flexShrink:0 }}>RC</div>
             <div style={{ flex:1 }}>
               <div style={{ display:"flex",alignItems:"center",gap:6,flexWrap:"wrap" }}>
                 <span style={{ color:"#fff",fontWeight:800,fontSize:12 }}>Ritel Community.ID</span>
@@ -149,7 +149,7 @@ export default function HomePage() {
 
   return (
     <>
-      <div style={{ minHeight:"100vh", background:"#030508", color:"#fff", display:"flex", flexDirection:"column", maxWidth:480, margin:"0 auto", position:"relative", fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif" }}>
+      <div style={{ minHeight:"100vh", background:"#030712", color:"#fff", display:"flex", flexDirection:"column", maxWidth:480, margin:"0 auto", position:"relative", fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif" }}>
         <style>{`
           @keyframes tickerMovePg{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
           .nav-card-hover{transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s}
@@ -163,18 +163,19 @@ export default function HomePage() {
         {/* HEADER */}
         <header style={{ position:"sticky",top:0,zIndex:50,background:"rgba(3,5,8,0.82)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.05)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-            <div style={{ width:34,height:34,borderRadius:10,background:"#10b981",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
+            <div style={{ width:34,height:34,borderRadius:10,background:"#2563EB",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#06110c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <polyline points="18,5 22,5 22,9" stroke="#06110c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <polyline points="18,5 22,5 22,9" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <div>
-              <div style={{ fontWeight:900,fontSize:14,letterSpacing:"-0.3px" }}>RITEL COMMUNITY<span style={{color:"#10b981"}}>.ID</span></div>
+              <div style={{ fontWeight:900,fontSize:14,letterSpacing:"-0.3px" }}>RITEL COMMUNITY<span style={{color:"#2563EB"}}>.ID</span></div>
               <div style={{ fontSize:9,color:"rgba(255,255,255,0.28)",letterSpacing:"0.6px" }}>MARKET INTELLIGENCE PLATFORM</div>
             </div>
           </div>
           <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+            <Link href="/paket" style={{ color:"#3B82F6",fontWeight:800,fontSize:11,padding:"7px 12px",borderRadius:10,textDecoration:"none",border:"1px solid #132238" }}>Daftar</Link>
             <MoreMenu
               items={[
                 { id:"paket",    label:"Paket VIP",     onSelect:()=>router.push("/paket") },
@@ -185,7 +186,7 @@ export default function HomePage() {
                 { id:"order",    label:"Riwayat Order", onSelect:()=>router.push("/order") },
               ]}
             />
-            <Link href="/login" style={{ background:"#10b981",color:"#06110c",fontWeight:800,fontSize:11,padding:"7px 18px",borderRadius:10,textDecoration:"none" }}>Login VIP</Link>
+            <Link href="/login" style={{ background:"#2563EB",color:"#FFFFFF",fontWeight:800,fontSize:11,padding:"7px 18px",borderRadius:10,textDecoration:"none" }}>Login VIP</Link>
           </div>
         </header>
 
@@ -196,7 +197,7 @@ export default function HomePage() {
           {/* ── HERO — Badge, Headline, Subheadline, Stats, then CTA ── */}
           <section style={{ padding:"28px 16px 20px",textAlign:"center",position:"relative" }}>
             <div className="tag-chip fade-in-up" style={{ marginBottom:20 }}>
-              <span style={{ width:6,height:6,borderRadius:"50%",background:"#10b981",display:"inline-block" }}/>
+              <span style={{ width:6,height:6,borderRadius:"50%",background:"#2563EB",display:"inline-block" }}/>
               Platform Sinyal Saham Indonesia
             </div>
 
@@ -212,9 +213,9 @@ export default function HomePage() {
             {/* Premium statistics */}
             <div className="fade-in-up-2" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:22 }}>
               {[
-                {v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#10b981",glow:"rgba(16,185,129,0.1)",  Icon:Icon.Signal},
-                {v:"1.000+",l:"Member Aktif",           c:"#10b981",glow:"rgba(16,185,129,0.1)",Icon:Icon.Users},
-                {v:"95%",   l:"Win Rate",               c:"#10b981",glow:"rgba(16,185,129,0.1)", Icon:Icon.TrendUp},
+                {v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#2563EB",glow:"rgba(37,99,235,0.1)",  Icon:Icon.Signal},
+                {v:"1.000+",l:"Member Aktif",           c:"#2563EB",glow:"rgba(37,99,235,0.1)",Icon:Icon.Users},
+                {v:"95%",   l:"Win Rate",               c:"#2563EB",glow:"rgba(37,99,235,0.1)", Icon:Icon.TrendUp},
               ].map((s,i)=>(
                 <div key={i} className="glass-card" style={{ background:`linear-gradient(145deg,${s.glow},rgba(0,0,0,0))`,padding:"14px 8px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:86 }}>
                   <span style={{ color:s.c, marginBottom:4, display:"block" }}><s.Icon/></span>
@@ -225,7 +226,7 @@ export default function HomePage() {
             </div>
 
             <div className="fade-in-up-3" style={{ display:"flex",gap:10,justifyContent:"center",maxWidth:320,margin:"0 auto" }}>
-              <Link href="/paket" style={{ flex:1,display:"block",textAlign:"center",background:"#10b981",color:"#06110c",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:10,textDecoration:"none" }}>Mulai Sekarang</Link>
+              <Link href="/paket" style={{ flex:1,display:"block",textAlign:"center",background:"#2563EB",color:"#FFFFFF",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:10,textDecoration:"none" }}>Mulai Sekarang</Link>
               <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" style={{ flex:1,display:"block",textAlign:"center",background:"rgba(34,197,94,0.09)",border:"1px solid rgba(34,197,94,0.22)",color:"#22c55e",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:14,textDecoration:"none" }}>WA Admin</a>
             </div>
           </section>
@@ -262,7 +263,7 @@ export default function HomePage() {
                 <span style={{ fontWeight:900,fontSize:15 }}>Sinyal Terbaru</span>
                 <EqBars color="green"/>
               </div>
-              <Link href="/sinyal" style={{ color:"#10b981",fontSize:12,fontWeight:700,textDecoration:"none",display:"flex",alignItems:"center",gap:4 }}>Semua <Icon.ChevRight/></Link>
+              <Link href="/sinyal" style={{ color:"#2563EB",fontSize:12,fontWeight:700,textDecoration:"none",display:"flex",alignItems:"center",gap:4 }}>Semua <Icon.ChevRight/></Link>
             </div>
             {(syncData.signals||[]).slice(0,3).map((s:any,i:number)=>{
               const ac:any={BUY:"#22c55e",SELL:"#ef4444",HOLD:"#eab308",WATCH:"#60a5fa",ANTRI:"#a78bfa"};
@@ -295,9 +296,9 @@ export default function HomePage() {
 
           {/* ── CTA BANNER ── */}
           <section style={{ padding:"0 16px",marginBottom:18 }}>
-            <div className="glass-card" style={{ background:"linear-gradient(135deg,rgba(16,185,129,0.09),rgba(16,185,129,0.03))",border:"1px solid rgba(16,185,129,0.18)",padding:"26px 20px",textAlign:"center" }}>
-              <div style={{ width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,rgba(16,185,129,0.15),rgba(139,92,246,0.1))",border:"1px solid rgba(16,185,129,0.2)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px" }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <div className="glass-card" style={{ background:"linear-gradient(135deg,rgba(37,99,235,0.09),rgba(37,99,235,0.03))",border:"1px solid rgba(37,99,235,0.18)",padding:"26px 20px",textAlign:"center" }}>
+              <div style={{ width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,rgba(37,99,235,0.15),rgba(139,92,246,0.1))",border:"1px solid rgba(37,99,235,0.2)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px" }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
               <h3 style={{ fontWeight:900,fontSize:18,marginBottom:8 }}>Gabung 1.000+ Investor</h3>
               <p style={{ color:"rgba(255,255,255,0.38)",fontSize:13,lineHeight:1.65,marginBottom:22 }}>Sinyal premium, modul edukasi lengkap, dan komunitas aktif.</p>

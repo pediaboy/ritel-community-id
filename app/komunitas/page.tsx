@@ -6,7 +6,7 @@ export default function KomunitasPage() {
     window.location.href = "https://chat.whatsapp.com/JzF3gCFvZsbJrx3KuVtQeS";
   }, []);
   return (
-    <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4">
       <div className="text-center max-w-sm glass-card p-8">
         <div className="index-badge w-16 h-16 mx-auto mb-6 bg-neutral-900 border border-emerald-500/30 text-emerald-400">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

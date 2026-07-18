@@ -70,7 +70,7 @@ function KalkulatorARAARB() {
       <div className="flex gap-1 mb-4 bg-white/5 rounded-xl p-1 border border-white/5">
         {(["reguler","akselerasi"] as const).map(m => (
           <button key={m} onClick={() => { setMode(m); setResult(null); }}
-            className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${mode===m?"bg-emerald-500 text-[#06110c]":"text-neutral-400"}`}>
+            className={`flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${mode===m?"bg-emerald-500 text-[#FFFFFF]":"text-neutral-400"}`}>
             {m === "reguler" ? "Reguler" : "Akselerasi & FCA"}
           </button>
         ))}
@@ -500,11 +500,11 @@ export default function AlatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0B0D] text-[#EDEEF0] max-w-[480px] mx-auto font-sans relative pb-24">
+    <div className="min-h-screen bg-[#030712] text-[#EDEEF0] max-w-[480px] mx-auto font-sans relative pb-24">
       <div className="galaxy-stars" />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#0A0B0D]/95 backdrop-blur-md border-b border-white/10 px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-[#030712]/95 backdrop-blur-md border-b border-white/10 px-4 py-4 flex items-center justify-between">
         {activeTool ? (
           <button onClick={() => setActiveTool(null)} className="text-neutral-400 hover:text-emerald-400 transition-colors">
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

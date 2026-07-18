@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function VerifiedBadge() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" className="inline-block ml-1">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" className="inline-block ml-1">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
     </svg>
   );
@@ -89,7 +89,7 @@ function BottomNav({ active }: { active: string }) {
       <div className="flex items-center justify-around py-2 max-w-lg mx-auto">
         {tabs.map(t => (
           <Link key={t.id} href={t.href} className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all ${active === t.id ? "text-emerald-400" : "text-neutral-500 hover:text-neutral-300"}`}>
-            <div className={active === t.id ? "drop-shadow-[0_0_6px_rgba(16,185,129,0.8)]" : ""}>{icons[t.id]}</div>
+            <div className={active === t.id ? "drop-shadow-[0_0_6px_rgba(37,99,235,0.8)]" : ""}>{icons[t.id]}</div>
             <span className="text-[10px] font-bold tracking-wider uppercase">{t.label}</span>
           </Link>
         ))}
@@ -170,13 +170,13 @@ export default function ProfilPage() {
   };
 
   if (!user) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0A0B0D]">
+    <div className="min-h-screen flex items-center justify-center bg-[#030712]">
       <div className="text-neutral-500 font-bold uppercase tracking-wider text-xs">Memuat...</div>
     </div>
   );
 
   return (
-    <div className="min-h-screen pb-24 bg-[#0A0B0D] text-neutral-100">
+    <div className="min-h-screen pb-24 bg-[#030712] text-neutral-100">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-neutral-800/80" style={{ background: "rgba(10,11,13,0.95)", backdropFilter: "blur(20px)" }}>
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
@@ -218,7 +218,7 @@ export default function ProfilPage() {
                   onChange={e => setBio(e.target.value)}
                   maxLength={200}
                   rows={3}
-                  className="w-full bg-[#15161A] border border-neutral-800 rounded-none px-3 py-2 text-neutral-100 text-sm resize-none outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-[#08111F] border border-neutral-800 rounded-none px-3 py-2 text-neutral-100 text-sm resize-none outline-none focus:border-emerald-500 transition-colors"
                   placeholder="Tulis bio singkat kamu..."
                 />
                 <div className="flex gap-2 mt-2">
@@ -261,7 +261,7 @@ export default function ProfilPage() {
                 value={linkToken}
                 onChange={e => setLinkToken(e.target.value)}
                 placeholder="RC-GOLD-XXXXXXXX"
-                className="flex-1 bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-wider text-sm outline-none focus:border-emerald-500 transition-colors"
+                className="flex-1 bg-[#08111F] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-wider text-sm outline-none focus:border-emerald-500 transition-colors"
               />
               <button
                 onClick={handleLinkToken}

@@ -128,7 +128,7 @@ export default function OrdersTab() {
           { id:"ritel", label:"Ritel Community" },
         ].map(f => (
           <button key={f.id} onClick={() => setSourceFilter(f.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${sourceFilter===f.id ? "bg-emerald-500 text-[#06110c] border-transparent" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${sourceFilter===f.id ? "bg-emerald-500 text-[#FFFFFF] border-transparent" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
             {f.label}
           </button>
         ))}
@@ -136,7 +136,7 @@ export default function OrdersTab() {
         {/* Status filter */}
         {["all","pending","paid","cancelled"].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-emerald-500 text-[#06110c] border-transparent" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-emerald-500 text-[#FFFFFF] border-transparent" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
             {f==="all"?"Semua":f==="pending"?"Pending":f==="paid"?"Lunas":"Batal"}
             {f!=="all"&&` (${orders.filter(o=>o.status===f).length})`}
           </button>
@@ -252,7 +252,7 @@ export default function OrdersTab() {
                     <button onClick={() => setEditId(null)}
                       className="flex-1 py-2 rounded-lg text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Batal</button>
                     <button onClick={saveEdit}
-                      className="flex-1 py-2 rounded-lg text-xs bg-emerald-500 text-[#06110c] hover:bg-emerald-400 font-extrabold">Simpan</button>
+                      className="flex-1 py-2 rounded-lg text-xs bg-emerald-500 text-[#FFFFFF] hover:bg-emerald-400 font-extrabold">Simpan</button>
                   </div>
                 </div>
               ) : (
