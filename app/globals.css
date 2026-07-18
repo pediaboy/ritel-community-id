@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -342,3 +343,63 @@ body {
 }
 .more-menu-item:hover { background: #0E1D33; color: #3B82F6; }
 .more-menu-item.active { background: #0E1D33; color: #3B82F6; }
+
+/* ============================================================
+   CYBERPUNK / HIGH-TECH VIP SYSTEM
+   Used across the VIP Member Area — cut-corner cards, neon
+   borders, premium display font, role-lock overlays.
+   ============================================================ */
+.font-display { font-family: 'Space Grotesk', 'Inter', -apple-system, sans-serif; letter-spacing: -0.01em; }
+
+/* Cut-corner "tech" card — replaces rounded corners inside VIP area.
+   clip-path notches the top-right and bottom-left corners; border is
+   clipped along with it, giving a clean angular tech-panel silhouette. */
+.cyber-card {
+  position: relative;
+  clip-path: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  border: 1px solid rgba(37,99,235,0.22);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.cyber-card:hover { border-color: rgba(37,99,235,0.4); }
+.cyber-card-sm {
+  clip-path: polygon(0 9px, 9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+  border: 1px solid rgba(37,99,235,0.22);
+}
+/* Thin corner accent ticks drawn on top of a cyber-card, purely decorative */
+.cyber-corner-tl, .cyber-corner-br {
+  position: absolute; width: 10px; height: 10px; pointer-events: none; z-index: 2;
+}
+.cyber-corner-tl { top: 0; left: 0; border-top: 2px solid #3B82F6; border-left: 2px solid #3B82F6; opacity: 0.85; }
+.cyber-corner-br { bottom: 0; right: 0; border-bottom: 2px solid #3B82F6; border-right: 2px solid #3B82F6; opacity: 0.85; }
+
+/* Locked / gated feature: content stays visible (per product spec — never fully
+   hidden) but blurred + dimmed, with a lock badge + upgrade CTA laid on top. */
+.locked-feature-wrap { position: relative; }
+.locked-feature-content {
+  filter: blur(5px) brightness(0.55) saturate(0.7);
+  pointer-events: none;
+  user-select: none;
+}
+.locked-feature-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 20px;
+  background: radial-gradient(ellipse at 50% 40%, rgba(3,7,18,0.35) 0%, rgba(3,7,18,0.75) 75%);
+}
+.locked-feature-icon {
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  background: rgba(37,99,235,0.12); border: 1px solid rgba(59,130,246,0.4); color: #60A5FA;
+  clip-path: polygon(0 9px, 9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+  margin-bottom: 12px; box-shadow: 0 0 18px rgba(37,99,235,0.35);
+}
+
+/* Neon rank badges for Leaderboard */
+.rank-badge {
+  width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; font-family: 'Space Grotesk', sans-serif;
+  clip-path: polygon(0 8px, 8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+}
+.rank-badge-1 { background: linear-gradient(135deg,#FBBF24,#D97706); color: #1a1200; box-shadow: 0 0 16px rgba(251,191,36,0.5); }
+.rank-badge-2 { background: linear-gradient(135deg,#E2E8F0,#94A3B8); color: #0f172a; box-shadow: 0 0 12px rgba(203,213,225,0.35); }
+.rank-badge-3 { background: linear-gradient(135deg,#D97706,#92400E); color: #1a0f00; box-shadow: 0 0 12px rgba(217,119,6,0.35); }
+.rank-badge-n { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }

@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     "owners", "partners", "wa_links", "bagger_signals", "bandar_signals", "done_signal_ids",
     "greeting_pagi", "greeting_malam", "testimonials_data",
     "bsjp_signals", "bpjs_signals", "rekap_sinyal", "jurnal_trade", "jurnal_global",
-    "maintenance_mode", "bsjp_min_pkg", "bpjs_min_pkg"
+    "maintenance_mode", "bsjp_min_pkg", "bpjs_min_pkg", "leaderboard_weekly", "leaderboard_monthly"
   ];
   if (settingsKeys.includes(type)) {
     await sb("POST", "/settings",
@@ -109,5 +109,7 @@ export async function GET() {
     maintenance_mode: settings.maintenance_mode || false,
     bsjp_min_pkg: settings.bsjp_min_pkg || "silver",
     bpjs_min_pkg: settings.bpjs_min_pkg || "silver",
+    leaderboard_weekly: settings.leaderboard_weekly || [],
+    leaderboard_monthly: settings.leaderboard_monthly || [],
   });
 }

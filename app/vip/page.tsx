@@ -310,6 +310,31 @@ function TiltCard({ children, className="" }: { children: React.ReactNode; class
   return <div ref={ref} className={`tilt-card ${className}`} onMouseMove={onMove} onMouseLeave={onLeave}>{children}</div>;
 }
 
+// ── LOCKED FEATURE — content stays visible (blurred+dimmed) with a lock overlay + upgrade CTA ──
+function LockedFeature({ locked, minPkg, waText, children }: { locked:boolean; minPkg:string; waText?:string; children:React.ReactNode }) {
+  if (!locked) return <>{children}</>;
+  return (
+    <div className="locked-feature-wrap">
+      <div className="locked-feature-content" aria-hidden="true">{children}</div>
+      <div className="locked-feature-overlay">
+        <div className="locked-feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <p className="font-display" style={{ fontWeight:800, fontSize:15, color:"#fff", marginBottom:6 }}>Fitur Eksklusif VIP {minPkg}</p>
+        <p style={{ color:"rgba(255,255,255,0.55)", fontSize:12, marginBottom:18, maxWidth:260, lineHeight:1.6 }}>Upgrade paketmu untuk membuka fitur ini sepenuhnya.</p>
+        <a
+          href={`https://wa.me/6289663874700?text=${encodeURIComponent(waText || ("Halo admin, saya mau upgrade ke " + minPkg))}`}
+          target="_blank" rel="noreferrer"
+          className="cyber-card-sm font-display"
+          style={{ display:"inline-block", background:"linear-gradient(135deg,#2563EB,#1D4ED8)", color:"#fff", fontWeight:800, fontSize:12, padding:"11px 26px", textDecoration:"none", boxShadow:"0 0 20px rgba(37,99,235,0.45)" }}
+        >
+          Upgrade VIP Sekarang
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ── CONSTANTS ────────────────────────────────────────────────────
 const PKG_LEVELS = ["basic","silver","gold","pro","platinum","elite"];
 const PKG_COLORS: any = {
@@ -339,7 +364,8 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
   const bgColor = s.action==="BUY"?"#052d1a":s.action==="SELL"?"#2d0505":s.action==="ANTRI"?"#01151d":"#1a1a2e";
 
   return (
-    <div style={{ background:"#0d1117", border:`1px solid rgba(255,255,255,0.08)`, borderRadius:16, overflow:"hidden", marginBottom:0 }}>
+    <div className="cyber-card font-display" style={{ background:"#0a0e17", overflow:"hidden", marginBottom:0 }}>
+      <div className="cyber-corner-tl"/><div className="cyber-corner-br"/>
       {/* Top row */}
       <div style={{ padding:"14px 16px 10px", display:"flex", alignItems:"center", gap:12 }}>
         <div style={{ width:48, height:48, borderRadius:12, background:bgColor, border:`1px solid ${ac.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:ac.text, flexShrink:0 }}>{initials}</div>
@@ -411,9 +437,9 @@ function BaggerCard({ s }: { s: any }) {
   const initials = (s.kode||s.saham||"BG").slice(0,4).toUpperCase();
 
   return (
-    <div style={{ background:"#0d1117", border:"1px solid rgba(245,158,11,0.15)", borderRadius:16, overflow:"hidden" }}>
+    <div className="cyber-card font-display" style={{ background:"#0a0e17", border:"1px solid rgba(245,158,11,0.3)", overflow:"hidden" }}>
       <div style={{ padding:"14px 16px 10px", display:"flex", alignItems:"center", gap:12 }}>
-        <div style={{ width:48, height:48, borderRadius:12, background:"rgba(245,158,11,0.08)", border:"1px solid rgba(245,158,11,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#f59e0b", flexShrink:0 }}>{initials}</div>
+        <div style={{ width:48, height:48, background:"rgba(245,158,11,0.08)", border:"1px solid rgba(245,158,11,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#f59e0b", flexShrink:0 }} className="cyber-card-sm">{initials}</div>
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
             <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode||s.saham}</span>
@@ -1632,6 +1658,9 @@ export default function VipPage() {
   const [doneSignalIds, setDoneSignalIds] = useState<string[]>([]);
   const [greetingPagi, setGreetingPagi] = useState("");
   const [greetingMalam, setGreetingMalam] = useState("");
+  const [leaderboardWeekly, setLeaderboardWeekly] = useState<any[]>([]);
+  const [leaderboardMonthly, setLeaderboardMonthly] = useState<any[]>([]);
+  const [leaderboardPeriod, setLeaderboardPeriod] = useState<"weekly"|"monthly">("weekly");
   const [owners, setOwners] = useState<any[]>([
     { name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"", tag:"Owner" },
   ]);
@@ -1664,6 +1693,8 @@ export default function VipPage() {
         if (data.greeting_malam) setGreetingMalam(data.greeting_malam);
         if (data.owners) setOwners(data.owners);
         if (data.partners) setPartners(data.partners);
+        if (data.leaderboard_weekly) setLeaderboardWeekly(data.leaderboard_weekly || []);
+        if (data.leaderboard_monthly) setLeaderboardMonthly(data.leaderboard_monthly || []);
       }).catch(()=>{});
       loadSync();
       // Auto refresh signals setiap 30 detik
@@ -1771,11 +1802,11 @@ export default function VipPage() {
         <MotivasiTickerVIP />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
-            <div style={{ width:34, height:34, borderRadius:10, background:"#2563EB", boxShadow:"0 0 16px rgba(37,99,235,0.25)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="18,5 22,5 22,9" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <div className="cyber-card-sm" style={{ width:34, height:34, background:"linear-gradient(135deg,#2563EB,#1D4ED8)", boxShadow:"0 0 16px rgba(37,99,235,0.35)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="18,5 22,5 22,9" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
-              <div style={{ color:"#fff", fontWeight:900, fontSize:13, letterSpacing:"-.2px" }}>RITEL COMMUNITY<span style={{color:"#2563EB"}}>.ID</span></div>
+              <div className="font-display" style={{ color:"#fff", fontWeight:700, fontSize:13, letterSpacing:"0" }}>RITEL COMMUNITY<span style={{color:"#3B82F6"}}>.ID</span></div>
               <div style={{ color:"rgba(255,255,255,0.28)", fontSize:9, letterSpacing:".5px" }}>AREA VIP MEMBER</div>
             </div>
           </Link>
@@ -1791,8 +1822,9 @@ export default function VipPage() {
                 { id:"bandar",  label:"Bandar",       onSelect:()=>setTab("bandar"),  active: tab==="bandar" },
                 { id:"bagger",  label:"Bagger",       onSelect:()=>setTab("bagger"),  active: tab==="bagger" },
                 { id:"modul",   label:"Modul",        onSelect:()=>setTab("modul"),   active: tab==="modul" },
-                { id:"bsjp",    label:"Bincang Sore", onSelect:()=>setTab("bsjp"),    active: tab==="bsjp" },
-                { id:"bpjs",    label:"Bincang Pagi", onSelect:()=>setTab("bpjs"),    active: tab==="bpjs" },
+                { id:"bsjp",    label:"BELI SORE JUAL PAGI", onSelect:()=>setTab("bsjp"),    active: tab==="bsjp" },
+                { id:"bpjs",    label:"BELI PAGI JUAL SORE", onSelect:()=>setTab("bpjs"),    active: tab==="bpjs" },
+                { id:"leaderboard", label:"Leaderboard", onSelect:()=>setTab("leaderboard"), active: tab==="leaderboard" },
                 { id:"rekap",   label:"Rekap",        onSelect:()=>setTab("rekap"),   active: tab==="rekap" },
                 { id:"jurnal",  label:"Jurnal",       onSelect:()=>setTab("jurnal"),  active: tab==="jurnal" },
                 { id:"ai",      label:"RC-AI",        onSelect:()=>setTab("ai"),      active: tab==="ai" },
@@ -1973,23 +2005,17 @@ export default function VipPage() {
           <div style={{ padding:"16px" }} className="fade-in-up">
             <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Bandarmologi</h2>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Deteksi pola bandar & pergerakan smart money</p>
-            {pkgLevel < 2 ? (
-              <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", borderRadius:16, padding:"32px 20px", textAlign:"center" }}>
-                <p style={{ fontSize:32, marginBottom:12 }}></p>
-                <p style={{ fontWeight:800, marginBottom:8 }}>Fitur Eksklusif VIP Gold ke atas</p>
-                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13, marginBottom:20 }}>Upgrade untuk akses analisis bandarmologi real-time</p>
-                <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20mau%20upgrade%20ke%20Gold`} target="_blank" rel="noreferrer" style={{ display:"inline-block", background:"linear-gradient(135deg,#f59e0b,#d97706)", color:"#000", fontWeight:900, fontSize:13, padding:"12px 28px", borderRadius:12, textDecoration:"none" }}>Upgrade Sekarang</a>
-              </div>
-            ) : bandarSignals.length === 0 ? (
-              <div style={{ textAlign:"center", padding:"48px 16px" }}>
-                <p style={{ fontSize:36, marginBottom:12 }}></p>
-                <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Belum ada sinyal bandar. Stay tuned!</p>
-              </div>
-            ) : (
-              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                {bandarSignals.map((s,i)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
-              </div>
-            )}
+            <LockedFeature locked={pkgLevel < 2} minPkg="Gold" waText="Halo admin, saya mau upgrade ke Gold untuk akses Bandarmologi">
+              {bandarSignals.length === 0 ? (
+                <div style={{ textAlign:"center", padding:"48px 16px" }}>
+                  <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Belum ada sinyal bandar. Stay tuned!</p>
+                </div>
+              ) : (
+                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                  {bandarSignals.map((s,i)=><SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
+                </div>
+              )}
+            </LockedFeature>
 
             {/* Modul bandarmologi */}
             <div style={{ marginTop:24 }}>
@@ -2468,16 +2494,7 @@ export default function VipPage() {
         {/* ── BSJP TAB ── */}
         {tab==="bsjp" && (
           <div className="fade-in-up" style={{ padding:"0 16px 16px" }}>
-            {PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bsjpMinPkg) ? (
-              <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
-                <div style={{ fontSize:56, marginBottom:16 }}></div>
-                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Akses Terbatas</h2>
-                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#2563EB" }}>Beli Sore Jual Pagi</strong> membutuhkan paket <strong style={{ color:"#2563EB", textTransform:"capitalize" }}>{bsjpMinPkg}</strong> ke atas.</p>
-                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:12, marginBottom:20 }}>Paket kamu saat ini: <span style={{ color:"rgba(255,255,255,0.6)", textTransform:"capitalize", fontWeight:700 }}>{userPkg}</span></p>
-                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
-              </div>
-            ) : (
-            <>
+            <LockedFeature locked={PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bsjpMinPkg)} minPkg={bsjpMinPkg.charAt(0).toUpperCase()+bsjpMinPkg.slice(1)} waText="Halo admin, saya mau upgrade paket untuk akses Beli Sore Jual Pagi">
             <div style={{ padding:"16px 0 8px" }}>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Beli Sore Jual Pagi</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BSJP — akumulasi sore hari, jual di pagi hari saat open pasar.</p>
@@ -2517,24 +2534,14 @@ export default function VipPage() {
                 ))}
               </div>
             )}
-            </>
-            )}
+            </LockedFeature>
           </div>
         )}
 
         {/* ── BPJS TAB ── */}
         {tab==="bpjs" && (
           <div className="fade-in-up" style={{ padding:"0 16px 16px" }}>
-            {PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bpjsMinPkg) ? (
-              <div style={{ textAlign:"center", padding:"48px 24px", marginTop:16 }}>
-                <div style={{ fontSize:56, marginBottom:16 }}></div>
-                <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Akses Terbatas</h2>
-                <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#a855f7" }}>Beli Pagi Jual Sore</strong> membutuhkan paket <strong style={{ color:"#a855f7", textTransform:"capitalize" }}>{bpjsMinPkg}</strong> ke atas.</p>
-                <p style={{ color:"rgba(255,255,255,0.3)", fontSize:12, marginBottom:20 }}>Paket kamu saat ini: <span style={{ color:"rgba(255,255,255,0.6)", textTransform:"capitalize", fontWeight:700 }}>{userPkg}</span></p>
-                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#7c3aed,#a855f7)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
-              </div>
-            ) : (
-            <>
+            <LockedFeature locked={PKG_LEVELS.indexOf(userPkg) < PKG_LEVELS.indexOf(bpjsMinPkg)} minPkg={bpjsMinPkg.charAt(0).toUpperCase()+bpjsMinPkg.slice(1)} waText="Halo admin, saya mau upgrade paket untuk akses Beli Pagi Jual Sore">
             <div style={{ padding:"16px 0 8px" }}>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Beli Pagi Jual Sore</h2>
               <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Strategi BPJS — entry di pagi hari, target keluar sebelum penutupan sore.</p>
@@ -2574,8 +2581,55 @@ export default function VipPage() {
                 ))}
               </div>
             )}
-            </>
-            )}
+            </LockedFeature>
+          </div>
+        )}
+
+        {/* ── LEADERBOARD TAB ── */}
+        {tab==="leaderboard" && (
+          <div style={{ padding:"16px" }} className="fade-in-up">
+            <h2 className="font-display" style={{ fontWeight:800, fontSize:18, marginBottom:4 }}>Leaderboard</h2>
+            <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Peringkat member paling cuan minggu & bulan ini</p>
+            <div style={{ display:"flex", marginBottom:18, borderRadius:0 }} className="cyber-card-sm" >
+              {(["weekly","monthly"] as const).map(p => (
+                <button key={p} onClick={()=>setLeaderboardPeriod(p)}
+                  className="font-display"
+                  style={{ flex:1, padding:"10px", background: leaderboardPeriod===p ? "#2563EB" : "transparent", color: leaderboardPeriod===p ? "#fff" : "rgba(255,255,255,0.45)", fontWeight:800, fontSize:11, letterSpacing:"0.05em", textTransform:"uppercase", border:"none", cursor:"pointer" }}
+                >{p==="weekly"?"Mingguan":"Bulanan"}</button>
+              ))}
+            </div>
+            {(() => {
+              const list = (leaderboardPeriod === "weekly" ? leaderboardWeekly : leaderboardMonthly);
+              if (!list.length) return (
+                <div style={{ textAlign:"center", padding:"48px 16px" }}>
+                  <p style={{ color:"rgba(255,255,255,0.4)", fontSize:14 }}>Belum ada data leaderboard {leaderboardPeriod==="weekly"?"mingguan":"bulanan"}.</p>
+                </div>
+              );
+              return (
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {list.map((row:any, i:number) => {
+                    const rank = i + 1;
+                    const rankCls = rank===1 ? "rank-badge-1" : rank===2 ? "rank-badge-2" : rank===3 ? "rank-badge-3" : "rank-badge-n";
+                    const profitPositive = !String(row.stat||"").trim().startsWith("-");
+                    return (
+                      <div key={row.id||i} className="cyber-card" style={{ background:"#0a0e17", padding:"14px 16px", display:"flex", alignItems:"center", gap:14 }}>
+                        <div className={`rank-badge ${rankCls}`}>{rank}</div>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+                            <span className="font-display" style={{ color:"#fff", fontWeight:700, fontSize:14 }}>{row.name || "Member"}</span>
+                            {row.badge && <span style={{ fontSize:9, background:"rgba(37,99,235,0.15)", color:"#60A5FA", padding:"2px 8px", fontWeight:700 }} className="cyber-card-sm">{row.badge}</span>}
+                          </div>
+                          {row.note && <p style={{ color:"rgba(255,255,255,0.35)", fontSize:11, marginTop:2 }}>{row.note}</p>}
+                        </div>
+                        {row.stat && (
+                          <span className="font-display" style={{ color: profitPositive ? "#22c55e" : "#ef4444", fontWeight:800, fontSize:15, flexShrink:0 }}>{row.stat}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         )}
 

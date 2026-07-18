@@ -60,7 +60,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   );
 }
 
-type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders" | "owners_partners" | "admin_feed" | "bagger" | "bandar" | "bsjp" | "bpjs" | "rekap" | "jurnal";
+type Tab = "signals" | "tokens" | "topstocks" | "liveinfo" | "testimonials" | "pricing" | "ticker" | "motivasi" | "loginlogs" | "mutasi" | "orders" | "owners_partners" | "admin_feed" | "bagger" | "bandar" | "bsjp" | "bpjs" | "rekap" | "jurnal" | "leaderboard";
 
 function Btn({ onClick, color, children, className = "" }: { onClick: () => void; color: string; children: React.ReactNode; className?: string }) {
   const colors: any = {
@@ -478,6 +478,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [sigForm, setSigForm] = useState<any>({ saham:"", kode:"", action:"BUY", entry:"", tp:"", tp2:"", tp3:"", sl:"", notes:"", package:["gold","pro","platinum","elite"], is_tomorrow:false, is_pinned:false });
   const [bsjpSignals, setBsjpSignals] = useState<any[]>([]);
   const [bpjsSignals, setBpjsSignals] = useState<any[]>([]);
+  const [leaderboardWeekly, setLeaderboardWeekly] = useState<any[]>([]);
+  const [leaderboardMonthly, setLeaderboardMonthly] = useState<any[]>([]);
+  const [leaderboardTabPeriod, setLeaderboardTabPeriod] = useState<"weekly"|"monthly">("weekly");
+  const [leaderboardForm, setLeaderboardForm] = useState<any>({ name:"", badge:"", stat:"", note:"" });
+  const [editLeaderboardId, setEditLeaderboardId] = useState<string|null>(null);
+  const [showLeaderboardForm, setShowLeaderboardForm] = useState(false);
   const [bsjpMinPkg, setBsjpMinPkg] = useState<string>("silver");
   const [bpjsMinPkg, setBpjsMinPkg] = useState<string>("silver");
   const [rekapList, setRekapList] = useState<any[]>([]);
@@ -611,6 +617,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         if (syncRes.partners) setPartners(syncRes.partners || []);
         if (syncRes.bagger_signals) setBaggerList(syncRes.bagger_signals || []);
         if (syncRes.bandar_signals) setBandarList(syncRes.bandar_signals || []);
+        if (syncRes.leaderboard_weekly) setLeaderboardWeekly(syncRes.leaderboard_weekly || []);
+        if (syncRes.leaderboard_monthly) setLeaderboardMonthly(syncRes.leaderboard_monthly || []);
         // Login logs
         const logsRes = await fetch("/api/admin/loginlogs").then(r => r.json()).catch(() => ({}));
         if (logsRes.logs) setLoginLogs(logsRes.logs);
@@ -844,6 +852,39 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const editMotivasi = (m: any) => { setMotivasiForm({ text: m.text }); setEditMotivasiId(m.id); setShowMotivasiForm(true); window.scrollTo(0,0); };
   const delMotivasi = (id: string) => { if (!confirm("Hapus motivasi ini?")) return; const updated = motivasiList.filter(m=>m.id!==id); setMotivasiList(updated); syncToAPI("motivasi", updated); };
 
+  // ===== LEADERBOARD =====
+  const currentLeaderboardList = leaderboardTabPeriod === "weekly" ? leaderboardWeekly : leaderboardMonthly;
+  const setCurrentLeaderboardList = leaderboardTabPeriod === "weekly" ? setLeaderboardWeekly : setLeaderboardMonthly;
+  const leaderboardSyncKey = leaderboardTabPeriod === "weekly" ? "leaderboard_weekly" : "leaderboard_monthly";
+  const saveLeaderboard = async () => {
+    if (!leaderboardForm.name.trim()) { alert("Isi nama member!"); return; }
+    let updated;
+    if (editLeaderboardId) {
+      updated = currentLeaderboardList.map((r:any)=> r.id===editLeaderboardId ? { ...leaderboardForm, id:editLeaderboardId } : r);
+    } else {
+      updated = [...currentLeaderboardList, { ...leaderboardForm, id: Date.now().toString() }];
+    }
+    setCurrentLeaderboardList(updated);
+    await syncToAPI(leaderboardSyncKey, updated);
+    setShowLeaderboardForm(false); setEditLeaderboardId(null);
+    setLeaderboardForm({ name:"", badge:"", stat:"", note:"" });
+  };
+  const editLeaderboard = (row: any) => { setLeaderboardForm(row); setEditLeaderboardId(row.id); setShowLeaderboardForm(true); };
+  const delLeaderboard = (id: string) => {
+    if (!confirm("Hapus dari leaderboard?")) return;
+    const updated = currentLeaderboardList.filter((r:any)=>r.id!==id);
+    setCurrentLeaderboardList(updated);
+    syncToAPI(leaderboardSyncKey, updated);
+  };
+  const moveLeaderboard = (idx: number, dir: -1|1) => {
+    const arr = [...currentLeaderboardList];
+    const j = idx + dir;
+    if (j < 0 || j >= arr.length) return;
+    [arr[idx], arr[j]] = [arr[j], arr[idx]];
+    setCurrentLeaderboardList(arr);
+    syncToAPI(leaderboardSyncKey, arr);
+  };
+
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
     { id:"bagger", label:"Bagger" },
@@ -865,6 +906,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"orders", label:"Orders" },
     { id:"loginlogs", label:"Login Log" },
     { id:"owners_partners", label:"Owner" },
+    { id:"leaderboard", label:"Leaderboard" },
   ];
 
   return (
@@ -1782,6 +1824,71 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
           {/* OWNERS & PARTNERS */}
           {tab==="owners_partners" && <OwnersPartnersTab syncToAPI={syncToAPI} />}
+
+          {tab==="leaderboard" && (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-white font-bold text-sm">Leaderboard</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">Peringkat member ditampilkan di tab Leaderboard VIP</p>
+                </div>
+                <button onClick={()=>{setLeaderboardForm({name:"",badge:"",stat:"",note:""});setEditLeaderboardId(null);setShowLeaderboardForm(!showLeaderboardForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
+                  {showLeaderboardForm&&!editLeaderboardId?"Tutup":"Tambah Member"}
+                </button>
+              </div>
+
+              <div className="flex mb-4 rounded-xl overflow-hidden border border-white/10 w-fit">
+                {(["weekly","monthly"] as const).map(p => (
+                  <button key={p} onClick={()=>setLeaderboardTabPeriod(p)}
+                    className={`px-4 py-2 text-xs font-bold ${leaderboardTabPeriod===p ? "bg-blue-600 text-white" : "text-slate-400"}`}>
+                    {p==="weekly"?"Mingguan":"Bulanan"}
+                  </button>
+                ))}
+              </div>
+
+              {showLeaderboardForm && (
+                <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
+                  <h3 className="text-white font-bold mb-3 text-sm">{editLeaderboardId?"Edit Member":"Tambah Member"} — {leaderboardTabPeriod==="weekly"?"Mingguan":"Bulanan"}</h3>
+                  <div className="space-y-3">
+                    <input value={leaderboardForm.name} onChange={e=>setLeaderboardForm({...leaderboardForm,name:e.target.value})} className="input-dark" placeholder="Nama member (contoh: Budi S.)"/>
+                    <input value={leaderboardForm.badge} onChange={e=>setLeaderboardForm({...leaderboardForm,badge:e.target.value})} className="input-dark" placeholder="Badge (contoh: Gold Trader) — opsional"/>
+                    <input value={leaderboardForm.stat} onChange={e=>setLeaderboardForm({...leaderboardForm,stat:e.target.value})} className="input-dark" placeholder="Statistik (contoh: +142% Profit)"/>
+                    <input value={leaderboardForm.note} onChange={e=>setLeaderboardForm({...leaderboardForm,note:e.target.value})} className="input-dark" placeholder="Catatan singkat — opsional"/>
+                    <div className="flex gap-2">
+                      <button onClick={saveLeaderboard} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-bold">{editLeaderboardId?"Update":"Simpan"}</button>
+                      <button onClick={()=>{setShowLeaderboardForm(false);setEditLeaderboardId(null);}} className="px-4 py-2.5 rounded-xl text-sm text-slate-400 border border-white/10 hover:bg-white/5">Batal</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentLeaderboardList.length === 0 ? (
+                <div className="text-center py-12 text-slate-500 text-sm">Belum ada data leaderboard {leaderboardTabPeriod==="weekly"?"mingguan":"bulanan"}.</div>
+              ) : (
+                <div className="space-y-2">
+                  {currentLeaderboardList.map((row:any, i:number) => (
+                    <div key={row.id} className="card rounded-xl p-3 flex items-center gap-3 border border-white/5">
+                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-400 font-bold text-xs flex-shrink-0">{i+1}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-white font-bold text-sm">{row.name}</span>
+                          {row.badge && <span className="text-[10px] bg-blue-500/15 text-blue-400 px-2 py-0.5 rounded-md font-bold">{row.badge}</span>}
+                        </div>
+                        {row.note && <p className="text-slate-500 text-xs mt-0.5">{row.note}</p>}
+                      </div>
+                      {row.stat && <span className="text-emerald-400 font-bold text-sm flex-shrink-0">{row.stat}</span>}
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button onClick={()=>moveLeaderboard(i,-1)} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-20 px-1.5 text-xs">▲</button>
+                        <button onClick={()=>moveLeaderboard(i,1)} disabled={i===currentLeaderboardList.length-1} className="text-slate-400 hover:text-white disabled:opacity-20 px-1.5 text-xs">▼</button>
+                        <button onClick={()=>editLeaderboard(row)} className="text-blue-400 hover:text-blue-300 px-2 text-xs font-bold">Edit</button>
+                        <button onClick={()=>delLeaderboard(row.id)} className="text-red-400 hover:text-red-300 px-2 text-xs font-bold">Hapus</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* SINYAL BESOK TAB */}
           {tab==="sinyal_besok" && (
