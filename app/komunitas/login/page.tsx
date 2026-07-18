@@ -111,12 +111,12 @@ export default function CommunityLogin() {
         {mode === "login" && (
           <div className="mt-4 text-center">
             <p className="text-gray-600 text-xs">Punya token VIP?</p>
-            <Link href="/login" className="text-blue-400 text-xs hover:underline">Login dengan Token VIP →</Link>
+            <Link href="/login" className="text-blue-400 text-xs hover:underline">Login dengan Token VIP </Link>
           </div>
         )}
 
         <div className="mt-4 text-center">
-          <Link href="/" className="text-gray-600 text-xs hover:text-gray-400">← Kembali ke beranda</Link>
+          <Link href="/" className="text-gray-600 text-xs hover:text-gray-400"> Kembali ke beranda</Link>
         </div>
       </div>
     </div>

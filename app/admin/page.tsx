@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import MutasiTab from "@/app/components/MutasiTab";
+import MoreMenu from "@/app/components/MoreMenu";
 import OrdersTab from "@/app/components/OrdersTab";
 import Link from "next/link";
 
@@ -40,7 +41,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
       <div className="relative z-10 w-full max-w-sm">
         <div className="card-glass rounded-2xl p-8 border border-white/10">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-xl mb-4">RC</div>
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white font-black text-xl mb-4">RC</div>
             <h1 className="text-xl font-black text-white">Admin Panel</h1>
             <p className="text-slate-500 text-xs mt-1">RITEL COMMUNITY.ID</p>
           </div>
@@ -52,7 +53,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
               {loading ? "Memverifikasi..." : "Masuk"}
             </button>
           </div>
-          <Link href="/" className="block text-center text-xs text-slate-600 hover:text-cyan-400 mt-5 transition-colors">Kembali ke Beranda</Link>
+          <Link href="/" className="block text-center text-xs text-slate-600 hover:text-emerald-400 mt-5 transition-colors">Kembali ke Beranda</Link>
         </div>
       </div>
     </div>
@@ -68,7 +69,7 @@ function Btn({ onClick, color, children, className = "" }: { onClick: () => void
     red: "bg-red-500/10 text-red-400 hover:bg-red-500/25 border-red-500/20",
     yellow: "bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/25 border-yellow-500/20",
     purple: "bg-purple-500/10 text-purple-400 hover:bg-purple-500/25 border-purple-500/20",
-    cyan: "bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/25 border-cyan-500/20",
+    emerald: "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/25 border-emerald-500/20",
   };
   return (
     <button onClick={onClick} className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all ${colors[color] || colors.blue} ${className}`}>
@@ -84,12 +85,12 @@ function isNearExpiry(dt: string) { if (!dt) return false; const d = new Date(dt
 // ===== OWNERS & PARTNERS TAB =====
 function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>void }) {
   const [owners, setOwners] = useState<any[]>([
-    { id:"o1", name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"👑", tag:"Owner" }
+    { id:"o1", name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"", tag:"Owner" }
   ]);
   const [partners, setPartners] = useState<any[]>([]);
   const [waLinks, setWaLinks] = useState({ grup:"https://wa.me/6282218723401", channel:"https://wa.me/6282218723401" });
-  const [ownerForm, setOwnerForm] = useState({ name:"", role:"", badge:"👤", tag:"Owner", verified:true });
-  const [partnerForm, setPartnerForm] = useState({ name:"", role:"", badge:"🤝", verified:false });
+  const [ownerForm, setOwnerForm] = useState({ name:"", role:"", badge:"", tag:"Owner", verified:true });
+  const [partnerForm, setPartnerForm] = useState({ name:"", role:"", badge:"", verified:false });
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
@@ -103,27 +104,27 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
   const saveOwners = (updated: any[]) => {
     setOwners(updated);
     syncToAPI("owners", updated);
-    setMsg("✅ Owner disimpan!"); setTimeout(()=>setMsg(""),2500);
+    setMsg(" Owner disimpan!"); setTimeout(()=>setMsg(""),2500);
   };
   const savePartners = (updated: any[]) => {
     setPartners(updated);
     syncToAPI("partners", updated);
-    setMsg("✅ Partner disimpan!"); setTimeout(()=>setMsg(""),2500);
+    setMsg(" Partner disimpan!"); setTimeout(()=>setMsg(""),2500);
   };
   const saveWaLinks = () => {
     syncToAPI("wa_links", waLinks);
-    setMsg("✅ Link WA disimpan!"); setTimeout(()=>setMsg(""),2500);
+    setMsg(" Link WA disimpan!"); setTimeout(()=>setMsg(""),2500);
   };
 
   const addOwner = () => {
     if (!ownerForm.name.trim()) return;
     saveOwners([...owners, {...ownerForm, id:"o_"+Date.now()}]);
-    setOwnerForm({name:"",role:"",badge:"👤",tag:"Owner"});
+    setOwnerForm({name:"",role:"",badge:"",tag:"Owner"});
   };
   const addPartner = () => {
     if (!partnerForm.name.trim()) return;
     savePartners([...partners, {...partnerForm, id:"p_"+Date.now()}]);
-    setPartnerForm({name:"",role:"",badge:"🤝"});
+    setPartnerForm({name:"",role:"",badge:""});
   };
 
   return (
@@ -132,7 +133,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
       <p className="text-slate-500 text-xs mb-4">Tampil di halaman Profil VIP member</p>
       {msg && <div className="mb-3 text-xs p-2 rounded-lg bg-green-500/10 text-green-400">{msg}</div>}
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
-        <h3 className="text-white font-bold text-xs mb-3">🔗 Link WA (Homepage & VIP)</h3>
+        <h3 className="text-white font-bold text-xs mb-3"> Link WA (Homepage & VIP)</h3>
         <div className="space-y-2 mb-3">
           <div><label className="text-slate-400 text-xs mb-1 block">Grup WA</label><input value={waLinks.grup} onChange={e=>setWaLinks({...waLinks,grup:e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="https://chat.whatsapp.com/..."/></div>
           <div><label className="text-slate-400 text-xs mb-1 block">Channel WA</label><input value={waLinks.channel} onChange={e=>setWaLinks({...waLinks,channel:e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="https://whatsapp.com/channel/..."/></div>
@@ -140,7 +141,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
         <button onClick={saveWaLinks} className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-xl">Simpan Link WA</button>
       </div>
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
-        <h3 className="text-white font-bold text-xs mb-3">👑 Owner / Founder</h3>
+        <h3 className="text-white font-bold text-xs mb-3"> Owner / Founder</h3>
         <div className="space-y-2 mb-3">
           {owners.map(o=>(
             <div key={o.id} className="flex items-center gap-3 bg-white/5 rounded-xl p-3">
@@ -153,7 +154,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
                 <p className="text-slate-400 text-xs">{o.role} · {o.tag}</p>
               </div>
               <div className="flex gap-1">
-                <button onClick={()=>saveOwners(owners.map(x=>x.id===o.id?{...x,verified:!x.verified}:x))} className="text-xs px-2 py-1 rounded-lg border border-white/10 text-blue-400">{o.verified?"✔":"○"}</button>
+                <button onClick={()=>saveOwners(owners.map(x=>x.id===o.id?{...x,verified:!x.verified}:x))} className="text-xs px-2 py-1 rounded-lg border border-white/10 text-blue-400">{o.verified?"":"○"}</button>
                 <button onClick={()=>saveOwners(owners.filter(x=>x.id!==o.id))} className="text-red-400 text-xs px-2 py-1">Hapus</button>
               </div>
             </div>
@@ -167,7 +168,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
         </div>
       </div>
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4">
-        <h3 className="text-white font-bold text-xs mb-3">🤝 Partner</h3>
+        <h3 className="text-white font-bold text-xs mb-3"> Partner</h3>
         <div className="space-y-2 mb-3">
           {partners.length===0 && <p className="text-slate-600 text-xs text-center py-3">Belum ada partner</p>}
           {partners.map(p=>(
@@ -215,9 +216,9 @@ function AdminFeedTab() {
     try {
       const res = await fetch("/api/admin/feed", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ action:"create", content:content_text, tag, pinned, show_home:showHome, show_vip:showVip, author:authorName }) });
       const data = await res.json();
-      if (data.success) { setMsg("✅ Feed diposting!"); setContentText(""); await loadFeed(); }
-      else setMsg("❌ " + data.message);
-    } catch { setMsg("❌ Error."); }
+      if (data.success) { setMsg(" Feed diposting!"); setContentText(""); await loadFeed(); }
+      else setMsg(" " + data.message);
+    } catch { setMsg(" Error."); }
     setPosting(false); setTimeout(()=>setMsg(""),3000);
   };
 
@@ -247,15 +248,15 @@ function AdminFeedTab() {
           </div>
           <div><label className="text-slate-400 text-xs mb-1 block">Opsi</label>
             <div className="space-y-1">
-              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={pinned} onChange={e=>setPinned(e.target.checked)}/><span className="text-white text-xs">📌 Pin</span></label>
-              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showHome} onChange={e=>setShowHome(e.target.checked)}/><span className="text-white text-xs">🏠 Homepage</span></label>
-              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showVip} onChange={e=>setShowVip(e.target.checked)}/><span className="text-white text-xs">💎 VIP</span></label>
+              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={pinned} onChange={e=>setPinned(e.target.checked)}/><span className="text-white text-xs"> Pin</span></label>
+              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showHome} onChange={e=>setShowHome(e.target.checked)}/><span className="text-white text-xs"> Homepage</span></label>
+              <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showVip} onChange={e=>setShowVip(e.target.checked)}/><span className="text-white text-xs"> VIP</span></label>
             </div>
           </div>
         </div>
-        {msg && <div className={`mb-3 text-xs p-2 rounded-lg ${msg.startsWith("✅")?"text-green-400 bg-green-500/10":"text-red-400 bg-red-500/10"}`}>{msg}</div>}
+        {msg && <div className={`mb-3 text-xs p-2 rounded-lg ${msg.startsWith("")?"text-green-400 bg-green-500/10":"text-red-400 bg-red-500/10"}`}>{msg}</div>}
         <button onClick={handlePost} disabled={!content_text.trim()||posting} className="w-full py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl disabled:opacity-40">
-          {posting?"Memposting...":"📢 Post Sekarang"}
+          {posting?"Memposting...":" Post Sekarang"}
         </button>
       </div>
       {loading ? <div className="text-center py-8 text-slate-500 text-sm">Memuat...</div> : posts.length===0 ? <div className="text-center py-8 text-slate-600 text-sm">Belum ada feed.</div> : (
@@ -265,7 +266,7 @@ function AdminFeedTab() {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {p.tag&&<span style={{fontSize:10,background:`${tagColors[p.tag]||"#6b7280"}22`,color:tagColors[p.tag]||"#9ca3af",padding:"2px 8px",borderRadius:4,fontWeight:600}}>{p.tag}</span>}
-                  {p.pinned&&<span className="text-[10px] text-yellow-400">📌</span>}
+                  {p.pinned&&<span className="text-[10px] text-yellow-400"></span>}
                 </div>
                 <div className="flex gap-2">
                   <button onClick={async()=>{await fetch("/api/admin/feed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"pin",id:p.id})});loadFeed();}} className={`text-[10px] px-2 py-0.5 rounded border ${p.pinned?"text-yellow-400 border-yellow-500/30":"text-slate-500 border-white/10"}`}>{p.pinned?"Unpin":"Pin"}</button>
@@ -313,7 +314,7 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
     }
     await fetch("/api/admin/sync", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({type:settingsKey, data:updated}) });
     setItems(updated);
-    setMsg(`✅ ${isBagger?"Bagger":"Bandar"} ${editId?"diperbarui":"ditambahkan"}!`);
+    setMsg(` ${isBagger?"Bagger":"Bandar"} ${editId?"diperbarui":"ditambahkan"}!`);
     setTimeout(()=>setMsg(""),2500);
     setForm(emptyForm); setEditId(null); setShowForm(false);
   };
@@ -324,7 +325,7 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
     const updated = items.filter((x:any)=>x.id!==id);
     await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:settingsKey,data:updated})});
     setItems(updated);
-    setMsg("✅ Dihapus!"); setTimeout(()=>setMsg(""),2000);
+    setMsg(" Dihapus!"); setTimeout(()=>setMsg(""),2000);
   };
 
   const edit = (item:any) => {
@@ -337,7 +338,7 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-white font-bold text-sm">{isBagger?"🚀 Bagger Picks":"🔍 Sinyal Bandar"}</h2>
+        <h2 className="text-white font-bold text-sm">{isBagger?" Bagger Picks":" Sinyal Bandar"}</h2>
         <button onClick={()=>{setShowForm(!showForm);setEditId(null);setForm(emptyForm);}} className="text-xs px-3 py-1.5 rounded-lg font-bold" style={{background:acColor.bg,color:acColor.text,border:`1px solid ${acColor.border}`}}>
           {showForm?"Tutup":"+Tambah"}
         </button>
@@ -389,7 +390,7 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
 
       {items.length===0 ? (
         <div className="text-center py-10">
-          <p className="text-3xl mb-3">{isBagger?"🚀":"🔍"}</p>
+          <p className="text-3xl mb-3">{isBagger?"":""}</p>
           <p className="text-slate-500 text-sm">Belum ada {isBagger?"bagger":"bandar"} signals. Klik +Tambah.</p>
         </div>
       ) : (
@@ -446,7 +447,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   // PRICING DATA
   const defaultPricing = [
     { id:"basic", name:"Basic", price:100000, priceLabel:"Rp 100.000", period:"/bulan", color:"blue", description:"Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.", features:["Sinyal saham harian","Berita pasar realtime","Chart IHSG live","Modul dasar investasi","Grup WA Basic"], flashSale:null },
-    { id:"silver", name:"Silver", price:250000, priceLabel:"Rp 250.000", period:"/bulan", color:"cyan", description:"Untuk investor yang ingin memahami fundamental dan mulai screening saham potensial.", features:["Semua fitur Basic","Analisis fundamental saham","Screening saham bagger","Risk & money management","Grup WA Silver"], flashSale:null },
+    { id:"silver", name:"Silver", price:250000, priceLabel:"Rp 250.000", period:"/bulan", color:"emerald", description:"Untuk investor yang ingin memahami fundamental dan mulai screening saham potensial.", features:["Semua fitur Basic","Analisis fundamental saham","Screening saham bagger","Risk & money management","Grup WA Silver"], flashSale:null },
     { id:"gold", name:"Gold", price:500000, priceLabel:"Rp 500.000", period:"/bulan", color:"gold", popular:true, description:"Paket terlaris! Lengkap dengan sinyal premium dan panduan psikologi trading.", features:["Semua fitur Silver","Sinyal entry, antri, TP, SL premium","Analisis teknikal mendalam","Modul psikologi & emosi trading","Potensi saham multi-bagger","Grup WA Gold Eksklusif"], flashSale:null },
     { id:"pro", name:"Pro", price:750000, priceLabel:"Rp 750.000", period:"/bulan", color:"purple", description:"Dilengkapi AI Agent personal untuk bantu analisis dan keputusan trading.", features:["Semua fitur Gold","AI Agent trading assistant","Watchlist saham personal","Laporan mingguan eksklusif","Priority support","Grup WA Pro VIP"], hasAI:true, flashSale:null },
     { id:"platinum", name:"Platinum", price:900000, priceLabel:"Rp 900.000", period:"/bulan", color:"platinum", description:"Pengalaman investasi terdepan dengan AI Agent canggih dan konsultasi personal.", features:["Semua fitur Pro","AI Agent + analisis portofolio","Konsultasi 1-on-1 dengan analis","Akses semua modul VIP","Sinyal real-time 24/7","Grup WA Platinum Elite"], hasAI:true, flashSale:null },
@@ -634,7 +635,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   const pkgOpts = ["basic","silver","gold","pro","platinum","elite"];
-  const actionColor: any = { BUY:"text-green-400", SELL:"text-red-400", HOLD:"text-yellow-400", ANTRI:"text-cyan-400" };
+  const actionColor: any = { BUY:"text-green-400", SELL:"text-red-400", HOLD:"text-yellow-400", ANTRI:"text-emerald-400" };
 
   // ===== SIGNALS =====
   const saveSig = async () => {
@@ -871,14 +872,14 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   const tabs: { id: Tab; label: string }[] = [
     { id:"signals", label:"Sinyal" },
-    { id:"bagger", label:"🚀 Bagger" },
-    { id:"bsjp", label:"📡 BSJP (Beli Sore Jual Pagi)" },
-    { id:"bpjs", label:"☀️ BPJS (Beli Pagi Jual Sore)" },
-    { id:"rekap", label:"📋 Rekap TP/SL" },
-    { id:"jurnal", label:"📓 Jurnal" },
-    { id:"sinyal_besok", label:"🌙 Besok" },
-    { id:"bandar", label:"🔍 Bandar" },
-    { id:"admin_feed", label:"📝 Post Feed" },
+    { id:"bagger", label:"Bagger" },
+    { id:"bsjp", label:"BSJP (Beli Sore Jual Pagi)" },
+    { id:"bpjs", label:"BPJS (Beli Pagi Jual Sore)" },
+    { id:"rekap", label:"Rekap TP/SL" },
+    { id:"jurnal", label:"Jurnal" },
+    { id:"sinyal_besok", label:"Besok" },
+    { id:"bandar", label:"Bandar" },
+    { id:"admin_feed", label:"Post Feed" },
     { id:"tokens", label:"Token VIP" },
     { id:"topstocks", label:"Top Saham" },
     { id:"liveinfo", label:"Live Info" },
@@ -886,10 +887,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     { id:"pricing", label:"Harga/Paket" },
     { id:"motivasi", label:"Motivasi" },
     { id:"ticker", label:"Ticker" },
-    { id:"mutasi", label:"💰 Mutasi" },
-    { id:"orders", label:"🧾 Orders" },
-    { id:"loginlogs", label:"🔐 Login Log" },
-    { id:"owners_partners", label:"👑 Owner" },
+    { id:"mutasi", label:"Mutasi" },
+    { id:"orders", label:"Orders" },
+    { id:"loginlogs", label:"Login Log" },
+    { id:"owners_partners", label:"Owner" },
   ];
 
   return (
@@ -898,33 +899,33 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {loading && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80">
           <div className="text-center">
-            <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"/>
-            <p className="text-cyan-400 text-sm font-bold">Memuat data...</p>
+            <div className="w-10 h-10 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"/>
+            <p className="text-emerald-400 text-sm font-bold">Memuat data...</p>
           </div>
         </div>
       )}
       <div className="relative z-10">
         {/* Header */}
-        <div className="border-b border-white/5 bg-black/80 backdrop-blur-md sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-black text-white text-xs">RC</div>
-              <span className="font-black text-white text-sm">Admin Panel</span>
+        <div className="border-b border-white/5 bg-black/85 backdrop-blur-md sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center font-black text-[#06110c] text-xs flex-shrink-0">RC</div>
+              <div className="min-w-0">
+                <p className="font-black text-white text-sm leading-tight truncate">Admin Panel</p>
+                <p className="text-[11px] text-slate-500 leading-tight truncate">{tabs.find(t => t.id === tab)?.label}</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Link href="/" className="text-xs text-slate-400 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition-all">Lihat Web</Link>
               <button onClick={onLogout} className="text-xs text-red-400 hover:text-red-300 border border-red-500/20 px-3 py-1.5 rounded-lg transition-all">Keluar</button>
-            </div>
-          </div>
-          {/* Tabs */}
-          <div className="max-w-7xl mx-auto px-4 overflow-x-auto">
-            <div className="flex gap-1 pb-0">
-              {tabs.map(t => (
-                <button key={t.id} onClick={() => setTab(t.id)}
-                  className={`text-xs px-3 py-2.5 font-medium whitespace-nowrap border-b-2 transition-all ${tab===t.id ? "border-cyan-400 text-cyan-400" : "border-transparent text-slate-500 hover:text-slate-300"}`}>
-                  {t.label}
-                </button>
-              ))}
+              <MoreMenu
+                items={tabs.map(t => ({
+                  id: t.id,
+                  label: t.label,
+                  active: tab === t.id,
+                  onSelect: () => setTab(t.id),
+                }))}
+              />
             </div>
           </div>
         </div>
@@ -938,7 +939,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               {signals.filter((s:any)=>s.is_tomorrow).length>0 && (
                 <div className="mb-4 bg-yellow-500/5 border border-yellow-500/20 rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-yellow-400 font-black text-sm">🌙 Sinyal Besok</span>
+                    <span className="text-yellow-400 font-black text-sm"> Sinyal Besok</span>
                     <span className="text-xs text-yellow-400/60">{signals.filter((s:any)=>s.is_tomorrow).length} sinyal</span>
                   </div>
                   <div className="space-y-2">
@@ -963,7 +964,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </button>
               </div>
               {showSigForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">{editSigId?"Edit Sinyal":"Tambah Sinyal Baru"}</h3>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Kode Saham</label><input value={sigForm.kode} onChange={e=>setSigForm({...sigForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="input-dark"/></div>
@@ -983,8 +984,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <div><label className="text-xs text-slate-500 mb-1 block">TP3</label><input value={sigForm.tp3||""} onChange={e=>setSigForm({...sigForm,tp3:e.target.value})} placeholder="11.000" className="input-dark"/></div>
                     </div>
                     <div className="flex gap-2 mt-1">
-                      <button onClick={()=>setSigForm({...sigForm,is_tomorrow:!sigForm.is_tomorrow})} className={`flex-1 text-xs py-2 rounded-xl border font-bold transition-all ${sigForm.is_tomorrow?"bg-yellow-500/15 border-yellow-500/40 text-yellow-400":"border-white/10 text-slate-500"}`}>{sigForm.is_tomorrow?"🌙 Sinyal Besok":"📅 Set Besok"}</button>
-                      <button onClick={()=>setSigForm({...sigForm,is_pinned:!sigForm.is_pinned})} className={`flex-1 text-xs py-2 rounded-xl border font-bold transition-all ${sigForm.is_pinned?"bg-cyan-500/15 border-cyan-500/40 text-cyan-400":"border-white/10 text-slate-500"}`}>{sigForm.is_pinned?"📌 Disematkan":"📌 Sematkan"}</button>
+                      <button onClick={()=>setSigForm({...sigForm,is_tomorrow:!sigForm.is_tomorrow})} className={`flex-1 text-xs py-2 rounded-xl border font-bold transition-all ${sigForm.is_tomorrow?"bg-yellow-500/15 border-yellow-500/40 text-yellow-400":"border-white/10 text-slate-500"}`}>{sigForm.is_tomorrow?" Sinyal Besok":" Set Besok"}</button>
+                      <button onClick={()=>setSigForm({...sigForm,is_pinned:!sigForm.is_pinned})} className={`flex-1 text-xs py-2 rounded-xl border font-bold transition-all ${sigForm.is_pinned?"bg-emerald-500/15 border-emerald-500/40 text-emerald-400":"border-white/10 text-slate-500"}`}>{sigForm.is_pinned?" Disematkan":" Sematkan"}</button>
                     </div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Stop Loss</label><input value={sigForm.sl} onChange={e=>setSigForm({...sigForm,sl:e.target.value})} placeholder="9.500" className="input-dark"/></div>
                   </div>
@@ -994,7 +995,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <div className="flex flex-wrap gap-3">
                       {pkgOpts.map(p=>(
                         <label key={p} className="flex items-center gap-1.5 cursor-pointer">
-                          <input type="checkbox" checked={(sigForm.package||[]).includes(p)} onChange={e=>{const cur=sigForm.package||[];setSigForm({...sigForm,package:e.target.checked?[...cur,p]:cur.filter((x:string)=>x!==p)});}} className="accent-cyan-500 w-4 h-4"/>
+                          <input type="checkbox" checked={(sigForm.package||[]).includes(p)} onChange={e=>{const cur=sigForm.package||[];setSigForm({...sigForm,package:e.target.checked?[...cur,p]:cur.filter((x:string)=>x!==p)});}} className="accent-emerald-500 w-4 h-4"/>
                           <span className="text-xs text-slate-300 capitalize">{p}</span>
                         </label>
                       ))}
@@ -1017,9 +1018,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-black text-white text-base">{s.kode}</span>
-                          {doneSignalIds.includes(s.id) && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}
-                          {s.is_tomorrow && <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-bold">🌙 Besok</span>}
-                          {s.is_pinned && <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">📌</span>}
+                          {doneSignalIds.includes(s.id) && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-bold"> Target</span>}
+                          {s.is_tomorrow && <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-bold"> Besok</span>}
+                          {s.is_pinned && <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold"></span>}
                         </div>
                         <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
                       </div>
@@ -1039,7 +1040,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         setDoneSignalIds(newIds);
                         await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"done_signal_ids",data:newIds})}).catch(()=>{});
                         setSignals(signals.map(x=>x.id===s.id?{...x,is_done:!isDoneNow}:x));
-                      }} color={doneSignalIds.includes(s.id)?"yellow":"green"} className="flex-1 text-center">{doneSignalIds.includes(s.id)?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      }} color={doneSignalIds.includes(s.id)?"yellow":"green"} className="flex-1 text-center">{doneSignalIds.includes(s.id)?" Batalkan":" Target Tercapai"}</Btn>
                       <Btn onClick={()=>editSig(s)} color="blue" className="flex-1 text-center">Edit</Btn>
                       <Btn onClick={()=>delSig(s.id)} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
@@ -1054,7 +1055,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-white font-bold text-sm">🚀 Bagger Picks</h2>
+                  <h2 className="text-white font-bold text-sm"> Bagger Picks</h2>
                   <p className="text-slate-500 text-xs mt-0.5">Saham berpotensi naik 2x-10x jangka panjang</p>
                 </div>
                 <button onClick={()=>{setBaggerForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});setEditBaggerId(null);setShowBaggerForm(!showBaggerForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">{showBaggerForm&&!editBaggerId?"Tutup":"Tambah Bagger"}</button>
@@ -1104,7 +1105,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div key={s.id} className="card rounded-xl p-4 border-l-4 border-yellow-500/60">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <div className="flex items-center gap-2"><span className="font-black text-white text-base">{s.kode}</span><span className="text-xs px-2 py-0.5 rounded bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 font-bold">🚀 BAGGER</span>{s.is_done&&<span className="text-xs px-2 py-0.5 rounded bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}</div>
+                        <div className="flex items-center gap-2"><span className="font-black text-white text-base">{s.kode}</span><span className="text-xs px-2 py-0.5 rounded bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 font-bold"> BAGGER</span>{s.is_done&&<span className="text-xs px-2 py-0.5 rounded bg-green-500/15 text-green-400 border border-green-500/30 font-bold"> Target</span>}</div>
                         <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
                       </div>
                       <span className="text-xs font-bold text-slate-400">{s.action}</span>
@@ -1116,7 +1117,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                     {s.notes && <p className="text-xs text-slate-400 mb-3 line-clamp-2">{s.notes}</p>}
                     <div className="flex gap-2 flex-wrap">
-                      <Btn onClick={async()=>{ const done=!s.is_done; const newList=baggerList.map((x:any)=>x.id===s.id?{...x,is_done:done,done_at:done?new Date().toISOString():null}:x); setBaggerList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bagger_signals",data:newList})}).catch(()=>{}); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={async()=>{ const done=!s.is_done; const newList=baggerList.map((x:any)=>x.id===s.id?{...x,is_done:done,done_at:done?new Date().toISOString():null}:x); setBaggerList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bagger_signals",data:newList})}).catch(()=>{}); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?" Batalkan":" Target Tercapai"}</Btn>
                       <Btn onClick={()=>{setBaggerForm({...s});setEditBaggerId(s.id);setShowBaggerForm(true);window.scrollTo(0,0);}} color="blue" className="flex-1 text-center">Edit</Btn>
                       <Btn onClick={async()=>{ if(!confirm("Hapus bagger pick ini?"))return; const newList=baggerList.filter((x:any)=>x.id!==s.id); setBaggerList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bagger_signals",data:newList})}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
@@ -1131,7 +1132,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-white font-bold text-sm">🔍 Bandarmologi Signals</h2>
+                  <h2 className="text-white font-bold text-sm"> Bandarmologi Signals</h2>
                   <p className="text-slate-500 text-xs mt-0.5">Deteksi pola akumulasi & distribusi smart money</p>
                 </div>
                 <button onClick={()=>{setBandarForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",sl:"",notes:"",package:["gold","pro","platinum","elite"]});setEditBandarId(null);setShowBandarForm(!showBandarForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">{showBandarForm&&!editBandarId?"Tutup":"Tambah Sinyal Bandar"}</button>
@@ -1181,7 +1182,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div key={s.id} className="card rounded-xl p-4 border-l-4 border-purple-500/60">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <div className="flex items-center gap-2"><span className="font-black text-white text-base">{s.kode}</span><span className="text-xs px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 border border-purple-500/30 font-bold">🔍 BANDAR</span>{s.is_done&&<span className="text-xs px-2 py-0.5 rounded bg-green-500/15 text-green-400 border border-green-500/30 font-bold">✅ Target</span>}</div>
+                        <div className="flex items-center gap-2"><span className="font-black text-white text-base">{s.kode}</span><span className="text-xs px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 border border-purple-500/30 font-bold"> BANDAR</span>{s.is_done&&<span className="text-xs px-2 py-0.5 rounded bg-green-500/15 text-green-400 border border-green-500/30 font-bold"> Target</span>}</div>
                         <div className="text-slate-500 text-xs mt-0.5">{s.saham}</div>
                       </div>
                       <span className="text-xs font-bold text-purple-400">{s.action}</span>
@@ -1193,7 +1194,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                     {s.notes && <p className="text-xs text-slate-400 mb-3">{s.notes}</p>}
                     <div className="flex gap-2 flex-wrap">
-                      <Btn onClick={async()=>{ const done=!s.is_done; const newList=bandarList.map((x:any)=>x.id===s.id?{...x,is_done:done,done_at:done?new Date().toISOString():null}:x); setBandarList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bandar_signals",data:newList})}).catch(()=>{}); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?"❌ Batalkan":"✅ Target Tercapai"}</Btn>
+                      <Btn onClick={async()=>{ const done=!s.is_done; const newList=bandarList.map((x:any)=>x.id===s.id?{...x,is_done:done,done_at:done?new Date().toISOString():null}:x); setBandarList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bandar_signals",data:newList})}).catch(()=>{}); }} color={s.is_done?"yellow":"green"} className="flex-1 text-center">{s.is_done?" Batalkan":" Target Tercapai"}</Btn>
                       <Btn onClick={()=>{setBandarForm({...s});setEditBandarId(s.id);setShowBandarForm(true);window.scrollTo(0,0);}} color="blue" className="flex-1 text-center">Edit</Btn>
                       <Btn onClick={async()=>{ if(!confirm("Hapus sinyal bandar ini?"))return; const newList=bandarList.filter((x:any)=>x.id!==s.id); setBandarList(newList); await fetch("/api/admin/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"bandar_signals",data:newList})}).catch(()=>{}); }} color="red" className="flex-1 text-center">Hapus</Btn>
                     </div>
@@ -1217,7 +1218,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </button>
               </div>
               {showTokForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">{editTokId?"Edit Token":"Generate Token Baru"}</h3>
                   <div className="space-y-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Nama User</label><input value={tokForm.name} onChange={e=>setTokForm({...tokForm,name:e.target.value})} placeholder="Nama lengkap" className="input-dark"/></div>
@@ -1229,7 +1230,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
                     <div><label className="text-xs text-slate-500 mb-1 block">Expired Tanggal</label><input type="datetime-local" value={tokForm.expiredAt} onChange={e=>setTokForm({...tokForm,expiredAt:e.target.value})} className="input-dark"/></div>
                     <div className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2.5">
-                      <span className="text-xs text-slate-400 flex-1">✔ Verified Badge</span>
+                      <span className="text-xs text-slate-400 flex-1"> Verified Badge</span>
                       <button onClick={()=>setTokForm({...tokForm,verified:!tokForm.verified})} className={`text-xs px-3 py-1 rounded-lg font-bold border ${tokForm.verified?"bg-blue-500/20 text-blue-400 border-blue-500/30":"text-slate-500 border-white/10"}`}>{tokForm.verified?"ON":"OFF"}</button>
                     </div>
                     <div className="flex gap-2">
@@ -1252,9 +1253,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                           <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-bold ${expired?"bg-red-400/10 text-red-400":t.isActive?"bg-green-400/10 text-green-400":"bg-slate-400/10 text-slate-400"}`}>
                             {expired?"EXPIRED":t.isActive?"AKTIF":"NONAKTIF"}
                           </span>
-                          {t.verified && <span style={{background:"rgba(59,130,246,0.15)",color:"#3b82f6",border:"1px solid rgba(59,130,246,0.3)",fontSize:9,fontWeight:800,padding:"1px 6px",borderRadius:4}}>✔ verified</span>}
+                          {t.verified && <span style={{background:"rgba(59,130,246,0.15)",color:"#3b82f6",border:"1px solid rgba(59,130,246,0.3)",fontSize:9,fontWeight:800,padding:"1px 6px",borderRadius:4}}> verified</span>}
                         </div>
-                        <span className="text-xs text-cyan-400 font-bold capitalize">{t.package}</span>
+                        <span className="text-xs text-emerald-400 font-bold capitalize">{t.package}</span>
                       </div>
                       <div className="text-xs text-slate-500 mb-1.5">{t.email}</div>
                       <div className="font-mono text-xs bg-white/5 rounded-lg px-3 py-2 text-slate-300 mb-2 break-all select-all">{t.token}</div>
@@ -1294,7 +1295,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </div>
               </div>
               {showStockForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">{editStockId?"Edit Saham":"Tambah Saham Custom"}</h3>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={stockForm.kode} onChange={e=>setStockForm({...stockForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="input-dark"/></div>
@@ -1336,10 +1337,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           {tab==="liveinfo" && (
             <div className="max-w-2xl">
               <h2 className="text-white font-bold text-sm mb-4">Info Live (Halaman VIP)</h2>
-              <div className="card rounded-2xl p-5 border border-cyan-500/20">
+              <div className="card rounded-2xl p-5 border border-emerald-500/20">
                 <div className="flex items-center justify-between mb-4">
                   <label className="text-sm font-bold text-white">Tampilkan Info Live</label>
-                  <button onClick={()=>setLiveActiveState(!liveActive)} className={`relative w-12 h-6 rounded-full transition-all ${liveActive?"bg-cyan-500":"bg-slate-700"}`}>
+                  <button onClick={()=>setLiveActiveState(!liveActive)} className={`relative w-12 h-6 rounded-full transition-all ${liveActive?"bg-emerald-500":"bg-slate-700"}`}>
                     <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${liveActive?"left-7":"left-1"}`}/>
                   </button>
                 </div>
@@ -1360,7 +1361,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               <div className="mt-6 card rounded-2xl p-5 border border-orange-500/25">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="text-white font-bold text-sm">🔧 Mode Maintenance</h3>
+                    <h3 className="text-white font-bold text-sm"> Mode Maintenance</h3>
                     <p className="text-slate-500 text-xs mt-0.5">Halaman VIP akan ditutup & tampilkan halaman maintenance</p>
                   </div>
                   <button onClick={()=>setMaintenanceMode(m=>!m)} className={`relative w-14 h-7 rounded-full transition-all flex-shrink-0 ${maintenanceMode?"bg-orange-500":"bg-slate-700"}`}>
@@ -1369,7 +1370,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </div>
                 {maintenanceMode && (
                   <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 mb-3">
-                    <p className="text-orange-400 text-xs font-bold">⚠ AKTIF — Halaman VIP sedang ditutup untuk semua user</p>
+                    <p className="text-orange-400 text-xs font-bold"> AKTIF — Halaman VIP sedang ditutup untuk semua user</p>
                   </div>
                 )}
                 <button onClick={async()=>{
@@ -1377,7 +1378,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   setMaintenanceSaved(true);
                   setTimeout(()=>setMaintenanceSaved(false), 2000);
                 }} className={`w-full py-2.5 rounded-xl text-sm font-bold border transition-all ${maintenanceMode?"bg-orange-500/15 text-orange-400 border-orange-500/30 hover:bg-orange-500/25":"btn-primary border-transparent"}`}>
-                  {maintenanceSaved ? "Tersimpan!" : maintenanceMode ? "🔧 Aktifkan Maintenance" : "Simpan (Maintenance Off)"}
+                  {maintenanceSaved ? "Tersimpan!" : maintenanceMode ? " Aktifkan Maintenance" : "Simpan (Maintenance Off)"}
                 </button>
               </div>
 
@@ -1393,12 +1394,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   </button>
                 </div>
                 {showPremSigForm && (
-                  <div className="card rounded-2xl p-5 mb-4 border border-cyan-500/20">
+                  <div className="card rounded-2xl p-5 mb-4 border border-emerald-500/20">
                     <div className="space-y-3">
                       <div><label className="text-xs text-slate-500 mb-1 block">Judul</label><input value={premSigForm.title} onChange={e=>setPremSigForm({...premSigForm,title:e.target.value})} placeholder="Bandarmologi Report" className="input-dark"/></div>
                       <div><label className="text-xs text-slate-500 mb-1 block">Konten/Deskripsi</label><textarea value={premSigForm.content} onChange={e=>setPremSigForm({...premSigForm,content:e.target.value})} rows={4} placeholder="Isi konten sinyal premium..." className="input-dark resize-none"/></div>
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" checked={premSigForm.isActive} onChange={e=>setPremSigForm({...premSigForm,isActive:e.target.checked})} className="accent-cyan-500"/>
+                        <input type="checkbox" checked={premSigForm.isActive} onChange={e=>setPremSigForm({...premSigForm,isActive:e.target.checked})} className="accent-emerald-500"/>
                         <label className="text-xs text-slate-300">Aktif (tampil di halaman VIP)</label>
                       </div>
                       <div className="flex gap-2">
@@ -1440,7 +1441,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </button>
               </div>
               {showTestiForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">{editTestiId?"Edit":"Tambah"} Testimoni</h3>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Nama</label><input value={testiForm.name} onChange={e=>setTestiForm({...testiForm,name:e.target.value})} placeholder="Nama member" className="input-dark"/></div>
@@ -1458,7 +1459,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   </div>
                   <div className="mb-3"><label className="text-xs text-slate-500 mb-1 block">Testimoni</label><textarea value={testiForm.text} onChange={e=>setTestiForm({...testiForm,text:e.target.value})} rows={3} placeholder="Isi testimoni..." className="input-dark resize-none"/></div>
                   <div className="flex items-center gap-2 mb-4">
-                    <input type="checkbox" checked={testiForm.isApproved} onChange={e=>setTestiForm({...testiForm,isApproved:e.target.checked})} className="accent-cyan-500"/>
+                    <input type="checkbox" checked={testiForm.isApproved} onChange={e=>setTestiForm({...testiForm,isApproved:e.target.checked})} className="accent-emerald-500"/>
                     <label className="text-xs text-slate-300">Tampilkan di halaman (approved)</label>
                   </div>
                   <div className="flex gap-2">
@@ -1473,13 +1474,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <span className="font-bold text-white">{t.name}</span>
-                        <span className="ml-2 text-xs text-cyan-400 capitalize">{t.package}</span>
+                        <span className="ml-2 text-xs text-emerald-400 capitalize">{t.package}</span>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${t.isApproved?"bg-green-400/10 text-green-400":"bg-red-400/10 text-red-400"}`}>
                         {t.isApproved?"Tampil":"Hidden"}
                       </span>
                     </div>
-                    <div className="flex gap-0.5 mb-2">{Array(t.rating||5).fill(0).map((_,i)=><span key={i} className="text-yellow-400 text-xs">★</span>)}</div>
+                    <div className="flex gap-0.5 mb-2">{Array(t.rating||5).fill(0).map((_,i)=><span key={i} className="text-yellow-400 text-xs"></span>)}</div>
                     <p className="text-slate-400 text-xs mb-2 line-clamp-3">{t.text}</p>
                     <div className="text-xs text-slate-600 mb-3">{t.date}</div>
                     <div className="flex gap-2 pt-2 border-t border-white/5">
@@ -1507,10 +1508,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   const updated = [...pricing, newPkg];
                   setPricing(updated); syncToAPI("pricing", updated);
                   openPricingEdit(newPkg);
-                }} className="btn-primary text-xs px-4 py-2 rounded-xl">➕ Tambah Paket</button>
+                }} className="btn-primary text-xs px-4 py-2 rounded-xl"> Tambah Paket</button>
               </div>
               {showPricingForm && editPricingId && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">Edit Paket: {pricing.find(p=>p.id===editPricingId)?.name}</h3>
                   <div className="space-y-3 mb-4">
                     <div><label className="text-xs text-slate-500 mb-1 block">Label Harga Normal</label><input value={pricingForm.priceLabel} onChange={e=>setPricingForm({...pricingForm,priceLabel:e.target.value})} placeholder="Rp 100.000" className="input-dark"/></div>
@@ -1587,7 +1588,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {pricing.map(p=>{
-                  const colorMap: any = { blue:"border-blue-500/30", cyan:"border-cyan-500/30", gold:"border-yellow-500/30", purple:"border-purple-500/30", platinum:"border-slate-400/30", elite:"border-yellow-400/50" };
+                  const colorMap: any = { blue:"border-blue-500/30", emerald:"border-emerald-500/30", gold:"border-yellow-500/30", purple:"border-purple-500/30", platinum:"border-slate-400/30", elite:"border-yellow-400/50" };
                   return (
                     <div key={p.id} className={`card rounded-xl p-5 border ${colorMap[p.color]||"border-white/10"}`}>
                       <div className="flex justify-between items-start mb-3">
@@ -1599,11 +1600,11 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                       <p className="text-xs text-slate-400 mb-3 line-clamp-2">{p.description}</p>
                       <ul className="space-y-1 mb-4">
-                        {(p.features||[]).slice(0,3).map((f:string,i:number)=><li key={i} className="text-xs text-slate-500 flex gap-1"><span className="text-cyan-400">✓</span>{f}</li>)}
+                        {(p.features||[]).slice(0,3).map((f:string,i:number)=><li key={i} className="text-xs text-slate-500 flex gap-1"><span className="text-emerald-400"></span>{f}</li>)}
                         {(p.features||[]).length>3 && <li className="text-xs text-slate-600">+{p.features.length-3} fitur lainnya</li>}
                       </ul>
                       <div className="flex gap-2">
-                        <button onClick={()=>openPricingEdit(p)} className="flex-1 py-2 rounded-lg text-xs font-bold bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 transition-all">
+                        <button onClick={()=>openPricingEdit(p)} className="flex-1 py-2 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all">
                           Edit
                         </button>
                         <button onClick={()=>{ if(!confirm("Hapus paket "+p.name+"?")) return; const updated=pricing.filter(x=>x.id!==p.id); setPricing(updated); syncToAPI("pricing",updated); }} className="px-3 py-2 rounded-lg text-xs font-bold bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all">
@@ -1644,13 +1645,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <span className="text-xs text-slate-500">Lambat (80s)</span>
                     <span className="text-blue-400 font-black text-sm w-12 text-center">{tickerSpeed}s</span>
                   </div>
-                  <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan disimpan!"); }} className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-400 border border-cyan-500/20">Simpan</button>
+                  <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan disimpan!"); }} className="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">Simpan</button>
                   <button onClick={()=>{ setTickerSpeed(32); setMotivasiSpeed(32); syncToAPI("ticker_speed", 32); }}
                     className="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-slate-500 hover:text-white hover:bg-white/5">Reset</button>
                 </div>
               </div>
               {showTickerForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">{editTickerId?"Edit":"Tambah"} Item Ticker</h3>
                   <div className="grid grid-cols-3 gap-3 mb-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={tickerForm.kode} onChange={e=>setTickerForm({...tickerForm,kode:e.target.value.toUpperCase()})} placeholder="IHSG" className="input-dark"/></div>
@@ -1704,12 +1705,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               {/* Kecepatan ticker */}
               <div className="card rounded-xl p-4 mb-4 border border-white/5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-slate-400 font-bold">⚡ Kecepatan Ticker Motivasi</span>
-                  <span className="text-xs text-cyan-400 font-bold">{tickerSpeed}s</span>
+                  <span className="text-xs text-slate-400 font-bold"> Kecepatan Ticker Motivasi</span>
+                  <span className="text-xs text-emerald-400 font-bold">{tickerSpeed}s</span>
                 </div>
                 <input type="range" min={10} max={80} step={5} value={tickerSpeed}
                   onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); setMotivasiSpeed(v); }}
-                  className="w-full accent-cyan-500"/>
+                  className="w-full accent-emerald-500"/>
                 <div className="flex justify-between text-xs text-slate-600 mt-1 mb-3"><span>Cepat (10s)</span><span>Lambat (80s)</span></div>
                 <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan ticker disimpan!"); }} className="btn-primary w-full py-2 rounded-xl text-xs font-bold">Simpan Kecepatan</button>
               </div>
@@ -1737,9 +1738,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               )}
               {/* Greeting otomatis */}
               <div className="card rounded-xl p-4 mb-4 border border-purple-500/10">
-                <h3 className="text-xs font-bold text-white mb-3">🌅 Greeting Otomatis</h3>
+                <h3 className="text-xs font-bold text-white mb-3"> Greeting Otomatis</h3>
                 <div className="space-y-3 mb-2">
-                  {[{key:"greeting_pagi",label:"🌤 Selamat Pagi (05:00–10:00)",def:"Selamat pagi! Semangat trading hari ini 💪"},{key:"greeting_malam",label:"🌙 Selamat Malam (21:00–24:00)",def:"Selamat malam! Review portofolio hari ini 📊"}].map(g=>(
+                  {[{key:"greeting_pagi",label:"Selamat Pagi (05:00–10:00)",def:"Selamat pagi! Semangat trading hari ini "},{key:"greeting_malam",label:"Selamat Malam (21:00–24:00)",def:"Selamat malam! Review portofolio hari ini "}].map(g=>(
                     <div key={g.key} className="bg-white/5 rounded-xl p-3">
                       <label className="text-xs text-slate-400 mb-2 block">{g.label}</label>
                       <div className="flex gap-2">
@@ -1754,9 +1755,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 <div className="flex items-center gap-3 mb-2">
                   <label className="text-xs text-slate-400 flex-shrink-0">Kecepatan Ticker:</label>
                   <input type="range" min={10} max={80} value={tickerSpeed} onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); setMotivasiSpeed(v); }} className="flex-1"/>
-                  <span className="text-xs text-cyan-400 font-bold w-8">{tickerSpeed}s</span>
+                  <span className="text-xs text-emerald-400 font-bold w-8">{tickerSpeed}s</span>
                 </div>
-                <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan ticker disimpan!"); }} className="text-xs px-4 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-400 border border-cyan-500/20 mb-2">Simpan Kecepatan</button>
+                <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan ticker disimpan!"); }} className="text-xs px-4 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 mb-2">Simpan Kecepatan</button>
                 <p className="text-xs text-slate-600">Jam kosong = tampil terus-menerus. Isi jam WIB untuk jadwal otomatis.</p>
               </div>
               <div className="space-y-3">
@@ -1764,7 +1765,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div className="card rounded-xl p-10 text-center text-slate-500 text-sm">Belum ada kata motivasi.</div>
                 ) : motivasiList.map(m=>(
                   <div key={m.id} className="card rounded-xl p-4 flex items-start gap-3">
-                    <span className="text-yellow-400 text-lg flex-shrink-0 mt-0.5">✨</span>
+                    <span className="text-yellow-400 text-lg flex-shrink-0 mt-0.5"></span>
                     <div className="flex-1 min-w-0">
                       <p className="text-slate-300 text-sm leading-relaxed">{m.text}</p>
                     </div>
@@ -1782,10 +1783,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
-                  <h2 className="text-white font-bold text-sm">🔐 Login Log — Silver ke Atas</h2>
+                  <h2 className="text-white font-bold text-sm"> Login Log — Silver ke Atas</h2>
                   <p className="text-slate-500 text-xs mt-0.5">{loginLogs.length} login tercatat</p>
                 </div>
-                <button onClick={async()=>{ const r=await fetch("/api/admin/loginlogs").then(x=>x.json()).catch(()=>({})); if(r.logs) setLoginLogs(r.logs); }} className="text-xs px-3 py-1.5 rounded-lg border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-all">Refresh</button>
+                <button onClick={async()=>{ const r=await fetch("/api/admin/loginlogs").then(x=>x.json()).catch(()=>({})); if(r.logs) setLoginLogs(r.logs); }} className="text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-all">Refresh</button>
               </div>
               {loginLogs.length===0 ? (
                 <div className="card rounded-xl p-10 text-center text-slate-500 text-sm">Belum ada log login.</div>
@@ -1794,16 +1795,16 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   {loginLogs.map((log:any, i:number) => (
                     <div key={i} className="card rounded-xl px-4 py-3 flex flex-wrap items-center gap-3 justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-black text-xs">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-black text-xs">
                           {log.name?.charAt(0)||"?"}
                         </div>
                         <div>
                           <div className="text-white text-sm font-bold">{log.name}</div>
-                          <div className="text-slate-500 text-xs">🌐 {log.ip}</div>
+                          <div className="text-slate-500 text-xs"> {log.ip}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 text-xs">
-                        <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${log.package==="elite"?"bg-yellow-400/10 text-yellow-300":log.package==="platinum"?"bg-slate-400/10 text-slate-300":log.package==="pro"?"bg-purple-400/10 text-purple-400":log.package==="gold"?"bg-yellow-500/10 text-yellow-400":log.package==="silver"?"bg-cyan-400/10 text-cyan-400":"bg-white/5 text-white"}`}>{log.package}</span>
+                        <span className={`px-2 py-0.5 rounded-full font-bold capitalize ${log.package==="elite"?"bg-yellow-400/10 text-yellow-300":log.package==="platinum"?"bg-slate-400/10 text-slate-300":log.package==="pro"?"bg-purple-400/10 text-purple-400":log.package==="gold"?"bg-yellow-500/10 text-yellow-400":log.package==="silver"?"bg-emerald-400/10 text-emerald-400":"bg-white/5 text-white"}`}>{log.package}</span>
                         <span className="text-slate-600">...{log.token}</span>
                         <span className="text-slate-500">{new Date(log.time).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
                       </div>
@@ -1821,7 +1822,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           {tab==="sinyal_besok" && (
             <div>
               <div className="flex justify-between items-center mb-4">
-                <div><h2 className="text-white font-bold text-sm">🌙 Sinyal Besok</h2><p className="text-slate-500 text-xs mt-0.5">Sinyal yang akan tampil besok — bisa disematkan</p></div>
+                <div><h2 className="text-white font-bold text-sm"> Sinyal Besok</h2><p className="text-slate-500 text-xs mt-0.5">Sinyal yang akan tampil besok — bisa disematkan</p></div>
                 <button onClick={()=>{ setSigForm({saham:"",kode:"",action:"BUY",entry:"",tp:"",tp2:"",tp3:"",sl:"",notes:"",package:["gold","pro","platinum","elite"],is_tomorrow:true,is_pinned:false}); setEditSigId(null); setShowSigForm(true); setTab("signals"); }} className="btn-primary text-xs px-4 py-2 rounded-xl">+ Tambah Sinyal Besok</button>
               </div>
               <div className="space-y-3">
@@ -1832,7 +1833,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <div className="flex items-center gap-3 mb-2">
                       <span className="font-black text-white">{s.kode}</span>
                       <span className={`text-xs font-bold ${actionColor[s.action]||"text-slate-400"}`}>{s.action}</span>
-                      <span className="text-xs text-yellow-400 ml-auto">🌙 Sinyal Besok</span>
+                      <span className="text-xs text-yellow-400 ml-auto"> Sinyal Besok</span>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs mb-3">
                       <div><span className="text-slate-500">Entry</span><br/><span className="text-white font-bold">{s.entry}</span></div>
@@ -1856,25 +1857,25 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-white font-bold text-sm">📡 Beli Sore Jual Pagi (BSJP)</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">{bsjpSignals.length} sinyal · Min akses: <span className="text-cyan-400 font-bold capitalize">{bsjpMinPkg}</span></p>
+                  <h2 className="text-white font-bold text-sm"> Beli Sore Jual Pagi (BSJP)</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">{bsjpSignals.length} sinyal · Min akses: <span className="text-emerald-400 font-bold capitalize">{bsjpMinPkg}</span></p>
                 </div>
                 <button onClick={()=>{setBsjpForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});setShowBsjpForm(!showBsjpForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
                   {showBsjpForm?"Tutup":"+ Tambah"}
                 </button>
               </div>
               {/* Kontrol Role BSJP */}
-              <div className="card rounded-xl p-4 mb-4 border border-cyan-500/10">
+              <div className="card rounded-xl p-4 mb-4 border border-emerald-500/10">
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="text-xs text-slate-400 font-bold">Min. Paket Akses BSJP:</span>
                   {["basic","silver","gold","pro","platinum","elite"].map(p=>(
-                    <button key={p} onClick={async()=>{ setBsjpMinPkg(p); await syncToAPI("bsjp_min_pkg", p); }} className={`text-xs px-3 py-1.5 rounded-lg capitalize font-bold border transition-all ${bsjpMinPkg===p?"bg-cyan-500/20 text-cyan-400 border-cyan-500/30":"bg-white/5 text-slate-500 border-white/10"}`}>{p}</button>
+                    <button key={p} onClick={async()=>{ setBsjpMinPkg(p); await syncToAPI("bsjp_min_pkg", p); }} className={`text-xs px-3 py-1.5 rounded-lg capitalize font-bold border transition-all ${bsjpMinPkg===p?"bg-emerald-500/20 text-emerald-400 border-emerald-500/30":"bg-white/5 text-slate-500 border-white/10"}`}>{p}</button>
                   ))}
                 </div>
                 <p className="text-slate-600 text-xs mt-2">Pilih paket minimum — user di bawah paket ini tidak bisa akses tab BSJP</p>
               </div>
               {showBsjpForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-cyan-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">Tambah Sinyal BSJP</h3>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Kode Saham</label><input value={bsjpForm.kode} onChange={e=>setBsjpForm({...bsjpForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" className="input-dark"/></div>
@@ -1904,13 +1905,13 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               )}
               <div className="space-y-3">
                 {bsjpSignals.map((s:any) => (
-                  <div key={s.id} className="card rounded-2xl p-4 border border-cyan-500/10">
+                  <div key={s.id} className="card rounded-2xl p-4 border border-emerald-500/10">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center font-black text-xs text-cyan-400">{(s.kode||"--").slice(0,4)}</div>
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-black text-xs text-emerald-400">{(s.kode||"--").slice(0,4)}</div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="text-white font-black text-sm">{s.kode}</span>
-                          <span className="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded font-bold">{s.action}</span>
+                          <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">{s.action}</span>
                         </div>
                         <p className="text-slate-500 text-xs">{s.saham} · {s.date}</p>
                       </div>
@@ -1937,7 +1938,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-white font-bold text-sm">☀️ Beli Pagi Jual Sore (BPJS)</h2>
+                  <h2 className="text-white font-bold text-sm"> Beli Pagi Jual Sore (BPJS)</h2>
                   <p className="text-slate-500 text-xs mt-0.5">{bpjsSignals.length} sinyal · Min akses: <span className="text-purple-400 font-bold capitalize">{bpjsMinPkg}</span></p>
                 </div>
                 <button onClick={()=>{setBpjsForm({kode:"",saham:"",action:"BUY",entry:"",tp:"",sl:"",description:"",notes:"",date:new Date().toISOString().slice(0,10)});setShowBpjsForm(!showBpjsForm);}} className="btn-primary text-xs px-4 py-2 rounded-xl">
@@ -2142,7 +2143,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         <div key={l} className="bg-white/5 rounded-lg p-2"><p className="text-slate-500 text-[10px]">{l}</p><p className="text-white font-bold">{v||"-"}</p></div>
                       ))}
                     </div>
-                    {j.alasan && <p className="text-cyan-400/60 text-xs mt-1">Alasan: <span className="text-slate-400">{j.alasan}</span></p>}
+                    {j.alasan && <p className="text-emerald-400/60 text-xs mt-1">Alasan: <span className="text-slate-400">{j.alasan}</span></p>}
                     {j.evaluasi && <p className="text-yellow-400/60 text-xs mt-1">Evaluasi: <span className="text-slate-400">{j.evaluasi}</span></p>}
                   </div>
                 ))}

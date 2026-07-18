@@ -48,7 +48,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-white text-xs mb-8 transition-colors">
-          ← Kembali ke Beranda
+           Kembali ke Beranda
         </Link>
 
         <div className="card-glass rounded-2xl p-8 border border-white/10">
@@ -74,7 +74,7 @@ export default function LoginPage() {
 
             {err && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5 text-red-400 text-xs">
-                ⚠️ {err}
+                 {err}
               </div>
             )}
 
@@ -91,7 +91,7 @@ export default function LoginPage() {
                   </svg>
                   Memverifikasi...
                 </span>
-              ) : "🔑 Masuk VIP"}
+              ) : " Masuk VIP"}
             </button>
           </div>
 
@@ -103,11 +103,11 @@ export default function LoginPage() {
               rel="noopener noreferrer"
               className="btn-green text-xs px-5 py-2.5 rounded-lg inline-block"
             >
-              💬 WA Admin untuk Bergabung
+               WA Admin untuk Bergabung
             </a>
             <div className="mt-2">
               <Link href="/paket" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-500/20 hover:border-blue-400/40 px-5 py-2.5 rounded-lg inline-block transition-all">
-                Lihat Semua Paket VIP →
+                Lihat Semua Paket VIP 
               </Link>
             </div>
           </div>

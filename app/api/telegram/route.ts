@@ -69,11 +69,11 @@ const userState: Map<string, any> = new Map();
 // ===== MAIN MENU =====
 function mainMenu() {
   return [
-    [{ text: "⚡ Sinyal", callback_data: "menu_signals" }, { text: "🔑 Token VIP", callback_data: "menu_tokens" }],
-    [{ text: "💰 Harga/Paket", callback_data: "menu_pricing" }, { text: "📢 Live Info", callback_data: "menu_liveinfo" }],
-    [{ text: "📈 Top Saham", callback_data: "menu_stocks" }, { text: "🎞️ Ticker", callback_data: "menu_ticker" }],
-    [{ text: "💬 Testimoni", callback_data: "menu_testi" }, { text: "📦 Orders", callback_data: "menu_orders" }],
-    [{ text: "📊 Statistik", callback_data: "menu_stats" }, { text: "📡 Channels", callback_data: "menu_channels" }],
+    [{ text: " Sinyal", callback_data: "menu_signals" }, { text: " Token VIP", callback_data: "menu_tokens" }],
+    [{ text: " Harga/Paket", callback_data: "menu_pricing" }, { text: " Live Info", callback_data: "menu_liveinfo" }],
+    [{ text: " Top Saham", callback_data: "menu_stocks" }, { text: " Ticker", callback_data: "menu_ticker" }],
+    [{ text: " Testimoni", callback_data: "menu_testi" }, { text: " Orders", callback_data: "menu_orders" }],
+    [{ text: " Statistik", callback_data: "menu_stats" }, { text: " Channels", callback_data: "menu_channels" }],
   ];
 }
 
@@ -103,23 +103,23 @@ async function broadcastToChannels(text: string) {
 
 async function handleChannels(chatId: number|string) {
   const channels = await getChannels();
-  let txt = "📡 <b>CHANNELS / GRUP TERDAFTAR</b>\n\n";
+  let txt = " <b>CHANNELS / GRUP TERDAFTAR</b>\n\n";
   if (!channels.length) {
     txt += "Belum ada channel/grup terdaftar.\n\n";
   } else {
     channels.forEach((c:any, i:number) => {
-      txt += `${i+1}. ${c.type === "channel" ? "📢" : "👥"} <b>${c.title}</b>\n   ID: <code>${c.id}</code>\n\n`;
+      txt += `${i+1}. ${c.type === "channel" ? "" : ""} <b>${c.title}</b>\n   ID: <code>${c.id}</code>\n\n`;
     });
   }
   txt += "<b>Cara daftar channel/grup baru:</b>\n" +
     "1. Buat channel/grup di Telegram\n" +
     "2. Tambahkan bot ini sebagai <b>admin</b> di sana (lewat menu Add Member/Admin Telegram — bot tidak bisa join sendiri lewat link, ini batasan resmi Telegram Bot API)\n" +
-    "3. Begitu ditambahkan, bot otomatis terdaftar di sini dan sinyal baru akan auto-forward ke situ ⚡";
+    "3. Begitu ditambahkan, bot otomatis terdaftar di sini dan sinyal baru akan auto-forward ke situ ";
 
-  const delBtns = channels.map((c:any) => [{ text: `🗑️ Hapus ${c.title}`, callback_data: `chan_del_${c.id}` }]);
+  const delBtns = channels.map((c:any) => [{ text: ` Hapus ${c.title}`, callback_data: `chan_del_${c.id}` }]);
   await sendKeyboard(chatId, txt, [
     ...delBtns,
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -127,9 +127,9 @@ async function handleChannels(chatId: number|string) {
 async function handleSignals(chatId: number|string, page = 0) {
   const signals = await sb("GET", "/signals?order=created_at.desc&limit=100");
   if (!signals.length) {
-    await sendKeyboard(chatId, "⚡ <b>Sinyal</b>\n\nBelum ada sinyal.", [
-      [{ text: "➕ Tambah Sinyal", callback_data: "sig_add" }],
-      [{ text: "🏠 Menu Utama", callback_data: "main_menu" }],
+    await sendKeyboard(chatId, " <b>Sinyal</b>\n\nBelum ada sinyal.", [
+      [{ text: " Tambah Sinyal", callback_data: "sig_add" }],
+      [{ text: " Menu Utama", callback_data: "main_menu" }],
     ]);
     return;
   }
@@ -137,17 +137,17 @@ async function handleSignals(chatId: number|string, page = 0) {
   const totalPages = Math.ceil(signals.length / perPage);
   const pageSigs = signals.slice(page * perPage, (page+1) * perPage);
 
-  let txt = `⚡ <b>SINYAL</b> (${signals.length} total) — Hal ${page+1}/${totalPages}\n\n`;
+  let txt = ` <b>SINYAL</b> (${signals.length} total) — Hal ${page+1}/${totalPages}\n\n`;
   pageSigs.forEach((s: any) => {
-    const a = s.action === "BUY" ? "🟢" : s.action === "SELL" ? "🔴" : s.action === "ANTRI" ? "🔵" : "🟡";
+    const a = s.action === "BUY" ? "" : s.action === "SELL" ? "" : s.action === "ANTRI" ? "" : "";
     txt += `${a} <b>${s.kode}</b> — ${s.action}\n   Entry: ${s.entry||"—"} | TP: ${s.tp||"—"} | SL: ${s.sl||"—"}\n`;
-    if (s.notes) txt += `   📝 ${s.notes}\n`;
+    if (s.notes) txt += `    ${s.notes}\n`;
     txt += "\n";
   });
 
   const editBtns = pageSigs.map((s:any) => [
-    { text: `✏️ ${s.kode}`, callback_data: `sig_edit_${s.id}` },
-    { text: `🗑️ ${s.kode}`, callback_data: `sig_del_${s.id}` },
+    { text: ` ${s.kode}`, callback_data: `sig_edit_${s.id}` },
+    { text: ` ${s.kode}`, callback_data: `sig_del_${s.id}` },
   ]);
 
   const navBtns = [];
@@ -157,8 +157,8 @@ async function handleSignals(chatId: number|string, page = 0) {
   const keyboard: any[][] = [
     ...editBtns,
     ...(navBtns.length ? [navBtns] : []),
-    [{ text: "➕ Tambah", callback_data: "sig_add" }, { text: "🗑️ Hapus Semua", callback_data: "sig_delall_confirm" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Tambah", callback_data: "sig_add" }, { text: " Hapus Semua", callback_data: "sig_delall_confirm" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ];
   await sendKeyboard(chatId, txt, keyboard);
 }
@@ -174,15 +174,15 @@ async function handleTokens(chatId: number|string, page = 0) {
   const totalPages = Math.ceil(tokens.length / perPage) || 1;
   const pageToks = tokens.slice(page * perPage, (page+1) * perPage);
 
-  let txt = `🔑 <b>TOKEN VIP</b> — Hal ${page+1}/${totalPages}\n✅ ${aktif.length} Aktif | ⚠️ ${nearExp.length} Segera Exp | ❌ ${expired.length} Expired\n\n`;
+  let txt = ` <b>TOKEN VIP</b> — Hal ${page+1}/${totalPages}\n ${aktif.length} Aktif |  ${nearExp.length} Segera Exp |  ${expired.length} Expired\n\n`;
   pageToks.forEach((t:any) => {
-    const status = isExpired(t.expired_at||"") ? "❌" : t.is_active ? "✅" : "⏸";
-    txt += `${status} <b>${t.name||"—"}</b> (${t.package})\n📧 ${t.email||"—"}\n🔑 <code>${t.token}</code>\n📅 Exp: ${t.expired_at ? fmtDate(t.expired_at) : "—"}\n\n`;
+    const status = isExpired(t.expired_at||"") ? "" : t.is_active ? "" : "⏸";
+    txt += `${status} <b>${t.name||"—"}</b> (${t.package})\n ${t.email||"—"}\n <code>${t.token}</code>\n Exp: ${t.expired_at ? fmtDate(t.expired_at) : "—"}\n\n`;
   });
 
   const actionBtns = pageToks.map((t:any) => [
     { text: `⏸ ${t.name?.slice(0,10)||t.token?.slice(0,8)}`, callback_data: `tok_toggle_${t.id}` },
-    { text: `🗑️ Hapus`, callback_data: `tok_del_${t.id}` },
+    { text: ` Hapus`, callback_data: `tok_del_${t.id}` },
   ]);
 
   const navBtns = [];
@@ -192,9 +192,9 @@ async function handleTokens(chatId: number|string, page = 0) {
   const keyboard: any[][] = [
     ...actionBtns,
     ...(navBtns.length ? [navBtns] : []),
-    [{ text: "➕ Buat Token", callback_data: "tok_create" }, { text: "🔍 Cari", callback_data: "tok_search" }],
-    [{ text: "🗑️ Hapus Expired", callback_data: "tok_del_expired_confirm" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Buat Token", callback_data: "tok_create" }, { text: " Cari", callback_data: "tok_search" }],
+    [{ text: " Hapus Expired", callback_data: "tok_del_expired_confirm" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ];
   await sendKeyboard(chatId, txt, keyboard);
 }
@@ -204,20 +204,20 @@ async function handlePricing(chatId: number|string) {
   const rows = await sb("GET", '/settings?key=eq.pricing');
   const pricing = rows[0]?.value || [];
   if (!pricing.length) {
-    await sendKeyboard(chatId, "💰 <b>Harga/Paket</b>\n\nBelum ada data harga.", [[{ text: "🏠 Menu", callback_data: "main_menu" }]]);
+    await sendKeyboard(chatId, " <b>Harga/Paket</b>\n\nBelum ada data harga.", [[{ text: " Menu", callback_data: "main_menu" }]]);
     return;
   }
-  let txt = "💰 <b>HARGA PAKET</b>\n\n";
+  let txt = " <b>HARGA PAKET</b>\n\n";
   pricing.forEach((p: any) => {
     const fs = p.flashSale;
-    txt += `📦 <b>${p.name}</b>: ${p.priceLabel}`;
-    if (fs) txt += ` ⚡→ <b>${fs.price}</b> (${fs.discount} OFF)`;
+    txt += ` <b>${p.name}</b>: ${p.priceLabel}`;
+    if (fs) txt += `  <b>${fs.price}</b> (${fs.discount} OFF)`;
     txt += "\n";
   });
   txt += "\n<i>Tap paket untuk edit harga, deskripsi, fitur, atau flash sale</i>";
 
-  const kboard = pricing.map((p:any) => [{ text: `✏️ ${p.name} — ${p.priceLabel}`, callback_data: `pricing_edit_${p.id}` }]);
-  kboard.push([{ text: "🏠 Menu", callback_data: "main_menu" }]);
+  const kboard = pricing.map((p:any) => [{ text: ` ${p.name} — ${p.priceLabel}`, callback_data: `pricing_edit_${p.id}` }]);
+  kboard.push([{ text: " Menu", callback_data: "main_menu" }]);
   await sendKeyboard(chatId, txt, kboard);
 }
 
@@ -225,12 +225,12 @@ async function handlePricing(chatId: number|string) {
 async function handleLiveInfo(chatId: number|string) {
   const rows = await sb("GET", "/liveinfo?id=eq.1");
   const li = rows[0] || { message: "", is_active: false };
-  const status = li.is_active ? "🟢 AKTIF" : "🔴 NONAKTIF";
-  const txt = `📢 <b>LIVE INFO</b>\n\nStatus: ${status}\n\nPesan:\n${li.message || "(kosong)"}`;
+  const status = li.is_active ? " AKTIF" : " NONAKTIF";
+  const txt = ` <b>LIVE INFO</b>\n\nStatus: ${status}\n\nPesan:\n${li.message || "(kosong)"}`;
   await sendKeyboard(chatId, txt, [
-    [{ text: li.is_active ? "🔴 Matikan" : "🟢 Aktifkan", callback_data: "li_toggle" }],
-    [{ text: "✏️ Edit Pesan", callback_data: "li_edit" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: li.is_active ? " Matikan" : " Aktifkan", callback_data: "li_toggle" }],
+    [{ text: " Edit Pesan", callback_data: "li_edit" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -238,7 +238,7 @@ async function handleLiveInfo(chatId: number|string) {
 async function handleTicker(chatId: number|string) {
   const rows = await sb("GET", '/settings?key=eq.ticker');
   const ticker = rows[0]?.value || [];
-  let txt = "🎞️ <b>TICKER SAHAM</b>\n\n";
+  let txt = " <b>TICKER SAHAM</b>\n\n";
   if (!ticker.length) {
     txt += "Belum ada item ticker.\n\n";
   } else {
@@ -248,12 +248,12 @@ async function handleTicker(chatId: number|string) {
   }
   txt += "\n<i>/addticker KODE HARGA %CHANGE — untuk tambah</i>";
 
-  const delBtns = ticker.map((t:any) => [{ text: `🗑️ Hapus ${t.kode}`, callback_data: `ticker_del_${t.kode}` }]);
+  const delBtns = ticker.map((t:any) => [{ text: ` Hapus ${t.kode}`, callback_data: `ticker_del_${t.kode}` }]);
   await sendKeyboard(chatId, txt, [
     ...delBtns,
-    [{ text: "➕ Tambah Ticker", callback_data: "ticker_add" }],
-    [{ text: "🗑️ Reset Semua", callback_data: "ticker_reset_confirm" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Tambah Ticker", callback_data: "ticker_add" }],
+    [{ text: " Reset Semua", callback_data: "ticker_reset_confirm" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -261,7 +261,7 @@ async function handleTicker(chatId: number|string) {
 async function handleStocks(chatId: number|string) {
   const rows = await sb("GET", '/settings?key=eq.top_saham');
   const stocks = rows[0]?.value || [];
-  let txt = "📈 <b>TOP SAHAM</b>\n\n";
+  let txt = " <b>TOP SAHAM</b>\n\n";
   if (!stocks.length) {
     txt += "Belum ada data top saham.\n";
   } else {
@@ -270,12 +270,12 @@ async function handleStocks(chatId: number|string) {
     });
   }
 
-  const delBtns = stocks.map((s:any) => [{ text: `🗑️ Hapus ${s.kode}`, callback_data: `stock_del_${s.kode}` }]);
+  const delBtns = stocks.map((s:any) => [{ text: ` Hapus ${s.kode}`, callback_data: `stock_del_${s.kode}` }]);
   await sendKeyboard(chatId, txt, [
     ...delBtns,
-    [{ text: "➕ Tambah Saham", callback_data: "stock_add" }],
-    [{ text: "🗑️ Hapus Semua", callback_data: "stock_delall_confirm" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Tambah Saham", callback_data: "stock_add" }],
+    [{ text: " Hapus Semua", callback_data: "stock_delall_confirm" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -283,22 +283,22 @@ async function handleStocks(chatId: number|string) {
 async function handleOrders(chatId: number|string, page = 0) {
   const orders = await sb("GET", "/orders?order=created_at.desc&limit=200");
   if (!orders.length) {
-    await sendKeyboard(chatId, "📦 <b>ORDERS</b>\n\nBelum ada order.", [[{ text: "🏠 Menu", callback_data: "main_menu" }]]);
+    await sendKeyboard(chatId, " <b>ORDERS</b>\n\nBelum ada order.", [[{ text: " Menu", callback_data: "main_menu" }]]);
     return;
   }
   const perPage = 5;
   const totalPages = Math.ceil(orders.length / perPage);
   const pageOrds = orders.slice(page * perPage, (page+1) * perPage);
 
-  let txt = `📦 <b>ORDERS</b> (${orders.length}) — Hal ${page+1}/${totalPages}\n\n`;
+  let txt = ` <b>ORDERS</b> (${orders.length}) — Hal ${page+1}/${totalPages}\n\n`;
   pageOrds.forEach((o: any) => {
-    const ic = o.status === "confirmed" ? "✅" : o.status === "cancelled" ? "❌" : "🕐";
+    const ic = o.status === "confirmed" ? "" : o.status === "cancelled" ? "" : "";
     txt += `${ic} <b>${o.id?.slice(-8)}</b> — ${o.paket}\n   ${o.nama} | ${fmtRp(o.harga||0)}\n   ${o.hp||""} | ${fmtDate(o.created_at)}\n\n`;
   });
 
   const orderBtns = pageOrds.filter((o:any) => o.status !== "confirmed").map((o:any) => [
-    { text: `✅ Konfirmasi ${o.id?.slice(-6)}`, callback_data: `order_confirm_${o.id}` },
-    { text: `❌ Cancel`, callback_data: `order_cancel_${o.id}` },
+    { text: ` Konfirmasi ${o.id?.slice(-6)}`, callback_data: `order_confirm_${o.id}` },
+    { text: ` Cancel`, callback_data: `order_cancel_${o.id}` },
   ]);
 
   const navBtns = [];
@@ -308,7 +308,7 @@ async function handleOrders(chatId: number|string, page = 0) {
   await sendKeyboard(chatId, txt, [
     ...orderBtns,
     ...(navBtns.length ? [navBtns] : []),
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -324,14 +324,14 @@ async function handleStats(chatId: number|string) {
   const totalRevenue = orders.filter((o:any) => o.status === "confirmed").reduce((sum:number, o:any) => sum + (o.harga||0), 0);
   const today = orders.filter((o:any) => o.created_at && new Date(o.created_at).toDateString() === new Date().toDateString()).length;
 
-  const txt = `📊 <b>STATISTIK RC</b>\n\n` +
-    `⚡ Sinyal aktif: <b>${signals.length}</b>\n` +
-    `🔑 Token: <b>${tokens.length}</b> (aktif: ${aktifTok})\n` +
-    `📦 Order hari ini: <b>${today}</b>\n` +
-    `📦 Order pending: <b>${pendingOrders}</b>\n` +
-    `💰 Revenue confirmed: <b>${fmtRp(totalRevenue)}</b>`;
+  const txt = ` <b>STATISTIK RC</b>\n\n` +
+    ` Sinyal aktif: <b>${signals.length}</b>\n` +
+    ` Token: <b>${tokens.length}</b> (aktif: ${aktifTok})\n` +
+    ` Order hari ini: <b>${today}</b>\n` +
+    ` Order pending: <b>${pendingOrders}</b>\n` +
+    ` Revenue confirmed: <b>${fmtRp(totalRevenue)}</b>`;
 
-  await sendKeyboard(chatId, txt, [[{ text: "🏠 Menu", callback_data: "main_menu" }]]);
+  await sendKeyboard(chatId, txt, [[{ text: " Menu", callback_data: "main_menu" }]]);
 }
 
 // ===== TESTIMONI =====
@@ -345,15 +345,15 @@ async function handleTestimonials(chatId: number|string, page = 0) {
   const totalPages = Math.ceil(allTesti.length / perPage) || 1;
   const pageTesti = allTesti.slice(page * perPage, (page+1) * perPage);
 
-  let txt = `💬 <b>TESTIMONI</b> (${allTesti.length}) — Hal ${page+1}/${totalPages}\n\n`;
+  let txt = ` <b>TESTIMONI</b> (${allTesti.length}) — Hal ${page+1}/${totalPages}\n\n`;
   pageTesti.forEach((t:any, i:number) => {
     const approved = t.isApproved !== false;
-    txt += `${approved ? "✅" : "🔴"} <b>${t.name}</b> (${t.package || t.paket})\n⭐ ${t.rating||5} — ${(t.text||t.teks||"").slice(0,80)}\n\n`;
+    txt += `${approved ? "" : ""} <b>${t.name}</b> (${t.package || t.paket})\n ${t.rating||5} — ${(t.text||t.teks||"").slice(0,80)}\n\n`;
   });
 
   const testiBtns = pageTesti.map((t:any) => [
-    { text: `${t.isApproved !== false ? "🔴 Sembunyikan" : "✅ Tampilkan"} ${t.name?.slice(0,10)}`, callback_data: `testi_toggle_${t.id}` },
-    { text: `🗑️ Hapus`, callback_data: `testi_del_${t.id}` },
+    { text: `${t.isApproved !== false ? " Sembunyikan" : " Tampilkan"} ${t.name?.slice(0,10)}`, callback_data: `testi_toggle_${t.id}` },
+    { text: ` Hapus`, callback_data: `testi_del_${t.id}` },
   ]);
 
   const navBtns = [];
@@ -363,26 +363,26 @@ async function handleTestimonials(chatId: number|string, page = 0) {
   await sendKeyboard(chatId, txt, [
     ...testiBtns,
     ...(navBtns.length ? [navBtns] : []),
-    [{ text: "➕ Tambah Testimoni", callback_data: "testi_add" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Tambah Testimoni", callback_data: "testi_add" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
 // ===== COMMAND HANDLERS =====
 async function handleFlashSaleCmd(chatId: number|string, args: string[]) {
   if (args.length < 2) {
-    await sendMsg(chatId, "❌ Format: /flashsale [paket] [persen] [jam]\nContoh: /flashsale basic 50 24");
+    await sendMsg(chatId, " Format: /flashsale [paket] [persen] [jam]\nContoh: /flashsale basic 50 24");
     return;
   }
   const [paketId, pctStr, hoursStr] = args;
   const pct = parseInt(pctStr);
   const hours = parseInt(hoursStr || "24");
-  if (isNaN(pct) || pct <= 0 || pct >= 100) { await sendMsg(chatId, "❌ Persen harus 1-99"); return; }
+  if (isNaN(pct) || pct <= 0 || pct >= 100) { await sendMsg(chatId, " Persen harus 1-99"); return; }
 
   const rows = await sb("GET", '/settings?key=eq.pricing');
   const pricing: any[] = rows[0]?.value || [];
   const pkg = pricing.find((p: any) => p.id?.toLowerCase() === paketId.toLowerCase() || p.name?.toLowerCase() === paketId.toLowerCase());
-  if (!pkg) { await sendMsg(chatId, `❌ Paket "${paketId}" tidak ditemukan`); return; }
+  if (!pkg) { await sendMsg(chatId, ` Paket "${paketId}" tidak ditemukan`); return; }
 
   const rawPrice = pkg.price || parseInt(pkg.priceLabel?.replace(/\D/g,"") || "0");
   const salePrice = Math.round(rawPrice * (1 - pct/100));
@@ -394,7 +394,7 @@ async function handleFlashSaleCmd(chatId: number|string, args: string[]) {
     { key: "pricing", value: updated, updated_at: new Date().toISOString() },
     { "Prefer": "resolution=merge-duplicates,return=representation" }
   );
-  await sendMsg(chatId, `✅ Flash sale <b>${pkg.name}</b> aktif!\n\nHarga: ${fmtRp(rawPrice)} → <b>${fmtRp(salePrice)}</b> (${pct}% OFF)\nBerakhir: ${fmtDate(endTime)}`);
+  await sendMsg(chatId, ` Flash sale <b>${pkg.name}</b> aktif!\n\nHarga: ${fmtRp(rawPrice)}  <b>${fmtRp(salePrice)}</b> (${pct}% OFF)\nBerakhir: ${fmtDate(endTime)}`);
 }
 
 async function handleRemoveFlashSale(chatId: number|string, args: string[]) {
@@ -411,11 +411,11 @@ async function handleRemoveFlashSale(chatId: number|string, args: string[]) {
     { key: "pricing", value: updated, updated_at: new Date().toISOString() },
     { "Prefer": "resolution=merge-duplicates,return=representation" }
   );
-  await sendMsg(chatId, `✅ Flash sale dihapus.`);
+  await sendMsg(chatId, ` Flash sale dihapus.`);
 }
 
 async function handleAddTicker(chatId: number|string, args: string[]) {
-  if (args.length < 3) { await sendMsg(chatId, "❌ Format: /addticker KODE HARGA %CHANGE\nContoh: /addticker BBCA 9875 +1.28%"); return; }
+  if (args.length < 3) { await sendMsg(chatId, " Format: /addticker KODE HARGA %CHANGE\nContoh: /addticker BBCA 9875 +1.28%"); return; }
   const [kode, price, change] = args;
   const item = { kode: kode.toUpperCase(), price, change };
   const rows = await sb("GET", '/settings?key=eq.ticker');
@@ -428,7 +428,7 @@ async function handleAddTicker(chatId: number|string, args: string[]) {
     { key: "ticker", value: updated, updated_at: new Date().toISOString() },
     { "Prefer": "resolution=merge-duplicates,return=representation" }
   );
-  await sendMsg(chatId, `✅ Ticker <b>${kode.toUpperCase()}</b> ${existing >= 0 ? "diupdate" : "ditambah"}!\n${price} ${change}`);
+  await sendMsg(chatId, ` Ticker <b>${kode.toUpperCase()}</b> ${existing >= 0 ? "diupdate" : "ditambah"}!\n${price} ${change}`);
 }
 
 // ===== MULTI-STEP FLOWS =====
@@ -438,30 +438,30 @@ async function handleAddSignal(chatId: number|string, text: string) {
 
   if (state.step === "sig_kode") {
     userState.set(String(chatId), { ...state, kode: text.toUpperCase(), step: "sig_saham" });
-    await sendMsg(chatId, "📝 Nama saham? (contoh: Bank Central Asia)");
+    await sendMsg(chatId, " Nama saham? (contoh: Bank Central Asia)");
     return;
   }
   if (state.step === "sig_saham") {
     userState.set(String(chatId), { ...state, saham: text, step: "sig_action" });
     await sendKeyboard(chatId, `Aksi untuk <b>${state.kode}</b>?`, [
-      [{ text: "🟢 BUY", callback_data: "sigact_BUY" }, { text: "🔴 SELL", callback_data: "sigact_SELL" }],
-      [{ text: "🔵 ANTRI", callback_data: "sigact_ANTRI" }, { text: "🟡 HOLD", callback_data: "sigact_HOLD" }],
+      [{ text: " BUY", callback_data: "sigact_BUY" }, { text: " SELL", callback_data: "sigact_SELL" }],
+      [{ text: " ANTRI", callback_data: "sigact_ANTRI" }, { text: " HOLD", callback_data: "sigact_HOLD" }],
     ]);
     return;
   }
   if (state.step === "sig_entry") {
     userState.set(String(chatId), { ...state, entry: text, step: "sig_tp" });
-    await sendMsg(chatId, "🎯 Target Profit (TP)? (contoh: 10.200 atau . untuk skip)");
+    await sendMsg(chatId, " Target Profit (TP)? (contoh: 10.200 atau . untuk skip)");
     return;
   }
   if (state.step === "sig_tp") {
     userState.set(String(chatId), { ...state, tp: text === "." ? "" : text, step: "sig_sl" });
-    await sendMsg(chatId, "🛑 Stop Loss (SL)? (contoh: 9.400 atau . untuk skip)");
+    await sendMsg(chatId, " Stop Loss (SL)? (contoh: 9.400 atau . untuk skip)");
     return;
   }
   if (state.step === "sig_sl") {
     userState.set(String(chatId), { ...state, sl: text === "." ? "" : text, step: "sig_notes" });
-    await sendMsg(chatId, "📝 Catatan tambahan? (atau . untuk skip)");
+    await sendMsg(chatId, " Catatan tambahan? (atau . untuk skip)");
     return;
   }
   if (state.step === "sig_notes") {
@@ -474,15 +474,15 @@ async function handleAddSignal(chatId: number|string, text: string) {
     await sb("POST", "/signals", [newSig]);
     userState.delete(String(chatId));
     await sendKeyboard(chatId,
-      `✅ Sinyal <b>${state.kode}</b> berhasil ditambah!\n\n${state.action} | Entry: ${state.entry} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}`,
-      [[{ text: "⚡ Lihat Sinyal", callback_data: "menu_signals" }, { text: "🏠 Menu", callback_data: "main_menu" }]]
+      ` Sinyal <b>${state.kode}</b> berhasil ditambah!\n\n${state.action} | Entry: ${state.entry} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}`,
+      [[{ text: " Lihat Sinyal", callback_data: "menu_signals" }, { text: " Menu", callback_data: "main_menu" }]]
     );
-    const bIcon = state.action === "BUY" ? "🟢" : state.action === "SELL" ? "🔴" : state.action === "ANTRI" ? "🔵" : "🟡";
+    const bIcon = state.action === "BUY" ? "" : state.action === "SELL" ? "" : state.action === "ANTRI" ? "" : "";
     await broadcastToChannels(
       `${bIcon} <b>SINYAL BARU — ${state.kode}</b> (${state.action})\n\n` +
       `Entry: ${state.entry||"—"} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}\n` +
-      (notes ? `📝 ${notes}\n\n` : "\n") +
-      `📊 Ritel Community — auto signal`
+      (notes ? ` ${notes}\n\n` : "\n") +
+      ` Ritel Community — auto signal`
     );
     return;
   }
@@ -494,12 +494,12 @@ async function handleTokenCreate(chatId: number|string, text: string) {
 
   if (state.step === "tok_email") {
     userState.set(String(chatId), { ...state, email: text, step: "tok_name" });
-    await sendMsg(chatId, "👤 Nama user?");
+    await sendMsg(chatId, " Nama user?");
     return;
   }
   if (state.step === "tok_name") {
     userState.set(String(chatId), { ...state, name: text, step: "tok_package" });
-    await sendKeyboard(chatId, "📦 Pilih paket:", [
+    await sendKeyboard(chatId, " Pilih paket:", [
       [{ text: "Basic", callback_data: "tokpkg_basic" }, { text: "Silver", callback_data: "tokpkg_silver" }],
       [{ text: "Gold", callback_data: "tokpkg_gold" }, { text: "Pro", callback_data: "tokpkg_pro" }],
       [{ text: "Platinum", callback_data: "tokpkg_platinum" }, { text: "Elite", callback_data: "tokpkg_elite" }],
@@ -508,15 +508,15 @@ async function handleTokenCreate(chatId: number|string, text: string) {
   }
   if (state.step === "tok_days") {
     const days = parseInt(text);
-    if (isNaN(days) || days <= 0) { await sendMsg(chatId, "❌ Masukkan jumlah hari yang valid"); return; }
+    if (isNaN(days) || days <= 0) { await sendMsg(chatId, " Masukkan jumlah hari yang valid"); return; }
     const token = Math.random().toString(36).substring(2, 10).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
     const expiredAt = new Date(Date.now() + days * 86400000).toISOString();
     const newToken = { token, email: state.email, name: state.name, package: state.package, is_active: true, expired_at: expiredAt };
     await sb("POST", "/tokens", [newToken]);
     userState.delete(String(chatId));
     await sendKeyboard(chatId,
-      `✅ Token VIP dibuat!\n\n👤 ${state.name}\n📧 ${state.email}\n📦 ${state.package}\n🔑 <code>${token}</code>\n📅 Exp: ${fmtDate(expiredAt)}`,
-      [[{ text: "🔑 Lihat Token", callback_data: "menu_tokens" }, { text: "🏠 Menu", callback_data: "main_menu" }]]
+      ` Token VIP dibuat!\n\n ${state.name}\n ${state.email}\n ${state.package}\n <code>${token}</code>\n Exp: ${fmtDate(expiredAt)}`,
+      [[{ text: " Lihat Token", callback_data: "menu_tokens" }, { text: " Menu", callback_data: "main_menu" }]]
     );
     return;
   }
@@ -530,8 +530,8 @@ async function handleLiveInfoEdit(chatId: number|string, text: string) {
     { "Prefer": "resolution=merge-duplicates,return=representation" }
   );
   userState.delete(String(chatId));
-  await sendKeyboard(chatId, `✅ Live info diupdate dan diaktifkan!\n\n${text}`,
-    [[{ text: "📢 Live Info", callback_data: "menu_liveinfo" }, { text: "🏠 Menu", callback_data: "main_menu" }]]
+  await sendKeyboard(chatId, ` Live info diupdate dan diaktifkan!\n\n${text}`,
+    [[{ text: " Live Info", callback_data: "menu_liveinfo" }, { text: " Menu", callback_data: "main_menu" }]]
   );
 }
 
@@ -541,11 +541,11 @@ async function handleOrderConfirm(chatId: number|string, text: string) {
 
   if (state.step === "order_id") {
     const allOrders = await sb("GET", `/orders?id=like.%25${text}%25`);
-    if (!allOrders.length) { await sendMsg(chatId, "❌ Order tidak ditemukan"); userState.delete(String(chatId)); return; }
+    if (!allOrders.length) { await sendMsg(chatId, " Order tidak ditemukan"); userState.delete(String(chatId)); return; }
     const ord = allOrders[0];
     await sb("PATCH", `/orders?id=eq.${ord.id}`, { status: "confirmed" });
     userState.delete(String(chatId));
-    await sendMsg(chatId, `✅ Order <b>${ord.id?.slice(-8)}</b> dikonfirmasi!\n${ord.nama} | ${ord.paket}`);
+    await sendMsg(chatId, ` Order <b>${ord.id?.slice(-8)}</b> dikonfirmasi!\n${ord.nama} | ${ord.paket}`);
     return;
   }
 }
@@ -555,15 +555,15 @@ async function handleTokenSearch(chatId: number|string, text: string) {
   if (!state || state.step !== "tok_search") return;
   userState.delete(String(chatId));
   const results = await sb("GET", `/tokens?or=(token.ilike.%25${text}%25,email.ilike.%25${text}%25,name.ilike.%25${text}%25)`);
-  if (!results.length) { await sendMsg(chatId, "❌ Token tidak ditemukan"); return; }
-  let txt = `🔍 <b>Hasil: "${text}"</b>\n\n`;
+  if (!results.length) { await sendMsg(chatId, " Token tidak ditemukan"); return; }
+  let txt = ` <b>Hasil: "${text}"</b>\n\n`;
   results.forEach((t:any) => {
-    const status = isExpired(t.expired_at||"") ? "❌" : t.is_active ? "✅" : "⏸";
-    txt += `${status} <b>${t.name}</b> (${t.package})\n📧 ${t.email}\n🔑 <code>${t.token}</code>\n📅 Exp: ${t.expired_at ? fmtDate(t.expired_at) : "—"}\n\n`;
+    const status = isExpired(t.expired_at||"") ? "" : t.is_active ? "" : "⏸";
+    txt += `${status} <b>${t.name}</b> (${t.package})\n ${t.email}\n <code>${t.token}</code>\n Exp: ${t.expired_at ? fmtDate(t.expired_at) : "—"}\n\n`;
   });
   await sendKeyboard(chatId, txt, [
-    [{ text: "🔑 Semua Token", callback_data: "menu_tokens" }],
-    [{ text: "🏠 Menu", callback_data: "main_menu" }],
+    [{ text: " Semua Token", callback_data: "menu_tokens" }],
+    [{ text: " Menu", callback_data: "main_menu" }],
   ]);
 }
 
@@ -573,21 +573,21 @@ async function handlePricingEdit(chatId: number|string, text: string) {
 
   if (state.step === "pe_price") {
     userState.set(String(chatId), { ...state, priceLabel: text, step: "pe_period" });
-    await sendMsg(chatId, `✅ Harga: <b>${text}</b>\n\nKetik <b>periode</b> (contoh: /bulan, /tahun, atau . untuk skip):`);
+    await sendMsg(chatId, ` Harga: <b>${text}</b>\n\nKetik <b>periode</b> (contoh: /bulan, /tahun, atau . untuk skip):`);
     return;
   }
   if (state.step === "pe_period") {
     const period = text === "." ? state.origPeriod : text;
     userState.set(String(chatId), { ...state, period, step: "pe_desc" });
-    await sendMsg(chatId, `✅ Periode: ${period}\n\nKetik <b>deskripsi</b> paket (atau . untuk skip):`);
+    await sendMsg(chatId, ` Periode: ${period}\n\nKetik <b>deskripsi</b> paket (atau . untuk skip):`);
     return;
   }
   if (state.step === "pe_desc") {
     const desc = text === "." ? state.origDesc : text;
     userState.set(String(chatId), { ...state, description: desc, step: "pe_confirm" });
     await sendKeyboard(chatId,
-      `📋 <b>Konfirmasi Edit ${state.pkgName}</b>\n\nHarga: <b>${state.priceLabel}</b>${state.period}\nDeskripsi: ${desc?.slice(0,100)}\n\nSimpan?`,
-      [[{ text: "✅ Simpan", callback_data: "pe_save" }, { text: "❌ Batal", callback_data: "pe_cancel" }]]
+      ` <b>Konfirmasi Edit ${state.pkgName}</b>\n\nHarga: <b>${state.priceLabel}</b>${state.period}\nDeskripsi: ${desc?.slice(0,100)}\n\nSimpan?`,
+      [[{ text: " Simpan", callback_data: "pe_save" }, { text: " Batal", callback_data: "pe_cancel" }]]
     );
     return;
   }
@@ -599,25 +599,25 @@ async function handleSignalEdit(chatId: number|string, text: string) {
 
   if (state.step === "se_entry") {
     userState.set(String(chatId), { ...state, entry: text === "." ? state.origEntry : text, step: "se_tp" });
-    await sendMsg(chatId, `✅ Entry: ${state.entry}\n\nKetik <b>TP baru</b> (atau . untuk skip):`);
+    await sendMsg(chatId, ` Entry: ${state.entry}\n\nKetik <b>TP baru</b> (atau . untuk skip):`);
     return;
   }
   if (state.step === "se_tp") {
     userState.set(String(chatId), { ...state, tp: text === "." ? state.origTp : text, step: "se_sl" });
-    await sendMsg(chatId, `✅ TP: ${state.tp}\n\nKetik <b>SL baru</b> (atau . untuk skip):`);
+    await sendMsg(chatId, ` TP: ${state.tp}\n\nKetik <b>SL baru</b> (atau . untuk skip):`);
     return;
   }
   if (state.step === "se_sl") {
     userState.set(String(chatId), { ...state, sl: text === "." ? state.origSl : text, step: "se_notes" });
-    await sendMsg(chatId, `✅ SL: ${state.sl}\n\nKetik <b>catatan</b> (atau . untuk skip):`);
+    await sendMsg(chatId, ` SL: ${state.sl}\n\nKetik <b>catatan</b> (atau . untuk skip):`);
     return;
   }
   if (state.step === "se_notes") {
     const notes = text === "." ? state.origNotes : text;
     userState.set(String(chatId), { ...state, notes, step: "se_confirm" });
     await sendKeyboard(chatId,
-      `📋 <b>Konfirmasi Edit ${state.kode}</b>\n\nEntry: ${state.entry||"—"}\nTP: ${state.tp||"—"} | SL: ${state.sl||"—"}\nNotes: ${notes||"—"}\n\nSimpan?`,
-      [[{ text: "✅ Simpan", callback_data: "se_save" }, { text: "❌ Batal", callback_data: "se_cancel" }]]
+      ` <b>Konfirmasi Edit ${state.kode}</b>\n\nEntry: ${state.entry||"—"}\nTP: ${state.tp||"—"} | SL: ${state.sl||"—"}\nNotes: ${notes||"—"}\n\nSimpan?`,
+      [[{ text: " Simpan", callback_data: "se_save" }, { text: " Batal", callback_data: "se_cancel" }]]
     );
     return;
   }
@@ -629,12 +629,12 @@ async function handleAddTicker_flow(chatId: number|string, text: string) {
 
   if (state.step === "ticker_kode") {
     userState.set(String(chatId), { ...state, kode: text.toUpperCase(), step: "ticker_price" });
-    await sendMsg(chatId, "💰 Harga sekarang? (contoh: 9875)");
+    await sendMsg(chatId, " Harga sekarang? (contoh: 9875)");
     return;
   }
   if (state.step === "ticker_price") {
     userState.set(String(chatId), { ...state, price: text, step: "ticker_change" });
-    await sendMsg(chatId, "📊 Perubahan %? (contoh: +1.28% atau -0.5%)");
+    await sendMsg(chatId, " Perubahan %? (contoh: +1.28% atau -0.5%)");
     return;
   }
   if (state.step === "ticker_change") {
@@ -650,8 +650,8 @@ async function handleAddTicker_flow(chatId: number|string, text: string) {
       { "Prefer": "resolution=merge-duplicates,return=representation" }
     );
     userState.delete(String(chatId));
-    await sendKeyboard(chatId, `✅ Ticker <b>${state.kode}</b> ${existing >= 0 ? "diupdate" : "ditambah"}!\n${state.price} ${text}`, [
-      [{ text: "🎞️ Lihat Ticker", callback_data: "menu_ticker" }, { text: "🏠 Menu", callback_data: "main_menu" }]
+    await sendKeyboard(chatId, ` Ticker <b>${state.kode}</b> ${existing >= 0 ? "diupdate" : "ditambah"}!\n${state.price} ${text}`, [
+      [{ text: " Lihat Ticker", callback_data: "menu_ticker" }, { text: " Menu", callback_data: "main_menu" }]
     ]);
     return;
   }
@@ -663,18 +663,18 @@ async function handleAddStock_flow(chatId: number|string, text: string) {
 
   if (state.step === "stock_kode") {
     userState.set(String(chatId), { ...state, kode: text.toUpperCase(), step: "stock_nama" });
-    await sendMsg(chatId, "🏢 Nama perusahaan? (contoh: Bank Central Asia)");
+    await sendMsg(chatId, " Nama perusahaan? (contoh: Bank Central Asia)");
     return;
   }
   if (state.step === "stock_nama") {
     userState.set(String(chatId), { ...state, nama: text, step: "stock_target" });
-    await sendMsg(chatId, "🎯 Target harga? (contoh: 10.500 atau . untuk skip)");
+    await sendMsg(chatId, " Target harga? (contoh: 10.500 atau . untuk skip)");
     return;
   }
   if (state.step === "stock_target") {
     const target = text === "." ? "" : text;
     userState.set(String(chatId), { ...state, target, step: "stock_rek" });
-    await sendMsg(chatId, "📝 Rekomendasi? (BUY/HOLD/SELL atau . untuk skip)");
+    await sendMsg(chatId, " Rekomendasi? (BUY/HOLD/SELL atau . untuk skip)");
     return;
   }
   if (state.step === "stock_rek") {
@@ -691,8 +691,8 @@ async function handleAddStock_flow(chatId: number|string, text: string) {
       { "Prefer": "resolution=merge-duplicates,return=representation" }
     );
     userState.delete(String(chatId));
-    await sendKeyboard(chatId, `✅ <b>${state.kode}</b> berhasil ditambah ke Top Saham!\n${state.nama} | Target: ${state.target||"—"} | ${rek||"—"}`, [
-      [{ text: "📈 Top Saham", callback_data: "menu_stocks" }, { text: "🏠 Menu", callback_data: "main_menu" }]
+    await sendKeyboard(chatId, ` <b>${state.kode}</b> berhasil ditambah ke Top Saham!\n${state.nama} | Target: ${state.target||"—"} | ${rek||"—"}`, [
+      [{ text: " Top Saham", callback_data: "menu_stocks" }, { text: " Menu", callback_data: "main_menu" }]
     ]);
     return;
   }
@@ -704,7 +704,7 @@ async function handleAddTesti_flow(chatId: number|string, text: string) {
 
   if (state.step === "testi_name") {
     userState.set(String(chatId), { ...state, name: text, step: "testi_package" });
-    await sendKeyboard(chatId, "📦 Paket yang dipakai?", [
+    await sendKeyboard(chatId, " Paket yang dipakai?", [
       [{ text: "Basic", callback_data: "testipkg_basic" }, { text: "Silver", callback_data: "testipkg_silver" }],
       [{ text: "Gold", callback_data: "testipkg_gold" }, { text: "Pro", callback_data: "testipkg_pro" }],
       [{ text: "Platinum", callback_data: "testipkg_platinum" }, { text: "Elite", callback_data: "testipkg_elite" }],
@@ -713,9 +713,9 @@ async function handleAddTesti_flow(chatId: number|string, text: string) {
   }
   if (state.step === "testi_rating") {
     const rating = parseInt(text);
-    if (isNaN(rating) || rating < 1 || rating > 5) { await sendMsg(chatId, "❌ Rating 1-5"); return; }
+    if (isNaN(rating) || rating < 1 || rating > 5) { await sendMsg(chatId, " Rating 1-5"); return; }
     userState.set(String(chatId), { ...state, rating, step: "testi_text" });
-    await sendMsg(chatId, "💬 Tulis testimoni:");
+    await sendMsg(chatId, " Tulis testimoni:");
     return;
   }
   if (state.step === "testi_text") {
@@ -730,8 +730,8 @@ async function handleAddTesti_flow(chatId: number|string, text: string) {
       );
     });
     userState.delete(String(chatId));
-    await sendKeyboard(chatId, `✅ Testimoni dari <b>${state.name}</b> ditambah!`, [
-      [{ text: "💬 Testimoni", callback_data: "menu_testi" }, { text: "🏠 Menu", callback_data: "main_menu" }]
+    await sendKeyboard(chatId, ` Testimoni dari <b>${state.name}</b> ditambah!`, [
+      [{ text: " Testimoni", callback_data: "menu_testi" }, { text: " Menu", callback_data: "main_menu" }]
     ]);
     return;
   }
@@ -756,7 +756,7 @@ async function processUpdate(update: any) {
         await saveChannels([...channels, entry]);
         // notify admins
         for (const adminId of ADMIN_IDS) {
-          await sendMsg(adminId, `📡 Bot ditambahkan ke <b>${entry.title}</b> (${chat.type}).\n\nSinyal baru akan auto-forward ke sini. Kelola di menu 📡 Channels.`);
+          await sendMsg(adminId, ` Bot ditambahkan ke <b>${entry.title}</b> (${chat.type}).\n\nSinyal baru akan auto-forward ke sini. Kelola di menu  Channels.`);
         }
       }
     } else if (["left", "kicked"].includes(newStatus)) {
@@ -775,7 +775,7 @@ async function processUpdate(update: any) {
     const state = userState.get(stateKey);
 
     if (!isAdmin(userId)) {
-      await sendMsg(chatId, `🤖 <b>RC Admin Bot</b>\n\nID Telegram kamu: <code>${userId}</code>\n\nSampaikan ID ini ke developer untuk akses admin.`);
+      await sendMsg(chatId, ` <b>RC Admin Bot</b>\n\nID Telegram kamu: <code>${userId}</code>\n\nSampaikan ID ini ke developer untuk akses admin.`);
       return;
     }
 
@@ -795,7 +795,7 @@ async function processUpdate(update: any) {
 
     if (text.startsWith("/start") || text.startsWith("/menu")) {
       await sendKeyboard(chatId,
-        `🏠 <b>RC Admin Bot - Ritel Community</b>\n\nHalo Admin! 👋\nID: <code>${userId}</code>`,
+        ` <b>RC Admin Bot - Ritel Community</b>\n\nHalo Admin! \nID: <code>${userId}</code>`,
         mainMenu()
       );
       return;
@@ -816,16 +816,16 @@ async function processUpdate(update: any) {
     if (text.startsWith("/stats")) { await handleStats(chatId); return; }
     if (text.startsWith("/help")) {
       await sendMsg(chatId,
-        `📖 <b>PERINTAH BOT RC ADMIN</b>\n\n` +
+        ` <b>PERINTAH BOT RC ADMIN</b>\n\n` +
         `/menu — Menu utama\n/stats — Statistik\n/tokens — List token VIP\n` +
         `/flashsale [paket] [%] [jam] — Set flash sale\n/removefs [paket] — Hapus flash sale\n` +
         `/addticker [KODE] [HARGA] [%] — Tambah ticker\n\n` +
-        `Semua fitur bisa juga via menu interaktif 👆`
+        `Semua fitur bisa juga via menu interaktif `
       );
       return;
     }
 
-    await sendKeyboard(chatId, `Ketik /menu untuk panel admin.`, [[{ text: "🏠 Menu Utama", callback_data: "main_menu" }]]);
+    await sendKeyboard(chatId, `Ketik /menu untuk panel admin.`, [[{ text: " Menu Utama", callback_data: "main_menu" }]]);
   }
 
   if (cb) {
@@ -836,11 +836,11 @@ async function processUpdate(update: any) {
 
     await answerCallback(cb.id);
 
-    if (!isAdmin(userId)) { await sendMsg(chatId, "⛔ Akses ditolak."); return; }
+    if (!isAdmin(userId)) { await sendMsg(chatId, " Akses ditolak."); return; }
 
     // ===== MAIN MENU =====
     if (data === "main_menu") {
-      await editMsg(chatId, msgId, `🏠 <b>RC Admin Bot</b>\n\nPilih menu:`, mainMenu());
+      await editMsg(chatId, msgId, ` <b>RC Admin Bot</b>\n\nPilih menu:`, mainMenu());
       return;
     }
 
@@ -871,7 +871,7 @@ async function processUpdate(update: any) {
     // ===== SINYAL =====
     if (data === "sig_add") {
       userState.set(String(chatId), { flow: "sig", step: "sig_kode" });
-      await sendMsg(chatId, "⚡ <b>Tambah Sinyal</b>\n\nKode saham? (contoh: BBCA)");
+      await sendMsg(chatId, " <b>Tambah Sinyal</b>\n\nKode saham? (contoh: BBCA)");
       return;
     }
     if (data.startsWith("sigact_")) {
@@ -879,7 +879,7 @@ async function processUpdate(update: any) {
       const state = userState.get(String(chatId));
       if (state) {
         userState.set(String(chatId), { ...state, action, step: "sig_entry" });
-        await sendMsg(chatId, `📝 Entry range? (contoh: 9.750–9.800 atau . untuk skip)`);
+        await sendMsg(chatId, ` Entry range? (contoh: 9.750–9.800 atau . untuk skip)`);
       }
       return;
     }
@@ -887,41 +887,41 @@ async function processUpdate(update: any) {
       const sigId = data.replace("sig_edit_", "");
       const signals = await sb("GET", `/signals?id=eq.${sigId}`);
       const sig = signals[0];
-      if (!sig) { await sendMsg(chatId, "❌ Sinyal tidak ditemukan"); return; }
+      if (!sig) { await sendMsg(chatId, " Sinyal tidak ditemukan"); return; }
       userState.set(String(chatId), {
         flow: "signal_edit", step: "se_entry",
         sigId, kode: sig.kode,
         origEntry: sig.entry, origTp: sig.tp, origSl: sig.sl, origNotes: sig.notes||"",
         entry: sig.entry, tp: sig.tp, sl: sig.sl,
       });
-      await sendMsg(chatId, `✏️ <b>Edit Sinyal ${sig.kode}</b>\n\nEntry: ${sig.entry||"—"} | TP: ${sig.tp||"—"} | SL: ${sig.sl||"—"}\n\nKetik <b>Entry baru</b> (atau . untuk skip):`);
+      await sendMsg(chatId, ` <b>Edit Sinyal ${sig.kode}</b>\n\nEntry: ${sig.entry||"—"} | TP: ${sig.tp||"—"} | SL: ${sig.sl||"—"}\n\nKetik <b>Entry baru</b> (atau . untuk skip):`);
       return;
     }
     if (data.startsWith("sig_del_")) {
       const sigId = data.replace("sig_del_", "");
       const signals = await sb("GET", `/signals?id=eq.${sigId}`);
       const sig = signals[0];
-      await sendKeyboard(chatId, `⚠️ Hapus sinyal <b>${sig?.kode}</b>?`, [
-        [{ text: "✅ Ya, Hapus", callback_data: `sig_del_do_${sigId}` }, { text: "❌ Batal", callback_data: "menu_signals" }]
+      await sendKeyboard(chatId, ` Hapus sinyal <b>${sig?.kode}</b>?`, [
+        [{ text: " Ya, Hapus", callback_data: `sig_del_do_${sigId}` }, { text: " Batal", callback_data: "menu_signals" }]
       ]);
       return;
     }
     if (data.startsWith("sig_del_do_")) {
       const sigId = data.replace("sig_del_do_", "");
       await sb("DELETE", `/signals?id=eq.${sigId}`);
-      await sendKeyboard(chatId, "✅ Sinyal dihapus.", [[{ text: "⚡ Sinyal", callback_data: "menu_signals" }, { text: "🏠 Menu", callback_data: "main_menu" }]]);
+      await sendKeyboard(chatId, " Sinyal dihapus.", [[{ text: " Sinyal", callback_data: "menu_signals" }, { text: " Menu", callback_data: "main_menu" }]]);
       return;
     }
     if (data === "sig_delall_confirm") {
-      await sendKeyboard(chatId, "⚠️ <b>Hapus SEMUA sinyal?</b>", [
-        [{ text: "✅ Ya, Hapus Semua", callback_data: "sig_delall_do" }],
-        [{ text: "❌ Batal", callback_data: "menu_signals" }],
+      await sendKeyboard(chatId, " <b>Hapus SEMUA sinyal?</b>", [
+        [{ text: " Ya, Hapus Semua", callback_data: "sig_delall_do" }],
+        [{ text: " Batal", callback_data: "menu_signals" }],
       ]);
       return;
     }
     if (data === "sig_delall_do") {
       await sb("DELETE", "/signals?id=neq.NONE");
-      await sendKeyboard(chatId, "✅ Semua sinyal dihapus.", [[{ text: "🏠 Menu", callback_data: "main_menu" }]]);
+      await sendKeyboard(chatId, " Semua sinyal dihapus.", [[{ text: " Menu", callback_data: "main_menu" }]]);
       return;
     }
     if (data === "se_save") {
@@ -929,8 +929,8 @@ async function processUpdate(update: any) {
       if (!state) return;
       await sb("PATCH", `/signals?id=eq.${state.sigId}`, { entry: state.entry, tp: state.tp, sl: state.sl, notes: state.notes });
       userState.delete(String(chatId));
-      await sendKeyboard(chatId, `✅ Sinyal <b>${state.kode}</b> diupdate!\nEntry: ${state.entry||"—"} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}`, [
-        [{ text: "⚡ Sinyal", callback_data: "menu_signals" }, { text: "🏠 Menu", callback_data: "main_menu" }]
+      await sendKeyboard(chatId, ` Sinyal <b>${state.kode}</b> diupdate!\nEntry: ${state.entry||"—"} | TP: ${state.tp||"—"} | SL: ${state.sl||"—"}`, [
+        [{ text: " Sinyal", callback_data: "menu_signals" }, { text: " Menu", callback_data: "main_menu" }]
       ]);
       return;
     }
@@ -939,12 +939,12 @@ async function processUpdate(update: any) {
     // ===== TOKEN =====
     if (data === "tok_create") {
       userState.set(String(chatId), { flow: "tok", step: "tok_email" });
-      await sendMsg(chatId, "🔑 <b>Buat Token VIP</b>\n\nEmail user?");
+      await sendMsg(chatId, " <b>Buat Token VIP</b>\n\nEmail user?");
       return;
     }
     if (data === "tok_search") {
       userState.set(String(chatId), { flow: "search", step: "tok_search" });
-      await sendMsg(chatId, "🔍 Cari token — ketik nama, email, atau kode:");
+      await sendMsg(chatId, " Cari token — ketik nama, email, atau kode:");
       return;
     }
     if (data.startsWith("tokpkg_")) {
@@ -952,7 +952,7 @@ async function processUpdate(update: any) {
       const state = userState.get(String(chatId));
       if (state) {
         userState.set(String(chatId), { ...state, package: pkg, step: "tok_days" });
-        await sendMsg(chatId, `📅 Berapa hari aktif? (contoh: 30)`);
+        await sendMsg(chatId, ` Berapa hari aktif? (contoh: 30)`);
       }
       return;
     }
@@ -962,28 +962,28 @@ async function processUpdate(update: any) {
       const tok = tokens[0];
       if (!tok) return;
       await sb("PATCH", `/tokens?id=eq.${tokId}`, { is_active: !tok.is_active });
-      await sendMsg(chatId, `✅ Token ${tok.name||tok.token} ${!tok.is_active ? "diaktifkan" : "dinonaktifkan"}.`);
+      await sendMsg(chatId, ` Token ${tok.name||tok.token} ${!tok.is_active ? "diaktifkan" : "dinonaktifkan"}.`);
       return;
     }
     if (data.startsWith("tok_del_") && !data.includes("expired")) {
       const tokId = data.replace("tok_del_", "");
       const tokens = await sb("GET", `/tokens?id=eq.${tokId}`);
       const tok = tokens[0];
-      await sendKeyboard(chatId, `⚠️ Hapus token <b>${tok?.name||tok?.token}</b>?`, [
-        [{ text: "✅ Ya", callback_data: `tok_del_do_${tokId}` }, { text: "❌ Batal", callback_data: "menu_tokens" }]
+      await sendKeyboard(chatId, ` Hapus token <b>${tok?.name||tok?.token}</b>?`, [
+        [{ text: " Ya", callback_data: `tok_del_do_${tokId}` }, { text: " Batal", callback_data: "menu_tokens" }]
       ]);
       return;
     }
     if (data.startsWith("tok_del_do_")) {
       const tokId = data.replace("tok_del_do_", "");
       await sb("DELETE", `/tokens?id=eq.${tokId}`);
-      await sendKeyboard(chatId, "✅ Token dihapus.", [[{ text: "🔑 Token", callback_data: "menu_tokens" }, { text: "🏠 Menu", callback_data: "main_menu" }]]);
+      await sendKeyboard(chatId, " Token dihapus.", [[{ text: " Token", callback_data: "menu_tokens" }, { text: " Menu", callback_data: "main_menu" }]]);
       return;
     }
     if (data === "tok_del_expired_confirm") {
-      await sendKeyboard(chatId, "⚠️ Hapus semua token expired?", [
-        [{ text: "✅ Ya", callback_data: "tok_del_expired_do" }],
-        [{ text: "❌ Batal", callback_data: "menu_tokens" }],
+      await sendKeyboard(chatId, " Hapus semua token expired?", [
+        [{ text: " Ya", callback_data: "tok_del_expired_do" }],
+        [{ text: " Batal", callback_data: "menu_tokens" }],
       ]);
       return;
     }
@@ -991,7 +991,7 @@ async function processUpdate(update: any) {
       const tokens = await sb("GET", "/tokens?select=id,expired_at");
       const expiredIds = tokens.filter((t:any) => isExpired(t.expired_at||"")).map((t:any) => t.id);
       for (const id of expiredIds) await sb("DELETE", `/tokens?id=eq.${id}`);
-      await sendKeyboard(chatId, `✅ ${expiredIds.length} token expired dihapus.`, [[{ text: "🔑 Token", callback_data: "menu_tokens" }]]);
+      await sendKeyboard(chatId, ` ${expiredIds.length} token expired dihapus.`, [[{ text: " Token", callback_data: "menu_tokens" }]]);
       return;
     }
 
@@ -1001,17 +1001,17 @@ async function processUpdate(update: any) {
       const rows = await sb("GET", '/settings?key=eq.pricing');
       const pricing: any[] = rows[0]?.value || [];
       const pkg = pricing.find((p:any) => p.id === pkgId);
-      if (!pkg) { await sendMsg(chatId, "❌ Paket tidak ditemukan"); return; }
+      if (!pkg) { await sendMsg(chatId, " Paket tidak ditemukan"); return; }
       userState.set(String(chatId), {
         flow: "pricing_edit", step: "pe_price",
         pkgId: pkg.id, pkgName: pkg.name,
         origPeriod: pkg.period||"/bulan", origDesc: pkg.description||"",
       });
       await sendKeyboard(chatId,
-        `✏️ <b>Edit Paket ${pkg.name}</b>\n\nHarga saat ini: <b>${pkg.priceLabel}</b>\nFlash Sale: ${pkg.flashSale ? pkg.flashSale.price+" ("+pkg.flashSale.discount+")" : "—"}\n\nKetik <b>harga baru</b> (atau . untuk skip):`,
+        ` <b>Edit Paket ${pkg.name}</b>\n\nHarga saat ini: <b>${pkg.priceLabel}</b>\nFlash Sale: ${pkg.flashSale ? pkg.flashSale.price+" ("+pkg.flashSale.discount+")" : "—"}\n\nKetik <b>harga baru</b> (atau . untuk skip):`,
         [
-          [{ text: "⚡ Set Flash Sale", callback_data: `pe_flash_${pkg.id}` }, { text: "🗑️ Hapus Flash", callback_data: `pe_rmflash_${pkg.id}` }],
-          [{ text: "❌ Batal", callback_data: "menu_pricing" }],
+          [{ text: " Set Flash Sale", callback_data: `pe_flash_${pkg.id}` }, { text: " Hapus Flash", callback_data: `pe_rmflash_${pkg.id}` }],
+          [{ text: " Batal", callback_data: "menu_pricing" }],
         ]
       );
       return;
@@ -1030,8 +1030,8 @@ async function processUpdate(update: any) {
         { "Prefer": "resolution=merge-duplicates,return=representation" }
       );
       userState.delete(String(chatId));
-      await sendKeyboard(chatId, `✅ Paket <b>${state.pkgName}</b> diupdate!\nHarga: ${state.priceLabel}`, [
-        [{ text: "💰 Harga Paket", callback_data: "menu_pricing" }, { text: "🏠 Menu", callback_data: "main_menu" }]
+      await sendKeyboard(chatId, ` Paket <b>${state.pkgName}</b> diupdate!\nHarga: ${state.priceLabel}`, [
+        [{ text: " Harga Paket", callback_data: "menu_pricing" }, { text: " Menu", callback_data: "main_menu" }]
       ]);
       return;
     }
@@ -1041,7 +1041,7 @@ async function processUpdate(update: any) {
       const rows = await sb("GET", '/settings?key=eq.pricing');
       const pricing: any[] = rows[0]?.value || [];
       const pkg = pricing.find((p:any) => p.id === pkgId);
-      await sendMsg(chatId, `⚡ Set flash sale untuk <b>${pkg?.name}</b>:\n\nKetik: /flashsale ${pkgId} [persen] [jam]\nContoh: /flashsale ${pkgId} 50 24`);
+      await sendMsg(chatId, ` Set flash sale untuk <b>${pkg?.name}</b>:\n\nKetik: /flashsale ${pkgId} [persen] [jam]\nContoh: /flashsale ${pkgId} 50 24`);
       return;
     }
     if (data.startsWith("pe_rmflash_")) {
@@ -1057,25 +1057,25 @@ async function processUpdate(update: any) {
         { id: 1, message: li.message||"", is_active: !li.is_active, updated_at: new Date().toISOString() },
         { "Prefer": "resolution=merge-duplicates,return=representation" }
       );
-      await sendMsg(chatId, `✅ Live info ${!li.is_active ? "DIAKTIFKAN" : "DIMATIKAN"}.`);
+      await sendMsg(chatId, ` Live info ${!li.is_active ? "DIAKTIFKAN" : "DIMATIKAN"}.`);
       return;
     }
     if (data === "li_edit") {
       userState.set(String(chatId), { flow: "li", step: "li_msg" });
-      await sendMsg(chatId, "📝 Ketik pesan live info baru:");
+      await sendMsg(chatId, " Ketik pesan live info baru:");
       return;
     }
 
     // ===== TICKER =====
     if (data === "ticker_add") {
       userState.set(String(chatId), { flow: "ticker_add", step: "ticker_kode" });
-      await sendMsg(chatId, "🎞️ <b>Tambah Ticker</b>\n\nKode saham? (contoh: BBCA)");
+      await sendMsg(chatId, " <b>Tambah Ticker</b>\n\nKode saham? (contoh: BBCA)");
       return;
     }
     if (data.startsWith("ticker_del_")) {
       const kode = data.replace("ticker_del_","");
-      await sendKeyboard(chatId, `⚠️ Hapus ticker <b>${kode}</b>?`, [
-        [{ text: "✅ Ya", callback_data: `ticker_del_do_${kode}` }, { text: "❌ Batal", callback_data: "menu_ticker" }]
+      await sendKeyboard(chatId, ` Hapus ticker <b>${kode}</b>?`, [
+        [{ text: " Ya", callback_data: `ticker_del_do_${kode}` }, { text: " Batal", callback_data: "menu_ticker" }]
       ]);
       return;
     }
@@ -1088,12 +1088,12 @@ async function processUpdate(update: any) {
         { key: "ticker", value: updated, updated_at: new Date().toISOString() },
         { "Prefer": "resolution=merge-duplicates,return=representation" }
       );
-      await sendKeyboard(chatId, `✅ Ticker <b>${kode}</b> dihapus.`, [[{ text: "🎞️ Ticker", callback_data: "menu_ticker" }]]);
+      await sendKeyboard(chatId, ` Ticker <b>${kode}</b> dihapus.`, [[{ text: " Ticker", callback_data: "menu_ticker" }]]);
       return;
     }
     if (data === "ticker_reset_confirm") {
-      await sendKeyboard(chatId, "⚠️ Reset semua ticker?", [
-        [{ text: "✅ Ya", callback_data: "ticker_reset_do" }, { text: "❌ Batal", callback_data: "menu_ticker" }]
+      await sendKeyboard(chatId, " Reset semua ticker?", [
+        [{ text: " Ya", callback_data: "ticker_reset_do" }, { text: " Batal", callback_data: "menu_ticker" }]
       ]);
       return;
     }
@@ -1102,20 +1102,20 @@ async function processUpdate(update: any) {
         { key: "ticker", value: [], updated_at: new Date().toISOString() },
         { "Prefer": "resolution=merge-duplicates,return=representation" }
       );
-      await sendKeyboard(chatId, "✅ Ticker direset.", [[{ text: "🎞️ Ticker", callback_data: "menu_ticker" }]]);
+      await sendKeyboard(chatId, " Ticker direset.", [[{ text: " Ticker", callback_data: "menu_ticker" }]]);
       return;
     }
 
     // ===== TOP SAHAM =====
     if (data === "stock_add") {
       userState.set(String(chatId), { flow: "stock_add", step: "stock_kode" });
-      await sendMsg(chatId, "📈 <b>Tambah Top Saham</b>\n\nKode saham? (contoh: BBCA)");
+      await sendMsg(chatId, " <b>Tambah Top Saham</b>\n\nKode saham? (contoh: BBCA)");
       return;
     }
     if (data.startsWith("stock_del_")) {
       const kode = data.replace("stock_del_","");
-      await sendKeyboard(chatId, `⚠️ Hapus saham <b>${kode}</b> dari Top Saham?`, [
-        [{ text: "✅ Ya", callback_data: `stock_del_do_${kode}` }, { text: "❌ Batal", callback_data: "menu_stocks" }]
+      await sendKeyboard(chatId, ` Hapus saham <b>${kode}</b> dari Top Saham?`, [
+        [{ text: " Ya", callback_data: `stock_del_do_${kode}` }, { text: " Batal", callback_data: "menu_stocks" }]
       ]);
       return;
     }
@@ -1128,12 +1128,12 @@ async function processUpdate(update: any) {
         { key: "top_saham", value: updated, updated_at: new Date().toISOString() },
         { "Prefer": "resolution=merge-duplicates,return=representation" }
       );
-      await sendKeyboard(chatId, `✅ Saham <b>${kode}</b> dihapus dari Top Saham.`, [[{ text: "📈 Top Saham", callback_data: "menu_stocks" }]]);
+      await sendKeyboard(chatId, ` Saham <b>${kode}</b> dihapus dari Top Saham.`, [[{ text: " Top Saham", callback_data: "menu_stocks" }]]);
       return;
     }
     if (data === "stock_delall_confirm") {
-      await sendKeyboard(chatId, "⚠️ Hapus SEMUA top saham?", [
-        [{ text: "✅ Ya", callback_data: "stock_delall_do" }, { text: "❌ Batal", callback_data: "menu_stocks" }]
+      await sendKeyboard(chatId, " Hapus SEMUA top saham?", [
+        [{ text: " Ya", callback_data: "stock_delall_do" }, { text: " Batal", callback_data: "menu_stocks" }]
       ]);
       return;
     }
@@ -1142,14 +1142,14 @@ async function processUpdate(update: any) {
         { key: "top_saham", value: [], updated_at: new Date().toISOString() },
         { "Prefer": "resolution=merge-duplicates,return=representation" }
       );
-      await sendKeyboard(chatId, "✅ Semua top saham dihapus.", [[{ text: "🏠 Menu", callback_data: "main_menu" }]]);
+      await sendKeyboard(chatId, " Semua top saham dihapus.", [[{ text: " Menu", callback_data: "main_menu" }]]);
       return;
     }
 
     // ===== TESTIMONI =====
     if (data === "testi_add") {
       userState.set(String(chatId), { flow: "testi_add", step: "testi_name" });
-      await sendMsg(chatId, "💬 <b>Tambah Testimoni</b>\n\nNama user?");
+      await sendMsg(chatId, " <b>Tambah Testimoni</b>\n\nNama user?");
       return;
     }
     if (data.startsWith("testipkg_")) {
@@ -1157,7 +1157,7 @@ async function processUpdate(update: any) {
       const state = userState.get(String(chatId));
       if (state) {
         userState.set(String(chatId), { ...state, package: pkg, step: "testi_rating" });
-        await sendMsg(chatId, "⭐ Rating 1-5?");
+        await sendMsg(chatId, " Rating 1-5?");
       }
       return;
     }
@@ -1166,49 +1166,49 @@ async function processUpdate(update: any) {
       const testi = await sb("GET", `/testimonials?id=eq.${id}`).catch(()=>[]);
       if (testi.length) {
         await sb("PATCH", `/testimonials?id=eq.${id}`, { isApproved: !testi[0].isApproved });
-        await sendMsg(chatId, `✅ Testimoni ${!testi[0].isApproved ? "ditampilkan" : "disembunyikan"}.`);
+        await sendMsg(chatId, ` Testimoni ${!testi[0].isApproved ? "ditampilkan" : "disembunyikan"}.`);
       } else {
-        await sendMsg(chatId, "❌ Tidak bisa ubah status testimoni ini.");
+        await sendMsg(chatId, " Tidak bisa ubah status testimoni ini.");
       }
       return;
     }
     if (data.startsWith("testi_del_")) {
       const id = data.replace("testi_del_","");
-      await sendKeyboard(chatId, "⚠️ Hapus testimoni ini?", [
-        [{ text: "✅ Ya", callback_data: `testi_del_do_${id}` }, { text: "❌ Batal", callback_data: "menu_testi" }]
+      await sendKeyboard(chatId, " Hapus testimoni ini?", [
+        [{ text: " Ya", callback_data: `testi_del_do_${id}` }, { text: " Batal", callback_data: "menu_testi" }]
       ]);
       return;
     }
     if (data.startsWith("testi_del_do_")) {
       const id = data.replace("testi_del_do_","");
       await sb("DELETE", `/testimonials?id=eq.${id}`).catch(()=>{});
-      await sendKeyboard(chatId, "✅ Testimoni dihapus.", [[{ text: "💬 Testimoni", callback_data: "menu_testi" }]]);
+      await sendKeyboard(chatId, " Testimoni dihapus.", [[{ text: " Testimoni", callback_data: "menu_testi" }]]);
       return;
     }
 
     // ===== ORDERS =====
     if (data === "order_confirm_ask") {
       userState.set(String(chatId), { flow: "order", step: "order_id" });
-      await sendMsg(chatId, "📦 Masukkan ID order (bisa sebagian):");
+      await sendMsg(chatId, " Masukkan ID order (bisa sebagian):");
       return;
     }
     if (data.startsWith("order_confirm_")) {
       const ordId = data.replace("order_confirm_","");
       await sb("PATCH", `/orders?id=eq.${ordId}`, { status: "confirmed" });
-      await sendKeyboard(chatId, `✅ Order dikonfirmasi!`, [[{ text: "📦 Orders", callback_data: "menu_orders" }]]);
+      await sendKeyboard(chatId, ` Order dikonfirmasi!`, [[{ text: " Orders", callback_data: "menu_orders" }]]);
       return;
     }
     if (data.startsWith("order_cancel_")) {
       const ordId = data.replace("order_cancel_","");
-      await sendKeyboard(chatId, "⚠️ Cancel order ini?", [
-        [{ text: "✅ Ya, Cancel", callback_data: `order_cancel_do_${ordId}` }, { text: "❌ Batal", callback_data: "menu_orders" }]
+      await sendKeyboard(chatId, " Cancel order ini?", [
+        [{ text: " Ya, Cancel", callback_data: `order_cancel_do_${ordId}` }, { text: " Batal", callback_data: "menu_orders" }]
       ]);
       return;
     }
     if (data.startsWith("order_cancel_do_")) {
       const ordId = data.replace("order_cancel_do_","");
       await sb("PATCH", `/orders?id=eq.${ordId}`, { status: "cancelled" });
-      await sendKeyboard(chatId, "✅ Order dicancelled.", [[{ text: "📦 Orders", callback_data: "menu_orders" }]]);
+      await sendKeyboard(chatId, " Order dicancelled.", [[{ text: " Orders", callback_data: "menu_orders" }]]);
       return;
     }
   }

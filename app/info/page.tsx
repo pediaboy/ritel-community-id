@@ -89,12 +89,12 @@ export default function InfoPage() {
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
           </Link>
           <div style={{ flex:1 }}>
-            <h1 style={{ fontWeight:900,fontSize:17 }}>📰 Info & Berita Pasar</h1>
+            <h1 style={{ fontWeight:900,fontSize:17 }}> Info & Berita Pasar</h1>
             <p style={{ color:"rgba(255,255,255,0.35)",fontSize:10,marginTop:1 }}>
               {lastUpdated ? `Diperbarui ${lastUpdated.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})} WIB` : "Memuat..."}
             </p>
           </div>
-          <button onClick={()=>load(activeSource)} style={{ background:"rgba(30,90,240,0.1)",border:"1px solid rgba(30,90,240,0.2)",color:"#60a5fa",padding:"6px 12px",borderRadius:10,fontSize:12,fontWeight:700,cursor:"pointer" }}>↺ Refresh</button>
+          <button onClick={()=>load(activeSource)} style={{ background:"rgba(30,90,240,0.1)",border:"1px solid rgba(30,90,240,0.2)",color:"#60a5fa",padding:"6px 12px",borderRadius:10,fontSize:12,fontWeight:700,cursor:"pointer" }}> Refresh</button>
         </div>
         {/* Source tabs */}
         <div style={{ display:"flex",gap:0,borderTop:"1px solid rgba(255,255,255,0.06)",overflowX:"auto" }}>
@@ -116,7 +116,7 @@ export default function InfoPage() {
           </div>
         ) : news.length === 0 ? (
           <div style={{ textAlign:"center",padding:"60px 16px" }}>
-            <p style={{ fontSize:40,marginBottom:12 }}>📰</p>
+            <p style={{ fontSize:40,marginBottom:12 }}></p>
             <p style={{ color:"rgba(255,255,255,0.4)",fontSize:14,marginBottom:8 }}>Belum ada berita tersedia.</p>
             <button onClick={()=>load(activeSource)} style={{ background:"linear-gradient(135deg,#1e5af0,#0ea5e9)",color:"#fff",fontWeight:800,fontSize:13,padding:"10px 24px",borderRadius:12,border:"none",cursor:"pointer" }}>Coba Lagi</button>
           </div>

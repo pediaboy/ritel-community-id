@@ -10,7 +10,7 @@ async function sendTelegramNotif(name: string, pkg: string, token: string, ip: s
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     if (!chatId || !botToken) return;
     const wib = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta", day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" } as any);
-    const msg = `🔐 <b>LOGIN BARU — ${pkg.toUpperCase()}</b>\n\n👤 <b>${name}</b>\n🌐 IP: ${ip}\n🎟 Token: ...${token.slice(-8)}\n⏰ ${wib}`;
+    const msg = ` <b>LOGIN BARU — ${pkg.toUpperCase()}</b>\n\n <b>${name}</b>\n IP: ${ip}\n Token: ...${token.slice(-8)}\n⏰ ${wib}`;
     await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

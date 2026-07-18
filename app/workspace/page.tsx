@@ -33,7 +33,7 @@ const defaultPackages = [
   { id:"basic", name:"Basic", price:100000, priceLabel:"Rp 100.000", period:"/bulan", color:"blue", popular:false, isElite:false, hasAI:false, flashSale:null,
     description:"Cocok untuk pemula yang ingin mulai berinvestasi saham dengan panduan dasar dan sinyal harian.",
     features:["Sinyal saham harian","Berita pasar realtime","Chart IHSG live","Modul dasar investasi saham","Grup WA Basic"] },
-  { id:"silver", name:"Silver", price:250000, priceLabel:"Rp 250.000", period:"/bulan", color:"cyan", popular:false, isElite:false, hasAI:false, flashSale:null,
+  { id:"silver", name:"Silver", price:250000, priceLabel:"Rp 250.000", period:"/bulan", color:"emerald", popular:false, isElite:false, hasAI:false, flashSale:null,
     description:"Untuk investor yang ingin memahami fundamental dan mulai screening saham potensial secara mandiri.",
     features:["Semua fitur Basic","Analisis fundamental mendalam","Screening saham bagger potensial","Risk & money management","Grup WA Silver"] },
   { id:"gold", name:"Gold", price:500000, priceLabel:"Rp 500.000", period:"/bulan", color:"gold", popular:true, isElite:false, hasAI:false, flashSale:null,
@@ -52,7 +52,7 @@ const defaultPackages = [
 
 const colorMap: any = {
   blue:    { border:"border-blue-500/40", glow:"shadow-blue-500/20", badge:"bg-blue-500", accent:"text-blue-400", bg:"from-blue-600 to-blue-800" },
-  cyan:    { border:"border-cyan-500/40", glow:"shadow-cyan-500/20", badge:"bg-cyan-500", accent:"text-cyan-400", bg:"from-cyan-600 to-blue-700" },
+  emerald:    { border:"border-emerald-500/40", glow:"shadow-emerald-500/20", badge:"bg-emerald-500", accent:"text-emerald-400", bg:"from-emerald-600 to-blue-700" },
   gold:    { border:"border-yellow-500/40", glow:"shadow-yellow-500/20", badge:"bg-yellow-500", accent:"text-yellow-400", bg:"from-yellow-500 to-orange-600" },
   purple:  { border:"border-purple-500/40", glow:"shadow-purple-500/20", badge:"bg-purple-500", accent:"text-purple-400", bg:"from-purple-600 to-indigo-700" },
   platinum:{ border:"border-slate-400/40", glow:"shadow-slate-400/20", badge:"bg-slate-400", accent:"text-slate-300", bg:"from-slate-400 to-slate-600" },
@@ -62,12 +62,12 @@ const colorMap: any = {
 
 // ===== MOTIVASI QUOTES =====
 const MOTIVASI_QUOTES = [
-  { text: "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.", icon: "🌟" },
-  { text: "Pasar modal adalah tempat paling adil — siapa yang paling siap, dia yang paling untung.", icon: "📈" },
-  { text: "Cari mentor yang bisa membantu dirimu memahami bidang ini. Pengalaman mereka bisa memangkas kurva belajarmu bertahun-tahun.", icon: "🎯" },
-  { text: "Bukan soal seberapa besar modal yang kamu punya — tapi seberapa besar pengetahuan yang kamu miliki.", icon: "💡" },
-  { text: "Konsistensi dalam belajar lebih berharga dari satu keberuntungan besar yang tidak bisa diulang.", icon: "🔥" },
-  { text: "Investor sukses bukan mereka yang tidak pernah rugi, tapi mereka yang belajar dari setiap kesalahan.", icon: "💎" },
+  { text: "Jangan takut untuk belajar — satu langkah kecil hari ini adalah investasi terbesar untuk masa depanmu.", icon: "" },
+  { text: "Pasar modal adalah tempat paling adil — siapa yang paling siap, dia yang paling untung.", icon: "" },
+  { text: "Cari mentor yang bisa membantu dirimu memahami bidang ini. Pengalaman mereka bisa memangkas kurva belajarmu bertahun-tahun.", icon: "" },
+  { text: "Bukan soal seberapa besar modal yang kamu punya — tapi seberapa besar pengetahuan yang kamu miliki.", icon: "" },
+  { text: "Konsistensi dalam belajar lebih berharga dari satu keberuntungan besar yang tidak bisa diulang.", icon: "" },
+  { text: "Investor sukses bukan mereka yang tidak pernah rugi, tapi mereka yang belajar dari setiap kesalahan.", icon: "" },
 ];
 
 function MotivQuotes() {
@@ -78,7 +78,7 @@ function MotivQuotes() {
       if (syncData.motivasi && syncData.motivasi.length > 0) {
         setMotivList(syncData.motivasi.map((m: any, i: number) => ({
           text: m.text,
-          icon: ["🌟","📈","🎯","💡","🔥","💎","⚡","🚀"][i % 8]
+          icon: ["","","","","","","",""][i % 8]
         })));
       }
     } catch {}
@@ -116,7 +116,7 @@ function PaketCard({ pkg }: { pkg: any }) {
         )}
         {pkg.hasAI && (
           <div className="absolute top-4 right-4">
-            <span className="text-xs bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 px-2 py-1 rounded-full">AI</span>
+            <span className="text-xs bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-1 rounded-full">AI</span>
           </div>
         )}
 
@@ -162,7 +162,7 @@ function PaketCard({ pkg }: { pkg: any }) {
           <ul className="space-y-2 mb-6">
             {pkg.features.map((f: string, i: number) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className={`${c.accent} mt-0.5 flex-shrink-0`}>✓</span>
+                <span className={`${c.accent} mt-0.5 flex-shrink-0`}></span>
                 <span>{f}</span>
               </li>
             ))}
@@ -171,7 +171,7 @@ function PaketCard({ pkg }: { pkg: any }) {
 
         <Link href={`/order?paket=${pkg.id}${activeFlash && fs?.price ? `&flash=${encodeURIComponent(fs.price)}&disc=${encodeURIComponent(fs.discount||"")}&raw=${fs.rawPrice||pkg.price}` : ""}`}
           className={`w-full block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-90 active:scale-95 bg-gradient-to-r ${c.bg} text-white shadow-lg`}>
-          Order Paket {pkg.name} →
+          Order Paket {pkg.name} 
         </Link>
       </div>
     </TiltCard>
@@ -207,14 +207,14 @@ export default function PaketPage() {
       <div className="galaxy-stars"/>
       <div className="relative z-10">
         <div className="max-w-7xl mx-auto mb-8">
-          <Link href="/" className="text-sm text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-2">
-            ← Kembali ke Beranda
+          <Link href="/" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2">
+             Kembali ke Beranda
           </Link>
         </div>
 
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-4 py-2 mb-6 text-sm text-cyan-300">
+            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-4 py-2 mb-6 text-sm text-emerald-300">
               Semua Paket VIP
             </div>
             <h1 className="text-4xl sm:text-5xl font-black text-white mb-3">
@@ -237,38 +237,38 @@ export default function PaketPage() {
 
           {/* Comparison table */}
           <div className="mt-4 card-glass rounded-2xl overflow-hidden">
-            <div className="p-6 border-b border-cyan-500/20">
+            <div className="p-6 border-b border-emerald-500/20">
               <h2 className="text-xl font-black text-white">Perbandingan Fitur</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-cyan-500/10">
+                  <tr className="border-b border-emerald-500/10">
                     <th className="text-left px-6 py-3 text-slate-400 font-medium">Fitur</th>
                     {packages.map(p => <th key={p.id} className="px-4 py-3 text-center text-slate-300 font-bold whitespace-nowrap">{p.name}</th>)}
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    ["Sinyal Harian","✓","✓","✓","✓","✓","✓"],
-                    ["Berita Realtime","✓","✓","✓","✓","✓","✓"],
-                    ["Chart IHSG Live","✓","✓","✓","✓","✓","✓"],
-                    ["Modul Fundamental","–","✓","✓","✓","✓","✓"],
-                    ["Saham Bagger","–","✓","✓","✓","✓","✓"],
-                    ["Sinyal Premium TP/SL","–","–","✓","✓","✓","✓"],
-                    ["Bandarmologi","–","–","✓","✓","✓","✓"],
-                    ["Psikologi Trading","–","–","✓","✓","✓","✓"],
-                    ["AI Agent","–","–","–","✓","✓","✓"],
-                    ["Konsultasi 1-on-1","–","–","–","–","✓","✓"],
-                    ["Sinyal 24/7 No Delay","–","–","–","–","✓","✓"],
-                    ["Mentor Langsung","–","–","–","–","–","✓"],
-                    ["Portfolio Management","–","–","–","–","–","✓"],
-                    ["Grup WA","✓","✓","✓","✓","✓","✓"],
+                    ["Sinyal Harian","","","","","",""],
+                    ["Berita Realtime","","","","","",""],
+                    ["Chart IHSG Live","","","","","",""],
+                    ["Modul Fundamental","–","","","","",""],
+                    ["Saham Bagger","–","","","","",""],
+                    ["Sinyal Premium TP/SL","–","–","","","",""],
+                    ["Bandarmologi","–","–","","","",""],
+                    ["Psikologi Trading","–","–","","","",""],
+                    ["AI Agent","–","–","–","","",""],
+                    ["Konsultasi 1-on-1","–","–","–","–","",""],
+                    ["Sinyal 24/7 No Delay","–","–","–","–","",""],
+                    ["Mentor Langsung","–","–","–","–","–",""],
+                    ["Portfolio Management","–","–","–","–","–",""],
+                    ["Grup WA","","","","","",""],
                   ].map(([feature,...vals]) => (
-                    <tr key={feature as string} className="border-b border-cyan-500/5 hover:bg-cyan-500/3 transition-colors">
+                    <tr key={feature as string} className="border-b border-emerald-500/5 hover:bg-emerald-500/3 transition-colors">
                       <td className="px-6 py-3 text-slate-300">{feature}</td>
                       {vals.map((v,i) => (
-                        <td key={i} className={`px-4 py-3 text-center font-bold text-base ${v==="✓" ? "text-green-400" : "text-slate-700"}`}>{v}</td>
+                        <td key={i} className={`px-4 py-3 text-center font-bold text-base ${v==="" ? "text-green-400" : "text-slate-700"}`}>{v}</td>
                       ))}
                     </tr>
                   ))}

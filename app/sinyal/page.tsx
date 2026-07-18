@@ -239,7 +239,7 @@ export default function SinyalPage() {
             <div>
               {filtered.length===0 ? (
                 <div style={{ textAlign:"center",padding:"60px 16px" }}>
-                  <div style={{ fontSize:40,marginBottom:12 }}>📡</div>
+                  <div style={{ fontSize:40,marginBottom:12 }}></div>
                   <p style={{ color:"rgba(255,255,255,0.3)",fontSize:14,marginBottom:16 }}>Belum ada sinyal {filter!=="Semua"?filter:"aktif"}.</p>
                   {!user && <Link href="/login" style={{ display:"inline-block",background:"linear-gradient(135deg,#1e5af0,#0ea5e9)",color:"#fff",fontWeight:800,fontSize:13,padding:"12px 28px",borderRadius:12,textDecoration:"none" }}>Login untuk Akses Penuh</Link>}
                 </div>

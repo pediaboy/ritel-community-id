@@ -154,7 +154,7 @@ function KalkulatorRataRata() {
             <input value={e.lot} onChange={ev => updateEntry(i, "lot", ev.target.value)} type="number"
               placeholder="Lot" className="w-20 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm outline-none focus:border-blue-500/50"/>
             {entries.length > 1 && (
-              <button onClick={() => removeEntry(i)} className="text-red-400 hover:text-red-300 px-1">✕</button>
+              <button onClick={() => removeEntry(i)} className="text-red-400 hover:text-red-300 px-1"></button>
             )}
           </div>
         ))}
@@ -454,12 +454,12 @@ function KalkulatorTarget() {
 
 // ===== MAIN ALAT PAGE =====
 const tools = [
-  { id: "araArb", label: "Kalkulator ARA/ARB", icon: "📈", desc: "Hitung batas atas/bawah + proyeksi step" },
-  { id: "rataRata", label: "Harga Rata-rata", icon: "⚖️", desc: "Rata-rata dari beberapa transaksi beli" },
-  { id: "profitLoss", label: "Profit / Loss", icon: "💰", desc: "Hitung P&L dengan fee broker" },
-  { id: "modal", label: "Modal Beli", icon: "🏦", desc: "Total modal termasuk fee beli" },
-  { id: "dividen", label: "Kalkulator Dividen", icon: "💸", desc: "Hitung yield & dividen bersih" },
-  { id: "target", label: "Target Harga Jual", icon: "🎯", desc: "Harga jual berdasarkan target profit" },
+  { id: "araArb", label: "Kalkulator ARA/ARB", icon: "", desc: "Hitung batas atas/bawah + proyeksi step" },
+  { id: "rataRata", label: "Harga Rata-rata", icon: "", desc: "Rata-rata dari beberapa transaksi beli" },
+  { id: "profitLoss", label: "Profit / Loss", icon: "", desc: "Hitung P&L dengan fee broker" },
+  { id: "modal", label: "Modal Beli", icon: "", desc: "Total modal termasuk fee beli" },
+  { id: "dividen", label: "Kalkulator Dividen", icon: "", desc: "Hitung yield & dividen bersih" },
+  { id: "target", label: "Target Harga Jual", icon: "", desc: "Harga jual berdasarkan target profit" },
 ];
 
 export default function AlatPage() {

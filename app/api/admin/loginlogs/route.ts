@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
   if (botToken && chatId) {
-    const msg = `🔐 <b>LOGIN BARU</b>\n\n👤 ${newLog.name}\n📦 ${newLog.package.toUpperCase()}\n🎟 ...${newLog.token}\n🌐 ${newLog.ip}\n⏰ ${new Date(newLog.time).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })}`;
+    const msg = ` <b>LOGIN BARU</b>\n\n ${newLog.name}\n ${newLog.package.toUpperCase()}\n ...${newLog.token}\n ${newLog.ip}\n⏰ ${new Date(newLog.time).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })}`;
     await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -111,7 +111,7 @@ export async function GET() {
     customStocks,
     motivasi: settings.motivasi || [],
     ticker_speed: settings.ticker_speed || 32,
-    owners: settings.owners || [{ name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"👑", tag:"Owner", verified:true }],
+    owners: settings.owners || [{ name:"Thirafi Thariq Al Idris", role:"Founder & CEO", badge:"", tag:"Owner", verified:true }],
     partners: settings.partners || [],
     wa_links: settings.wa_links || { grup:"https://chat.whatsapp.com/JzF3gCFvZsbJrx3KuVtQeS", channel:"https://whatsapp.com/channel/0029VbCVhf91noz95vIGwo23" },
     bagger_signals: settings.bagger_signals || [],

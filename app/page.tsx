@@ -52,7 +52,7 @@ function GalaxyCanvas() {
     const onMouse = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
     window.addEventListener("mousemove", onMouse);
 
-    const COLORS = ["rgba(255,255,255,","rgba(6,182,212,","rgba(139,92,246,","rgba(59,130,246,","rgba(52,211,153,"];
+    const COLORS = ["rgba(255,255,255,","rgba(16,185,129,","rgba(139,92,246,","rgba(59,130,246,","rgba(52,211,153,"];
     type Star = { angle:number; orbit:number; z:number; r:number; color:string; speed:number; };
     const stars: Star[] = Array.from({length:340}, () => ({
       orbit:  60 + Math.random() * Math.max(W,H) * 0.65,
@@ -68,7 +68,7 @@ function GalaxyCanvas() {
     const nebula: Nebula[] = Array.from({length:18}, () => ({
       x: Math.random() * W, y: Math.random() * H,
       r: 60 + Math.random() * 140,
-      color: ["rgba(6,182,212,","rgba(139,92,246,","rgba(30,90,240,"][Math.floor(Math.random()*3)],
+      color: ["rgba(16,185,129,","rgba(139,92,246,","rgba(30,90,240,"][Math.floor(Math.random()*3)],
       vx: (Math.random()-.5)*0.12, vy: (Math.random()-.5)*0.12,
     }));
 
@@ -95,7 +95,7 @@ function GalaxyCanvas() {
 
       // Core galaxy center glow
       const cg = ctx.createRadialGradient(cx,cy,0,cx,cy,W*0.45);
-      cg.addColorStop(0,"rgba(6,182,212,0.06)");
+      cg.addColorStop(0,"rgba(16,185,129,0.06)");
       cg.addColorStop(0.35,"rgba(30,58,138,0.05)");
       cg.addColorStop(1,"transparent");
       ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
@@ -138,19 +138,19 @@ function LoadingScreen() {
     <div className="loading-screen" style={{ flexDirection:"column", gap:20 }}>
       <div style={{ position:"relative", width:68, height:68 }}>
         <div className="loading-ring" />
-        <div style={{ position:"absolute", inset:12, borderRadius:"50%", background:"linear-gradient(135deg,rgba(6,182,212,0.15),rgba(139,92,246,0.15))", display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div style={{ position:"absolute", inset:12, borderRadius:"50%", background:"linear-gradient(135deg,rgba(16,185,129,0.15),rgba(139,92,246,0.15))", display:"flex", alignItems:"center", justifyContent:"center" }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#06B6D4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="18,5 22,5 22,9" stroke="#06B6D4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <polyline points="18,5 22,5 22,9" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
       </div>
       <div style={{ textAlign:"center" }}>
-        <div style={{ fontWeight:900, fontSize:15, letterSpacing:1, color:"#fff" }}>RITEL COMMUNITY<span style={{color:"#06b6d4"}}>.ID</span></div>
+        <div style={{ fontWeight:900, fontSize:15, letterSpacing:1, color:"#fff" }}>RITEL COMMUNITY<span style={{color:"#10b981"}}>.ID</span></div>
         <div style={{ fontSize:10, color:"rgba(255,255,255,0.3)", marginTop:4, letterSpacing:2 }}>MARKET INTELLIGENCE PLATFORM</div>
       </div>
       <div style={{ display:"flex", gap:5, alignItems:"center" }}>
-        {[0,1,2].map(i => <div key={i} style={{ width:4, height:4, borderRadius:"50%", background:"rgba(6,182,212,0.5)", animation:`loadDot .9s ease-in-out ${i*0.2}s infinite alternate` }} />)}
+        {[0,1,2].map(i => <div key={i} style={{ width:4, height:4, borderRadius:"50%", background:"rgba(16,185,129,0.5)", animation:`loadDot .9s ease-in-out ${i*0.2}s infinite alternate` }} />)}
       </div>
       <style>{`@keyframes loadDot{from{opacity:.2;transform:scale(.8)}to{opacity:1;transform:scale(1.3)}}`}</style>
     </div>
@@ -205,13 +205,13 @@ function HomeFeed() {
       {posts.map(p=>(
         <div key={p.id} className="glass-card fade-in-up-2" style={{ padding:"12px 14px", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-            <div style={{ width:28,height:28,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#06b6d4)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"#fff",flexShrink:0 }}>RC</div>
+            <div style={{ width:28,height:28,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#10b981)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"#fff",flexShrink:0 }}>RC</div>
             <div style={{ flex:1 }}>
               <div style={{ display:"flex",alignItems:"center",gap:6,flexWrap:"wrap" }}>
                 <span style={{ color:"#fff",fontWeight:800,fontSize:12 }}>Ritel Community.ID</span>
                 <span style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",width:14,height:14,borderRadius:"50%",background:"#1D9BF0",flexShrink:0 }}><Icon.Verified/></span>
                 {p.tag && <span style={{ background:(tagColors[p.tag]||"#6b7280")+"22",color:tagColors[p.tag]||"#9ca3af",fontSize:9,fontWeight:700,padding:"1px 6px",borderRadius:4,marginLeft:"auto" }}>{p.tag}</span>}
-                {p.pinned && <span style={{ fontSize:10,color:"#fbbf24" }}>📌</span>}
+                {p.pinned && <span style={{ fontSize:10,color:"#fbbf24" }}></span>}
               </div>
             </div>
           </div>
@@ -284,14 +284,14 @@ export default function HomePage() {
         {/* HEADER */}
         <header style={{ position:"sticky",top:0,zIndex:50,background:"rgba(3,5,8,0.82)",backdropFilter:"blur(28px) saturate(200%)",WebkitBackdropFilter:"blur(28px) saturate(200%)",borderBottom:"1px solid rgba(255,255,255,0.05)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0 }}>
           <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-            <div className="glow-pulse-cyan" style={{ width:34,height:34,borderRadius:10,background:"linear-gradient(135deg,#0a1628,#1e5af0)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
+            <div className="glow-pulse-emerald" style={{ width:34,height:34,borderRadius:10,background:"linear-gradient(135deg,#0a1628,#1e5af0)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 <polyline points="18,5 22,5 22,9" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <div>
-              <div style={{ fontWeight:900,fontSize:14,letterSpacing:"-0.3px" }}>RITEL COMMUNITY<span style={{color:"#06b6d4"}}>.ID</span></div>
+              <div style={{ fontWeight:900,fontSize:14,letterSpacing:"-0.3px" }}>RITEL COMMUNITY<span style={{color:"#10b981"}}>.ID</span></div>
               <div style={{ fontSize:9,color:"rgba(255,255,255,0.28)",letterSpacing:"0.6px" }}>MARKET INTELLIGENCE PLATFORM</div>
             </div>
           </div>
@@ -305,11 +305,11 @@ export default function HomePage() {
           {/* ── HERO ── */}
           <section style={{ padding:"24px 16px 18px",textAlign:"center",position:"relative" }}>
             {/* Orbit rings */}
-            <div style={{ position:"absolute",left:"50%",top:55,transform:"translateX(-50%)",width:230,height:80,borderRadius:"50%",border:"1px solid rgba(6,182,212,0.07)",pointerEvents:"none",animation:"orbitSpin 16s linear infinite" }} />
+            <div style={{ position:"absolute",left:"50%",top:55,transform:"translateX(-50%)",width:230,height:80,borderRadius:"50%",border:"1px solid rgba(16,185,129,0.07)",pointerEvents:"none",animation:"orbitSpin 16s linear infinite" }} />
             <div style={{ position:"absolute",left:"50%",top:42,transform:"translateX(-50%)",width:300,height:105,borderRadius:"50%",border:"1px solid rgba(139,92,246,0.05)",pointerEvents:"none",animation:"orbitSpinRev 22s linear infinite" }} />
 
-            <div className="float-1 fade-in-up" style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(6,182,212,0.07)",border:"1px solid rgba(6,182,212,0.18)",borderRadius:100,padding:"5px 16px",marginBottom:20,fontSize:11,color:"#06b6d4",fontWeight:700,backdropFilter:"blur(8px)" }}>
-              <span style={{ width:6,height:6,borderRadius:"50%",background:"#06b6d4",boxShadow:"0 0 8px #06b6d4",display:"inline-block" }}/>
+            <div className="float-1 fade-in-up" style={{ display:"inline-flex",alignItems:"center",gap:6,background:"rgba(16,185,129,0.07)",border:"1px solid rgba(16,185,129,0.18)",borderRadius:100,padding:"5px 16px",marginBottom:20,fontSize:11,color:"#10b981",fontWeight:700,backdropFilter:"blur(8px)" }}>
+              <span style={{ width:6,height:6,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 8px #10b981",display:"inline-block" }}/>
               Platform Sinyal Saham Indonesia
             </div>
 
@@ -374,7 +374,7 @@ export default function HomePage() {
                 <span style={{ fontWeight:900,fontSize:15 }}>Sinyal Terbaru</span>
                 <EqBars color="green"/>
               </div>
-              <Link href="/sinyal" style={{ color:"#06b6d4",fontSize:12,fontWeight:700,textDecoration:"none",display:"flex",alignItems:"center",gap:4 }}>Semua <Icon.ChevRight/></Link>
+              <Link href="/sinyal" style={{ color:"#10b981",fontSize:12,fontWeight:700,textDecoration:"none",display:"flex",alignItems:"center",gap:4 }}>Semua <Icon.ChevRight/></Link>
             </div>
             {(syncData.signals||[]).slice(0,3).map((s:any,i:number)=>{
               const ac:any={BUY:"#22c55e",SELL:"#ef4444",HOLD:"#eab308",WATCH:"#60a5fa",ANTRI:"#a78bfa"};
@@ -407,9 +407,9 @@ export default function HomePage() {
 
           {/* ── CTA BANNER ── */}
           <section style={{ padding:"0 16px",marginBottom:18 }}>
-            <div className="glass-card animated-border float-3" style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.09),rgba(6,182,212,0.05))",border:"1px solid rgba(6,182,212,0.18)",padding:"26px 20px",textAlign:"center" }}>
-              <div style={{ width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,rgba(6,182,212,0.15),rgba(139,92,246,0.1))",border:"1px solid rgba(6,182,212,0.2)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px" }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <div className="glass-card animated-border float-3" style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.09),rgba(16,185,129,0.05))",border:"1px solid rgba(16,185,129,0.18)",padding:"26px 20px",textAlign:"center" }}>
+              <div style={{ width:52,height:52,borderRadius:16,background:"linear-gradient(135deg,rgba(16,185,129,0.15),rgba(139,92,246,0.1))",border:"1px solid rgba(16,185,129,0.2)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px" }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
               <h3 style={{ fontWeight:900,fontSize:18,marginBottom:8 }}>Gabung 1.000+ Investor</h3>
               <p style={{ color:"rgba(255,255,255,0.38)",fontSize:13,lineHeight:1.65,marginBottom:22 }}>Sinyal premium, modul edukasi lengkap, dan komunitas aktif.</p>

@@ -26,10 +26,10 @@ export const packages = [
     price: 250000,
     priceLabel: "Rp 250.000",
     period: "/bulan",
-    color: "cyan",
-    gradient: "from-cyan-600 to-blue-700",
-    borderColor: "border-cyan-500/40",
-    glowColor: "rgba(34,211,238,0.3)",
+    color: "emerald",
+    gradient: "from-emerald-600 to-blue-700",
+    borderColor: "border-emerald-500/40",
+    glowColor: "rgba(52,211,153,0.3)",
     waGroup: "https://chat.whatsapp.com/silver-group",
     features: [
       "Semua fitur Basic",
@@ -143,7 +143,7 @@ export const vipModules = [
   {
     id: "basic-intro",
     title: "Dasar Investasi Saham",
-    icon: "📘",
+    icon: "01",
     level: 0,
     pkgLabel: "Basic",
     description: "Modul pengantar lengkap untuk investor pemula. Kamu akan belajar dari nol: apa itu saham, bagaimana Bursa Efek Indonesia bekerja, cara membuka rekening saham, memahami lot, fraksi harga, auto rejection, jam perdagangan, dan cara melakukan transaksi pertamamu. Modul ini dirancang agar siapapun — tanpa latar belakang keuangan — bisa langsung paham dan siap mulai berinvestasi dengan percaya diri.",
@@ -152,7 +152,7 @@ export const vipModules = [
   {
     id: "basic-chart",
     title: "Membaca Chart untuk Pemula",
-    icon: "📊",
+    icon: "02",
     level: 0,
     pkgLabel: "Basic",
     description: "Belajar membaca grafik harga saham dari dasar. Modul ini mengajarkan perbedaan jenis chart (line, bar, candlestick), cara membaca pergerakan harga harian, dan memahami arti warna merah-hijau pada candlestick. Setelah menyelesaikan modul ini, kamu bisa melihat chart saham dengan lebih percaya diri dan mulai mengidentifikasi tren sederhana tanpa perlu software mahal.",
@@ -161,7 +161,7 @@ export const vipModules = [
   {
     id: "basic-risk",
     title: "Manajemen Modal Pemula",
-    icon: "💰",
+    icon: "03",
     level: 0,
     pkgLabel: "Basic",
     description: "Salah satu skill terpenting sebelum mulai trading adalah tahu cara mengatur modal. Modul ini membahas berapa modal ideal untuk mulai berinvestasi, cara membagi portofolio agar tidak all-in di satu saham, pentingnya tidak menggunakan uang yang dibutuhkan sehari-hari, dan cara memahami toleransi risiko diri sendiri. Investor yang bertahan adalah investor yang bisa mengelola modalnya dengan baik.",
@@ -170,7 +170,7 @@ export const vipModules = [
   {
     id: "basic-news",
     title: "Membaca Berita & Sentimen Pasar",
-    icon: "📰",
+    icon: "04",
     level: 0,
     pkgLabel: "Basic",
     description: "Pasar saham sangat dipengaruhi berita dan sentimen. Modul ini mengajarkan cara membaca berita ekonomi secara efektif, memfilter mana yang relevan dan mana yang hanya rumor, serta bagaimana berita makro seperti inflasi, suku bunga BI, kebijakan pemerintah, dan sentimen global (The Fed, DXY, harga komoditas) berdampak langsung pada pergerakan IHSG dan saham-saham tertentu di BEI.",
@@ -181,7 +181,7 @@ export const vipModules = [
   {
     id: "silver-fundamental",
     title: "Analisis Fundamental: Laporan Keuangan",
-    icon: "🔍",
+    icon: "05",
     level: 1,
     pkgLabel: "Silver",
     description: "Fundamental analysis adalah kunci menemukan saham bagus dengan harga wajar. Kamu akan belajar membaca tiga laporan keuangan utama emiten: neraca keuangan (balance sheet), laporan laba rugi (income statement), dan laporan arus kas (cash flow statement). Kamu akan memahami apa arti setiap angka, bagaimana mengidentifikasi perusahaan yang sehat secara keuangan, dan mana yang harus dihindari. Skill ini dipakai semua investor sukses jangka panjang.",
@@ -190,7 +190,7 @@ export const vipModules = [
   {
     id: "silver-valuation",
     title: "Rasio Keuangan & Valuasi Saham",
-    icon: "📐",
+    icon: "06",
     level: 1,
     pkgLabel: "Silver",
     description: "Setelah bisa membaca laporan keuangan, langkah selanjutnya adalah menilai apakah harga saham sudah murah atau mahal dibanding nilainya yang sebenarnya. Modul ini membahas rasio-rasio keuangan penting seperti PER, PBV, ROE, DER, dividend yield, dan cara menggunakannya untuk membandingkan saham sejenis dalam satu industri. Kamu akan punya alat yang tepat untuk menyaring saham undervalued dari ratusan emiten di BEI.",
@@ -199,7 +199,7 @@ export const vipModules = [
   {
     id: "silver-screening",
     title: "Screening Saham Berpotensi Bagger",
-    icon: "🔭",
+    icon: "07",
     level: 1,
     pkgLabel: "Silver",
     description: "Bagger saham adalah saham yang harganya naik berkali-kali lipat dalam jangka menengah hingga panjang. Modul ini mengajarkan metode screening sistematis untuk menemukan saham dengan potensi pertumbuhan tinggi sebelum harganya meledak. Kamu akan belajar menggunakan kriteria fundamental yang terbukti — revenue growth, margin expansion, competitive moat, dan positioning industri — untuk menyaring ratusan emiten menjadi shortlist kandidat terbaik.",
@@ -208,7 +208,7 @@ export const vipModules = [
   {
     id: "silver-money",
     title: "Money Management Profesional",
-    icon: "💎",
+    icon: "08",
     level: 1,
     pkgLabel: "Silver",
     description: "Money management yang baik adalah fondasi dari setiap investor sukses. Modul ini membahas secara mendalam cara mengalokasikan modal secara optimal, teknik Dollar Cost Averaging (DCA) untuk mengurangi risiko timing, cara mengelola profit agar terus berkembang, serta pentingnya menjaga dana darurat terpisah dari modal investasi. Investor yang bisa mengelola uangnya dengan disiplin akan selalu unggul dalam jangka panjang.",
@@ -219,7 +219,7 @@ export const vipModules = [
   {
     id: "gold-technical",
     title: "Analisis Teknikal Mendalam",
-    icon: "📈",
+    icon: "09",
     level: 2,
     pkgLabel: "Gold",
     description: "Analisis teknikal adalah seni membaca pergerakan harga dan volume untuk memprediksi arah saham selanjutnya. Modul ini mengajarkan berbagai metode teknikal dari yang dasar hingga lanjutan: support & resistance, trendline, moving average, RSI, MACD, Bollinger Bands, hingga pola candlestick yang paling reliable. Dengan menguasai teknikal, kamu bisa menentukan entry dan exit yang optimal untuk memaksimalkan profit.",
@@ -228,7 +228,7 @@ export const vipModules = [
   {
     id: "gold-bandarmologi",
     title: "Bandarmologi & Tape Reading",
-    icon: "🎯",
+    icon: "10",
     level: 2,
     pkgLabel: "Gold",
     description: "Bandarmologi adalah ilmu membaca jejak big player (bandar) di pasar saham Indonesia — bagaimana mereka mengakumulasi, mendistribusikan, dan menggerakkan harga. Modul ini mengajarkan cara mendeteksi aksi bandar melalui analisis volume, bid-offer, dan pergerakan harga abnormal. Tape reading akan mengajarkan kamu membaca order flow secara real-time untuk ikut arus smart money, bukan melawannya.",
@@ -237,7 +237,7 @@ export const vipModules = [
   {
     id: "gold-psychology",
     title: "Psikologi & Emosi Trading",
-    icon: "🧠",
+    icon: "11",
     level: 2,
     pkgLabel: "Gold",
     description: "Psikologi adalah faktor terbesar yang membedakan trader sukses dan yang gagal — bahkan lebih penting dari kemampuan analisis. Modul ini membahas secara mendalam bagaimana mengelola fear dan greed, menghindari FOMO dan panic selling, membangun kebiasaan journaling untuk evaluasi berkelanjutan, dan mengembangkan mindset investor jangka panjang yang tidak terguncang oleh volatilitas pasar sehari-hari.",
@@ -246,7 +246,7 @@ export const vipModules = [
   {
     id: "gold-risk",
     title: "Risk Management Advanced",
-    icon: "🛡️",
+    icon: "12",
     level: 2,
     pkgLabel: "Gold",
     description: "Risk management tingkat lanjut yang digunakan oleh trader dan investor profesional. Modul ini membahas cara menetapkan stop loss yang strategis (bukan sembarangan), teknik hedging sederhana, cara mengatur ukuran posisi berdasarkan volatilitas saham, dan bagaimana membangun portofolio yang tahan terhadap berbagai kondisi pasar — bull, bear, maupun sideways. Tujuan utamanya adalah memproteksi modal sambil tetap optimal dalam mengambil peluang.",
@@ -257,7 +257,7 @@ export const vipModules = [
   {
     id: "pro-ai",
     title: "AI Agent Trading Assistant",
-    icon: "🤖",
+    icon: "13",
     level: 3,
     pkgLabel: "Pro",
     description: "AI Agent eksklusif Ritel Community yang bisa kamu ajak bicara kapan saja, 24 jam sehari, 7 hari seminggu. Tanyakan apapun tentang saham: analisis fundamental emiten, baca laporan keuangan terbaru, cek sentimen berita, identifikasi potensi entry berdasarkan data teknikal, hingga review portofoliomu. AI Agent dilatih dengan data pasar Indonesia sehingga memahami konteks BEI, IDX, dan dinamika saham lokal dengan lebih baik dari chatbot biasa.",
@@ -266,7 +266,7 @@ export const vipModules = [
   {
     id: "pro-watchlist",
     title: "Watchlist & Screening Personal",
-    icon: "👁️",
+    icon: "14",
     level: 3,
     pkgLabel: "Pro",
     description: "Sistem watchlist personal yang dikurasi khusus sesuai profil risiko dan strategi investasimu. Setiap minggu analis kami memperbarui daftar saham-saham yang sedang dalam radar dengan penjelasan mengapa saham tersebut layak dipantau — mulai dari alasan teknikal, fundamental, hingga sentimen sektoral. Kamu tidak perlu lagi bingung memilih dari ratusan emiten, cukup fokus pada shortlist yang sudah terseleksi.",
@@ -275,7 +275,7 @@ export const vipModules = [
   {
     id: "pro-report",
     title: "Laporan Eksklusif Pro",
-    icon: "📋",
+    icon: "15",
     level: 3,
     pkgLabel: "Pro",
     description: "Laporan mingguan eksklusif khusus member Pro yang membahas secara mendalam kondisi pasar, analisis IHSG jangka pendek dan menengah, sektor yang sedang outperform, saham pilihan minggu ini dengan analisis lengkap, dan rangkuman sentimen global yang mempengaruhi BEI. Laporan ini disusun oleh tim analis berpengalaman dan dikirim langsung ke grup WA Pro VIP setiap awal pekan.",
@@ -286,7 +286,7 @@ export const vipModules = [
   {
     id: "platinum-consultation",
     title: "Konsultasi 1-on-1 dengan Analis",
-    icon: "💬",
+    icon: "16",
     level: 4,
     pkgLabel: "Platinum",
     description: "Akses konsultasi langsung dengan analis senior Ritel Community secara personal. Kamu bisa mendiskusikan portofoliomu, meminta second opinion atas keputusan investasi, atau bertanya tentang saham spesifik yang sedang kamu pertimbangkan. Konsultasi dilakukan via chat WhatsApp atau voice call sesuai jadwal yang disepakati. Ini adalah layanan yang biasanya hanya tersedia bagi nasabah high-net-worth di private banking.",
@@ -295,7 +295,7 @@ export const vipModules = [
   {
     id: "platinum-advanced-ai",
     title: "AI Agent + Analisis Portofolio",
-    icon: "🧬",
+    icon: "17",
     level: 4,
     pkgLabel: "Platinum",
     description: "Versi lanjutan AI Agent khusus Platinum yang dilengkapi kemampuan analisis portofolio komprehensif. Masukkan daftar saham yang kamu pegang, dan AI akan menganalisis diversifikasi, korelasi antar aset, exposure sektoral, estimasi risiko, dan memberikan saran rebalancing yang konkret. AI Platinum juga memiliki akses ke lebih banyak data historis dan dapat menghasilkan analisis yang lebih mendalam dibanding AI Agent standar.",
@@ -304,7 +304,7 @@ export const vipModules = [
   {
     id: "platinum-realtime",
     title: "Sinyal Real-time 24/7",
-    icon: "⚡",
+    icon: "18",
     level: 4,
     pkgLabel: "Platinum",
     description: "Sinyal trading tanpa delay, langsung dari meja analis ke grup WA Platinum Elite dalam hitungan detik. Berbeda dengan paket lain yang memiliki delay hingga beberapa jam, member Platinum mendapatkan sinyal entry, antri, TP, dan SL secara real-time tanpa penundaan. Ini krusial untuk saham dengan volatilitas tinggi di mana keterlambatan beberapa menit saja bisa membuat entry jauh dari harga ideal.",
@@ -315,7 +315,7 @@ export const vipModules = [
   {
     id: "elite-mentoring",
     title: "Mentoring Langsung (Intensif)",
-    icon: "👨‍🏫",
+    icon: "19",
     level: 5,
     pkgLabel: "Elite",
     description: "Program mentoring one-on-one paling intensif yang kami tawarkan. Kamu akan dipasangkan dengan mentor senior yang berpengalaman lebih dari 10 tahun di pasar modal Indonesia. Sesi mentoring dilakukan secara reguler via video call, mencakup review portofolio mendalam, coaching strategi personal, simulasi pengambilan keputusan investasi, hingga pengembangan sistem trading yang benar-benar sesuai dengan gaya dan tujuan finansialmu.",
@@ -324,7 +324,7 @@ export const vipModules = [
   {
     id: "elite-portfolio",
     title: "Portfolio Management Personal",
-    icon: "💼",
+    icon: "20",
     level: 5,
     pkgLabel: "Elite",
     description: "Layanan manajemen portofolio personal eksklusif Elite — analis kami membantu merencanakan, memonitor, dan mengoptimalkan portofoliomu secara aktif. Setiap bulan kamu mendapatkan laporan portofolio personal yang mencakup performance review, analisis alokasi, identifikasi peluang optimasi, dan rencana aksi konkret untuk bulan berikutnya. Layanan ini setara dengan layanan wealth management di bank private.",
@@ -333,7 +333,7 @@ export const vipModules = [
   {
     id: "elite-event",
     title: "Webinar & Event Eksklusif Elite",
-    icon: "🎓",
+    icon: "21",
     level: 5,
     pkgLabel: "Elite",
     description: "Akses eksklusif ke semua event, webinar, dan workshop yang diselenggarakan Ritel Community — termasuk sesi tertutup yang tidak tersedia untuk paket lain. Event rutin mencakup: market outlook bulanan dengan tamu ahli, workshop teknikal intensif, sesi tanya jawab langsung dengan analis top, hingga gathering offline tahunan member Elite. Networking dengan sesama investor Elite juga menjadi nilai tambah yang tidak ternilai.",

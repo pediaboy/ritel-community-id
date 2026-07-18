@@ -33,12 +33,12 @@ function BottomNav({ active }: { active: string }) {
 
 // Quick search categories (navigasi ke halaman VIP)
 const quickNav = [
-  { label: "Sinyal AI", href: "/vip", icon: "🤖" },
-  { label: "Live Alert", href: "/vip", icon: "🔔" },
-  { label: "Berita", href: "/vip", icon: "📰" },
-  { label: "Alat", href: "/alat", icon: "🔧" },
-  { label: "Paket", href: "/paket", icon: "💎" },
-  { label: "Komunitas", href: "/", icon: "👥" },
+  { label: "Sinyal AI", href: "/vip", icon: "" },
+  { label: "Live Alert", href: "/vip", icon: "" },
+  { label: "Berita", href: "/vip", icon: "" },
+  { label: "Alat", href: "/alat", icon: "" },
+  { label: "Paket", href: "/paket", icon: "" },
+  { label: "Komunitas", href: "/", icon: "" },
 ];
 
 // Sample stocks list (bisa di-populate dari API nanti)
@@ -166,7 +166,7 @@ export default function CariPage() {
           ))}
           {results.length === 0 && (
             <div className="text-center py-12 text-gray-600">
-              <div className="text-4xl mb-3">🔍</div>
+              <div className="text-4xl mb-3"></div>
               <p className="text-sm">Tidak ada saham yang cocok dengan "{query}"</p>
             </div>
           )}

@@ -16,7 +16,7 @@ const STATUS_COLORS: any = {
 };
 
 const PKG_COLORS: any = {
-  Basic:"text-blue-400", Silver:"text-cyan-400", Gold:"text-yellow-400",
+  Basic:"text-blue-400", Silver:"text-emerald-400", Gold:"text-yellow-400",
   Pro:"text-purple-400", Platinum:"text-slate-300", Elite:"text-yellow-300",
 };
 
@@ -110,9 +110,9 @@ export default function OrdersTab() {
           <p className="text-xs text-slate-400 mb-1">Pending</p>
           <p className="text-lg font-black text-yellow-400">{pendingCount} order</p>
         </div>
-        <div className="card-glass rounded-xl p-4 border border-cyan-500/30 text-center">
+        <div className="card-glass rounded-xl p-4 border border-emerald-500/30 text-center">
           <p className="text-xs text-slate-400 mb-1">Dari Analisis.io</p>
-          <p className="text-lg font-black text-cyan-400">{analisisCount}</p>
+          <p className="text-lg font-black text-emerald-400">{analisisCount}</p>
         </div>
         <div className="card-glass rounded-xl p-4 border border-slate-700 text-center">
           <p className="text-xs text-slate-400 mb-1">Total Order</p>
@@ -124,8 +124,8 @@ export default function OrdersTab() {
       <div className="flex gap-2 flex-wrap">
         {[
           { id:"all", label:"Semua Sumber" },
-          { id:"analisis", label:"📊 Analisis.io" },
-          { id:"ritel", label:"🌐 Ritel Community" },
+          { id:"analisis", label:" Analisis.io" },
+          { id:"ritel", label:" Ritel Community" },
         ].map(f => (
           <button key={f.id} onClick={() => setSourceFilter(f.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${sourceFilter===f.id ? "bg-purple-500/20 border-purple-500/50 text-purple-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
@@ -136,13 +136,13 @@ export default function OrdersTab() {
         {/* Status filter */}
         {["all","pending","paid","cancelled"].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all capitalize ${filter===f ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300" : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"}`}>
             {f==="all"?"Semua":f==="pending"?"Pending":f==="paid"?"Lunas":"Batal"}
             {f!=="all"&&` (${orders.filter(o=>o.status===f).length})`}
           </button>
         ))}
         <button onClick={fetchOrders} className="px-3 py-1.5 rounded-lg text-xs font-bold border bg-white/5 border-white/10 text-slate-400 hover:border-white/20">
-          🔄 Refresh
+           Refresh
         </button>
       </div>
 
@@ -156,7 +156,7 @@ export default function OrdersTab() {
       ) : (
         <div className="space-y-3">
           {filtered.map(o => (
-            <div key={o.id} className={`card-glass rounded-xl border overflow-hidden ${o.source==="analisis" ? "border-cyan-500/20" : "border-white/10"}`}>
+            <div key={o.id} className={`card-glass rounded-xl border overflow-hidden ${o.source==="analisis" ? "border-emerald-500/20" : "border-white/10"}`}>
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-white/5 flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -165,8 +165,8 @@ export default function OrdersTab() {
                     {o.status==="paid"?"LUNAS":o.status==="cancelled"?"BATAL":"PENDING"}
                   </span>
                   {o.source === "analisis" && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-bold border bg-cyan-500/10 text-cyan-400 border-cyan-500/20">
-                      📊 analisis.io
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                       analisis.io
                     </span>
                   )}
                 </div>
@@ -216,7 +216,7 @@ export default function OrdersTab() {
                       <span className="font-mono text-sm font-black text-green-400 flex-1">{o.token_generated}</span>
                       <button onClick={() => copyToClipboard(o.token_generated)}
                         className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-all">
-                        {copiedToken === o.token_generated ? "✓ Copied" : "Copy"}
+                        {copiedToken === o.token_generated ? " Copied" : "Copy"}
                       </button>
                     </div>
                     {o.paid_at && <p className="text-xs text-slate-600 mt-1">Aktif sejak {formatDate(o.paid_at)}</p>}
@@ -232,7 +232,7 @@ export default function OrdersTab() {
                       <label className="text-xs text-slate-400 block mb-1">Status</label>
                       <select value={editStatus} onChange={e => setEditStatus(e.target.value)} className="input-dark w-full text-sm">
                         <option value="pending">Pending</option>
-                        <option value="paid">Lunas ✓</option>
+                        <option value="paid">Lunas </option>
                         <option value="cancelled">Batal</option>
                       </select>
                     </div>
@@ -260,7 +260,7 @@ export default function OrdersTab() {
                   {o.status === "pending" && (
                     <button onClick={() => updateStatus(o.id, "paid")}
                       className="flex-1 py-2 rounded-lg text-xs bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 font-bold min-w-[120px]">
-                      ✓ Konfirmasi Lunas + Generate Token
+                       Konfirmasi Lunas + Generate Token
                     </button>
                   )}
                   <button onClick={() => startEdit(o)}

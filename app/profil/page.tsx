@@ -15,10 +15,10 @@ function SubBadge({ sub, expired_at }: { sub: string; expired_at?: string | null
   const colors: Record<string, string> = {
     free: "bg-gray-700 text-gray-300 border border-gray-600",
     basic: "bg-blue-900/60 text-blue-300 border border-blue-500/40",
-    silver: "bg-cyan-900/60 text-cyan-300 border border-cyan-500/40",
+    silver: "bg-emerald-900/60 text-emerald-300 border border-emerald-500/40",
     gold: "bg-yellow-900/60 text-yellow-300 border border-yellow-500/40",
     platinum: "bg-purple-900/60 text-purple-300 border border-purple-500/40",
-    owner: "bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-none",
+    owner: "bg-gradient-to-r from-blue-600 to-emerald-500 text-white border-none",
   };
   const labels: Record<string, string> = {
     free: "Free Member", basic: "Member Basic", silver: "Member Silver",
@@ -150,13 +150,13 @@ export default function ProfilPage() {
         const updated = { ...user, ...data.user };
         setUser(updated);
         localStorage.setItem("rc_community_user", JSON.stringify(updated));
-        setLinkMsg("✅ Langganan berhasil disinkronkan!");
+        setLinkMsg(" Langganan berhasil disinkronkan!");
         setLinkToken("");
       } else {
-        setLinkMsg("❌ " + data.message);
+        setLinkMsg(" " + data.message);
       }
     } catch {
-      setLinkMsg("❌ Koneksi error.");
+      setLinkMsg(" Koneksi error.");
     }
     setLinkLoading(false);
   };
@@ -244,7 +244,7 @@ export default function ProfilPage() {
                 {linkLoading ? "..." : "Link"}
               </button>
             </div>
-            {linkMsg && <p className={`text-xs mt-2 ${linkMsg.startsWith("✅") ? "text-green-400" : "text-red-400"}`}>{linkMsg}</p>}
+            {linkMsg && <p className={`text-xs mt-2 ${linkMsg.startsWith("") ? "text-green-400" : "text-red-400"}`}>{linkMsg}</p>}
           </div>
         )}
 
@@ -252,7 +252,7 @@ export default function ProfilPage() {
         <div className="bg-[#0A1628] border border-white/5 rounded-2xl overflow-hidden mb-4">
           <Link href="/paket" className="flex items-center justify-between px-4 py-3.5 hover:bg-white/5 transition-colors border-b border-white/5">
             <div className="flex items-center gap-3">
-              <span className="text-blue-400">⭐</span>
+              <span className="text-blue-400"></span>
               <span className="text-white text-sm">Upgrade Langganan</span>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-600">
@@ -261,7 +261,7 @@ export default function ProfilPage() {
           </Link>
           <Link href="/vip" className="flex items-center justify-between px-4 py-3.5 hover:bg-white/5 transition-colors border-b border-white/5">
             <div className="flex items-center gap-3">
-              <span className="text-purple-400">💎</span>
+              <span className="text-purple-400"></span>
               <span className="text-white text-sm">Area VIP</span>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-600">
@@ -270,7 +270,7 @@ export default function ProfilPage() {
           </Link>
           <Link href="/alat" className="flex items-center justify-between px-4 py-3.5 hover:bg-white/5 transition-colors">
             <div className="flex items-center gap-3">
-              <span className="text-green-400">🔧</span>
+              <span className="text-green-400"></span>
               <span className="text-white text-sm">Alat Trading</span>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-600">

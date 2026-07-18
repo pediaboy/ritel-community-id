@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const PACKAGES: any = {
   basic:    { name:"Basic",    price:100000,  accent:"#38BDF8", bg:"linear-gradient(135deg,#1d4ed8,#1e40af)", tier:"blue" },
-  silver:   { name:"Silver",   price:250000,  accent:"#22D3EE", bg:"linear-gradient(135deg,#0891b2,#1d4ed8)", tier:"cyan" },
+  silver:   { name:"Silver",   price:250000,  accent:"#34d399", bg:"linear-gradient(135deg,#0891b2,#1d4ed8)", tier:"emerald" },
   gold:     { name:"Gold",     price:500000,  accent:"#FBBF24", bg:"linear-gradient(135deg,#d97706,#b45309)", tier:"gold" },
   pro:      { name:"Pro",      price:750000,  accent:"#A78BFA", bg:"linear-gradient(135deg,#7c3aed,#4f46e5)", tier:"purple" },
   platinum: { name:"Platinum", price:900000,  accent:"#CBD5E1", bg:"linear-gradient(135deg,#64748b,#475569)", tier:"slate" },
@@ -140,19 +140,19 @@ function OrderPageInner() {
   function goWhatsApp() {
     if (!order) return;
     const m = selMethod;
-    const msg = `🧾 *INVOICE RITEL COMMUNITY*
+    const msg = ` *INVOICE RITEL COMMUNITY*
 ━━━━━━━━━━━━━━━━━━━━━━━━
-📋 No. Invoice : *${order.id}*
-📅 Tanggal     : ${formatDate(order.created_at)}
+ No. Invoice : *${order.id}*
+ Tanggal     : ${formatDate(order.created_at)}
 ━━━━━━━━━━━━━━━━━━━━━━━━
-👤 Nama        : ${order.nama}
-📱 No. HP      : ${order.hp}
-📦 Paket       : ${order.paket}${isFlashActive ? ` *(Flash Sale ${flashDisc})*` : ""}
-💰 Total       : *${finalPriceLabel}/bulan*${isFlashActive ? `\n🔖 Harga Normal: ~~${formatRp(normalPrice)}~~` : ""}
+ Nama        : ${order.nama}
+ No. HP      : ${order.hp}
+ Paket       : ${order.paket}${isFlashActive ? ` *(Flash Sale ${flashDisc})*` : ""}
+ Total       : *${finalPriceLabel}/bulan*${isFlashActive ? `\n Harga Normal: ~~${formatRp(normalPrice)}~~` : ""}
 ━━━━━━━━━━━━━━━━━━━━━━━━
-💳 Metode Bayar: ${m.label}
-🏷 No. Akun    : *${m.number}*
-👤 a.n          : ${m.an}
+ Metode Bayar: ${m.label}
+ No. Akun    : *${m.number}*
+ a.n          : ${m.an}
 ━━━━━━━━━━━━━━━━━━━━━━━━
 _Mohon lampirkan bukti transfer._
 _Token VIP aktif setelah pembayaran dikonfirmasi._`;
@@ -166,7 +166,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
       <div className="relative z-10 max-w-md mx-auto">
 
         {/* Back */}
-        <Link href="/paket" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-cyan-400 transition-colors mb-6">
+        <Link href="/paket" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-emerald-400 transition-colors mb-6">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Kembali ke Paket
         </Link>
@@ -245,7 +245,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                     </div>
                     <button onClick={() => copy(selMethod.number, "rek-form")}
                       style={{background:"rgba(30,90,240,0.2)",border:"1px solid rgba(30,90,240,0.4)",borderRadius:8,padding:"6px 12px",cursor:"pointer"}}>
-                      <span className="text-xs font-bold text-blue-300">{copied==="rek-form" ? "✓ Copied" : "Copy"}</span>
+                      <span className="text-xs font-bold text-blue-300">{copied==="rek-form" ? " Copied" : "Copy"}</span>
                     </button>
                   </div>
                 </div>
@@ -256,10 +256,10 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
               <button onClick={handleSubmit} disabled={loading}
                 style={{
                   width:"100%", padding:"14px", borderRadius:14, border:"none", cursor: loading ? "not-allowed":"pointer",
-                  background: loading ? "#1a2540" : "linear-gradient(135deg,#1E5AF0,#06B6D4)",
+                  background: loading ? "#1a2540" : "linear-gradient(135deg,#1E5AF0,#10b981)",
                   color:"#fff", fontWeight:900, fontSize:15, transition:"opacity .2s"
                 }}>
-                {loading ? "Memproses..." : "Buat Invoice →"}
+                {loading ? "Memproses..." : "Buat Invoice "}
               </button>
             </div>
           </div>
@@ -274,8 +274,8 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
               {/* Top header - logo + status */}
               <div style={{background:"#0b1322",borderBottom:"1px solid rgba(255,255,255,0.06)",padding:"16px 20px"}} className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <div style={{width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#1E5AF0,#06B6D4)",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                    <span style={{fontSize:16}}>📊</span>
+                  <div style={{width:32,height:32,borderRadius:8,background:"linear-gradient(135deg,#1E5AF0,#10b981)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <span style={{fontSize:16}}></span>
                   </div>
                   <div>
                     <p className="text-white font-black text-sm leading-none">RITEL COMMUNITY</p>
@@ -307,7 +307,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                 <div style={{marginBottom:12}}>
                   <div className="flex justify-between items-center py-2" style={{borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
                     <div className="flex items-center gap-2">
-                      <span style={{fontSize:18}}>📦</span>
+                      <span style={{fontSize:18}}></span>
                       <div>
                         <p className="text-white font-bold text-sm">Paket {order.paket}</p>
                         <p className="text-slate-500 text-xs">Membership 1 Bulan</p>
@@ -322,7 +322,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                   {isFlashActive && (
                     <div className="flex justify-between items-center py-2" style={{borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
                       <div className="flex items-center gap-2">
-                        <span style={{fontSize:18}}>🏷️</span>
+                        <span style={{fontSize:18}}></span>
                         <p className="text-green-400 text-sm font-medium">Diskon Flash Sale {flashDisc}</p>
                       </div>
                       <p className="text-green-400 font-bold text-sm">- Hemat {flashDisc}</p>
@@ -373,7 +373,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                     </div>
                     <button onClick={() => copy(selMethod.number, "rek")}
                       style={{background:"rgba(30,90,240,0.25)",border:"1px solid rgba(30,90,240,0.5)",borderRadius:8,padding:"7px 14px",cursor:"pointer"}}>
-                      <span className="text-blue-300 font-bold text-xs">{copied==="rek" ? "✓ Copied!" : "Copy"}</span>
+                      <span className="text-blue-300 font-bold text-xs">{copied==="rek" ? " Copied!" : "Copy"}</span>
                     </button>
                   </div>
                   <div style={{background:"rgba(30,90,240,0.08)",border:"1px dashed rgba(30,90,240,0.3)",borderRadius:10,padding:"10px 14px",marginTop:8}} className="flex justify-between items-center">
@@ -383,11 +383,11 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                     </div>
                     <button onClick={() => copy(String(finalRaw), "nominal")}
                       style={{background:"rgba(34,197,94,0.15)",border:"1px solid rgba(34,197,94,0.3)",borderRadius:8,padding:"7px 14px",cursor:"pointer"}}>
-                      <span className="text-green-400 font-bold text-xs">{copied==="nominal" ? "✓ Copied!" : "Copy"}</span>
+                      <span className="text-green-400 font-bold text-xs">{copied==="nominal" ? " Copied!" : "Copy"}</span>
                     </button>
                   </div>
 
-                  <p className="text-[10px] text-slate-600 text-center mt-3">⚠ Transfer sesuai nominal untuk mempercepat verifikasi</p>
+                  <p className="text-[10px] text-slate-600 text-center mt-3"> Transfer sesuai nominal untuk mempercepat verifikasi</p>
                 </div>
               </div>
             </div>
@@ -405,7 +405,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
 
             <button onClick={() => setStep("form")}
               className="w-full py-2 text-xs text-slate-600 hover:text-slate-400 transition-colors">
-              ← Edit Data
+               Edit Data
             </button>
           </div>
         )}
@@ -421,7 +421,7 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
                   <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
               </div>
-              <h2 className="text-white font-black text-xl mb-1">Invoice Terkirim! 🎉</h2>
+              <h2 className="text-white font-black text-xl mb-1">Invoice Terkirim! </h2>
               <p className="text-slate-400 text-sm">Admin akan konfirmasi pembayaran kamu maksimal 1x24 jam.</p>
             </div>
 
@@ -445,13 +445,13 @@ _Token VIP aktif setelah pembayaran dikonfirmasi._`;
               </div>
 
               <div style={{background:"rgba(251,191,36,0.08)",border:"1px solid rgba(251,191,36,0.2)",borderRadius:12,padding:"12px 14px",marginBottom:16}}>
-                <p className="text-yellow-400 text-xs font-bold mb-1">⚡ Langkah selanjutnya</p>
+                <p className="text-yellow-400 text-xs font-bold mb-1"> Langkah selanjutnya</p>
                 <p className="text-slate-400 text-xs leading-relaxed">Tunggu konfirmasi dari admin. Token VIP akan aktif otomatis setelah pembayaran diverifikasi.</p>
               </div>
 
               <Link href="/" style={{
                 display:"block", width:"100%", padding:"14px", borderRadius:14, textAlign:"center",
-                background:"linear-gradient(135deg,#1E5AF0,#06B6D4)", color:"#fff", fontWeight:900, fontSize:14, textDecoration:"none"
+                background:"linear-gradient(135deg,#1E5AF0,#10b981)", color:"#fff", fontWeight:900, fontSize:14, textDecoration:"none"
               }}>
                 Kembali ke Beranda
               </Link>

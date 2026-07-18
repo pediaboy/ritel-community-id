@@ -156,7 +156,7 @@ export async function POST(req: Request) {
           const botToken = process.env.TELEGRAM_BOT_TOKEN;
           if (chatId && botToken) {
             const src = orders[idx].source === "analisis" ? "[analisis.io] " : "";
-            const msg = `✅ <b>${src}PEMBAYARAN DIKONFIRMASI</b>\n\n👤 ${orders[idx].nama}\n📦 Paket: <b>${orders[idx].paket}</b>\n🎟 Token VIP: <code>${token}</code>\n📱 WA: ${orders[idx].hp}\n💰 ${orders[idx].harga?.toLocaleString("id-ID")}\n\n<i>Token aktif — bisa login di ritelcommunity.web.id/vip</i>`;
+            const msg = ` <b>${src}PEMBAYARAN DIKONFIRMASI</b>\n\n ${orders[idx].nama}\n Paket: <b>${orders[idx].paket}</b>\n Token VIP: <code>${token}</code>\n WA: ${orders[idx].hp}\n ${orders[idx].harga?.toLocaleString("id-ID")}\n\n<i>Token aktif — bisa login di ritelcommunity.web.id/vip</i>`;
             await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
               method:"POST", headers:{"Content-Type":"application/json"},
               body: JSON.stringify({ chat_id:chatId, text:msg, parse_mode:"HTML" }),

@@ -71,14 +71,14 @@ export default function TestimoniPage() {
 
       {/* Header */}
       <div style={{ position:"sticky",top:0,zIndex:50,background:"rgba(4,6,15,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",padding:"12px 16px",display:"flex",alignItems:"center",gap:12 }}>
-        <Link href="/" style={{ color:"rgba(255,255,255,0.5)",fontSize:22,textDecoration:"none",lineHeight:1 }}>←</Link>
+        <Link href="/" style={{ color:"rgba(255,255,255,0.5)",fontSize:22,textDecoration:"none",lineHeight:1 }}></Link>
         <div style={{ flex:1 }}>
-          <div style={{ fontWeight:900,fontSize:15 }}>⭐ Testimoni Member</div>
+          <div style={{ fontWeight:900,fontSize:15 }}> Testimoni Member</div>
           <div style={{ fontSize:10,color:"rgba(255,255,255,0.35)" }}>{allTestis.length}+ ulasan · Rating {avgRating}/5.0</div>
         </div>
         <div style={{ textAlign:"center" }}>
           <div style={{ fontSize:20,fontWeight:900,color:"#facc15" }}>{avgRating}</div>
-          <div style={{ display:"flex",gap:1 }}>{[1,2,3,4,5].map(i=><span key={i} style={{ color:"#facc15",fontSize:10 }}>★</span>)}</div>
+          <div style={{ display:"flex",gap:1 }}>{[1,2,3,4,5].map(i=><span key={i} style={{ color:"#facc15",fontSize:10 }}></span>)}</div>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function TestimoniPage() {
                     <span style={{ color:"rgba(255,255,255,0.25)",fontSize:10 }}>· {t.date}</span>
                   </div>
                 </div>
-                <div style={{ display:"flex",gap:1 }}>{[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=(t.rating||5)?"#facc15":"rgba(255,255,255,0.1)",fontSize:12 }}>★</span>)}</div>
+                <div style={{ display:"flex",gap:1 }}>{[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=(t.rating||5)?"#facc15":"rgba(255,255,255,0.1)",fontSize:12 }}></span>)}</div>
               </div>
               <p style={{ color:"rgba(255,255,255,0.7)",fontSize:12,lineHeight:1.7,fontStyle:"italic" }}>"{t.text}"</p>
             </div>
@@ -125,7 +125,7 @@ export default function TestimoniPage() {
 
         {/* CTA */}
         <div style={{ marginTop:24,marginBottom:20,background:"linear-gradient(135deg,rgba(30,90,240,0.12),rgba(6,182,212,0.08))",border:"1px solid rgba(30,90,240,0.2)",borderRadius:20,padding:"20px",textAlign:"center" }}>
-          <div style={{ fontSize:28,marginBottom:8 }}>🚀</div>
+          <div style={{ fontSize:28,marginBottom:8 }}></div>
           <h3 style={{ fontWeight:900,fontSize:16,marginBottom:6 }}>Mau Bergabung?</h3>
           <p style={{ color:"rgba(255,255,255,0.45)",fontSize:12,marginBottom:16 }}>Bergabung dengan 1.000+ investor aktif RITEL COMMUNITY.ID</p>
           <div style={{ display:"flex",gap:10,maxWidth:280,margin:"0 auto" }}>

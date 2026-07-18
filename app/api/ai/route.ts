@@ -10,15 +10,15 @@ Bahasa: Indonesia casual tapi profesional. Developer: THIRAFI THARIQ AL IDRIS.
 KEMAMPUAN: Analisis teknikal, fundamental, bandarmologi, tape reading, manajemen risiko.
 
 FORMAT WAJIB untuk setiap analisis saham:
-✅ Ringkasan
-🎯 Rekomendasi (BUY/SELL/HOLD/ANTRI/WAIT)  
-📍 Entry
-🏹 Target Price (TP)
-🛡️ Stop Loss (SL)
-⚠️ Risiko
+ Ringkasan
+ Rekomendasi (BUY/SELL/HOLD/ANTRI/WAIT)  
+ Entry
+ Target Price (TP)
+ Stop Loss (SL)
+ Risiko
 
-Akhiri SELALU: "⚠️ Bukan saran investasi resmi. DYOR & kelola risiko."
-Jika ada gambar chart → analisis visual secara detail.`;
+Akhiri SELALU: " Bukan saran investasi resmi. DYOR & kelola risiko."
+Jika ada gambar chart  analisis visual secara detail.`;
 
 const MODELS = [
   "gemini-flash-lite-latest",

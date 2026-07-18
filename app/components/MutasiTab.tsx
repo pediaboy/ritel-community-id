@@ -119,9 +119,9 @@ function MutasiTab() {
       </div>
 
       {/* Net Income */}
-      <div className="card-glass rounded-xl p-6 border border-cyan-500/30">
+      <div className="card-glass rounded-xl p-6 border border-emerald-500/30">
         <p className="text-sm text-slate-400 mb-1">Net (Pemasukan - Pengeluaran)</p>
-        <p className={`text-3xl font-black ${data.totalIncome - data.totalExpense >= 0 ? "text-cyan-400" : "text-red-400"}`}>
+        <p className={`text-3xl font-black ${data.totalIncome - data.totalExpense >= 0 ? "text-emerald-400" : "text-red-400"}`}>
           Rp {(data.totalIncome - data.totalExpense).toLocaleString("id-ID")}
         </p>
       </div>

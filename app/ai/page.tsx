@@ -20,17 +20,17 @@ function formatMsg(text: string) {
   return text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`(.*?)`/g, '<code class="bg-white/10 px-1 py-0.5 rounded text-cyan-300 text-xs">$1</code>')
+    .replace(/`(.*?)`/g, '<code class="bg-white/10 px-1 py-0.5 rounded text-emerald-300 text-xs">$1</code>')
     .replace(/\n/g, '<br/>');
 }
 
 const QUICK_PROMPTS = [
-  "📊 Analisis BBCA hari ini",
-  "📈 Ciri saham yang mau naik",
-  "🎯 Cara tentukan TP dan SL",
-  "🔍 Apa itu bandarmologi?",
-  "💰 Tips position sizing",
-  "📉 IHSG hari ini gimana?",
+  " Analisis BBCA hari ini",
+  " Ciri saham yang mau naik",
+  " Cara tentukan TP dan SL",
+  " Apa itu bandarmologi?",
+  " Tips position sizing",
+  " IHSG hari ini gimana?",
 ];
 
 export default function AIAgentPage() {
@@ -40,7 +40,7 @@ export default function AIAgentPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Halo! Aku **RC-AI**, analis saham AI dari Ritel Community.ID 🤖📊\n\nAku bisa bantu kamu:\n- **Analisis teknikal & fundamental** saham BEI\n- **Baca chart** (kirim gambar screenshot chartnya!)\n- **Rekomendasi entry, TP, SL**\n- **Bandarmologi & tape reading**\n- **Manajemen risiko & psikologi trading**\n\nMau analisa saham apa hari ini? 🚀",
+      content: "Halo! Aku **RC-AI**, analis saham AI dari Ritel Community.ID \n\nAku bisa bantu kamu:\n- **Analisis teknikal & fundamental** saham BEI\n- **Baca chart** (kirim gambar screenshot chartnya!)\n- **Rekomendasi entry, TP, SL**\n- **Bandarmologi & tape reading**\n- **Manajemen risiko & psikologi trading**\n\nMau analisa saham apa hari ini? ",
     },
   ]);
   const [input, setInput] = useState("");
@@ -134,7 +134,7 @@ export default function AIAgentPage() {
       const data = await res.json();
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: data.reply || "Maaf, terjadi kesalahan. Coba lagi ya 🙏",
+        content: data.reply || "Maaf, terjadi kesalahan. Coba lagi ya ",
       }]);
     } catch {
       setMessages(prev => [...prev, { role: "assistant", content: "Koneksi bermasalah. Coba lagi." }]);
@@ -148,7 +148,7 @@ export default function AIAgentPage() {
 
   const clearChat = () => setMessages([{
     role: "assistant",
-    content: "Chat dibersihkan. Mau analisa saham apa? 📊",
+    content: "Chat dibersihkan. Mau analisa saham apa? ",
   }]);
 
   // Loading state - verifying auth
@@ -167,8 +167,8 @@ export default function AIAgentPage() {
       <div className="min-h-screen bg-[#04060f] flex items-center justify-center px-4">
         <GalaxyBg />
         <div className="relative z-10 text-center max-w-sm">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/20 flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl">🔒</span>
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500/20 to-blue-600/20 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl"></span>
           </div>
           <h1 className="text-white font-black text-xl mb-2">Fitur Terkunci</h1>
           <p className="text-slate-400 text-sm mb-2">RC-AI Analyst hanya tersedia untuk paket:</p>
@@ -181,10 +181,10 @@ export default function AIAgentPage() {
           <div className="flex gap-3 justify-center flex-wrap">
             <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Pro!" target="_blank"
               className="btn-primary text-sm px-6 py-2.5 rounded-xl inline-block">
-              ⚡ Upgrade Sekarang
+               Upgrade Sekarang
             </a>
             <Link href="/vip" className="text-sm px-6 py-2.5 rounded-xl border border-white/10 text-slate-400 hover:text-white transition-colors">
-              ← Kembali
+               Kembali
             </Link>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function AIAgentPage() {
             </svg>
           </Link>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center">
               <span className="text-white text-xs font-black">AI</span>
             </div>
             <div>
@@ -218,7 +218,7 @@ export default function AIAgentPage() {
           </div>
         </div>
         <button onClick={clearChat} className="text-xs text-slate-500 hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 border border-white/5">
-          🗑 Clear
+           Clear
         </button>
       </header>
 
@@ -226,7 +226,7 @@ export default function AIAgentPage() {
       <div className="relative z-10 px-4 py-2.5 flex gap-2 overflow-x-auto scrollbar-none bg-black/30 border-b border-white/5">
         {QUICK_PROMPTS.map((p, i) => (
           <button key={i} onClick={() => send(p)}
-            className="text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-cyan-500/5 whitespace-nowrap transition-all">
+            className="text-xs px-3 py-1.5 rounded-full border border-emerald-500/25 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/5 whitespace-nowrap transition-all">
             {p}
           </button>
         ))}
@@ -238,7 +238,7 @@ export default function AIAgentPage() {
           <div key={i} className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
             <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
               m.role === "assistant"
-                ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white"
+                ? "bg-gradient-to-br from-emerald-500 to-blue-600 text-white"
                 : "bg-gradient-to-br from-purple-500 to-pink-500 text-white"
             }`}>
               {m.role === "assistant" ? "AI" : (user?.name?.charAt(0) || "U")}
@@ -246,7 +246,7 @@ export default function AIAgentPage() {
             <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
               m.role === "assistant"
                 ? "bg-white/5 border border-white/8 text-slate-200"
-                : "bg-gradient-to-br from-cyan-600 to-blue-700 text-white"
+                : "bg-gradient-to-br from-emerald-600 to-blue-700 text-white"
             }`}>
               {m.image && (
                 <img src={m.image} alt="chart" className="rounded-lg mb-2 max-h-48 object-contain border border-white/10"/>
@@ -258,12 +258,12 @@ export default function AIAgentPage() {
 
         {loading && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xs font-black flex-shrink-0">AI</div>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white text-xs font-black flex-shrink-0">AI</div>
             <div className="bg-white/5 border border-white/8 rounded-2xl px-4 py-3">
               <div className="flex gap-1 items-center h-5">
-                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{animationDelay:"0ms"}}/>
-                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{animationDelay:"150ms"}}/>
-                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{animationDelay:"300ms"}}/>
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" style={{animationDelay:"0ms"}}/>
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" style={{animationDelay:"150ms"}}/>
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" style={{animationDelay:"300ms"}}/>
               </div>
             </div>
           </div>
@@ -275,7 +275,7 @@ export default function AIAgentPage() {
       {imagePreview && (
         <div className="relative z-10 px-4 pb-2">
           <div className="relative inline-block">
-            <img src={imagePreview} alt="preview" className="h-20 rounded-xl border border-cyan-500/30 object-contain"/>
+            <img src={imagePreview} alt="preview" className="h-20 rounded-xl border border-emerald-500/30 object-contain"/>
             <button onClick={() => { setImage(null); setImagePreview(null); }}
               className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">×</button>
           </div>
@@ -287,7 +287,7 @@ export default function AIAgentPage() {
         <div className="max-w-3xl mx-auto">
           <div className="flex gap-2 items-end">
             <button onClick={() => fileRef.current?.click()}
-              className="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all">
+              className="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
               <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="3" y="3" width="18" height="18" rx="3"/>
                 <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -302,7 +302,7 @@ export default function AIAgentPage() {
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={onKey}
                 onPaste={onPaste}
-                placeholder="Tanya analisis saham... atau paste screenshot chart 📊"
+                placeholder="Tanya analisis saham... atau paste screenshot chart "
                 rows={1}
                 style={{resize:"none",minHeight:"40px",maxHeight:"120px"}}
                 className="w-full input-dark rounded-xl pr-3 py-2.5 text-sm"
@@ -311,7 +311,7 @@ export default function AIAgentPage() {
             <button
               onClick={() => send()}
               disabled={loading || (!input.trim() && !image)}
-              className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white transition-all disabled:opacity-40 hover:shadow-lg hover:shadow-cyan-500/30">
+              className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white transition-all disabled:opacity-40 hover:shadow-lg hover:shadow-emerald-500/30">
               <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <line x1="22" y1="2" x2="11" y2="13"/>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"/>
