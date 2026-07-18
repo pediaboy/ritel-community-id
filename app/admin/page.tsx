@@ -36,14 +36,14 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
     }, 400);
   };
   return (
-    <div className="min-h-screen bg-[#04060f] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center px-4">
       <div className="galaxy-stars" />
       <div className="relative z-10 w-full max-w-sm">
-        <div className="card-glass rounded-2xl p-8 border border-white/10">
+        <div className="card-glass rounded-xl p-8 border border-white/10">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white font-black text-xl mb-4">RC</div>
-            <h1 className="text-xl font-black text-white">Admin Panel</h1>
-            <p className="text-slate-500 text-xs mt-1">RITEL COMMUNITY.ID</p>
+            <div className="w-14 h-14 mx-auto rounded-xl bg-emerald-500 flex items-center justify-center text-[#06110c] font-black text-xl mb-4">RC</div>
+            <h1 className="headline text-xl">Admin Panel</h1>
+            <p className="text-slate-500 text-xs mt-1 tracking-wide">RITEL COMMUNITY.ID</p>
           </div>
           <div className="space-y-3">
             <input value={user} onChange={e => setUser(e.target.value)} placeholder="Username" className="input-dark" />
@@ -138,7 +138,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
           <div><label className="text-slate-400 text-xs mb-1 block">Grup WA</label><input value={waLinks.grup} onChange={e=>setWaLinks({...waLinks,grup:e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="https://chat.whatsapp.com/..."/></div>
           <div><label className="text-slate-400 text-xs mb-1 block">Channel WA</label><input value={waLinks.channel} onChange={e=>setWaLinks({...waLinks,channel:e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none" placeholder="https://whatsapp.com/channel/..."/></div>
         </div>
-        <button onClick={saveWaLinks} className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-xl">Simpan Link WA</button>
+        <button onClick={saveWaLinks} className="w-full py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl">Simpan Link WA</button>
       </div>
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
         <h3 className="text-white font-bold text-xs mb-3">Owner / Founder</h3>
@@ -154,7 +154,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
                 <p className="text-slate-400 text-xs">{o.role} · {o.tag}</p>
               </div>
               <div className="flex gap-1">
-                <button onClick={()=>saveOwners(owners.map(x=>x.id===o.id?{...x,verified:!x.verified}:x))} className="text-xs px-2 py-1 rounded-lg border border-white/10 text-blue-400">{o.verified?"":"○"}</button>
+                <button onClick={()=>saveOwners(owners.map(x=>x.id===o.id?{...x,verified:!x.verified}:x))} className="text-xs px-2 py-1 rounded-lg border border-white/10 text-emerald-400">{o.verified?"":"○"}</button>
                 <button onClick={()=>saveOwners(owners.filter(x=>x.id!==o.id))} className="text-red-400 text-xs px-2 py-1">Hapus</button>
               </div>
             </div>
@@ -164,7 +164,7 @@ function OwnersPartnersTab({ syncToAPI }: { syncToAPI: (type:string, data:any)=>
           <input value={ownerForm.name} onChange={e=>setOwnerForm({...ownerForm,name:e.target.value})} placeholder="Nama" className="col-span-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
           <input value={ownerForm.role} onChange={e=>setOwnerForm({...ownerForm,role:e.target.value})} placeholder="Jabatan" className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
           <input value={ownerForm.badge} onChange={e=>setOwnerForm({...ownerForm,badge:e.target.value})} placeholder="Emoji" className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none"/>
-          <button onClick={addOwner} className="col-span-2 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl">+ Tambah Owner</button>
+          <button onClick={addOwner} className="col-span-2 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl">+ Tambah Owner</button>
         </div>
       </div>
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4">
@@ -230,7 +230,7 @@ function AdminFeedTab() {
       <p className="text-slate-500 text-xs mb-4">Post sebagai "Admin RITEL COMMUNITY.ID" — tampil di homepage & VIP</p>
       <div className="bg-[#0a1628] border border-white/10 rounded-2xl p-4 mb-4">
         <div className="flex items-center gap-3 mb-3">
-          <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#1e5af0,#00c8ff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>RC</div>
+          <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#10b981,#6ee7b7)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>RC</div>
           <div className="flex-1">
             <select value={authorName} onChange={e=>setAuthorName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none font-bold mb-0.5">
               <option value="Admin RITEL COMMUNITY.ID">Admin RITEL COMMUNITY.ID</option>
@@ -239,7 +239,7 @@ function AdminFeedTab() {
             <div className="flex items-center gap-1.5"><span title="Verified" style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:13,height:13,borderRadius:"50%",background:"#1D9BF0"}}><svg width="7" height="7" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8.5 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span><span className="text-slate-500 text-xs">Verified Admin</span></div>
           </div>
         </div>
-        <textarea value={content_text} onChange={e=>setContentText(e.target.value)} rows={4} maxLength={2000} placeholder="Tulis pengumuman, analisis, sinyal..." className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm resize-none outline-none focus:border-blue-500/50 mb-3"/>
+        <textarea value={content_text} onChange={e=>setContentText(e.target.value)} rows={4} maxLength={2000} placeholder="Tulis pengumuman, analisis, sinyal..." className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white text-sm resize-none outline-none focus:border-emerald-500/50 mb-3"/>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div><label className="text-slate-400 text-xs mb-1 block">Tag</label>
             <select value={tag} onChange={e=>setTag(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none">
@@ -255,7 +255,7 @@ function AdminFeedTab() {
           </div>
         </div>
         {msg && <div className={`mb-3 text-xs p-2 rounded-lg ${msg.startsWith("")?"text-green-400 bg-green-500/10":"text-red-400 bg-red-500/10"}`}>{msg}</div>}
-        <button onClick={handlePost} disabled={!content_text.trim()||posting} className="w-full py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl disabled:opacity-40">
+        <button onClick={handlePost} disabled={!content_text.trim()||posting} className="w-full py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl disabled:opacity-40">
           {posting?"Memposting...":" Post Sekarang"}
         </button>
       </div>
@@ -409,7 +409,7 @@ function BaggerBandarTab({ type, syncToAPI }: { type:"bagger"|"bandar", syncToAP
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={()=>edit(item)} className="text-xs px-2 py-1 rounded-lg text-blue-400 border border-blue-500/20 bg-blue-500/5">Edit</button>
+                  <button onClick={()=>edit(item)} className="text-xs px-2 py-1 rounded-lg text-emerald-400 border border-emerald-500/20 bg-emerald-500/5">Edit</button>
                   <button onClick={()=>del(item.id)} className="text-xs px-2 py-1 rounded-lg text-red-400 border border-red-500/20 bg-red-500/5">Hapus</button>
                 </div>
               </div>
@@ -1231,7 +1231,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <div><label className="text-xs text-slate-500 mb-1 block">Expired Tanggal</label><input type="datetime-local" value={tokForm.expiredAt} onChange={e=>setTokForm({...tokForm,expiredAt:e.target.value})} className="input-dark"/></div>
                     <div className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2.5">
                       <span className="text-xs text-slate-400 flex-1">Verified Badge</span>
-                      <button onClick={()=>setTokForm({...tokForm,verified:!tokForm.verified})} className={`text-xs px-3 py-1 rounded-lg font-bold border ${tokForm.verified?"bg-blue-500/20 text-blue-400 border-blue-500/30":"text-slate-500 border-white/10"}`}>{tokForm.verified?"ON":"OFF"}</button>
+                      <button onClick={()=>setTokForm({...tokForm,verified:!tokForm.verified})} className={`text-xs px-3 py-1 rounded-lg font-bold border ${tokForm.verified?"bg-emerald-500/20 text-emerald-400 border-emerald-500/30":"text-slate-500 border-white/10"}`}>{tokForm.verified?"ON":"OFF"}</button>
                     </div>
                     <div className="flex gap-2">
                       <button onClick={saveTok} className="btn-primary flex-1 py-2.5 rounded-xl text-sm font-bold">{editTokId?"Update Token":"Generate Token"}</button>
@@ -1641,9 +1641,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <span className="text-xs text-slate-500">Cepat (10s)</span>
                     <input type="range" min="10" max="80" step="5" value={tickerSpeed}
                       onChange={e=>{ const v=parseInt(e.target.value); setTickerSpeed(v); setMotivasiSpeed(v); }}
-                      className="w-32 accent-blue-500"/>
+                      className="w-32 accent-emerald-500"/>
                     <span className="text-xs text-slate-500">Lambat (80s)</span>
-                    <span className="text-blue-400 font-black text-sm w-12 text-center">{tickerSpeed}s</span>
+                    <span className="text-emerald-400 font-black text-sm w-12 text-center">{tickerSpeed}s</span>
                   </div>
                   <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan disimpan!"); }} className="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">Simpan</button>
                   <button onClick={()=>{ setTickerSpeed(32); setMotivasiSpeed(32); syncToAPI("ticker_speed", 32); }}
@@ -1715,7 +1715,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 <button onClick={async()=>{ await syncToAPI("ticker_speed", tickerSpeed); alert("Kecepatan ticker disimpan!"); }} className="btn-primary w-full py-2 rounded-xl text-xs font-bold">Simpan Kecepatan</button>
               </div>
               {showMotivasiForm && (
-                <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-3 text-sm">{editMotivasiId?"Edit Kata Motivasi":"Tambah Kata Motivasi"}</h3>
                   <div className="space-y-3">
                     <div>
@@ -1746,8 +1746,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <div className="flex gap-2">
                         <input defaultValue={typeof window!=="undefined"?localStorage.getItem(g.key)||g.def:g.def}
                           onBlur={e=>{ localStorage.setItem(g.key,e.target.value); syncToAPI(g.key,e.target.value); }}
-                          className="flex-1 bg-transparent border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs outline-none focus:border-blue-500/30"/>
-                        <button onClick={()=>syncToAPI(g.key,typeof window!=="undefined"?localStorage.getItem(g.key)||g.def:g.def)} className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20">Simpan</button>
+                          className="flex-1 bg-transparent border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs outline-none focus:border-emerald-500/30"/>
+                        <button onClick={()=>syncToAPI(g.key,typeof window!=="undefined"?localStorage.getItem(g.key)||g.def:g.def)} className="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">Simpan</button>
                       </div>
                     </div>
                   ))}
@@ -2095,7 +2095,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 </button>
               </div>
               {showJurnalFormAdmin && (
-                <div className="card rounded-2xl p-5 mb-5 border border-blue-500/20">
+                <div className="card rounded-2xl p-5 mb-5 border border-emerald-500/20">
                   <h3 className="text-white font-bold mb-4 text-sm">Tambah Entry Jurnal</h3>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div><label className="text-xs text-slate-500 mb-1 block">Kode</label><input value={jurnalFormAdmin.kode} onChange={e=>setJurnalFormAdmin({...jurnalFormAdmin,kode:e.target.value.toUpperCase()})} className="input-dark"/></div>

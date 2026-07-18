@@ -126,7 +126,7 @@ function FeedTabVIP() {
 
   if (loading) return (
     <div style={{ textAlign:"center",padding:"60px 0" }}>
-      <div style={{ width:28,height:28,border:"3px solid rgba(30,90,240,0.2)",borderTopColor:"#1e5af0",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto" }}/>
+      <div style={{ width:28,height:28,border:"3px solid rgba(16,185,129,0.2)",borderTopColor:"#10b981",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto" }}/>
     </div>
   );
 
@@ -146,7 +146,7 @@ function FeedTabVIP() {
       <div style={{ display:"flex",flexDirection:"column" }}>
         {posts.map((p,i) => {
           const isRC = p.author !== "elthoriqqqq_";
-          const avatarBg = isRC ? "linear-gradient(135deg,#1e5af0,#00c8ff)" : "linear-gradient(135deg,#7c3aed,#a855f7)";
+          const avatarBg = isRC ? "linear-gradient(135deg,#10b981,#6ee7b7)" : "linear-gradient(135deg,#7c3aed,#a855f7)";
           const avatarInitials = isRC ? "RC" : "EL";
           const tagColor = tagColors[p.tag||"info"] || "#3b82f6";
           return (
@@ -208,7 +208,7 @@ function AdminFeedVIP() {
       {posts.map(p => (
         <div key={p.id} style={{ background: p.pinned ? "rgba(30,90,240,0.08)" : "rgba(255,255,255,0.03)", border: p.pinned ? "1px solid rgba(30,90,240,0.25)" : "1px solid rgba(255,255,255,0.06)", borderRadius:14, padding:"14px 16px", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-            <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#00c8ff)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#fff", flexShrink:0 }}>RC</div>
+            <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#6ee7b7)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#fff", flexShrink:0 }}>RC</div>
             <div style={{ flex:1 }}>
               <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ color:"#fff", fontWeight:700, fontSize:12 }}>Admin RITEL COMMUNITY.ID</span>
@@ -1584,7 +1584,7 @@ function GreetingBanner({ greetingPagi, greetingMalam }: { greetingPagi:string; 
   }, [greetingPagi, greetingMalam]);
   if (!show) return null;
   return (
-    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(16,185,129,0.08))", border:"1px solid rgba(30,90,240,0.2)", borderRadius:14, padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
+    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(16,185,129,0.08))", border:"1px solid rgba(16,185,129,0.2)", borderRadius:14, padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
       <span style={{ fontSize:22 }}>{text.includes("pagi")?"":""}</span>
       <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, flex:1 }}>{text}</p>
       <span style={{ color:"rgba(255,255,255,0.3)", fontSize:18 }}>×</span>
@@ -1859,7 +1859,7 @@ export default function VipPage() {
         <MotivasiTickerVIP />
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
-            <div style={{ width:34, height:34, borderRadius:10, background:"linear-gradient(135deg,#0a1628,#1e5af0)", boxShadow:"0 0 16px rgba(16,185,129,0.25)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
+            <div style={{ width:34, height:34, borderRadius:10, background:"#10b981", boxShadow:"0 0 16px rgba(16,185,129,0.25)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="18,5 22,5 22,9" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
@@ -1868,7 +1868,7 @@ export default function VipPage() {
             </div>
           </Link>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, color:"#fff", boxShadow:"0 0 12px rgba(16,185,129,0.3)" }}>
+            <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:13, color:"#fff", boxShadow:"0 0 12px rgba(16,185,129,0.3)" }}>
               {user.name?.charAt(0)||"V"}
             </div>
             <button onClick={logout} style={{ color:"rgba(255,255,255,0.25)", fontSize:11, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"5px 10px", cursor:"pointer" }}>Keluar</button>
@@ -1957,7 +1957,7 @@ export default function VipPage() {
             {/* Filter chips */}
             <div style={{ display:"flex", gap:8, marginBottom:16, overflowX:"auto", paddingBottom:4 }}>
               {["Semua","BUY","SELL","HOLD","WATCH","ANTRI"].map(f=>(
-                <button key={f} onClick={()=>setSigFilter(f)} style={{ flexShrink:0, padding:"6px 16px", borderRadius:100, fontWeight:700, fontSize:12, border:"1px solid", cursor:"pointer", background:sigFilter===f?"#1e5af0":"transparent", color:sigFilter===f?"#fff":"rgba(255,255,255,0.5)", borderColor:sigFilter===f?"#1e5af0":"rgba(255,255,255,0.1)" }}>{f}</button>
+                <button key={f} onClick={()=>setSigFilter(f)} style={{ flexShrink:0, padding:"6px 16px", borderRadius:100, fontWeight:700, fontSize:12, border:"1px solid", cursor:"pointer", background:sigFilter===f?"#10b981":"transparent", color:sigFilter===f?"#fff":"rgba(255,255,255,0.5)", borderColor:sigFilter===f?"#10b981":"rgba(255,255,255,0.1)" }}>{f}</button>
               ))}
             </div>
 
@@ -2340,7 +2340,7 @@ export default function VipPage() {
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Jurnal Trade</h2>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap trade — data ini hanya milikmu.</p>
               </div>
-              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#1e5af0,#10b981)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
+              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#10b981,#10b981)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
             </div>
 
             {/* Stats jurnal */}
@@ -2473,7 +2473,7 @@ export default function VipPage() {
                       if (myToken) {
                         await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myToken.slice(-12)}`, value: updatedPersonal }) }).catch(()=>{});
                       }
-                    }} style={{ background:"linear-gradient(135deg,#1e5af0,#10b981)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
+                    }} style={{ background:"linear-gradient(135deg,#10b981,#10b981)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
                       Simpan Jurnal
                     </button>
                   </div>
@@ -2511,7 +2511,7 @@ export default function VipPage() {
                   <div style={{ fontSize:36,marginBottom:8 }}></div>
                   <h2 style={{ fontWeight:900,fontSize:18,marginBottom:6 }}>RC-AI Analyst</h2>
                   <p style={{ color:"rgba(255,255,255,0.45)",fontSize:13,lineHeight:1.6,marginBottom:16 }}>Analisis saham BEI dengan AI — teknikal, fundamental, bandarmologi. Kirim chart untuk analisis visual!</p>
-                  <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#10b981,#1e5af0)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",borderRadius:14,textDecoration:"none" }}>
+                  <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#10b981,#10b981)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",borderRadius:14,textDecoration:"none" }}>
                      Buka RC-AI Chat
                   </a>
                 </div>
@@ -2546,7 +2546,7 @@ export default function VipPage() {
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Akses Terbatas</h2>
                 <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:8 }}>Tab <strong style={{ color:"#10b981" }}>Beli Sore Jual Pagi</strong> membutuhkan paket <strong style={{ color:"#10b981", textTransform:"capitalize" }}>{bsjpMinPkg}</strong> ke atas.</p>
                 <p style={{ color:"rgba(255,255,255,0.3)", fontSize:12, marginBottom:20 }}>Paket kamu saat ini: <span style={{ color:"rgba(255,255,255,0.6)", textTransform:"capitalize", fontWeight:700 }}>{userPkg}</span></p>
-                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#1e5af0,#10b981)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20paket!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#10b981,#10b981)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade Sekarang</a>
               </div>
             ) : (
             <>
@@ -2656,7 +2656,7 @@ export default function VipPage() {
           <div style={{ padding:"16px" }} className="fade-in-up">
             {/* User card */}
             <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.12),rgba(0,200,255,0.06))", border:"1px solid rgba(30,90,240,0.25)", borderRadius:20, padding:"24px 20px", marginBottom:20, textAlign:"center" }}>
-              <div style={{ width:64, height:64, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:24, color:"#fff", margin:"0 auto 12px" }}>
+              <div style={{ width:64, height:64, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:24, color:"#fff", margin:"0 auto 12px" }}>
                 {user.name?.charAt(0)||"V"}
               </div>
               <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>{user.name}</h2>
@@ -2672,8 +2672,8 @@ export default function VipPage() {
               <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Owner & Partner</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {owners.map((o,i)=>(
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(30,90,240,0.2)", borderRadius:14, padding:"14px 16px" }}>
-                    <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#1e5af0,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{o.badge||""}</div>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(16,185,129,0.2)", borderRadius:14, padding:"14px 16px" }}>
+                    <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#10b981,#10b981)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{o.badge||""}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                         <span style={{ fontWeight:800, fontSize:14 }}>{o.name}</span>
