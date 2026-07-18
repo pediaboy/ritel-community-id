@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MoreMenu from "../components/MoreMenu";
 import { readSession, ensureFreshSession, clearSession } from "@/lib/session";
+import {
+  Home, Rss, Activity, Landmark, Gem, BookOpen, Sunrise, Sunset,
+  Trophy, ClipboardList, NotebookPen, Bot, User, LogOut, Lock, TrendingUp,
+} from "lucide-react";
 
 // ── JAKARTA REALTIME CLOCK ──────────────────────────────────────
 function JakartaClock() {
@@ -80,7 +84,7 @@ function LiveInfoBox() {
   }, []);
   if (!info) return null;
   return (
-    <div style={{ background:"rgba(251,191,36,0.06)", border:"1px solid rgba(251,191,36,0.2)", borderRadius:12, padding:"12px 16px", marginBottom:16 }}>
+    <div style={{ background:"rgba(251,191,36,0.06)", border:"1px solid rgba(251,191,36,0.2)", clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", padding:"12px 16px", marginBottom:16 }}>
       <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
         <span style={{ fontSize:18, flexShrink:0 }}></span>
         <div>
@@ -167,7 +171,7 @@ function FeedTabVIP() {
                   </span>
                   <span style={{ color:"rgba(255,255,255,0.3)",fontSize:11 }}>·</span>
                   <span style={{ color:"rgba(255,255,255,0.3)",fontSize:11 }}>{formatTime(p.created_at)}</span>
-                  {p.tag && <span style={{ fontSize:9,background:`${tagColor}20`,color:tagColor,padding:"1px 7px",borderRadius:4,fontWeight:700 }}>{p.tag}</span>}
+                  {p.tag && <span style={{ fontSize:9,background:`${tagColor}20`,color:tagColor,padding:"1px 7px",clipPath:"polygon(0 4px,4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%)",fontWeight:700 }}>{p.tag}</span>}
                   {p.pinned && <span style={{ fontSize:10,color:"#f59e0b" }}></span>}
                 </div>
                 <p style={{ color:"rgba(255,255,255,0.85)",fontSize:14,lineHeight:1.65,whiteSpace:"pre-wrap",wordBreak:"break-word" }}>{p.content}</p>
@@ -208,7 +212,7 @@ function AdminFeedVIP() {
   return (
     <div style={{ marginBottom:20 }}>
       {posts.map(p => (
-        <div key={p.id} style={{ background: p.pinned ? "rgba(30,90,240,0.08)" : "rgba(255,255,255,0.03)", border: p.pinned ? "1px solid rgba(30,90,240,0.25)" : "1px solid rgba(255,255,255,0.06)", borderRadius:14, padding:"14px 16px", marginBottom:10 }}>
+        <div key={p.id} style={{ background: p.pinned ? "rgba(30,90,240,0.08)" : "rgba(255,255,255,0.03)", border: p.pinned ? "1px solid rgba(30,90,240,0.25)" : "1px solid rgba(255,255,255,0.06)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
             <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#6ee7b7)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#fff", flexShrink:0 }}>RC</div>
             <div style={{ flex:1 }}>
@@ -219,7 +223,7 @@ function AdminFeedVIP() {
               </div>
               <div style={{ display:"flex", gap:6, marginTop:2 }}>
                 <span style={{ fontSize:10, color:"rgba(255,255,255,0.35)" }}>{new Date(p.created_at).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
-                {p.tag && <span style={{ fontSize:9, background:`${tagColors[p.tag]||"#6b7280"}20`, color:tagColors[p.tag]||"#9ca3af", padding:"1px 6px", borderRadius:4, fontWeight:700 }}>{p.tag}</span>}
+                {p.tag && <span style={{ fontSize:9, background:`${tagColors[p.tag]||"#6b7280"}20`, color:tagColors[p.tag]||"#9ca3af", padding:"1px 6px", clipPath:"polygon(0 4px,4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%)", fontWeight:700 }}>{p.tag}</span>}
               </div>
             </div>
           </div>
@@ -319,7 +323,7 @@ function LockedFeature({ locked, minPkg, waText, children }: { locked:boolean; m
       <div className="locked-feature-content" aria-hidden="true">{children}</div>
       <div className="locked-feature-overlay">
         <div className="locked-feature-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <Lock size={20} strokeWidth={2.2} />
         </div>
         <p className="font-display" style={{ fontWeight:800, fontSize:15, color:"#fff", marginBottom:6 }}>Fitur Eksklusif VIP {minPkg}</p>
         <p style={{ color:"rgba(255,255,255,0.55)", fontSize:12, marginBottom:18, maxWidth:260, lineHeight:1.6 }}>Upgrade paketmu untuk membuka fitur ini sepenuhnya.</p>
@@ -369,11 +373,11 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
       <div className="cyber-corner-tl"/><div className="cyber-corner-br"/>
       {/* Top row */}
       <div style={{ padding:"14px 16px 10px", display:"flex", alignItems:"center", gap:12 }}>
-        <div style={{ width:48, height:48, borderRadius:12, background:bgColor, border:`1px solid ${ac.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:ac.text, flexShrink:0 }}>{initials}</div>
+        <div style={{ width:48, height:48, clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", background:bgColor, border:`1px solid ${ac.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:ac.text, flexShrink:0 }}>{initials}</div>
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
             <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode}</span>
-            <span style={{ background:ac.bg, color:ac.text, border:`1px solid ${ac.border}`, fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action}</span>
+            <span style={{ background:ac.bg, color:ac.text, border:`1px solid ${ac.border}`, fontSize:10, fontWeight:800, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{s.action}</span>
           </div>
           <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham}</p>
         </div>
@@ -385,7 +389,7 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
       {/* Stats */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", padding:"0 16px 10px", gap:8 }}>
         {[{label:"Entry",val:s.entry,cls:"rgba(255,255,255,0.85)"},{label:"Stop Loss",val:s.sl,cls:"#ef4444"},{label:"TP1",val:s.tp,cls:"#22c55e"}].map(({label,val,cls})=>(
-          <div key={label} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
+          <div key={label} style={{ background:"rgba(255,255,255,0.04)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"8px 10px" }}>
             <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:3 }}>{label}</p>
             <p style={{ color:cls, fontWeight:800, fontSize:14 }}>{val||"-"}</p>
           </div>
@@ -394,11 +398,11 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
       {/* Multi TP */}
       {(s.tp2||s.tp3) && (
         <div style={{ display:"flex", gap:8, padding:"0 16px 10px" }}>
-          {s.tp2 && <div style={{ flex:1, background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.15)", borderRadius:10, padding:"6px 10px" }}>
+          {s.tp2 && <div style={{ flex:1, background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.15)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"6px 10px" }}>
             <p style={{ color:"rgba(255,255,255,0.3)", fontSize:9, marginBottom:2 }}>TP2</p>
             <p style={{ color:"#4ade80", fontWeight:800, fontSize:13 }}>{s.tp2}</p>
           </div>}
-          {s.tp3 && <div style={{ flex:1, background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.15)", borderRadius:10, padding:"6px 10px" }}>
+          {s.tp3 && <div style={{ flex:1, background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.15)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"6px 10px" }}>
             <p style={{ color:"rgba(255,255,255,0.3)", fontSize:9, marginBottom:2 }}>TP3</p>
             <p style={{ color:"#86efac", fontWeight:800, fontSize:13 }}>{s.tp3}</p>
           </div>}
@@ -407,15 +411,15 @@ function SignalCard({ s, isDone, onToggleDone }: { s: any; isDone?: boolean; onT
       {/* Tombol / badge TARGET TERCAPAI */}
       <div style={{ margin:"0 16px 10px" }}>
         {isSignalDone ? (
-          <div style={{ background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.2)", borderRadius:10, padding:"8px 12px", display:"flex", alignItems:"center", gap:8 }}>
+          <div style={{ background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.2)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"8px 12px", display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ color:"#22c55e", fontSize:16 }}></span>
             <span style={{ color:"#22c55e", fontSize:11, fontWeight:700 }}>TARGET TERCAPAI</span>
             {s.result_note && <span style={{ color:"rgba(34,197,94,0.5)", fontSize:10, marginLeft:"auto" }}>{s.result_note}</span>}
-            {onToggleDone && <button onClick={()=>onToggleDone(s.id)} style={{ marginLeft:"auto", background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"rgba(239,68,68,0.7)", fontSize:9, fontWeight:700, padding:"2px 8px", borderRadius:6, cursor:"pointer" }}>Batal</button>}
+            {onToggleDone && <button onClick={()=>onToggleDone(s.id)} style={{ marginLeft:"auto", background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"rgba(239,68,68,0.7)", fontSize:9, fontWeight:700, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)", cursor:"pointer" }}>Batal</button>}
           </div>
         ) : (
           onToggleDone ? (
-            <button onClick={()=>onToggleDone(s.id)} style={{ width:"100%", background:"rgba(34,197,94,0.05)", border:"1px dashed rgba(34,197,94,0.2)", borderRadius:10, padding:"7px 12px", display:"flex", alignItems:"center", justifyContent:"center", gap:8, cursor:"pointer", color:"rgba(34,197,94,0.5)", fontSize:11, fontWeight:700 }}>
+            <button onClick={()=>onToggleDone(s.id)} style={{ width:"100%", background:"rgba(34,197,94,0.05)", border:"1px dashed rgba(34,197,94,0.2)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"7px 12px", display:"flex", alignItems:"center", justifyContent:"center", gap:8, cursor:"pointer", color:"rgba(34,197,94,0.5)", fontSize:11, fontWeight:700 }}>
               Tandai Target Tercapai
             </button>
           ) : null
@@ -444,7 +448,7 @@ function BaggerCard({ s }: { s: any }) {
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
             <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode||s.saham}</span>
-            <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", border:"1px solid rgba(245,158,11,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>BAGGER</span>
+            <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", border:"1px solid rgba(245,158,11,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>BAGGER</span>
           </div>
           <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham||s.name||""}</p>
         </div>
@@ -453,7 +457,7 @@ function BaggerCard({ s }: { s: any }) {
       {(s.entry||s.entryPrice) && (
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", padding:"0 16px 10px", gap:8 }}>
           {[{label:"Entry",val:s.entry||s.entryPrice,cls:"rgba(255,255,255,0.85)"},{label:"Target",val:s.tp||s.target,cls:"#22c55e"}].map(({label,val,cls})=>(
-            <div key={label} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
+            <div key={label} style={{ background:"rgba(255,255,255,0.04)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"8px 10px" }}>
               <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:3 }}>{label}</p>
               <p style={{ color:cls, fontWeight:800, fontSize:14 }}>{val||"-"}</p>
             </div>
@@ -1612,7 +1616,7 @@ function GreetingBanner({ greetingPagi, greetingMalam }: { greetingPagi:string; 
   }, [greetingPagi, greetingMalam]);
   if (!show) return null;
   return (
-    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(37,99,235,0.08))", border:"1px solid rgba(37,99,235,0.2)", borderRadius:14, padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
+    <div onClick={()=>setShow(false)} style={{ background:"linear-gradient(90deg,rgba(30,90,240,0.12),rgba(37,99,235,0.08))", border:"1px solid rgba(37,99,235,0.2)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"12px 16px", marginBottom:14, display:"flex", alignItems:"center", gap:12, cursor:"pointer", animation:"fadeInDown 0.4s ease" }}>
       <span style={{ fontSize:22 }}>{text.includes("pagi")?"":""}</span>
       <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, flex:1 }}>{text}</p>
       <span style={{ color:"rgba(255,255,255,0.3)", fontSize:18 }}>×</span>
@@ -1769,11 +1773,11 @@ export default function VipPage() {
         <div style={{ fontSize:72, marginBottom:24 }}></div>
         <h1 style={{ fontWeight:900, fontSize:24, color:"#fff", marginBottom:12, letterSpacing:"-0.5px" }}>Sedang Maintenance</h1>
         <p style={{ color:"rgba(255,255,255,0.45)", fontSize:14, lineHeight:1.8, maxWidth:300, marginBottom:24 }}>Platform sedang dalam proses pemeliharaan. Mohon tunggu sebentar, kami akan segera kembali.</p>
-        <div style={{ background:"rgba(234,179,8,0.08)", border:"1px solid rgba(234,179,8,0.2)", borderRadius:14, padding:"14px 20px", marginBottom:24 }}>
+        <div style={{ background:"rgba(234,179,8,0.08)", border:"1px solid rgba(234,179,8,0.2)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 20px", marginBottom:24 }}>
           <p style={{ color:"rgba(234,179,8,0.9)", fontSize:13, fontWeight:700 }}>Estimasi selesai segera</p>
           <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11, marginTop:4 }}>Hubungi admin jika butuh bantuan</p>
         </div>
-        <a href="https://wa.me/6282218723401?text=Halo%20Admin%20maintenance%20kapan%20selesai?" target="_blank" style={{ display:"block", background:"rgba(37,211,102,0.1)", border:"1px solid rgba(37,211,102,0.25)", color:"#25d366", fontWeight:800, fontSize:14, padding:"12px 24px", borderRadius:14, textDecoration:"none" }}>Hubungi Admin WA</a>
+        <a href="https://wa.me/6282218723401?text=Halo%20Admin%20maintenance%20kapan%20selesai?" target="_blank" style={{ display:"block", background:"rgba(37,211,102,0.1)", border:"1px solid rgba(37,211,102,0.25)", color:"#25d366", fontWeight:800, fontSize:14, padding:"12px 24px", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", textDecoration:"none" }}>Hubungi Admin WA</a>
       </div>
     </div>
   );
@@ -1782,7 +1786,7 @@ export default function VipPage() {
     <div className="min-h-screen bg-[#030712] flex items-center justify-center">
       <div className="galaxy-stars"/>
       <div className="relative z-10 text-center">
-        <img src="/logo.png" alt="RC" style={{ width:48, height:48, borderRadius:14, objectFit:"cover", display:"block", margin:"0 auto 16px" }} />
+        <img src="/logo.png" alt="RC" style={{ width:48, height:48, clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", objectFit:"cover", display:"block", margin:"0 auto 16px" }} />
         <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13 }}>Memverifikasi akses...</p>
       </div>
     </div>
@@ -1800,7 +1804,7 @@ export default function VipPage() {
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
             <div className="cyber-card-sm" style={{ width:34, height:34, background:"linear-gradient(135deg,#2563EB,#1D4ED8)", boxShadow:"0 0 16px rgba(37,99,235,0.35)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", flexShrink:0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="2,18 8,12 12,15 17,7 22,5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="18,5 22,5 22,9" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <TrendingUp size={18} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
               <div className="font-display" style={{ color:"#fff", fontWeight:700, fontSize:13, letterSpacing:"0" }}>RITEL COMMUNITY<span style={{color:"#3B82F6"}}>.ID</span></div>
@@ -1813,20 +1817,20 @@ export default function VipPage() {
             </div>
             <MoreMenu
               items={[
-                { id:"home",    label:"Beranda",     onSelect:()=>setTab("home"),    active: tab==="home" },
-                { id:"feed",    label:"Feed",         onSelect:()=>setTab("feed"),    active: tab==="feed" },
-                { id:"sinyal",  label:"Sinyal",       onSelect:()=>setTab("sinyal"),  active: tab==="sinyal" },
-                { id:"bandar",  label:"Bandar",       onSelect:()=>setTab("bandar"),  active: tab==="bandar" },
-                { id:"bagger",  label:"Bagger",       onSelect:()=>setTab("bagger"),  active: tab==="bagger" },
-                { id:"modul",   label:"Modul",        onSelect:()=>setTab("modul"),   active: tab==="modul" },
-                { id:"bsjp",    label:"BELI SORE JUAL PAGI", onSelect:()=>setTab("bsjp"),    active: tab==="bsjp" },
-                { id:"bpjs",    label:"BELI PAGI JUAL SORE", onSelect:()=>setTab("bpjs"),    active: tab==="bpjs" },
-                { id:"leaderboard", label:"Leaderboard", onSelect:()=>setTab("leaderboard"), active: tab==="leaderboard" },
-                { id:"rekap",   label:"Rekap",        onSelect:()=>setTab("rekap"),   active: tab==="rekap" },
-                { id:"jurnal",  label:"Jurnal",       onSelect:()=>setTab("jurnal"),  active: tab==="jurnal" },
-                { id:"ai",      label:"RC-AI",        onSelect:()=>setTab("ai"),      active: tab==="ai" },
-                { id:"profile", label:"Profil",       onSelect:()=>setTab("profile"), active: tab==="profile" },
-                { id:"logout",  label:"Keluar",       onSelect:logout },
+                { id:"home",    label:"Beranda",     icon:<Home size={15}/>,          onSelect:()=>setTab("home"),    active: tab==="home" },
+                { id:"feed",    label:"Feed",         icon:<Rss size={15}/>,           onSelect:()=>setTab("feed"),    active: tab==="feed" },
+                { id:"sinyal",  label:"Sinyal",       icon:<Activity size={15}/>,      onSelect:()=>setTab("sinyal"),  active: tab==="sinyal" },
+                { id:"bandar",  label:"Bandar",       icon:<Landmark size={15}/>,      onSelect:()=>setTab("bandar"),  active: tab==="bandar" },
+                { id:"bagger",  label:"Bagger",       icon:<Gem size={15}/>,           onSelect:()=>setTab("bagger"),  active: tab==="bagger" },
+                { id:"modul",   label:"Modul",        icon:<BookOpen size={15}/>,      onSelect:()=>setTab("modul"),   active: tab==="modul" },
+                { id:"bsjp",    label:"BELI SORE JUAL PAGI", icon:<Sunset size={15}/>, onSelect:()=>setTab("bsjp"),    active: tab==="bsjp" },
+                { id:"bpjs",    label:"BELI PAGI JUAL SORE", icon:<Sunrise size={15}/>, onSelect:()=>setTab("bpjs"),   active: tab==="bpjs" },
+                { id:"leaderboard", label:"Leaderboard", icon:<Trophy size={15}/>,     onSelect:()=>setTab("leaderboard"), active: tab==="leaderboard" },
+                { id:"rekap",   label:"Rekap",        icon:<ClipboardList size={15}/>, onSelect:()=>setTab("rekap"),   active: tab==="rekap" },
+                { id:"jurnal",  label:"Jurnal",       icon:<NotebookPen size={15}/>,   onSelect:()=>setTab("jurnal"),  active: tab==="jurnal" },
+                { id:"ai",      label:"RC-AI",        icon:<Bot size={15}/>,           onSelect:()=>setTab("ai"),      active: tab==="ai" },
+                { id:"profile", label:"Profil",       icon:<User size={15}/>,          onSelect:()=>setTab("profile"), active: tab==="profile" },
+                { id:"logout",  label:"Keluar",       icon:<LogOut size={15}/>,        onSelect:logout },
               ]}
             />
           </div>
@@ -1857,7 +1861,7 @@ export default function VipPage() {
             {/* Quick stats */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginBottom:20 }}>
               {[{label:"Sinyal Aktif",val:mySignals.length,color:"#22c55e",glow:"rgba(34,197,94,0.1)"},{label:"Bagger Pick",val:baggerSignals.length,color:"#f59e0b",glow:"rgba(245,158,11,0.1)"},{label:"Bandar Signal",val:bandarSignals.length,color:"#8b5cf6",glow:"rgba(139,92,246,0.1)"}].map(s=>(
-                <div key={s.label} className="glass-card float-2" style={{ background:`linear-gradient(145deg,${s.glow},transparent)`, padding:"14px 10px", textAlign:"center" }}>
+                <div key={s.label} className="cyber-card float-2" style={{ background:`linear-gradient(145deg,${s.glow},transparent)`, padding:"14px 10px", textAlign:"center" }}>
                   <div style={{ fontSize:24, fontWeight:900, color:s.color, textShadow:`0 0 12px ${s.glow}` }}>{s.val}</div>
                   <div style={{ fontSize:9, color:"rgba(255,255,255,0.3)", marginTop:3, fontWeight:600 }}>{s.label}</div>
                 </div>
@@ -1872,7 +1876,7 @@ export default function VipPage() {
                     <h2 style={{ fontWeight:800, fontSize:14 }}>Sinyal Terbaru</h2>
                     <div className="eq-bars green">{[0,0,0,0].map((_,i)=><div key={i} className="eq-bar"/>)}</div>
                   </div>
-                  <button onClick={()=>setTab("sinyal")} style={{ color:"#2563EB", fontSize:12, background:"rgba(37,99,235,0.08)", border:"1px solid rgba(37,99,235,0.18)", borderRadius:8, padding:"4px 10px", cursor:"pointer", fontWeight:700 }}>Semua </button>
+                  <button onClick={()=>setTab("sinyal")} style={{ color:"#2563EB", fontSize:12, background:"rgba(37,99,235,0.08)", border:"1px solid rgba(37,99,235,0.18)", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", padding:"4px 10px", cursor:"pointer", fontWeight:700 }}>Semua </button>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                   {mySignals.slice(0,2).map((s,i) => <SignalCard key={i} s={s} isDone={doneSignalIds.includes(s.id)||userDoneIds.includes(s.id)} onToggleDone={toggleUserDone}/>)}
@@ -1888,7 +1892,7 @@ export default function VipPage() {
               </h2>
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                 {newsList.slice(0,4).map((n:any,i:number)=>(
-                  <a key={i} href={n.url||"#"} target="_blank" rel="noreferrer" className="glass-card" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12, padding:"12px 14px", textDecoration:"none", borderRadius:14 }}>
+                  <a key={i} href={n.url||"#"} target="_blank" rel="noreferrer" className="cyber-card" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12, padding:"12px 14px", textDecoration:"none", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)" }}>
                     <div>
                       <p style={{ color:"rgba(255,255,255,0.85)", fontSize:13, fontWeight:600, lineHeight:1.4, marginBottom:4 }}>{n.title}</p>
                       <p style={{ color:"#2563EB", fontSize:11 }}>{n.source}</p>
@@ -1921,7 +1925,7 @@ export default function VipPage() {
             {/* SINYAL BESOK */}
             {/* SINYAL DISEMATKAN */}
             {sigFilter==="Semua" && signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length>0 && (
-              <div style={{ background:"rgba(37,99,235,0.04)",border:"1px solid rgba(37,99,235,0.15)",borderRadius:16,padding:"14px 16px",marginBottom:16 }}>
+              <div style={{ background:"rgba(37,99,235,0.04)",border:"1px solid rgba(37,99,235,0.15)",clipPath:"polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)",padding:"14px 16px",marginBottom:16 }}>
                 <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:10 }}>
                   <span style={{ color:"#2563EB",fontWeight:900,fontSize:14 }}>Sinyal Disematkan</span>
                   <span style={{ color:"rgba(37,99,235,0.5)",fontSize:11 }}>{signals.filter((s:any)=>s.is_pinned&&!s.is_tomorrow).length} sinyal</span>
@@ -1932,18 +1936,18 @@ export default function VipPage() {
               </div>
             )}
             {sigFilter==="Semua" && signals.filter((s:any)=>s.is_tomorrow).length>0 && (
-              <div style={{ background:"rgba(234,179,8,0.04)", border:"1px solid rgba(234,179,8,0.15)", borderRadius:16, padding:"14px 16px", marginBottom:16 }}>
+              <div style={{ background:"rgba(234,179,8,0.04)", border:"1px solid rgba(234,179,8,0.15)", clipPath:"polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)", padding:"14px 16px", marginBottom:16 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
                   <span style={{ color:"#fbbf24", fontWeight:900, fontSize:14 }}>Sinyal Besok</span>
                   <span style={{ color:"rgba(251,191,36,0.5)", fontSize:11 }}>{signals.filter((s:any)=>s.is_tomorrow).length} sinyal</span>
                 </div>
                 {signals.filter((s:any)=>s.is_tomorrow).map((s:any)=>(
-                  <div key={s.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", background:"rgba(255,255,255,0.03)", borderRadius:10, marginBottom:6 }}>
-                    <div style={{ width:36, height:36, borderRadius:8, background:"rgba(234,179,8,0.08)", border:"1px solid rgba(234,179,8,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:900, color:"#fbbf24", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
+                  <div key={s.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", background:"rgba(255,255,255,0.03)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", marginBottom:6 }}>
+                    <div style={{ width:36, height:36, clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", background:"rgba(234,179,8,0.08)", border:"1px solid rgba(234,179,8,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:900, color:"#fbbf24", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ display:"flex", gap:8, alignItems:"center" }}>
                         <span style={{ color:"#fff", fontWeight:900, fontSize:14 }}>{s.kode}</span>
-                        <span style={{ background:"rgba(234,179,8,0.15)", color:"#fbbf24", fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:6 }}>{s.action}</span>
+                        <span style={{ background:"rgba(234,179,8,0.15)", color:"#fbbf24", fontSize:10, fontWeight:700, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{s.action}</span>
                       </div>
                       <span style={{ color:"rgba(255,255,255,0.35)", fontSize:11 }}>Entry: {s.entry} · TP: {s.tp}{s.tp2?` · TP2: ${s.tp2}`:""}</span>
                     </div>
@@ -2018,7 +2022,7 @@ export default function VipPage() {
             <div style={{ marginTop:24 }}>
               <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Modul Bandarmologi</h3>
               {ALL_MODULES.filter(m=>m.tag==="Bandarmologi").map(m=>(
-                <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, padding:"14px 16px", marginBottom:10, cursor:"pointer" }}>
+                <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px", marginBottom:10, cursor:"pointer" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                     <span className="index-badge" style={{ width:32,height:32,fontSize:11 }}>{m.icon}</span>
                     <div style={{ flex:1 }}>
@@ -2031,7 +2035,7 @@ export default function VipPage() {
                     <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid rgba(255,255,255,0.06)" }}>
                       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                         {m.topics.map((t:string,i:number)=>(
-                          <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start", background:"rgba(34,197,94,0.04)", borderRadius:10, padding:"10px 12px", border:"1px solid rgba(34,197,94,0.1)" }}>
+                          <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start", background:"rgba(34,197,94,0.04)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", border:"1px solid rgba(34,197,94,0.1)" }}>
                             <span style={{ color:"#22c55e", flexShrink:0, fontSize:15, marginTop:1 }}></span>
                             <div>
                               <p style={{ color:"rgba(255,255,255,0.88)", fontSize:12, fontWeight:700, lineHeight:1.5 }}>{t.includes(":") ? t.split(":")[0] : t}</p>
@@ -2046,7 +2050,7 @@ export default function VipPage() {
                             Materi Lengkap ({MODULE_CONTENT[m.id].lessons.length} pelajaran)
                           </p>
                           {MODULE_CONTENT[m.id].lessons.map((lesson:any, li:number) => (
-                            <div key={li} style={{ marginBottom:10, background:"rgba(255,255,255,0.02)", borderRadius:10, padding:"12px 14px", border:"1px solid rgba(255,255,255,0.05)" }}>
+                            <div key={li} style={{ marginBottom:10, background:"rgba(255,255,255,0.02)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"12px 14px", border:"1px solid rgba(255,255,255,0.05)" }}>
                               <p style={{ fontWeight:800, fontSize:12, color:"#fff", marginBottom:6 }}>{li+1}. {lesson.title}</p>
                               <p style={{ color:"rgba(255,255,255,0.55)", fontSize:11, lineHeight:1.75, whiteSpace:"pre-wrap" }}>{lesson.body}</p>
                             </div>
@@ -2066,13 +2070,13 @@ export default function VipPage() {
           <div style={{ padding:"16px" }} className="fade-in-up">
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
               <h2 style={{ fontWeight:900, fontSize:18 }}>Bagger Picks</h2>
-              <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", fontSize:10, fontWeight:700, padding:"4px 10px", borderRadius:8 }}>Paket {user.package?.toUpperCase()}</span>
+              <span style={{ background:"rgba(245,158,11,0.15)", color:"#f59e0b", fontSize:10, fontWeight:700, padding:"4px 10px", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)" }}>Paket {user.package?.toUpperCase()}</span>
             </div>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Saham berpotensi naik 2x–10x lipat</p>
 
             {/* Role gate: Gold+ only */}
             {pkgLevel < 2 ? (
-              <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", borderRadius:16, padding:"36px 20px", textAlign:"center", marginBottom:16 }}>
+              <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", clipPath:"polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)", padding:"36px 20px", textAlign:"center", marginBottom:16 }}>
                 <p style={{ fontSize:40, marginBottom:12 }}></p>
                 <p style={{ fontWeight:900, fontSize:16, marginBottom:6 }}>Bagger Picks — VIP Gold ke atas</p>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:13, marginBottom:20, lineHeight:1.6 }}>
@@ -2080,10 +2084,10 @@ export default function VipPage() {
                 </p>
                 <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
                   <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20saya%20${encodeURIComponent(user.name||"")}%20mau%20upgrade%20ke%20Gold`} target="_blank" rel="noreferrer"
-                    style={{ display:"inline-block", background:"linear-gradient(135deg,#f59e0b,#d97706)", color:"#000", fontWeight:900, fontSize:13, padding:"12px 28px", borderRadius:12, textDecoration:"none" }}>
+                    style={{ display:"inline-block", background:"linear-gradient(135deg,#f59e0b,#d97706)", color:"#000", fontWeight:900, fontSize:13, padding:"12px 28px", clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", textDecoration:"none" }}>
                     Upgrade ke Gold
                   </a>
-                  <button onClick={()=>setTab("sinyal")} style={{ background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.6)", fontWeight:700, fontSize:13, padding:"12px 20px", borderRadius:12, border:"1px solid rgba(255,255,255,0.1)", cursor:"pointer" }}>Lihat Sinyal</button>
+                  <button onClick={()=>setTab("sinyal")} style={{ background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.6)", fontWeight:700, fontSize:13, padding:"12px 20px", clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", border:"1px solid rgba(255,255,255,0.1)", cursor:"pointer" }}>Lihat Sinyal</button>
                 </div>
 
               </div>
@@ -2103,13 +2107,13 @@ export default function VipPage() {
               <div style={{ marginTop:24 }}>
                 <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Modul Multi-Bagger</h3>
                 {ALL_MODULES.filter(m=>m.tag==="Fundamental"||m.title.toLowerCase().includes("bagger")).map(m=>(
-                  <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:expandedModul===m.id?"rgba(245,158,11,0.06)":"rgba(255,255,255,0.03)", border:`1px solid ${expandedModul===m.id?"rgba(245,158,11,0.25)":"rgba(255,255,255,0.07)"}`, borderRadius:14, padding:"14px 16px", marginBottom:10, cursor:"pointer", transition:"all 0.2s" }}>
+                  <div key={m.id} onClick={()=>setExpandedModul(expandedModul===m.id?null:m.id)} style={{ background:expandedModul===m.id?"rgba(245,158,11,0.06)":"rgba(255,255,255,0.03)", border:`1px solid ${expandedModul===m.id?"rgba(245,158,11,0.25)":"rgba(255,255,255,0.07)"}`, clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px", marginBottom:10, cursor:"pointer", transition:"all 0.2s" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                       <span className="index-badge" style={{ width:34,height:34,fontSize:11 }}>{m.icon}</span>
                       <div style={{ flex:1 }}>
                         <p style={{ fontWeight:700, fontSize:13, marginBottom:2 }}>{m.title}</p>
                         <div style={{ display:"flex", gap:6 }}>
-                          <span style={{ fontSize:10, background:"rgba(245,158,11,0.12)", color:"#f59e0b", padding:"1px 7px", borderRadius:4 }}>{m.pkgLabel}</span>
+                          <span style={{ fontSize:10, background:"rgba(245,158,11,0.12)", color:"#f59e0b", padding:"1px 7px", clipPath:"polygon(0 4px,4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%)" }}>{m.pkgLabel}</span>
                           <span style={{ fontSize:10, color:"rgba(255,255,255,0.3)" }}>{m.topics.length} topik</span>
                         </div>
                       </div>
@@ -2244,13 +2248,13 @@ export default function VipPage() {
                   const isTP = r.result === "TP" || r.result === "tp";
                   const isSL = r.result === "SL" || r.result === "sl";
                   return (
-                    <div key={i} style={{ background:"#0d1117", border:`1px solid ${isTP?"rgba(34,197,94,0.2)":isSL?"rgba(239,68,68,0.2)":"rgba(255,255,255,0.08)"}`, borderRadius:14, padding:"14px 16px" }}>
+                    <div key={i} style={{ background:"#0d1117", border:`1px solid ${isTP?"rgba(34,197,94,0.2)":isSL?"rgba(239,68,68,0.2)":"rgba(255,255,255,0.08)"}`, clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px" }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
-                        <div style={{ width:40, height:40, borderRadius:10, background:isTP?"rgba(34,197,94,0.08)":isSL?"rgba(239,68,68,0.08)":"rgba(255,255,255,0.04)", border:`1px solid ${isTP?"rgba(34,197,94,0.25)":isSL?"rgba(239,68,68,0.25)":"rgba(255,255,255,0.1)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:10, color:isTP?"#22c55e":isSL?"#ef4444":"#666", flexShrink:0 }}>{(r.kode||"--").slice(0,4)}</div>
+                        <div style={{ width:40, height:40, clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", background:isTP?"rgba(34,197,94,0.08)":isSL?"rgba(239,68,68,0.08)":"rgba(255,255,255,0.04)", border:`1px solid ${isTP?"rgba(34,197,94,0.25)":isSL?"rgba(239,68,68,0.25)":"rgba(255,255,255,0.1)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:10, color:isTP?"#22c55e":isSL?"#ef4444":"#666", flexShrink:0 }}>{(r.kode||"--").slice(0,4)}</div>
                         <div style={{ flex:1 }}>
                           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                             <span style={{ color:"#fff", fontWeight:900, fontSize:15 }}>{r.kode}</span>
-                            <span style={{ background:isTP?"rgba(34,197,94,0.12)":isSL?"rgba(239,68,68,0.12)":"rgba(255,255,255,0.05)", color:isTP?"#22c55e":isSL?"#ef4444":"#888", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{r.result || "SELESAI"}</span>
+                            <span style={{ background:isTP?"rgba(34,197,94,0.12)":isSL?"rgba(239,68,68,0.12)":"rgba(255,255,255,0.05)", color:isTP?"#22c55e":isSL?"#ef4444":"#888", fontSize:10, fontWeight:800, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{r.result || "SELESAI"}</span>
                             {r.gain && <span style={{ color:parseFloat(r.gain)>=0?"#22c55e":"#ef4444", fontSize:12, fontWeight:800 }}>{parseFloat(r.gain)>=0?"+":""}{r.gain}%</span>}
                           </div>
                           <p style={{ color:"rgba(255,255,255,0.35)", fontSize:10 }}>{r.saham} · {r.date||r.created_at?.slice(0,10)||""}</p>
@@ -2258,7 +2262,7 @@ export default function VipPage() {
                       </div>
                       <div style={{ display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:6 }}>
                         {[{l:"Entry",v:r.entry},{l:"TP",v:r.tp},{l:"SL",v:r.sl},{l:"Close",v:r.close_price||r.exit_price}].map(({l,v})=>(
-                          <div key={l} style={{ background:"rgba(255,255,255,0.03)", borderRadius:8, padding:"6px 8px" }}>
+                          <div key={l} style={{ background:"rgba(255,255,255,0.03)", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", padding:"6px 8px" }}>
                             <p style={{ color:"rgba(255,255,255,0.3)", fontSize:8, marginBottom:2 }}>{l}</p>
                             <p style={{ color:"rgba(255,255,255,0.75)", fontWeight:700, fontSize:11 }}>{v||"-"}</p>
                           </div>
@@ -2282,7 +2286,7 @@ export default function VipPage() {
                 <div style={{ fontSize:56, marginBottom:16 }}></div>
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:8 }}>Jurnal Trade — Silver+</h2>
                 <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:20 }}>Fitur Jurnal Trade tersedia untuk paket <strong style={{ color:"#94a3b8" }}>Silver</strong> ke atas. Upgrade untuk catat & evaluasi setiap trading kamu.</p>
-                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Silver!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#64748b,#94a3b8)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>Upgrade ke Silver</a>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Silver!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#64748b,#94a3b8)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", textDecoration:"none" }}>Upgrade ke Silver</a>
               </div>
             ) : (
               <>
@@ -2291,7 +2295,7 @@ export default function VipPage() {
                 <h2 style={{ fontWeight:900, fontSize:18, marginBottom:4 }}>Jurnal Trade</h2>
                 <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12 }}>Catat & evaluasi setiap trade — data ini hanya milikmu.</p>
               </div>
-              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", borderRadius:12, border:"none", cursor:"pointer" }}>+ Tambah</button>
+              <button onClick={()=>{ setJurnalForm({ kode:"", saham:"", action:"BUY", entry:"", exit:"", result:"", gain:"", tanggal:new Date().toISOString().slice(0,10), alasan:"", evaluasi:"" }); setShowJurnalModal(true); }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:800, fontSize:12, padding:"8px 16px", clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", border:"none", cursor:"pointer" }}>+ Tambah</button>
             </div>
 
             {/* Stats jurnal */}
@@ -2302,7 +2306,7 @@ export default function VipPage() {
                   { l:"Win Rate", v: Math.round(jurnalList.filter((j:any)=>j.result==="TP"||parseFloat(j.gain||0)>0).length/jurnalList.length*100)+"%", c:"#22c55e" },
                   { l:"Avg Gain", v: (jurnalList.reduce((s:number,j:any)=>s+parseFloat(j.gain||0),0)/jurnalList.length).toFixed(1)+"%", c: jurnalList.reduce((s:number,j:any)=>s+parseFloat(j.gain||0),0)>=0?"#22c55e":"#ef4444" },
                 ].map(({l,v,c})=>(
-                  <div key={l} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, padding:"12px", textAlign:"center" }}>
+                  <div key={l} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"12px", textAlign:"center" }}>
                     <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:4 }}>{l}</p>
                     <p style={{ color:c, fontWeight:900, fontSize:18 }}>{v}</p>
                   </div>
@@ -2322,13 +2326,13 @@ export default function VipPage() {
                   const gainNum = parseFloat(j.gain||0);
                   const isProfit = gainNum > 0 || j.result === "TP";
                   return (
-                    <div key={i} style={{ background:"#0d1117", border:`1px solid ${isProfit?"rgba(34,197,94,0.15)":"rgba(239,68,68,0.15)"}`, borderRadius:14, padding:"14px 16px" }}>
+                    <div key={i} style={{ background:"#0d1117", border:`1px solid ${isProfit?"rgba(34,197,94,0.15)":"rgba(239,68,68,0.15)"}`, clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px" }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-                        <div style={{ width:40, height:40, borderRadius:10, background:isProfit?"rgba(34,197,94,0.08)":"rgba(239,68,68,0.08)", border:`1px solid ${isProfit?"rgba(34,197,94,0.2)":"rgba(239,68,68,0.2)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:10, color:isProfit?"#22c55e":"#ef4444", flexShrink:0 }}>{(j.kode||"--").slice(0,4)}</div>
+                        <div style={{ width:40, height:40, clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", background:isProfit?"rgba(34,197,94,0.08)":"rgba(239,68,68,0.08)", border:`1px solid ${isProfit?"rgba(34,197,94,0.2)":"rgba(239,68,68,0.2)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:10, color:isProfit?"#22c55e":"#ef4444", flexShrink:0 }}>{(j.kode||"--").slice(0,4)}</div>
                         <div style={{ flex:1 }}>
                           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                             <span style={{ color:"#fff", fontWeight:900, fontSize:15 }}>{j.kode}</span>
-                            <span style={{ background:isProfit?"rgba(34,197,94,0.1)":"rgba(239,68,68,0.1)", color:isProfit?"#22c55e":"#ef4444", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{j.result || (gainNum>0?"PROFIT":"LOSS")}</span>
+                            <span style={{ background:isProfit?"rgba(34,197,94,0.1)":"rgba(239,68,68,0.1)", color:isProfit?"#22c55e":"#ef4444", fontSize:10, fontWeight:800, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{j.result || (gainNum>0?"PROFIT":"LOSS")}</span>
                             {j.gain && <span style={{ color:isProfit?"#22c55e":"#ef4444", fontWeight:800, fontSize:13 }}>{gainNum>=0?"+":""}{j.gain}%</span>}
                           </div>
                           <p style={{ color:"rgba(255,255,255,0.35)", fontSize:10 }}>{j.saham} · {j.tanggal||""}</p>
@@ -2336,7 +2340,7 @@ export default function VipPage() {
                       </div>
                       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
                         {[{l:"Entry",v:j.entry},{l:"Exit",v:j.exit}].map(({l,v})=>(
-                          <div key={l} style={{ background:"rgba(255,255,255,0.03)", borderRadius:8, padding:"6px 10px" }}>
+                          <div key={l} style={{ background:"rgba(255,255,255,0.03)", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", padding:"6px 10px" }}>
                             <p style={{ color:"rgba(255,255,255,0.3)", fontSize:9 }}>{l}</p>
                             <p style={{ color:"rgba(255,255,255,0.75)", fontWeight:700, fontSize:12 }}>{v||"-"}</p>
                           </div>
@@ -2351,7 +2355,7 @@ export default function VipPage() {
                           setJurnalPersonal(updatedPersonal);
                           const myEmail = user?.email || "";
                           if (myEmail) await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myEmail}`, value: updatedPersonal }) }).catch(()=>{});
-                        }} style={{ marginTop:8, background:"rgba(239,68,68,0.06)", border:"1px solid rgba(239,68,68,0.15)", color:"rgba(239,68,68,0.6)", fontSize:10, padding:"4px 10px", borderRadius:8, cursor:"pointer", width:"100%" }}>
+                        }} style={{ marginTop:8, background:"rgba(239,68,68,0.06)", border:"1px solid rgba(239,68,68,0.15)", color:"rgba(239,68,68,0.6)", fontSize:10, padding:"4px 10px", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", cursor:"pointer", width:"100%" }}>
                           Hapus Catatan Ini
                         </button>
                       )}
@@ -2366,51 +2370,51 @@ export default function VipPage() {
             {/* Modal Tambah Jurnal */}
             {showJurnalModal && (
               <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:200, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-                <div style={{ background:"#0d1117", border:"1px solid rgba(255,255,255,0.1)", borderRadius:"20px 20px 0 0", padding:"24px 20px 40px", width:"100%", maxWidth:480, maxHeight:"90vh", overflowY:"auto" }}>
+                <div style={{ background:"#0d1117", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(20px 0,100% 0,100% 100%,0 100%,0 20px)", padding:"24px 20px 40px", width:"100%", maxWidth:480, maxHeight:"90vh", overflowY:"auto" }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
                     <h3 style={{ fontWeight:900, fontSize:16 }}>Tambah Jurnal Trade</h3>
-                    <button onClick={()=>setShowJurnalModal(false)} style={{ background:"rgba(255,255,255,0.08)", border:"none", color:"#fff", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:16 }}></button>
+                    <button onClick={()=>setShowJurnalModal(false)} style={{ background:"rgba(255,255,255,0.08)", border:"none", color:"#fff", width:32, height:32, clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", cursor:"pointer", fontSize:16 }}></button>
                   </div>
                   <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
                       <div>
                         <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Kode Saham</label>
-                        <input value={jurnalForm.kode||""} onChange={e=>setJurnalForm({...jurnalForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                        <input value={jurnalForm.kode||""} onChange={e=>setJurnalForm({...jurnalForm,kode:e.target.value.toUpperCase()})} placeholder="BBCA" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
                       </div>
                       <div>
                         <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Tanggal</label>
-                        <input type="date" value={jurnalForm.tanggal||""} onChange={e=>setJurnalForm({...jurnalForm,tanggal:e.target.value})} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                        <input type="date" value={jurnalForm.tanggal||""} onChange={e=>setJurnalForm({...jurnalForm,tanggal:e.target.value})} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
                       </div>
                     </div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10 }}>
                       <div>
                         <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Entry</label>
-                        <input value={jurnalForm.entry||""} onChange={e=>setJurnalForm({...jurnalForm,entry:e.target.value})} placeholder="9.750" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                        <input value={jurnalForm.entry||""} onChange={e=>setJurnalForm({...jurnalForm,entry:e.target.value})} placeholder="9.750" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
                       </div>
                       <div>
                         <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Exit</label>
-                        <input value={jurnalForm.exit||""} onChange={e=>setJurnalForm({...jurnalForm,exit:e.target.value})} placeholder="10.200" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                        <input value={jurnalForm.exit||""} onChange={e=>setJurnalForm({...jurnalForm,exit:e.target.value})} placeholder="10.200" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
                       </div>
                       <div>
                         <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Gain %</label>
-                        <input value={jurnalForm.gain||""} onChange={e=>setJurnalForm({...jurnalForm,gain:e.target.value})} placeholder="+5.3" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
+                        <input value={jurnalForm.gain||""} onChange={e=>setJurnalForm({...jurnalForm,gain:e.target.value})} placeholder="+5.3" style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:13, boxSizing:"border-box" as any }}/>
                       </div>
                     </div>
                     <div>
                       <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Hasil</label>
                       <div style={{ display:"flex", gap:8 }}>
                         {["TP","SL","BE","MANUAL"].map(r=>(
-                          <button key={r} onClick={()=>setJurnalForm({...jurnalForm,result:r})} style={{ flex:1, padding:"8px", borderRadius:10, border:"1px solid", cursor:"pointer", fontWeight:700, fontSize:11, background:jurnalForm.result===r?"rgba(37,99,235,0.15)":"transparent", color:jurnalForm.result===r?"#2563EB":"rgba(255,255,255,0.4)", borderColor:jurnalForm.result===r?"rgba(37,99,235,0.4)":"rgba(255,255,255,0.1)" }}>{r}</button>
+                          <button key={r} onClick={()=>setJurnalForm({...jurnalForm,result:r})} style={{ flex:1, padding:"8px", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", border:"1px solid", cursor:"pointer", fontWeight:700, fontSize:11, background:jurnalForm.result===r?"rgba(37,99,235,0.15)":"transparent", color:jurnalForm.result===r?"#2563EB":"rgba(255,255,255,0.4)", borderColor:jurnalForm.result===r?"rgba(37,99,235,0.4)":"rgba(255,255,255,0.1)" }}>{r}</button>
                         ))}
                       </div>
                     </div>
                     <div>
                       <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Alasan Entry</label>
-                      <textarea value={jurnalForm.alasan||""} onChange={e=>setJurnalForm({...jurnalForm,alasan:e.target.value})} placeholder="Setup teknikal, breakout resistance, volume tinggi..." rows={3} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:12, resize:"none", boxSizing:"border-box" as any }}/>
+                      <textarea value={jurnalForm.alasan||""} onChange={e=>setJurnalForm({...jurnalForm,alasan:e.target.value})} placeholder="Setup teknikal, breakout resistance, volume tinggi..." rows={3} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:12, resize:"none", boxSizing:"border-box" as any }}/>
                     </div>
                     <div>
                       <label style={{ color:"rgba(255,255,255,0.4)", fontSize:11, display:"block", marginBottom:4 }}>Evaluasi & Pelajaran</label>
-                      <textarea value={jurnalForm.evaluasi||""} onChange={e=>setJurnalForm({...jurnalForm,evaluasi:e.target.value})} placeholder="Apa yang benar/salah? Apa yang bisa diperbaiki?" rows={3} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, padding:"10px 12px", color:"#fff", fontSize:12, resize:"none", boxSizing:"border-box" as any }}/>
+                      <textarea value={jurnalForm.evaluasi||""} onChange={e=>setJurnalForm({...jurnalForm,evaluasi:e.target.value})} placeholder="Apa yang benar/salah? Apa yang bisa diperbaiki?" rows={3} style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"10px 12px", color:"#fff", fontSize:12, resize:"none", boxSizing:"border-box" as any }}/>
                     </div>
                     <button onClick={async ()=>{
                       if (!jurnalForm.kode) { alert("Isi kode saham!"); return; }
@@ -2424,7 +2428,7 @@ export default function VipPage() {
                       if (myEmail) {
                         await fetch("/api/admin/settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ key: `jurnal_${myEmail}`, value: updatedPersonal }) }).catch(()=>{});
                       }
-                    }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, border:"none", cursor:"pointer", marginTop:4 }}>
+                    }} style={{ background:"linear-gradient(135deg,#2563EB,#2563EB)", color:"#fff", fontWeight:900, fontSize:14, padding:"14px", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", border:"none", cursor:"pointer", marginTop:4 }}>
                       Simpan Jurnal
                     </button>
                   </div>
@@ -2444,7 +2448,7 @@ export default function VipPage() {
                 <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7, marginBottom:24 }}>
                   RC-AI Analyst hanya tersedia untuk paket <strong style={{ color:"#f59e0b" }}>Gold, Pro, Platinum</strong>, dan <strong style={{ color:"#a855f7" }}>Elite</strong>.
                 </p>
-                <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", borderRadius:16, padding:"16px", marginBottom:20, textAlign:"left" }}>
+                <div style={{ background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)", clipPath:"polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)", padding:"16px", marginBottom:20, textAlign:"left" }}>
                   {["Analisis saham BEI 24/7 oleh RC-AI","Upload screenshot chart untuk analisis visual","Rekomendasi entry, TP, SL otomatis","Analisis fundamental laporan keuangan","Deteksi akumulasi bandarmologi via AI","Sentiment analysis berita real-time"].map((f,i)=>(
                     <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:7 }}>
                       <span style={{ color:"#f59e0b", fontSize:12, flexShrink:0 }}></span>
@@ -2452,17 +2456,17 @@ export default function VipPage() {
                     </div>
                   ))}
                 </div>
-                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Gold%20untuk%20akses%20RC-AI!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#f59e0b,#d97706)", color:"#000", fontWeight:900, fontSize:14, padding:"14px", borderRadius:14, textDecoration:"none" }}>
+                <a href="https://wa.me/6282218723401?text=Halo%20mau%20upgrade%20ke%20Gold%20untuk%20akses%20RC-AI!" target="_blank" style={{ display:"block", background:"linear-gradient(135deg,#f59e0b,#d97706)", color:"#000", fontWeight:900, fontSize:14, padding:"14px", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", textDecoration:"none" }}>
                   Upgrade ke Gold Sekarang
                 </a>
               </div>
             ) : (
               <>
-                <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.1),rgba(37,99,235,0.08))",border:"1px solid rgba(37,99,235,0.2)",borderRadius:20,padding:"20px",textAlign:"center",marginBottom:16,marginTop:8 }}>
+                <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.1),rgba(37,99,235,0.08))",border:"1px solid rgba(37,99,235,0.2)",clipPath:"polygon(0 20px,20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)",padding:"20px",textAlign:"center",marginBottom:16,marginTop:8 }}>
                   <div style={{ fontSize:36,marginBottom:8 }}></div>
                   <h2 style={{ fontWeight:900,fontSize:18,marginBottom:6 }}>RC-AI Analyst</h2>
                   <p style={{ color:"rgba(255,255,255,0.45)",fontSize:13,lineHeight:1.6,marginBottom:16 }}>Analisis saham BEI dengan AI — teknikal, fundamental, bandarmologi. Kirim chart untuk analisis visual!</p>
-                  <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#2563EB,#2563EB)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",borderRadius:14,textDecoration:"none" }}>
+                  <a href="/ai" style={{ display:"block",background:"linear-gradient(135deg,#2563EB,#2563EB)",color:"#fff",fontWeight:800,fontSize:14,padding:"13px",clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)",textDecoration:"none" }}>
                      Buka RC-AI Chat
                   </a>
                 </div>
@@ -2475,7 +2479,7 @@ export default function VipPage() {
                     {icon:"04",t:"Bandarmologi",d:"Deteksi akumulasi smart money"},
                     {icon:"05",t:"Psikologi Trading",d:"Kelola emosi & bias kognitif"},
                   ].map((f,i)=>(
-                    <a key={i} href="/ai" className="glass-card no-mark" style={{ padding:"14px 12px",textDecoration:"none",display:"block" }}>
+                    <a key={i} href="/ai" className="cyber-card" style={{ padding:"14px 12px",textDecoration:"none",display:"block" }}>
                       <div className="index-badge" style={{ width:30,height:30,fontSize:10,marginBottom:8 }}>{f.icon}</div>
                       <div style={{ color:"#fff",fontWeight:800,fontSize:12,marginBottom:3 }}>{f.t}</div>
                       <div style={{ color:"rgba(255,255,255,0.35)",fontSize:10,lineHeight:1.4 }}>{f.d}</div>
@@ -2505,13 +2509,13 @@ export default function VipPage() {
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                 {bsjpSignals.map((s:any, i:number) => (
-                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(37,99,235,0.2)", borderRadius:16, padding:"16px" }}>
+                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(37,99,235,0.2)", clipPath:"polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)", padding:"16px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-                      <div style={{ width:44, height:44, borderRadius:12, background:"rgba(37,99,235,0.08)", border:"1px solid rgba(37,99,235,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#2563EB", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
+                      <div style={{ width:44, height:44, clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", background:"rgba(37,99,235,0.08)", border:"1px solid rgba(37,99,235,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#2563EB", flexShrink:0 }}>{(s.kode||"--").slice(0,4)}</div>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                           <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode}</span>
-                          <span style={{ background:"rgba(37,99,235,0.12)", color:"#2563EB", border:"1px solid rgba(37,99,235,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action||"BSJP"}</span>
+                          <span style={{ background:"rgba(37,99,235,0.12)", color:"#2563EB", border:"1px solid rgba(37,99,235,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{s.action||"BSJP"}</span>
                         </div>
                         <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham||""}</p>
                       </div>
@@ -2519,7 +2523,7 @@ export default function VipPage() {
                     </div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:8 }}>
                       {[{l:"Entry",v:s.entry,c:"rgba(255,255,255,0.85)"},{l:"TP",v:s.tp,c:"#22c55e"},{l:"SL",v:s.sl,c:"#ef4444"}].map(({l,v,c})=>(
-                        <div key={l} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
+                        <div key={l} style={{ background:"rgba(255,255,255,0.04)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"8px 10px" }}>
                           <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:2 }}>{l}</p>
                           <p style={{ color:c, fontWeight:800, fontSize:13 }}>{v||"-"}</p>
                         </div>
@@ -2552,13 +2556,13 @@ export default function VipPage() {
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                 {bpjsSignals.map((s:any, i:number) => (
-                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(168,85,247,0.2)", borderRadius:16, padding:"16px" }}>
+                  <div key={i} style={{ background:"#0d1117", border:"1px solid rgba(168,85,247,0.2)", clipPath:"polygon(0 16px,16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)", padding:"16px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
-                      <div style={{ width:44, height:44, borderRadius:12, background:"rgba(168,85,247,0.08)", border:"1px solid rgba(168,85,247,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#a855f7", flexShrink:0 }}>{(s.kode||"BPJS").slice(0,4)}</div>
+                      <div style={{ width:44, height:44, clipPath:"polygon(0 12px,12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)", background:"rgba(168,85,247,0.08)", border:"1px solid rgba(168,85,247,0.25)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:11, color:"#a855f7", flexShrink:0 }}>{(s.kode||"BPJS").slice(0,4)}</div>
                       <div style={{ flex:1 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                           <span style={{ color:"#fff", fontWeight:900, fontSize:16 }}>{s.kode}</span>
-                          <span style={{ background:"rgba(168,85,247,0.12)", color:"#a855f7", border:"1px solid rgba(168,85,247,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", borderRadius:6 }}>{s.action||"BPJS"}</span>
+                          <span style={{ background:"rgba(168,85,247,0.12)", color:"#a855f7", border:"1px solid rgba(168,85,247,0.3)", fontSize:10, fontWeight:800, padding:"2px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{s.action||"BPJS"}</span>
                         </div>
                         <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{s.saham||""}</p>
                       </div>
@@ -2566,7 +2570,7 @@ export default function VipPage() {
                     </div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:8 }}>
                       {[{l:"Entry",v:s.entry,c:"rgba(255,255,255,0.85)"},{l:"TP",v:s.tp,c:"#22c55e"},{l:"SL",v:s.sl,c:"#ef4444"}].map(({l,v,c})=>(
-                        <div key={l} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"8px 10px" }}>
+                        <div key={l} style={{ background:"rgba(255,255,255,0.04)", clipPath:"polygon(0 10px,10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)", padding:"8px 10px" }}>
                           <p style={{ color:"rgba(255,255,255,0.35)", fontSize:9, marginBottom:2 }}>{l}</p>
                           <p style={{ color:c, fontWeight:800, fontSize:13 }}>{v||"-"}</p>
                         </div>
@@ -2587,7 +2591,7 @@ export default function VipPage() {
           <div style={{ padding:"16px" }} className="fade-in-up">
             <h2 className="font-display" style={{ fontWeight:800, fontSize:18, marginBottom:4 }}>Leaderboard</h2>
             <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:16 }}>Peringkat member paling cuan minggu & bulan ini</p>
-            <div style={{ display:"flex", marginBottom:18, borderRadius:0 }} className="cyber-card-sm" >
+            <div style={{ display:"flex", marginBottom:18, clipPath:"polygon(0 0px,0px 0,100% 0,100% calc(100% - 0px),calc(100% - 0px) 100%,0 100%)" }} className="cyber-card-sm" >
               {(["weekly","monthly"] as const).map(p => (
                 <button key={p} onClick={()=>setLeaderboardPeriod(p)}
                   className="font-display"
@@ -2634,7 +2638,7 @@ export default function VipPage() {
         {tab==="profile" && (
           <div style={{ padding:"16px" }} className="fade-in-up">
             {/* User card */}
-            <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.12),rgba(0,200,255,0.06))", border:"1px solid rgba(30,90,240,0.25)", borderRadius:20, padding:"24px 20px", marginBottom:20, textAlign:"center" }}>
+            <div style={{ background:"linear-gradient(135deg,rgba(30,90,240,0.12),rgba(0,200,255,0.06))", border:"1px solid rgba(30,90,240,0.25)", clipPath:"polygon(0 20px,20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)", padding:"24px 20px", marginBottom:20, textAlign:"center" }}>
               <div style={{ width:64, height:64, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#2563EB)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:24, color:"#fff", margin:"0 auto 12px" }}>
                 {user.name?.charAt(0)||"V"}
               </div>
@@ -2651,7 +2655,7 @@ export default function VipPage() {
               <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Owner & Partner</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {owners.map((o,i)=>(
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(37,99,235,0.2)", borderRadius:14, padding:"14px 16px" }}>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(30,90,240,0.06)", border:"1px solid rgba(37,99,235,0.2)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px" }}>
                     <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#2563EB,#2563EB)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{o.badge||""}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
@@ -2660,11 +2664,11 @@ export default function VipPage() {
                       </div>
                       <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{o.role}</p>
                     </div>
-                    <span style={{ background:"rgba(30,90,240,0.15)", color:"#60a5fa", fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:6 }}>{o.tag}</span>
+                    <span style={{ background:"rgba(30,90,240,0.15)", color:"#60a5fa", fontSize:10, fontWeight:700, padding:"3px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>{o.tag}</span>
                   </div>
                 ))}
                 {partners.map((p,i)=>(
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(139,92,246,0.06)", border:"1px solid rgba(139,92,246,0.2)", borderRadius:14, padding:"14px 16px" }}>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(139,92,246,0.06)", border:"1px solid rgba(139,92,246,0.2)", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px" }}>
                     <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#8b5cf6,#6d28d9)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{p.badge||""}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6 }}>
@@ -2672,7 +2676,7 @@ export default function VipPage() {
                       </div>
                       <p style={{ color:"rgba(255,255,255,0.4)", fontSize:11 }}>{p.role}</p>
                     </div>
-                    <span style={{ background:"rgba(139,92,246,0.15)", color:"#a78bfa", fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:6 }}>Partner</span>
+                    <span style={{ background:"rgba(139,92,246,0.15)", color:"#a78bfa", fontSize:10, fontWeight:700, padding:"3px 8px", clipPath:"polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)" }}>Partner</span>
                   </div>
                 ))}
               </div>
@@ -2683,16 +2687,16 @@ export default function VipPage() {
               <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Paket VIP</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 {PAKET_VIP.map(p=>(
-                  <div key={p.id} style={{ background: p.id===user.package ? `${p.color}10` : "rgba(255,255,255,0.02)", border:`1px solid ${p.id===user.package ? p.color+"40" : "rgba(255,255,255,0.06)"}`, borderRadius:14, padding:"14px 16px", display:"flex", alignItems:"center", gap:12 }}>
+                  <div key={p.id} style={{ background: p.id===user.package ? `${p.color}10` : "rgba(255,255,255,0.02)", border:`1px solid ${p.id===user.package ? p.color+"40" : "rgba(255,255,255,0.06)"}`, clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", padding:"14px 16px", display:"flex", alignItems:"center", gap:12 }}>
                     <span style={{ fontSize:20 }}>{p.badge}</span>
                     <div style={{ flex:1 }}>
                       <p style={{ fontWeight:800, fontSize:13, color: p.id===user.package ? p.color : "#fff" }}>{p.name}</p>
                       <p style={{ color:"rgba(255,255,255,0.35)", fontSize:11 }}>{p.price}/bulan</p>
                     </div>
                     {p.id===user.package ? (
-                      <span style={{ background:`${p.color}20`, color:p.color, fontSize:10, fontWeight:800, padding:"4px 10px", borderRadius:8 }}>Aktif </span>
+                      <span style={{ background:`${p.color}20`, color:p.color, fontSize:10, fontWeight:800, padding:"4px 10px", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)" }}>Aktif </span>
                     ) : (
-                      <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20mau%20upgrade%20ke%20${p.name}`} target="_blank" rel="noreferrer" style={{ background:p.color, color:"#000", fontSize:10, fontWeight:800, padding:"5px 12px", borderRadius:8, textDecoration:"none" }}>Upgrade</a>
+                      <a href={`https://wa.me/6282218723401?text=Halo%20admin%2C%20mau%20upgrade%20ke%20${p.name}`} target="_blank" rel="noreferrer" style={{ background:p.color, color:"#000", fontSize:10, fontWeight:800, padding:"5px 12px", clipPath:"polygon(0 8px,8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)", textDecoration:"none" }}>Upgrade</a>
                     )}
                   </div>
                 ))}
@@ -2700,12 +2704,12 @@ export default function VipPage() {
             </div>
 
             {/* Logout */}
-            <button onClick={logout} style={{ width:"100%", padding:"14px", borderRadius:14, background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#ef4444", fontWeight:700, fontSize:14, cursor:"pointer" }}>Keluar dari Akun</button>
+            <button onClick={logout} style={{ width:"100%", padding:"14px", clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)", background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", color:"#ef4444", fontWeight:700, fontSize:14, cursor:"pointer" }}>Keluar dari Akun</button>
             {/* Contact Admin */}
             <div style={{ marginTop:12 }}>
               <h3 style={{ fontWeight:800, fontSize:14, marginBottom:12 }}>Kontak Admin</h3>
               <a href="https://wa.me/6282218723401?text=Halo%20Admin%20RITEL%20COMMUNITY.ID" target="_blank" rel="noreferrer"
-                style={{ display:"flex",alignItems:"center",gap:12,background:"rgba(37,211,102,0.08)",border:"1px solid rgba(37,211,102,0.2)",borderRadius:14,padding:"14px 16px",textDecoration:"none" }}>
+                style={{ display:"flex",alignItems:"center",gap:12,background:"rgba(37,211,102,0.08)",border:"1px solid rgba(37,211,102,0.2)",clipPath:"polygon(0 14px,14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)",padding:"14px 16px",textDecoration:"none" }}>
                 <div style={{ width:40,height:40,borderRadius:"50%",background:"rgba(37,211,102,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}></div>
                 <div>
                   <p style={{ fontWeight:800,fontSize:14,color:"#25d366" }}>WhatsApp Admin</p>

@@ -320,7 +320,8 @@ body {
    ============================================================ */
 .more-menu-trigger {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 42px; height: 42px; border-radius: 10px;
+  width: 42px; height: 42px;
+  clip-path: polygon(0 8px, 8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
   border: 1px solid #132238; background: rgba(8,17,31,0.6);
   color: #EDEEF0; cursor: pointer; transition: all .2s ease; flex-shrink: 0;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -329,7 +330,8 @@ body {
 .more-menu-panel {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 300;
   min-width: 240px; max-height: 70vh; overflow-y: auto;
-  background: #08111F; border: 1px solid #132238; border-radius: 14px;
+  background: #08111F; border: 1px solid #132238;
+  clip-path: polygon(0 16px, 16px 0, 100% 0, 100% 100%, 0 100%);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   padding: 6px; animation: moreMenuIn .16s ease both;
@@ -337,7 +339,7 @@ body {
 @keyframes moreMenuIn { from { opacity:0; transform:translateY(-4px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
 .more-menu-item {
   display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
-  padding: 9px 12px; border-radius: 8px; border: none; background: none;
+  padding: 9px 12px; border: none; background: none;
   color: rgba(237,238,240,0.75); font-size: 13px; font-weight: 600; cursor: pointer;
   transition: all .15s ease;
 }
@@ -356,14 +358,28 @@ body {
    clipped along with it, giving a clean angular tech-panel silhouette. */
 .cyber-card {
   position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015)), #08111F;
   clip-path: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  border: 1px solid rgba(37,99,235,0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.cyber-card:hover { border-color: rgba(37,99,235,0.45); box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 24px rgba(37,99,235,0.1); }
+.cyber-card:active { transform: scale(0.985); transition-duration: 0.1s; }
+.cyber-card-sm {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015)), #08111F;
+  clip-path: polygon(0 9px, 9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
   border: 1px solid rgba(37,99,235,0.22);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.cyber-card:hover { border-color: rgba(37,99,235,0.4); }
-.cyber-card-sm {
-  clip-path: polygon(0 9px, 9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
-  border: 1px solid rgba(37,99,235,0.22);
+.cyber-card-sm:hover { border-color: rgba(37,99,235,0.45); }
+/* Thin neon scan-line across the top edge of any cyber card, for HUD flavor */
+.cyber-card-scan { position: relative; }
+.cyber-card-scan::after {
+  content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.7), transparent);
 }
 /* Thin corner accent ticks drawn on top of a cyber-card, purely decorative */
 .cyber-corner-tl, .cyber-corner-br {

@@ -1,21 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-
-function DotsIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-      <circle cx="12" cy="5" r="2" />
-      <circle cx="12" cy="12" r="2" />
-      <circle cx="12" cy="19" r="2" />
-    </svg>
-  );
-}
+import { MoreVertical } from "lucide-react";
 
 export type MoreMenuItem = {
   id: string;
   label: string;
   onSelect: () => void;
   active?: boolean;
+  icon?: React.ReactNode;
 };
 
 /**
@@ -50,7 +42,7 @@ export default function MoreMenu({
         className="more-menu-trigger"
         onClick={() => setOpen((v) => !v)}
       >
-        <DotsIcon />
+        <MoreVertical size={18} strokeWidth={2.4} />
       </button>
 
       {open && (
@@ -68,6 +60,11 @@ export default function MoreMenu({
                 setOpen(false);
               }}
             >
+              {item.icon && (
+                <span style={{ display: "inline-flex", alignItems: "center", marginRight: 9, opacity: item.active ? 1 : 0.6 }}>
+                  {item.icon}
+                </span>
+              )}
               {item.label}
             </button>
           ))}

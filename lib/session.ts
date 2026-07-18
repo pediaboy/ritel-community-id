@@ -49,6 +49,14 @@ export function saveSession(
   } catch {}
 }
 
+// Update just the cached user profile (role/package/etc.) without touching tokens
+function patchUser(user: any) {
+  try {
+    const store = activeStore();
+    store.setItem(USER_KEY, JSON.stringify(user));
+  } catch {}
+}
+
 export function readSession(): { session: VipSessionData | null; user: any | null } {
   try {
     const store = activeStore();
@@ -71,27 +79,50 @@ export function clearSession() {
   } catch {}
 }
 
-// Returns the current user, silently refreshing the access_token first if it's
-// expired (or about to be). Returns null if there's no usable session at all.
+// Returns the current user, ALWAYS re-synced live from the server first
+// (role/package/VIP status can change any time an admin edits it, so we
+// never trust the cached copy for anything beyond avoiding a login flash).
+// Rotates the access_token via refresh_token only when it's actually
+// expiring soon — resyncing the profile itself is cheap and safe to do
+// on every page load via the read-only /api/auth/me endpoint.
 export async function ensureFreshSession(): Promise<any | null> {
   const { session, user } = readSession();
   if (!session || !user) return null;
 
   const expiringSoon = Date.now() > (session.expires_at || 0) - 60_000;
-  if (!expiringSoon) return user;
-  if (!session.refresh_token) return user; // legacy session w/o refresh_token — let it ride
 
+  if (expiringSoon && session.refresh_token) {
+    try {
+      const res = await fetch("/api/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: session.refresh_token }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        saveSession(data.user, { access_token: data.access_token, refresh_token: data.refresh_token, expires_in: data.expires_in }, isRemembered());
+        return data.user;
+      }
+    } catch {}
+    return null; // refresh genuinely failed — caller should send them to /login
+  }
+
+  // Not expiring yet — still resync the live profile (role/package/expiry)
+  // against the DB so admin changes reflect immediately, without rotating tokens.
   try {
-    const res = await fetch("/api/auth/refresh", {
+    const res = await fetch("/api/auth/me", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh_token: session.refresh_token }),
+      body: JSON.stringify({ access_token: session.access_token }),
     });
     const data = await res.json();
     if (data.success) {
-      saveSession(data.user, { access_token: data.access_token, refresh_token: data.refresh_token, expires_in: data.expires_in }, isRemembered());
+      patchUser(data.user);
       return data.user;
     }
   } catch {}
-  return null; // refresh genuinely failed — caller should send them to /login
+
+  // /api/auth/me failed for some transient reason — don't kick the user out,
+  // just fall back to the cached profile for this one load.
+  return user;
 }
