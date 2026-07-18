@@ -123,9 +123,9 @@ export default function CommunityLogin() {
 
           {mode === "login" && (
             <div className="mt-6 pt-6 border-t border-neutral-800/80 text-center">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Punya token VIP?</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-2">Sudah jadi member VIP?</p>
               <Link href="/login" className="text-emerald-400 hover:text-emerald-300 text-xs font-bold uppercase tracking-wider transition-colors">
-                Login dengan Token VIP
+                Login dengan Email OTP
               </Link>
             </div>
           )}

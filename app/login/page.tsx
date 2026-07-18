@@ -17,8 +17,23 @@ export default function LoginPage() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("vip_session");
-      if (saved) router.push("/vip");
-    } catch {}
+      const savedUser = localStorage.getItem("vip_user");
+      if (saved && savedUser) {
+        const parsed = JSON.parse(saved);
+        const u = JSON.parse(savedUser);
+        // Valid session must be the new email/access_token shape + have an email
+        if (parsed?.access_token && parsed?.email && u?.email) {
+          router.push("/vip");
+          return;
+        }
+      }
+      // Stale/legacy session (old token-based format) — wipe it so we don't loop
+      localStorage.removeItem("vip_session");
+      localStorage.removeItem("vip_user");
+    } catch {
+      localStorage.removeItem("vip_session");
+      localStorage.removeItem("vip_user");
+    }
   }, []);
 
   useEffect(() => {

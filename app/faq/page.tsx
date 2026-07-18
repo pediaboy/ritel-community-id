@@ -45,10 +45,10 @@ export default function FAQPage() {
     },
     {
       q: "Bagaimana cara upgrade akun ke layanan VIP?",
-      a: "Silakan pilih paket langganan yang Anda inginkan di halaman '/paket', ikuti langkah pembayaran transfer bank, unggah bukti pembayaran pada kolom yang disediakan, dan tunggu proses verifikasi token VIP selesai dilakukan."
+      a: "Silakan pilih paket langganan yang Anda inginkan di halaman '/paket', ikuti langkah pembayaran transfer bank, unggah bukti pembayaran pada kolom yang disediakan, dan tunggu admin mengaktifkan akun VIP kamu. Login cukup pakai email + kode OTP di halaman '/login', tidak perlu kode/token apapun."
     },
     {
-      q: "Berapa lama proses aktivasi token VIP setelah konfirmasi?",
+      q: "Berapa lama proses aktivasi VIP setelah konfirmasi?",
       a: "Sistem dan admin kami memproses aktivasi akun Anda rata-rata dalam waktu 5 hingga 15 menit setelah bukti transfer pembayaran diunggah pada jam operasional kerja."
     },
     {

@@ -1674,11 +1674,23 @@ export default function VipPage() {
 
     const session = localStorage.getItem("vip_session");
     const savedUser = localStorage.getItem("vip_user");
-    if (!session || !savedUser) { router.push("/login"); return; }
+    if (!session || !savedUser) {
+      localStorage.removeItem("vip_session");
+      localStorage.removeItem("vip_user");
+      router.push("/login");
+      return;
+    }
     try {
+      const parsedSession = JSON.parse(session);
       const u = JSON.parse(savedUser);
+      // Reject legacy/stale session shapes (old token system) to avoid a redirect loop
+      if (!parsedSession?.access_token || !parsedSession?.email || !u?.email) {
+        throw new Error("stale session shape");
+      }
       loadData(u);
     } catch {
+      localStorage.removeItem("vip_session");
+      localStorage.removeItem("vip_user");
       router.push("/login");
     }
   }, []);
