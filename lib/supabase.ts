@@ -25,8 +25,15 @@ export async function sb(
   });
   if (method === "DELETE" && res.status === 204) return [];
   const text = await res.text();
-  if (!text) return [];
-  try { return JSON.parse(text); } catch { return []; }
+  let parsed: any = [];
+  if (text) { try { parsed = JSON.parse(text); } catch { parsed = []; } }
+  if (!res.ok) {
+    // Previously swallowed silently — a failed write here (e.g. saving a new
+    // vip_users record) would look identical to success and the record would
+    // just vanish. Log loudly so it shows up in Vercel function logs.
+    console.error(`[sb] ${method} ${path} failed (${res.status}):`, typeof parsed === "object" ? JSON.stringify(parsed) : parsed);
+  }
+  return parsed;
 }
 
 // ── Supabase GoTrue Auth REST helper (Email OTP) ──────────────────
@@ -53,8 +60,19 @@ export async function getVipUsers(): Promise<any[]> {
 }
 
 export async function saveVipUsers(users: any[]) {
-  await sb("POST", "/settings", { key: "vip_users", value: users, updated_at: new Date().toISOString() },
-    { Prefer: "resolution=merge-duplicates,return=representation" });
+  const payload = { key: "vip_users", value: users, updated_at: new Date().toISOString() };
+  const prefer = { Prefer: "resolution=merge-duplicates,return=representation" };
+  let result = await sb("POST", "/settings", payload, prefer);
+  // Guard against a transient write failure silently dropping a just-registered
+  // user — retry once before giving up, so the account reliably ends up saved.
+  if (!Array.isArray(result) || result.length === 0) {
+    await new Promise(r => setTimeout(r, 500));
+    result = await sb("POST", "/settings", payload, prefer);
+    if (!Array.isArray(result) || result.length === 0) {
+      console.error("[saveVipUsers] write failed after retry — user record may not be persisted", payload.value.length, "users");
+    }
+  }
+  return result;
 }
 
 // ── Telegram notification helper ──────────────────────────────────

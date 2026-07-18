@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MoreMenu from "../components/MoreMenu";
+import { readSession, ensureFreshSession, clearSession } from "@/lib/session";
 
 // ── JAKARTA REALTIME CLOCK ──────────────────────────────────────
 function JakartaClock() {
@@ -1703,32 +1704,28 @@ export default function VipPage() {
       fetch("/api/news").then(r=>r.json()).then(d=>setIhsgNews((d.news||[]).slice(0,8))).catch(()=>{});
     };
 
-    const session = localStorage.getItem("vip_session");
-    const savedUser = localStorage.getItem("vip_user");
-    if (!session || !savedUser) {
-      localStorage.removeItem("vip_session");
-      localStorage.removeItem("vip_user");
-      router.push("/login");
-      return;
-    }
-    try {
-      const parsedSession = JSON.parse(session);
-      const u = JSON.parse(savedUser);
-      // Reject legacy/stale session shapes (old token system) to avoid a redirect loop
-      if (!parsedSession?.access_token || !parsedSession?.email || !u?.email) {
-        throw new Error("stale session shape");
+    (async () => {
+      const { session } = readSession();
+      if (!session) {
+        clearSession();
+        router.push("/login");
+        return;
       }
-      loadData(u);
-    } catch {
-      localStorage.removeItem("vip_session");
-      localStorage.removeItem("vip_user");
-      router.push("/login");
-    }
+      // Silently renews the access_token via refresh_token if it's expired —
+      // this is what keeps the user logged in past the ~1hr JWT lifetime
+      // instead of bouncing them out to /login.
+      const freshUser = await ensureFreshSession();
+      if (!freshUser) {
+        clearSession();
+        router.push("/login");
+        return;
+      }
+      loadData(freshUser);
+    })();
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("vip_session");
-    localStorage.removeItem("vip_user");
+    clearSession();
     router.push("/login");
   };
 

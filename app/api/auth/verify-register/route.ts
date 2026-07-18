@@ -65,5 +65,11 @@ export async function POST(req: Request) {
     isNewUser: true,
   };
 
-  return NextResponse.json({ success: true, user: userPayload, access_token: data.access_token });
+  return NextResponse.json({
+    success: true,
+    user: userPayload,
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    expires_in: data.expires_in || 3600,
+  });
 }

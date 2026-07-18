@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { saveSession, ensureFreshSession } from "@/lib/session";
 
 type Tab = "masuk" | "daftar";
 type RegStep = "form" | "otp";
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otp, setOtp] = useState("");
+  const [remember, setRemember] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -24,23 +26,10 @@ export default function LoginPage() {
   const otpRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("vip_session");
-      const savedUser = localStorage.getItem("vip_user");
-      if (saved && savedUser) {
-        const parsed = JSON.parse(saved);
-        const u = JSON.parse(savedUser);
-        if (parsed?.access_token && parsed?.email && u?.email) {
-          router.push("/vip");
-          return;
-        }
-      }
-      localStorage.removeItem("vip_session");
-      localStorage.removeItem("vip_user");
-    } catch {
-      localStorage.removeItem("vip_session");
-      localStorage.removeItem("vip_user");
-    }
+    (async () => {
+      const user = await ensureFreshSession();
+      if (user) router.push("/vip");
+    })();
   }, []);
 
   useEffect(() => {
@@ -67,12 +56,31 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem("vip_session", JSON.stringify({ email: data.user.email, access_token: data.access_token }));
-        localStorage.setItem("vip_user", JSON.stringify(data.user));
+        saveSession(data.user, { access_token: data.access_token, refresh_token: data.refresh_token, expires_in: data.expires_in }, remember);
         router.push("/vip");
       } else if (data.needsVerification) {
-        setErr("Email belum diverifikasi. Silakan daftar ulang untuk menerima kode OTP baru.");
-        setTab("daftar"); setRegStep("form");
+        // Account already exists but was never OTP-confirmed — instead of
+        // dumping the user back into a blank registration form (re-typing
+        // email + password again), quietly resend a fresh OTP for THIS
+        // same account and drop them straight into the OTP step.
+        try {
+          const r2 = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: e, password }),
+          });
+          const d2 = await r2.json();
+          if (d2.success) {
+            setTab("daftar"); setRegStep("otp");
+            setInfo("Akun kamu belum diverifikasi. Kode OTP baru sudah dikirim ke email kamu.");
+            setResendIn(30);
+            setTimeout(() => otpRef.current?.focus(), 100);
+          } else {
+            setErr(d2.message || "Email belum diverifikasi. Coba daftar ulang.");
+          }
+        } catch {
+          setErr("Email belum diverifikasi, dan gagal mengirim ulang OTP. Coba lagi.");
+        }
       } else {
         setErr(data.message || "Email atau kata sandi salah.");
       }
@@ -146,8 +154,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem("vip_session", JSON.stringify({ email: data.user.email, access_token: data.access_token }));
-        localStorage.setItem("vip_user", JSON.stringify(data.user));
+        saveSession(data.user, { access_token: data.access_token, refresh_token: data.refresh_token, expires_in: data.expires_in }, remember);
         router.push("/vip");
       } else {
         setErr(data.message || "Kode OTP salah atau sudah kedaluwarsa.");
@@ -168,12 +175,12 @@ export default function LoginPage() {
     }
   };
 
-  const inputCls = "w-full bg-[#08111F] border border-neutral-800 rounded-lg px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-blue-500 transition-colors";
+  const inputCls = "w-full bg-[#08111F] border border-[#132238] px-4 py-3 text-neutral-100 text-sm placeholder-neutral-700 outline-none focus:border-blue-500 transition-colors font-display";
 
   return (
     <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <Link href="/" className="flex items-center gap-2 text-neutral-500 hover:text-neutral-200 text-xs font-bold uppercase tracking-wider mb-8 transition-colors">
+        <Link href="/" className="flex items-center gap-2 text-neutral-500 hover:text-neutral-200 text-xs font-bold uppercase tracking-wider mb-8 transition-colors font-display">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
@@ -181,26 +188,29 @@ export default function LoginPage() {
           Kembali ke Beranda
         </Link>
 
-        <div className="glass-card p-8">
+        <div className="cyber-card relative p-8" style={{ background: "linear-gradient(180deg, rgba(19,34,56,0.35), rgba(8,17,31,0.6))", boxShadow: "0 0 40px rgba(37,99,235,0.08)" }}>
+          <div className="cyber-corner-tl" />
+          <div className="cyber-corner-br" />
+
           <div className="text-center mb-6">
-            <div className="index-badge w-14 h-14 mx-auto mb-4 bg-neutral-900 border border-blue-600/40 text-blue-400">
+            <div className="cyber-card-sm w-14 h-14 mx-auto mb-4 bg-blue-600/10 border border-blue-600/40 text-blue-400 flex items-center justify-center font-black text-sm font-display" style={{ boxShadow: "0 0 20px rgba(37,99,235,0.25)" }}>
               VIP
             </div>
-            <h1 className="headline text-2xl tracking-wider mb-2">AKUN <span className="accent">SAYA</span></h1>
+            <h1 className="font-display text-2xl font-bold tracking-tight mb-2 text-white">AKUN <span className="text-blue-500">SAYA</span></h1>
           </div>
 
           {/* Tabs */}
           {!(tab === "daftar" && regStep === "otp") && (
-            <div className="flex mb-6 rounded-lg overflow-hidden border border-neutral-800">
+            <div className="cyber-card-sm flex mb-6 border border-[#132238] overflow-hidden">
               <button
                 onClick={() => switchTab("masuk")}
-                className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${tab === "masuk" ? "bg-blue-600 text-white" : "bg-transparent text-neutral-500 hover:text-neutral-300"}`}
+                className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors font-display ${tab === "masuk" ? "bg-blue-600 text-white" : "bg-transparent text-neutral-500 hover:text-neutral-300"}`}
               >
                 Masuk
               </button>
               <button
                 onClick={() => switchTab("daftar")}
-                className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${tab === "daftar" ? "bg-blue-600 text-white" : "bg-transparent text-neutral-500 hover:text-neutral-300"}`}
+                className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors font-display ${tab === "daftar" ? "bg-blue-600 text-white" : "bg-transparent text-neutral-500 hover:text-neutral-300"}`}
               >
                 Daftar
               </button>
@@ -211,7 +221,7 @@ export default function LoginPage() {
           {tab === "masuk" && (
             <div className="space-y-4">
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Alamat Email</label>
+                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block font-display">Alamat Email</label>
                 <input
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -222,7 +232,7 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Kata Sandi</label>
+                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block font-display">Kata Sandi</label>
                 <input
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -234,8 +244,21 @@ export default function LoginPage() {
                 />
               </div>
 
+              <label className="flex items-center gap-2.5 cursor-pointer select-none py-1">
+                <span
+                  onClick={() => setRemember(r => !r)}
+                  className="cyber-card-sm w-5 h-5 flex items-center justify-center border transition-colors flex-shrink-0"
+                  style={{ background: remember ? "#2563EB" : "transparent", borderColor: remember ? "#2563EB" : "#132238" }}
+                >
+                  {remember && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  )}
+                </span>
+                <span onClick={() => setRemember(r => !r)} className="text-[12px] text-neutral-400 font-display">Ingat saya di perangkat ini</span>
+              </label>
+
               {err && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-400 text-xs font-bold">
+                <div className="cyber-card-sm bg-red-500/10 border border-red-500/20 px-4 py-3 text-red-400 text-xs font-bold font-display">
                   {err}
                 </div>
               )}
@@ -243,11 +266,11 @@ export default function LoginPage() {
               <button
                 onClick={doLogin}
                 disabled={loading}
-                className="btn-primary w-full py-3.5 rounded-lg font-black text-xs tracking-wider uppercase disabled:opacity-50"
+                className="btn-primary cyber-card-sm w-full py-3.5 font-black text-xs tracking-wider uppercase disabled:opacity-50 font-display"
               >
                 {loading ? "MEMPROSES..." : "MASUK"}
               </button>
-              <p className="text-center text-[11px] text-neutral-600">
+              <p className="text-center text-[11px] text-neutral-600 font-display">
                 Belum punya akun? <button onClick={() => switchTab("daftar")} className="text-blue-400 font-bold">Daftar dulu</button>
               </p>
             </div>
@@ -257,7 +280,7 @@ export default function LoginPage() {
           {tab === "daftar" && regStep === "form" && (
             <div className="space-y-4">
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Alamat Email</label>
+                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block font-display">Alamat Email</label>
                 <input
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -268,7 +291,7 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Kata Sandi</label>
+                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block font-display">Kata Sandi</label>
                 <input
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -279,7 +302,7 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Konfirmasi Kata Sandi</label>
+                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block font-display">Konfirmasi Kata Sandi</label>
                 <input
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
@@ -289,11 +312,11 @@ export default function LoginPage() {
                   autoComplete="new-password"
                   className={inputCls}
                 />
-                <p className="text-[10px] text-neutral-600 mt-1.5">Kami akan kirim kode OTP ke email untuk verifikasi sebelum akun aktif.</p>
+                <p className="text-[10px] text-neutral-600 mt-1.5 font-display">Kami akan kirim kode OTP ke email untuk verifikasi sebelum akun aktif.</p>
               </div>
 
               {err && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-400 text-xs font-bold">
+                <div className="cyber-card-sm bg-red-500/10 border border-red-500/20 px-4 py-3 text-red-400 text-xs font-bold font-display">
                   {err}
                 </div>
               )}
@@ -301,7 +324,7 @@ export default function LoginPage() {
               <button
                 onClick={doRegister}
                 disabled={loading}
-                className="btn-primary w-full py-3.5 rounded-lg font-black text-xs tracking-wider uppercase disabled:opacity-50"
+                className="btn-primary cyber-card-sm w-full py-3.5 font-black text-xs tracking-wider uppercase disabled:opacity-50 font-display"
               >
                 {loading ? "MENGIRIM KODE..." : "DAFTAR & KIRIM OTP"}
               </button>
@@ -312,7 +335,7 @@ export default function LoginPage() {
           {tab === "daftar" && regStep === "otp" && (
             <div className="space-y-4">
               <div>
-                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Kode OTP (6 digit)</label>
+                <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block font-display">Kode OTP (6 digit)</label>
                 <div className="flex gap-2">
                   <input
                     ref={otpRef}
@@ -322,27 +345,27 @@ export default function LoginPage() {
                     placeholder="123456"
                     inputMode="numeric"
                     autoComplete="one-time-code"
-                    className="flex-1 min-w-0 bg-[#08111F] border border-neutral-800 rounded-lg px-4 py-3 text-neutral-100 font-mono tracking-[0.4em] text-lg text-center placeholder-neutral-700 outline-none focus:border-blue-500 transition-colors"
+                    className="cyber-card-sm flex-1 min-w-0 bg-[#08111F] border border-[#132238] px-4 py-3 text-neutral-100 font-mono tracking-[0.4em] text-lg text-center placeholder-neutral-700 outline-none focus:border-blue-500 transition-colors"
                   />
                   <button
                     type="button"
                     onClick={pasteOtp}
-                    className="flex-shrink-0 flex items-center gap-1.5 px-3.5 bg-blue-600/10 border border-blue-600/40 text-blue-400 text-[11px] font-bold uppercase tracking-wider hover:bg-blue-600/20 transition-colors rounded-lg"
+                    className="cyber-card-sm flex-shrink-0 flex items-center gap-1.5 px-3.5 bg-blue-600/10 border border-blue-600/40 text-blue-400 text-[11px] font-bold uppercase tracking-wider hover:bg-blue-600/20 transition-colors font-display"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4"/></svg>
                     Tempel
                   </button>
                 </div>
-                <p className="text-[10px] text-neutral-600 mt-1.5">Terkirim ke <span className="text-neutral-400">{email}</span></p>
+                <p className="text-[10px] text-neutral-600 mt-1.5 font-display">Terkirim ke <span className="text-neutral-400">{email}</span></p>
               </div>
 
               {info && !err && (
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg px-4 py-3 text-blue-400 text-xs font-bold">
+                <div className="cyber-card-sm bg-blue-500/10 border border-blue-500/20 px-4 py-3 text-blue-400 text-xs font-bold font-display">
                   {info}
                 </div>
               )}
               {err && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-400 text-xs font-bold">
+                <div className="cyber-card-sm bg-red-500/10 border border-red-500/20 px-4 py-3 text-red-400 text-xs font-bold font-display">
                   {err}
                 </div>
               )}
@@ -350,7 +373,7 @@ export default function LoginPage() {
               <button
                 onClick={verifyRegisterOtp}
                 disabled={loading}
-                className="btn-primary w-full py-3.5 rounded-lg font-black text-xs tracking-wider uppercase disabled:opacity-50"
+                className="btn-primary cyber-card-sm w-full py-3.5 font-black text-xs tracking-wider uppercase disabled:opacity-50 font-display"
               >
                 {loading ? "MEMVERIFIKASI..." : "VERIFIKASI & MASUK"}
               </button>
@@ -358,21 +381,21 @@ export default function LoginPage() {
               <button
                 onClick={resendOtp}
                 disabled={resendIn > 0 || loading}
-                className="w-full py-2.5 text-[11px] font-bold uppercase tracking-wider text-neutral-500 hover:text-neutral-300 disabled:opacity-40 transition-colors"
+                className="w-full py-2.5 text-[11px] font-bold uppercase tracking-wider text-neutral-500 hover:text-neutral-300 disabled:opacity-40 transition-colors font-display"
               >
                 {resendIn > 0 ? `Kirim Ulang Kode (${resendIn}s)` : "Kirim Ulang Kode OTP"}
               </button>
               <button
                 onClick={() => { setRegStep("form"); setOtp(""); setErr(""); setInfo(""); }}
-                className="w-full py-1 text-[11px] font-bold uppercase tracking-wider text-neutral-600 hover:text-neutral-400 transition-colors"
+                className="w-full py-1 text-[11px] font-bold uppercase tracking-wider text-neutral-600 hover:text-neutral-400 transition-colors font-display"
               >
                 Kembali
               </button>
             </div>
           )}
 
-          <div className="mt-6 pt-6 border-t border-neutral-800/80 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-3">Mau upgrade ke VIP?</p>
+          <div className="mt-6 pt-6 border-t border-[#132238] text-center">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-3 font-display">Mau upgrade ke VIP?</p>
             <div className="flex gap-2 justify-center">
               <Link href="/paket" className="text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors">Lihat Paket VIP</Link>
               <span className="text-neutral-700">•</span>

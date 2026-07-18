@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ensureFreshSession, clearSession } from "@/lib/session";
 
 function GalaxyBg() {
   return <div className="galaxy-stars" />;
@@ -52,18 +53,16 @@ export default function AIAgentPage() {
 
   // Auth check - session (email OTP) required
   useEffect(() => {
-    const session = localStorage.getItem("vip_session");
-    const cached = localStorage.getItem("vip_user");
-    if (!session || !cached) {
-      router.push("/login?error=" + encodeURIComponent("Login dulu untuk akses RC-AI"));
-      return;
-    }
-    try {
-      setUser(JSON.parse(cached));
+    (async () => {
+      const freshUser = await ensureFreshSession();
+      if (!freshUser) {
+        clearSession();
+        router.push("/login?error=" + encodeURIComponent("Login dulu untuk akses RC-AI"));
+        return;
+      }
+      setUser(freshUser);
       setAuthChecked(true);
-    } catch {
-      router.push("/login");
-    }
+    })();
   }, []);
 
   useEffect(() => {
