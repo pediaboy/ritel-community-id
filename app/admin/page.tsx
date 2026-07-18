@@ -670,19 +670,44 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   // ===== TOKENS =====
+  // Re-fetch the authoritative user list from the DB — never trust optimistic
+  // local state alone, so a failed write can never look like it succeeded.
+  const refreshVipUsers = async () => {
+    const res = await fetch("/api/admin/users").then(r => r.json()).catch(() => ({}));
+    if (res.users) setVipUsers(res.users);
+  };
+
   const toggleUserRole = async (u: any) => {
     const newRole = u.role === "vip" ? "free" : "vip";
     const newSub = newRole === "vip" ? "gold" : "basic";
-    await fetch("/api/admin/users", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:u.email, role:newRole, subscription:newSub})}).catch(()=>{});
+    const res = await fetch("/api/admin/users", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:u.email, role:newRole, subscription:newSub})})
+      .then(r => r.json()).catch(() => ({ success: false }));
+    if (!res.success) {
+      alert(`Gagal mengubah role ${u.email}: ${res.message || "server error, coba lagi."}`);
+      await refreshVipUsers(); // pull real state back in so UI never shows a false "success"
+      return;
+    }
     setVipUsers(vipUsers.map(x=>x.email===u.email?{...x,role:newRole,subscription:newSub}:x));
   };
   const setUserSubscription = async (u: any, pkg: string) => {
-    await fetch("/api/admin/users", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:u.email, subscription:pkg})}).catch(()=>{});
+    const res = await fetch("/api/admin/users", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:u.email, subscription:pkg})})
+      .then(r => r.json()).catch(() => ({ success: false }));
+    if (!res.success) {
+      alert(`Gagal mengubah paket ${u.email}: ${res.message || "server error, coba lagi."}`);
+      await refreshVipUsers();
+      return;
+    }
     setVipUsers(vipUsers.map(x=>x.email===u.email?{...x,subscription:pkg}:x));
   };
   const delVipUser = async (email: string) => {
     if (!confirm("Hapus user ini?")) return;
-    await fetch(`/api/admin/users?email=${encodeURIComponent(email)}`, {method:"DELETE"}).catch(()=>{});
+    const res = await fetch(`/api/admin/users?email=${encodeURIComponent(email)}`, {method:"DELETE"})
+      .then(r => r.json()).catch(() => ({ success: false }));
+    if (!res.success) {
+      alert(`Gagal menghapus ${email}: ${res.message || "server error, coba lagi."}`);
+      await refreshVipUsers();
+      return;
+    }
     setVipUsers(vipUsers.filter(x=>x.email!==email));
   };
 
