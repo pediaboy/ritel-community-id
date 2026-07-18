@@ -110,10 +110,6 @@ body {
 }
 @keyframes gradShift { 0%{background-position:0% center} 100%{background-position:300% center} }
 
-/* ORBIT RINGS */
-@keyframes orbitSpin    { from{transform:rotate(0deg)   rotateX(65deg)} to{transform:rotate(360deg)  rotateX(65deg)} }
-@keyframes orbitSpinRev { from{transform:rotate(360deg) rotateX(55deg)} to{transform:rotate(0deg)    rotateX(55deg)} }
-
 
 /* TABS */
 .tab-neon-active { color:#10b981; position:relative; }

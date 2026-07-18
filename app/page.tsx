@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import MoreMenu from "./components/MoreMenu";
 
 /* ============================================================
    SVG ICONS (Lucide-style, no emoji)
@@ -139,6 +140,7 @@ const NAV_ITEMS = [
    MAIN PAGE
    ============================================================ */
 export default function HomePage() {
+  const router = useRouter();
   const [syncData, setSyncData] = useState<any>({});
 
   useEffect(()=>{
@@ -172,20 +174,28 @@ export default function HomePage() {
               <div style={{ fontSize:9,color:"rgba(255,255,255,0.28)",letterSpacing:"0.6px" }}>MARKET INTELLIGENCE PLATFORM</div>
             </div>
           </div>
-          <Link href="/login" style={{ background:"#10b981",color:"#06110c",fontWeight:800,fontSize:11,padding:"7px 18px",borderRadius:10,textDecoration:"none" }}>Login VIP</Link>
+          <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+            <MoreMenu
+              items={[
+                { id:"paket",    label:"Paket VIP",     onSelect:()=>router.push("/paket") },
+                { id:"alat",     label:"Alat & Kalkulator", onSelect:()=>router.push("/alat") },
+                { id:"ai",       label:"AI Assistant",  onSelect:()=>router.push("/ai") },
+                { id:"cari",     label:"Cari Saham",    onSelect:()=>router.push("/cari") },
+                { id:"testimoni",label:"Testimoni",     onSelect:()=>router.push("/testimoni") },
+                { id:"order",    label:"Riwayat Order", onSelect:()=>router.push("/order") },
+              ]}
+            />
+            <Link href="/login" style={{ background:"#10b981",color:"#06110c",fontWeight:800,fontSize:11,padding:"7px 18px",borderRadius:10,textDecoration:"none" }}>Login VIP</Link>
+          </div>
         </header>
 
         <MotivasiTicker />
 
         <div style={{ flex:1,overflowY:"auto",paddingBottom:100,position:"relative",zIndex:1 }}>
 
-          {/* ── HERO ── */}
-          <section style={{ padding:"24px 16px 18px",textAlign:"center",position:"relative" }}>
-            {/* Orbit rings */}
-            <div style={{ position:"absolute",left:"50%",top:55,transform:"translateX(-50%)",width:230,height:80,borderRadius:"50%",border:"1px solid rgba(16,185,129,0.07)",pointerEvents:"none",animation:"orbitSpin 16s linear infinite" }} />
-            <div style={{ position:"absolute",left:"50%",top:42,transform:"translateX(-50%)",width:300,height:105,borderRadius:"50%",border:"1px solid rgba(139,92,246,0.05)",pointerEvents:"none",animation:"orbitSpinRev 22s linear infinite" }} />
-
-            <div className="tag-chip float-1 fade-in-up" style={{ marginBottom:20 }}>
+          {/* ── HERO — Badge, Headline, Subheadline, Stats, then CTA ── */}
+          <section style={{ padding:"28px 16px 20px",textAlign:"center",position:"relative" }}>
+            <div className="tag-chip fade-in-up" style={{ marginBottom:20 }}>
               <span style={{ width:6,height:6,borderRadius:"50%",background:"#10b981",display:"inline-block" }}/>
               Platform Sinyal Saham Indonesia
             </div>
@@ -195,28 +205,29 @@ export default function HomePage() {
               <span className="gradient-text">Cerdas</span>
               <br/>Bersama Kami
             </h1>
-            <p className="fade-in-up-2" style={{ color:"rgba(255,255,255,0.38)",fontSize:13,lineHeight:1.75,maxWidth:280,margin:"0 auto 24px" }}>
+            <p className="fade-in-up-2" style={{ color:"rgba(255,255,255,0.38)",fontSize:13,lineHeight:1.75,maxWidth:280,margin:"0 auto 22px" }}>
               Sinyal trading premium, analisis mendalam, dan komunitas investor aktif Indonesia.
             </p>
+
+            {/* Premium statistics */}
+            <div className="fade-in-up-2" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:22 }}>
+              {[
+                {v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#10b981",glow:"rgba(16,185,129,0.1)",  Icon:Icon.Signal},
+                {v:"1.000+",l:"Member Aktif",           c:"#10b981",glow:"rgba(16,185,129,0.1)",Icon:Icon.Users},
+                {v:"95%",   l:"Win Rate",               c:"#10b981",glow:"rgba(16,185,129,0.1)", Icon:Icon.TrendUp},
+              ].map((s,i)=>(
+                <div key={i} className="glass-card" style={{ background:`linear-gradient(145deg,${s.glow},rgba(0,0,0,0))`,padding:"14px 8px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:86 }}>
+                  <span style={{ color:s.c, marginBottom:4, display:"block" }}><s.Icon/></span>
+                  <div style={{ fontSize:20,fontWeight:900,color:s.c,lineHeight:1.1 }}>{s.v}</div>
+                  <div style={{ fontSize:9,color:"rgba(255,255,255,0.28)",marginTop:3,fontWeight:600 }}>{s.l}</div>
+                </div>
+              ))}
+            </div>
+
             <div className="fade-in-up-3" style={{ display:"flex",gap:10,justifyContent:"center",maxWidth:320,margin:"0 auto" }}>
               <Link href="/paket" style={{ flex:1,display:"block",textAlign:"center",background:"#10b981",color:"#06110c",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:10,textDecoration:"none" }}>Mulai Sekarang</Link>
               <a href="https://wa.me/6282218723401?text=Halo%20Admin!" target="_blank" style={{ flex:1,display:"block",textAlign:"center",background:"rgba(34,197,94,0.09)",border:"1px solid rgba(34,197,94,0.22)",color:"#22c55e",fontWeight:800,fontSize:13,padding:"13px 0",borderRadius:14,textDecoration:"none" }}>WA Admin</a>
             </div>
-          </section>
-
-          {/* ── STATS ── */}
-          <section style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,padding:"0 16px",marginBottom:18 }}>
-            {[
-              {v:(syncData.signals||[]).length||"50+",l:"Sinyal Aktif",c:"#10b981",glow:"rgba(16,185,129,0.1)",  Icon:Icon.Signal,   delay:"0s"},
-              {v:"1.000+",l:"Member Aktif",           c:"#10b981",glow:"rgba(16,185,129,0.1)",Icon:Icon.Users,    delay:"0.1s"},
-              {v:"95%",   l:"Win Rate",               c:"#10b981",glow:"rgba(16,185,129,0.1)", Icon:Icon.TrendUp,  delay:"0.2s"},
-            ].map((s,i)=>(
-              <div key={i} className="glass-card float-2" style={{ background:`linear-gradient(145deg,${s.glow},rgba(0,0,0,0))`,padding:"14px 8px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:86,animationDelay:s.delay }}>
-                <span style={{ color:s.c, marginBottom:4, display:"block" }}><s.Icon/></span>
-                <div style={{ fontSize:20,fontWeight:900,color:s.c,lineHeight:1.1 }}>{s.v}</div>
-                <div style={{ fontSize:9,color:"rgba(255,255,255,0.28)",marginTop:3,fontWeight:600 }}>{s.l}</div>
-              </div>
-            ))}
           </section>
 
           <HomeFeed />

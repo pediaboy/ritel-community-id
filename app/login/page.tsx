@@ -67,15 +67,33 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div>
               <label className="text-[11px] uppercase tracking-wider font-bold text-neutral-400 mb-1.5 block">Token VIP</label>
-              <input
-                value={token}
-                onChange={e => setToken(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && !loading && doLogin()}
-                placeholder="RC-GOLD-XXXXXXXX"
-                autoComplete="off"
-                spellCheck={false}
-                className="w-full bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
-              />
+              <div className="flex gap-2">
+                <input
+                  value={token}
+                  onChange={e => setToken(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && !loading && doLogin()}
+                  placeholder="RC-GOLD-XXXXXXXX"
+                  autoComplete="off"
+                  spellCheck={false}
+                  className="flex-1 min-w-0 bg-[#15161A] border border-neutral-800 rounded-none px-4 py-3 text-neutral-100 font-mono tracking-widest text-sm placeholder-neutral-700 outline-none focus:border-emerald-500 transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const text = await navigator.clipboard.readText();
+                      if (text) { setToken(text.trim()); setErr(""); }
+                    } catch {
+                      setErr("Gagal akses clipboard. Paste manual (long-press) di kolom token.");
+                    }
+                  }}
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold uppercase tracking-wider hover:bg-emerald-500/20 transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4"/></svg>
+                  Tempel
+                </button>
+              </div>
+              <p className="text-[10px] text-neutral-600 mt-1.5">Salin token dari WhatsApp admin, lalu tap Tempel.</p>
             </div>
 
             {err && (
